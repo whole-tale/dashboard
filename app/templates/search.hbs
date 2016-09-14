@@ -1,4 +1,31 @@
-<div class="ui medium image" {{action 'index'}} ><img src='/images/whole_tale_logo_text_long_light.png'></div>
 
 
-<h2>Own Cloud</h2>
+<form id="search-form" action="<?php echo $baseurl?>/site/index"  method="POST">
+    <div class="search area">
+        <div class="field">
+            <div class="ui huge header">Data Search</div>
+
+            <div class="ui huge fluid icon input">
+                <input id="search-string" type="text" placeholder="Find Data..." name="search">
+                <i class="search icon"></i>
+            </div>
+          </div>
+            <br>
+            <br>
+            <br>
+            <br>
+         <div class="field">
+            <div class="ui huge fluid buttons">
+                <div class="ui black submit search button">
+                    <i class="search icon"></i>
+                    Search
+                </div>
+                <div class="or"></div>
+                <div class="ui blue submit search button">
+                    <i class="magic icon"></i>
+                    Feeling Lucky
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

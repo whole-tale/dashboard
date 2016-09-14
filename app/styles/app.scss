@@ -30,6 +30,21 @@ p, .description, .item {
   color: white;
 }
 
+
+.ui.form .field > label {
+  color: white;
+}
+
 .shape.three.d.controls {
   margin: 5px 0 5px 0;
+}
+
+.ui.action.input input[type="file"] {
+  display: none;
+}
+
+.search.area {
+  padding: 150px 0 0 0;
+  width: 650px;
+  margin: auto;
 }

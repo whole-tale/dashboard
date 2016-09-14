@@ -48,6 +48,15 @@ let dataWorkspaces = [
   }
 ];
 
+let drives = [
+  "A Global Tour of Precipitation",
+  "Acidifying Oceans: Oceans and Climate Change",
+  "Aerosols: Black Carbon and Sulfate",
+  "Aerosols: FIM Chem Model - Real-time",
+  "Atmospheric Chemistry: GEOS-5 Model",
+  "Carbon Dioxide: One Year - 2012"
+  ]
+
 export default Ember.Route.extend({
   model() {
     var real=false;
@@ -60,7 +69,8 @@ export default Ember.Route.extend({
     } else {
       return {
       frontends : frontends,
-      dataWorkspaces : dataWorkspaces
+        dataWorkspaces : dataWorkspaces,
+        drives : drives
     };
   }
   }

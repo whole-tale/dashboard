@@ -19,9 +19,7 @@ export default EmberUploader.FileField.extend({
 
     if (!Ember.isEmpty(files)) {
       // this second argument is optional and can to be sent as extra data with the upload
-      alert("Uploading " + files[0].name );
-
-      //uploader.upload(files[0], { });
+      this.sendAction('action', files[0].name);
     }
   }
 });
