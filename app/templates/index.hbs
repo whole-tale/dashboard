@@ -1,0 +1,74 @@
+<div class="ui huge header" style="text-align: center">Welcome, Joe Bloggs</div>
+
+<div class="ui inverted page segment">
+  <div class="ui stackable grid">
+      <div class="one wide column">
+      </div>
+      <div class="four wide column">
+        {{info-box color="blue" icon="file" title="FILES" value="77" }}
+      </div>
+      <div class="one wide column">
+      </div>
+      <div class="four wide column">
+        {{info-box color="green" icon="disk outline" title="DRIVES" value="8" }}
+      </div>
+      <div class="one wide column">
+      </div>
+      <div class="four wide column">
+        {{info-box color="orange" icon="book" title="RESEARCH" value="3" }}
+      </div>
+      <div class="one wide column">
+      </div>
+  </div>
+</div>
+
+<div class="ui grid">
+    <div class="four wide column">
+
+        <br>
+        <br>
+
+        <div class="ui icon message">
+            <i class="blue info icon"></i>
+            <div class="content">
+                <div class="header">
+                    What is WholeTale?
+                </div>
+                <p>Whole Tale will enable researchers to examine, transform, and then seamlessly republish research data that was used in an article. As a result, these "living articles"enable new discovery by allowing researchers to construct representations and syntheses of data.</p>
+            </div>
+        </div>
+
+        <h4 class="ui white horizontal divider large header">
+            <i class="options icon"></i>
+            Get Started
+        </h4>
+
+        <div class="ui icon message">
+            <div class="content">
+                <div class="header">
+                    What Do you want to do?
+                </div>
+                <p>Select a data workspace to work with data, search or publish.</p>
+            </div>
+            <i class="green right arrow icon"></i>
+        </div>
+
+    </div>
+
+    <div class="four wide column">
+        <div class="ui huge header" style="text-align: center">Search</div>
+      {{big-button  color="orange" icon="search" title="Search" action="gotoSearch" }}
+
+    </div>
+
+    <div class="four wide column">
+        <div class="ui huge header" style="text-align: center">Data Workspaces</div>
+
+      {{shape-3d action="gotoDataset" data=model.dataWorkspaces}}
+    </div>
+    <div class="four wide column">
+        <div class="ui huge header" style="text-align: center">Publish</div>
+      {{big-button color="green" icon="book" title="Publish"  action="gotoPublish" }}
+    </div>
+</div>
+

@@ -1,0 +1,34 @@
+{{#ui-sidebar class="ui left vertical inverted sidebar labeled icon menu" context=".component.context" id="sub-sidebar"}}
+    <div class="item">
+        <div class="header">Research</div>
+          <div class="menu">
+            {{#link-to 'index' invokeAction=(action 'closeMenu') class="item"}}
+                <i class="home icon"></i>
+                Dashboard
+            {{/link-to}}
+            {{#link-to 'search' invokeAction=(action 'closeMenu') class="item"}}
+                <i class="search icon"></i>
+                Search
+            {{/link-to}}
+            {{#link-to 'research' invokeAction=(action 'closeMenu') class="item"}}
+                <i class="book icon"></i>
+                Publish
+            {{/link-to}}
+          </div>
+    </div>
+  <div class="item">
+      <div class="header">Info</div>
+  <div class="menu">
+      <div class="item"></div>
+        {{#link-to 'about' invokeAction=(action 'closeMenu') class="item"}}
+            <i class="info icon"></i>
+            About
+        {{/link-to}}
+        {{#link-to 'contact' invokeAction=(action 'closeMenu') class="item"}}
+            <i class="mail icon"></i>
+            Contact
+        {{/link-to}}
+      </div>
+  </div>
+
+{{/ui-sidebar}}

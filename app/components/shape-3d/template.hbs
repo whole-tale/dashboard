@@ -1,0 +1,66 @@
+{{!
+  @module wholetale
+  @submodule components/shape-3d
+~}}
+
+{{#ui-shape class="dataList" as |execute|}}
+    <div class="shape three d controls">
+        <div class="ui tiny button" title="Flip Up" {{action execute 'flip up'}}>
+            <i class="up arrow icon"></i>
+        </div>
+        <div class="ui tiny button" title="Flip Left" {{action execute 'flip left'}}>
+            <i class="left arrow icon"></i>
+        </div>
+        <div class="ui tiny icon button" title="Flip Right" {{action execute 'flip right'}}>
+            <i class="right arrow icon"></i>
+        </div>
+        <div class="ui tiny icon button" title="Flip Down" {{action execute 'flip down'}}>
+            <i class="down arrow icon"></i>
+        </div>
+        <div class="ui tiny button" title="Flip Over" {{action execute 'flip over'}}>
+            <i class="retweet icon"></i>
+        </div>
+        <div class="ui tiny button" title="Flip Back" {{action execute 'flip back'}}>
+            <i class="flipped retweet icon"></i>
+        </div>
+    </div>
+
+    <div class="sides">
+      {{#each data as |item|}}
+          <div class="{{item.active}} side">
+              <div class="ui fluid card">
+                  <div class="image" style="margin : 10px;">
+                      <img src="/images/{{item.image}}">
+                  </div>
+                  <div class="content">
+                      <div class="header">{{item.name}}</div>
+                      <div class="meta">
+                          <a>Uses</a>
+                      </div>
+                      <div class="description">
+                        {{item.description}}
+                      </div>
+                  </div>
+                  <div class="extra meta">
+                      <span class="right floated">
+                        {{item.date}}
+                      </span>
+                      <span>
+                          <i class="user icon"></i>
+                          {{item.likes}}
+                      </span>
+
+                  </div>
+                  <div class="extra content">
+                      <div class="ui fluid blue button" {{action "selectCard" item.name}}>
+                          <i class="chekmark icon"></i>
+                          Select {{item.name}}</div>
+                  </div>
+
+              </div>
+          </div>
+      {{/each}}
+
+    </div>
+{{/ui-shape}}
+
