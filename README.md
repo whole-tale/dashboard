@@ -2,7 +2,7 @@
 
 This README outlines the details of collaborating on this Ember application.
 
-This is the EmberJS WholeTale dashboard.
+This is the EmberJS/Semantic UI WholeTale dashboard.
 
 ## Prerequisites
 
