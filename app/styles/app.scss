@@ -1,0 +1,35 @@
+
+html, body {
+  margin: 0px;
+}
+
+html {
+  font-family: 'antoniolight', sans-serif;
+}
+
+body {
+  margin: 0 auto;
+  padding: 0px;
+  border-radius: 12px;
+  color: white;
+  font-size: 1.2em;
+  font-family: "Open Sans", Helvetica, Arial, Verdana, sans-serif;
+}
+
+
+p, .description, .item {
+  font-size: 1.2em;
+}
+
+.main.page {
+  background-image: url("../images/whole_tale_banner_enhanced.png");
+  min-height:1000px;
+}
+
+.ui.header {
+  color: white;
+}
+
+.shape.three.d.controls {
+  margin: 5px 0 5px 0;
+}

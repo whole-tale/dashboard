@@ -1,0 +1,134 @@
+<div class="ui large header">Publish Research</div>
+
+<div class="ui form">
+    <div class="two fields">
+        <div class="field">
+            <div class="field">
+                <label>Research Title</label>
+                <input type="text" placeholder="First Name">
+            </div>
+            <div class="field">
+                <label>Description</label>
+                <textarea rows="3"></textarea>
+            </div>
+        </div>
+        <div class="field">
+            <div class="field">
+                <div class="ui header">Authors</div>
+            </div>
+            <div class="two fields">
+              <div class="field">
+                  <label>First Name</label>
+                  <input type="text" placeholder="First Name">
+              </div>
+                <div class="field">
+                    <label>Last Name</label>
+                    <input type="text" placeholder="First Name">
+                </div>
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <label>Username</label>
+                    <input type="text" placeholder="First Name">
+                </div>
+                <div class="field">
+                    <label>More ...</label>
+                    <div class="ui red button" {{action 'authoradd'}}>
+                        <i class="plus icon"></i>
+                        Add Author
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="ui icon message">
+    <i class="blue info icon"></i>
+    <div class="content">
+        <div class="header">
+            A Frontend, Docker and Drive ...
+        </div>
+        <p>Research comprises of a Frontend GUI (e.g. Jupyter), a data drive containing your data and
+        a docker container to host everything.</p>
+    </div>
+</div>
+
+
+<div class="ui grid">
+
+    <div class="one wide column">
+    </div>
+    <div class="four wide column">
+        <div class="ui huge header" style="text-align: center">A Frontend</div>
+      {{#if frontend}}
+          <div class="ui header">Selected</div>
+          <div class="ui large fluid blue label">
+            {{frontend}}
+          </div>
+      {{/if}}
+
+      {{shape-3d action="setfrontend" data=model.frontends}}
+    </div>
+    <div class="one wide column">
+    </div>
+
+    <div class="four wide column">
+        <div class="ui huge header" style="text-align: center">Docker</div>\
+      {{#if dockerfile}}
+        <div class="ui segment">
+          <div class="ui large blue header">Selected</div>
+          <div class="ui large fluid blue label">
+            {{dockerfile}}
+          </div>
+        </div>
+      {{/if}}
+        <br>
+        <br>
+
+        <div class="ui segment">
+            <div class="ui icon message">
+                <i class="info icon"></i>
+                <div class="content">
+                    <div class="header">
+                        Upload the Dockerfile for this research
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui basic segment">
+                <div class="field">
+                {{#if dockerfile}}
+                <div class="ui basic fluid large black label">
+                  {{dockerfile}}
+                </div>
+                {{/if}}
+                    <div class="ui fluid action input">
+                        <label for="attachmentName" class="ui large blue fluid labeled icon button">
+                            Upload Docker File <i class="cloud upload icon"></i>
+                          {{docker-file-uploader action="setdockerfile" url="/upload" id="attachmentName" name="attachmentName"}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="one wide column">
+    </div>
+
+    <div class="four wide column">
+        <div class="ui huge header" style="text-align: center">A Drive</div>
+      {{#if drive}}
+          <div class="ui header">Selected</div>
+          <div class="ui large fluid blue label">
+            {{drive}}
+          </div>
+      {{/if}}
+
+      {{shape-3d action="setdrive" data=model.dataWorkspaces}}
+    </div>
+    <div class="one wide column">
+    </div>
+
+</div>
