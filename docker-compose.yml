@@ -1,0 +1,9 @@
+version: '2'
+
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
