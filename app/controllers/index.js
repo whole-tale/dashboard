@@ -8,8 +8,14 @@ export default Ember.Controller.extend({
       else
         this.transitionToRoute(name.toLowerCase());
     },
+    gotoNextcloud: function(name) {
+        this.transitionToRoute("nextcloud");
+    },
     gotoSearch : function(name) {
       this.transitionToRoute("search");
+    },
+    gotoDrives : function(name) {
+      this.transitionToRoute("drives");
     },
     gotoPublish : function(name) {
         this.transitionToRoute("research");

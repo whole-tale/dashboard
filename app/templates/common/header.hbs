@@ -1,39 +1,32 @@
-<div class="ui inverted grid segment" style="margin: 0;">
-    <div class="one wide column">
-        <div class="ui black button item" {{action 'toggle' 'sub-sidebar'}}>
-            <i class="large white list icon"></i>
-        </div>
+<div class="ui inverted menu main navbar" style="margin:0">
+    <div class="ui big black button item" {{action 'toggle' 'sub-sidebar'}}>
+        <i class="white list icon"></i>
+    </div>
+    <div class="header item logo">
+      {{#link-to 'index'}}
+          <img class="ui right spaced image logo header" src="/images/whole_tale_logo_text_long_light.png" alt="WholeTale Logo"/>
+      {{/link-to}}
     </div>
 
-    <div class="three wide column">
-      <div {{action 'index'}} class="ui large image"><img src='/images/whole_tale_logo_text_long_light.png'></div>
-    </div>
-
-    <div class="twelve wide column">
-        <div class="ui inverted menu">
-            <div class="right menu">
-              <div class="item">
-                  <div class="ui icon input">
-                      <input type="text" placeholder="Search...">
-                      <i class="search link icon"></i>
-                  </div>
-              </div>
-
-            {{#if loggedIn}}
-                <a {{action 'logout'}} class="item">
-                    <i class="sign out icon"></i>
-                    Logout
-                </a>
-
-            {{/if}}
-
-            {{#unless loggedIn}}
-              {{#link-to 'login' class="item"}}
-                  <i class="sign in icon"></i>
-                  Login
-              {{/link-to}}
-            {{/unless}}
-          </div>
+    <div class="right menu">
+        <div class="large header item" style="color: white">
+            Welcome, Joe Bloggs
         </div>
+      {{#if loggedIn}}
+          <a {{action 'logout'}} class="item">
+              <i class="sign out icon"></i>
+              Logout
+          </a>
+
+      {{/if}}
+
+      {{#unless loggedIn}}
+        {{#link-to 'login' class="item"}}
+            <i class="sign in icon"></i>
+            Login
+        {{/link-to}}
+      {{/unless}}
     </div>
 </div>
+
+

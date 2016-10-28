@@ -18,8 +18,10 @@ Router.map(function() {
 
   // Data Routes
 
-  this.route('owncloud');
+  this.route('nextcloud');
   this.route('data-upload');
+
+  this.route('drives');
 
 
 });

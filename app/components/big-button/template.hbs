@@ -3,17 +3,21 @@
   @submodule big-button
 ~}}
 
-<div class="ui fluid inverted segment">
+<div class="ui fluid segment">
 
-    <div class="ui {{color}} fluid icon labelled button" {{action "gotoPage"}}>
+    <div class="ui large {{color}} header" {{action "gotoPage"}} style="text-align: center;">
       {{title}}
-        <i class="huge {{icon}} icon"></i>
     </div>
-    <br>
-    <div class="ui fluid basic {{color}} button" {{action "gotoPage"}}>
-        <i class="eye icon"></i>
+
+    <div class="ui fluid image">
+        <img src="{{img}}" style="height: 300px" height="300">
+    </div>
+
+    <div class="ui bottom attached {{color}} button" {{action "gotoPage"}}>
+        <i class="{{icon}} icon"></i>
         Launch
     </div>
 
-
 </div>
+
+

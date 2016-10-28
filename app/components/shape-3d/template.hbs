@@ -4,30 +4,25 @@
 ~}}
 
 {{#ui-shape class="dataList" as |execute|}}
-    <div class="shape three d controls">
-        <div class="ui tiny button" title="Flip Up" {{action execute 'flip up'}}>
-            <i class="up arrow icon"></i>
-        </div>
-        <div class="ui tiny button" title="Flip Left" {{action execute 'flip left'}}>
-            <i class="left arrow icon"></i>
-        </div>
-        <div class="ui tiny icon button" title="Flip Right" {{action execute 'flip right'}}>
-            <i class="right arrow icon"></i>
-        </div>
-        <div class="ui tiny icon button" title="Flip Down" {{action execute 'flip down'}}>
-            <i class="down arrow icon"></i>
-        </div>
-        <div class="ui tiny button" title="Flip Over" {{action execute 'flip over'}}>
-            <i class="retweet icon"></i>
-        </div>
-        <div class="ui tiny button" title="Flip Back" {{action execute 'flip back'}}>
-            <i class="flipped retweet icon"></i>
-        </div>
-    </div>
+  <div class="ui fluid tiny icon buttons">
+      <div class="ui button" title="Flip Up" {{action execute 'flip up'}}>
+          <i class="up arrow icon"></i>
+      </div>
+      <div class="ui button" title="Flip Left" {{action execute 'flip left'}}>
+          <i class="left arrow icon"></i>
+      </div>
+      <div class="ui button " title="Flip Right" {{action execute 'flip right'}}>
+          <i class="right arrow icon"></i>
+      </div>
+      <div class="ui button" title="Flip Down" {{action execute 'flip down'}}>
+          <i class="down arrow icon"></i>
+      </div>
 
-    <div class="sides">
+  </div>
+
+    <div class="sides" style="margin:0">
       {{#each data as |item|}}
-          <div class="{{item.active}} side">
+          <div class="{{item.active}} skinny side" >
               <div class="ui fluid card">
                   <div class="image" style="margin : 10px;">
                       <img src="/images/{{item.image}}">
@@ -47,7 +42,7 @@
                       </span>
                       <span>
                           <i class="user icon"></i>
-                          {{item.likes}}
+                        {{item.likes}}
                       </span>
 
                   </div>
@@ -60,7 +55,7 @@
               </div>
           </div>
       {{/each}}
-
     </div>
+
 {{/ui-shape}}
 

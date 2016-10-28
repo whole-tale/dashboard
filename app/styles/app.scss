@@ -10,29 +10,58 @@ html {
 body {
   margin: 0 auto;
   padding: 0px;
-  border-radius: 12px;
-  color: white;
-  font-size: 1.2em;
+  border-radius: 4px;
+  color: black;
+  font-size: 1.0em;
   font-family: "Open Sans", Helvetica, Arial, Verdana, sans-serif;
 }
 
 
 p, .description, .item {
-  font-size: 1.2em;
+  font-size: 1.0em;
 }
 
 .main.page {
+  min-height:600px;
+  padding: 10px;
+  color: #efefef;
+  margin: 0 10px 0 10px;
+}
+
+
+.ui.info.segment {
+  position: relative;
+  background-image: url("../images/metallic-button.jpg");
+  box-shadow: 0px 2px 2px 0 rgba(34, 36, 38, 0.15);
+  margin: 5px 5px 2px 0px;
+  padding: 2px;
+  color: whitesmoke;
+  border-radius: 0.28571429rem;
+  border: 3px solid rgb(165, 165, 165);
+}
+
+.ui.info.container.segment {
+  position: relative;
+  background-image: url("../images/metallic.jpeg");
+  box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15);
+  margin: 5px 5px 5px 5px;
+  padding: 10px;
+  border-radius: 0.28571429rem;
+  border: 1px solid rgba(34, 36, 38, 0.15);
+}
+
+.ui.fish.segment {
+  position: relative;
   background-image: url("../images/whole_tale_banner_enhanced.png");
-  min-height:1000px;
+  box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15);
+  margin: 5px 10px 5px 10px;
+  padding: 15px;
+  border-radius: 0.28571429rem;
+  border: 1px solid rgba(34, 36, 38, 0.15);
 }
-
-.ui.header {
-  color: white;
-}
-
 
 .ui.form .field > label {
-  color: white;
+  color: black;
 }
 
 .shape.three.d.controls {
@@ -47,4 +76,13 @@ p, .description, .item {
   padding: 150px 0 0 0;
   width: 650px;
   margin: auto;
+}
+
+.skinny {
+  padding:0;
+  margin:0;
+}
+
+.white {
+  color :whitesmoke;
 }
