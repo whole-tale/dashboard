@@ -1,0 +1,69 @@
+<div class="ui large header"> Viewing Drive {{model.name}}</div>
+
+<table class="ui celled padded table">
+    <thead>
+    <tr>
+        <th>Parameter</th>
+        <th>Value</th>
+    </tr></thead>
+    <tbody>
+        <tr class="center aligned">
+            <td>
+                Description
+            </td>
+            <td>
+              {{model.description}}
+            </td>
+        </tr>
+        <tr class="center aligned">
+            <td>
+                ID
+            </td>
+            <td>
+              {{model._id}}
+            </td>
+        </tr>
+        <tr class="center aligned">
+            <td>
+                Size
+            </td>
+            <td>
+              {{model.size}} Bytes
+            </td>
+        </tr>
+        <tr class="center aligned">
+            <td>
+                Public?
+            </td>
+            <td>
+              {{#if model.public}}
+
+                  <i class="large green checkmark icon"></i>
+              {{/if}}
+              {{#unless model.public}}
+
+                  <i class="large red remove icon"></i>
+              {{/unless}}
+            </td>
+        </tr>
+        <tr class="center aligned">
+            <td>
+                Date Created
+            </td>
+            <td>
+              {{moment-from-now model.created}}
+            </td>
+        </tr>
+        <tr class="center aligned">
+            <td>
+                Date Created
+            </td>
+            <td>
+              {{moment-from-now model.updated}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+{{#link-to "drives.edit" model class="ui blue button"}}<i class="edit icon"></i> Edit{{/link-to}}
+{{#link-to "drives" class="ui blue button"}}<i class="list icon"></i> List Drives{{/link-to}}

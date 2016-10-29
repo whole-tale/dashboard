@@ -1,0 +1,71 @@
+<div class="ui icon message">
+    <i class="blue disk outline icon"></i>
+    <div class="content">
+        <div class="ui grid">
+            <div class="eight wide column">
+                <p>You have {{model.length}} drives</p>
+            </div>
+            <div class="eight wide right aligned column">
+                <div class="ui button">{{#link-to "drives.new" }}New{{/link-to}}</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<table class="ui celled padded table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>ID</th>
+        <th>Model Type</th>
+        <th>Size</th>
+        <th>Public</th>
+        <th>Created</th>
+        <th>Updated</th>
+        <th>Tools</th>
+    </tr></thead>
+    <tbody>
+    {{#each model as |collection|}}
+        <tr class="center aligned">
+            <td>
+                <div class="ui center aligned header">{{collection.name}}</div>
+            </td>
+            <td>
+              {{collection.description}}
+            </td>
+            <td>
+              {{collection._id}}
+            </td>
+            <td>
+              {{collection._modelType}}
+            </td>
+            <td>
+              {{collection.size}}
+            </td>
+            <td>
+              {{#if collection.public}}
+
+                  <i class="large green checkmark icon"></i>
+              {{/if}}
+              {{#unless collection.public}}
+
+                  <i class="large red remove icon"></i>
+              {{/unless}}
+            </td>
+            <td>
+              {{moment-from-now collection.created}}
+            </td>
+            <td>
+              {{moment-from-now collection.updated}}
+            </td>
+            <td>
+                {{#link-to "drives.view" collection class="ui button"}}View{{/link-to}}
+
+            </td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>

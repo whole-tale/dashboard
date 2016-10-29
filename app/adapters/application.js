@@ -1,7 +1,8 @@
-import RESTAdapter from 'ember-data/adapters/rest';
+import DS from 'ember-data';
 
-export default DS.RESTAdapter.extend({
+export default DS.JSONAPIAdapter.extend({
   host: 'https://girder.wholetale.org',
-  namespace: '/api/v1'
+  namespace: '/api/v1',
+  primaryKey: '_id'
 });
 

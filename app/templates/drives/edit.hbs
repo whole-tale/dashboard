@@ -1,0 +1,76 @@
+
+<table class="ui celled padded table">
+    <thead>
+    <tr>
+        <th>Parameter</th>
+        <th>Value</th>
+    </tr></thead>
+    <tbody>
+        <tr class="center aligned">
+            <td>
+                Name
+            </td>
+            <td>
+                {{model.name}}
+            </td>
+        </tr>
+        <tr class="center aligned">
+            <td>
+                Description
+            </td>
+            <td>
+              {{model.description}}
+            </td>
+        </tr>
+        <tr class="center aligned">
+            <td>
+                ID
+            </td>
+            <td>
+              {{model._id}}
+            </td>
+        </tr>
+        <tr class="center aligned">
+            <td>
+                Size
+            </td>
+            <td>
+              {{model.size}} Bytes
+            </td>
+        </tr>
+        <tr class="center aligned">
+            <td>
+                Public?
+            </td>
+            <td>
+              {{#if model.public}}
+
+                  <i class="large green checkmark icon"></i>
+              {{/if}}
+              {{#unless model.public}}
+
+                  <i class="large red remove icon"></i>
+              {{/unless}}
+            </td>
+        </tr>
+        <tr class="center aligned">
+            <td>
+                Date Created
+            </td>
+            <td>
+              {{moment-from-now model.created}}
+            </td>
+        </tr>
+        <tr class="center aligned">
+            <td>
+                Date Created
+            </td>
+            <td>
+              {{moment-from-now model.updated}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+{{#link-to "drives.view" model class="ui blue button"}}<i class="eye icon"></i> View{{/link-to}}
+{{#link-to "drives" class="ui blue button"}}<i class="list icon"></i> List Drives{{/link-to}}

@@ -21,7 +21,13 @@ Router.map(function() {
   this.route('nextcloud');
   this.route('data-upload');
 
-  this.route('drives');
+
+  this.route('drives', function(){
+    this.route('list', { path: '/' });
+    this.route('view', { path: '/view/:collection_id' });
+    this.route('edit', { path: '/edit/:collection_id' });
+    this.route('new');
+  });
 
 
 });

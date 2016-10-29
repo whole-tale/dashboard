@@ -1,5 +1,17 @@
 /* jshint node: true */
 
+module.exports = function() {
+  return {
+    moment: {
+      // Options:
+      // 'all' - all years, all timezones
+      // '2010-2020' - 2010-2020, all timezones
+      // 'none' - no data, just timezone API
+      includeTimezone: 'all'
+    }
+  }
+};
+
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'wholetale',
@@ -21,6 +33,10 @@ module.exports = function(environment) {
       // Here you can pass flags/options to your application instance
       // when it is created
     }
+  };
+
+  ENV['ember-cli-mirage'] = {
+    enabled: false
   };
 
   if (environment === 'development') {

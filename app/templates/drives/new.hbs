@@ -1,0 +1,45 @@
+<div class="ui header">New WholeTale Drive</div>
+
+
+<div class="ui basic page segment">
+    <form class="ui form">
+        <div class="field">
+            <label>Name</label>
+          {{input type="text" placeholder="Drive Name" value=collection.name}}
+        </div>
+        <div class="field">
+            <label>Description</label>
+          {{textarea rows="3" value=collection.description}}
+        </div>
+        <div class="field">
+            <div class="ui segment">
+              {{ui-checkbox class="toggle" label="Drive is public" checked=collection.public onChange=(action (mut collection.public))}}
+            </div>
+        </div>
+        <div class="field">
+            <div class="ui green labeled icon button" {{action 'createDrive'}}>
+                <i class="check icon"></i> Create
+            </div>
+        </div>
+    </form>
+
+</div>
+
+{{#if isFailed}}
+    <div class="ui red icon message" ng-show="formErrors && !otherErrors">
+        <div class="content">
+            <div class="header">
+                <i class="large info icon"></i>
+                Error, the drive could not be saved.
+            </div>
+
+            <p>{{reason}}</p>
+        </div>
+    </div>
+{{/if }}
+
+
+<div class="ui horizontal divider">Links</div>
+
+{{#link-to "drives.view" model class="ui blue button"}}<i class="eye icon"></i> View{{/link-to}}
+{{#link-to "drives" class="ui blue button"}}<i class="list icon"></i> List Drives{{/link-to}}

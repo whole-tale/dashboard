@@ -55,7 +55,7 @@ let drives = [
   "Aerosols: FIM Chem Model - Real-time",
   "Atmospheric Chemistry: GEOS-5 Model",
   "Carbon Dioxide: One Year - 2012"
-  ]
+  ];
 
 export default Ember.Route.extend({
   model() {
