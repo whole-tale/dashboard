@@ -1,14 +1,13 @@
 FROM node:4
 
-RUN npm install -g ember-cli
-RUN npm install -g bower
+RUN npm -s install -g bower
 
-RUN git clone https://github.com/whole-tale/dashboard /srv
+RUN git clone https://github.com/whole-tale/dashboard /srv -b update
 
 WORKDIR /srv
 
-RUN npm install
+RUN npm -s install
 RUN bower install --allow-root
 
 EXPOSE 4200
-ENTRYPOINT ["ember", "serve"]
+ENTRYPOINT ["/srv/node_modules/.bin/ember", "serve"]
