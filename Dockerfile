@@ -2,7 +2,7 @@ FROM node:4
 
 RUN npm -s install -g bower
 
-RUN git clone https://github.com/whole-tale/dashboard /srv -b update
+RUN git clone https://github.com/whole-tale/dashboard /srv
 
 WORKDIR /srv
 
