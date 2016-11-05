@@ -1,13 +1,14 @@
-FROM node:4
+FROM risingstack/alpine:3.4-v4.6.1-4.1.0
 
-RUN npm -s install -g bower
-
-RUN git clone https://github.com/whole-tale/dashboard /srv
-
-WORKDIR /srv
-
-RUN npm -s install
-RUN bower install --allow-root
+RUN unset NODE_ENV && \
+  git clone https://github.com/whole-tale/dashboard && \
+  cd dashboard && \
+  npm -s install bower && \
+  npm -s install && \
+  ./node_modules/.bin/bower install --allow-root && \
+  ./node_modules/.bin/ember build --environment=production && \
+  cp -r dist/* ../ && \
+  cd .. && rm -rf /tmp/* /root/.[a-z]* dashboard
 
 EXPOSE 4200
-ENTRYPOINT ["/srv/node_modules/.bin/ember", "serve"]
+CMD ["python", "-m", "SimpleHTTPServer", "4200"]
