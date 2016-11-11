@@ -1,11 +1,12 @@
 import DS from 'ember-data';
 
 export default DS.Model.extend({
-  parentType: DS.attr(), // folder or item
-  parentId: DS.attr(),
-  name: DS.attr(),
-  size: DS.attr(),
-  mimeType: DS.attr(),
-  linkUrl: DS.attr(),
-  reference: DS.attr()
+  parentType: DS.attr('string'), // folder or item
+  parentId: (this.get('parentType') === "collection")? DS.belongsTo('collection') : DS.belongsTo('folder'),
+  name: DS.attr('string'),
+  size: DS.attr('number'),
+  mimeType: DS.attr('string'),
+  linkUrl: DS.attr('string'),
+  reference: DS.attr('string'),
+  assetstoreId : DS.attr('string')
 });
