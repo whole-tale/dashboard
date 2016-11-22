@@ -1,0 +1,110 @@
+<!-- apps/pods/components/file-actions/template.hbs -->
+<!-- Download, Upload, addSubfolder, rename, delete -->
+
+<div class="ui mini basic icon buttons">
+    <button class="ui mini icon button">
+        <i class="download icon" {{action 'download'}}></i>
+    </button>
+    {{#unless file.isFile}}
+        <button class="ui mini icon button" {{action 'openModal' 'file.browser'}}>
+            <i class="upload icon"></i>
+        </button>
+        <button class="ui mini icon button" {{action 'openModal' 'file.addsubfolder'}}>
+            <i class="plus icon"></i>
+        </button>
+    {{/unless}}
+    {{#unless file.isProvider}}
+        <button class="ui mini icon button" {{action 'openModal' 'file.rename'}}>
+            <i class="write icon"></i>
+        </button>
+        <button class="ui mini icon button" {{action 'openModal' 'file.delete'}}>
+            <i class="remove icon"></i>
+        </button>
+    {{/unless}}
+</div>
+
+{{!-- Upload Files Modal--}}
+{{!-- --------------------------------------------------------------------- --}}
+{{#ui-modal name="upload-files" class="fullscreen file browser" }}
+    <i class="mini close icon"></i>
+    <div class="header">
+        Upload Files
+    </div>
+    {{drop-zone addRemoveLinks=true autoProcessQueue=false addedfile=(action 'addFileToDropzone') removedfile=(action 'removeFileFromDropzone')}}
+    <div class="actions">
+        <button class="ui small black cancel button" {{action 'closeModal' 'file.browser'}} {{action 'clearDropzone'}}>
+            <i class="ban icon"></i>Cancel
+        </button>
+        <button class="ui small green approve right labeled icon button"
+            {{action 'uploadFiles'}}>
+            <i class="checkmark icon"></i>Add
+        </button>
+    </div>
+{{/ui-modal}}
+
+{{!-- Rename File Modal--}}
+{{!-- --------------------------------------------------------------------- --}}
+{{#ui-modal name="rename-file" class="file rename"}}
+    <i class="mini close icon"></i>
+    <div class="header">
+        Rename file
+    </div>
+    <div class="field">
+        <div class="ui fluid left labeled input">
+            <label class="ui label">New filename</label>
+            {{input value=newFileName current=file.name}}
+        </div>
+    </div>
+    <div class="actions">
+        <button class="ui small black cancel button" {{action 'closeModal' 'file.rename'}}>
+            <i class="ban icon"></i>Cancel
+        </button>
+        <button class="ui small green approve right labeled icon button"
+            {{action 'renameFile'}}>
+            <i class="checkmark icon"></i>Rename
+        </button>
+    </div>
+{{/ui-modal}}
+
+{{!-- Delete File Modal--}}
+{{!-- --------------------------------------------------------------------- --}}
+{{#ui-modal name="delete-file" class="file delete"}}
+    <i class="mini close icon"></i>
+    <div class="ui yellow message">
+        <i class="icon warning sign"></i>
+        Are you sure you want to permanently delete this file?
+    </div>
+    <div class="actions">
+        <button class="ui small black cancel button" {{action 'closeModal' 'file.delete'}}>
+            <i class="ban icon"></i>Cancel
+        </button>
+        <button class="ui small red approve right labeled icon button"
+            {{action 'deleteFile'}}>
+            <i class="trash outline icon"></i>Delete
+        </button>
+    </div>
+{{/ui-modal}}
+
+{{!-- Add Sub Folder Modal--}}
+{{!-- --------------------------------------------------------------------- --}}
+{{#ui-modal name="addsubfolder-file" class="file addsubfolder"}}
+    <i class="mini close icon"></i>
+    <div class="header">
+        Add subfolder
+    </div>
+    <div class="field">
+        <div class="ui fluid left labeled input">
+            <label class="ui label">New folder name</label>
+            {{input value=newFolderName}}
+        </div>
+    </div>
+    <div class="actions">
+        <button class="ui small black cancel button" {{action 'closeModal' 'file.addsubfolder'}}>
+            <i class="ban icon"></i>Cancel
+        </button>
+        <button class="ui small green approve right labeled icon button"
+            {{action 'addSubfolder'}}>
+            <i class="check icon"></i>Add folder
+        </button>
+    </div>
+{{/ui-modal}}

@@ -1,11 +1,11 @@
 import DS from 'ember-data';
 import Ember from 'ember';
+import FolderItemMixin from 'wholetale/mixins/folder-item';
 
-export default DS.Model.extend({
+export default DS.Model.extend(FolderItemMixin, {
   _accessLevel: DS.attr(),
   _id: DS.attr(),
-  // _isParentFolder: DS.attr('boolean'),
-  // _isParentCollection: DS.attr('boolean'),
+  _modelType: DS.attr('string'),
   baseParentType: DS.attr('string'), // folder or item
   baseParentId: Ember.computed('baseParentType', function() {
       return (this.get('baseParentType') === "collection") ? DS.belongsTo('collection') : DS.belongsTo('folder');

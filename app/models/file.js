@@ -2,9 +2,10 @@ import Ember from 'ember';
 import DS from 'ember-data';
 
 export default DS.Model.extend({
+  _modelType: DS.attr('string'),
   parentType: DS.attr('string'), // folder or item
   parentId: Ember.computed('parentType', function() {
-      return (this.get('parentType') === "collection")? DS.belongsTo('collection') : DS.belongsTo('folder');
+      return (this.get('parentType') === "collection") ? DS.belongsTo('collection') : DS.belongsTo('folder');
   }),
   name: DS.attr('string'),
   size: DS.attr('number'),

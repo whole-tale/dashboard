@@ -29,7 +29,9 @@ Router.map(function() {
     this.route('new');
   });
 
-
+  this.route('data', function() {
+    this.route('list', { path: '/:collection_id' });
+  });
 });
 
 export default Router;
