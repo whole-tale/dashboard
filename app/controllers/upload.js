@@ -52,8 +52,14 @@ export default Ember.Controller.extend({
         // set("isNotRoot", !isRoot);
       }
     },
-    collectionClicked : function(fileID, FileName) {
-      alert("Collection clicked " + fileName);
+    collectionClicked : function(collectionID, collectionName) {
+//      alert("Collection clicked " + collectionName);
+
+      var folderContents = this.store.query('folder', { parentId: collectionID, parentType: "collection"});
+      var collections = this.get('store').findAll('collection');
+
+      var newModel =  { 'folderContents' : folderContents, 'collections' : collections, 'itemContents' : null};
+      this.set("fileData", newModel);
 
     },
 }

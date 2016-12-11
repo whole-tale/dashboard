@@ -1,6 +1,6 @@
 <div class="ui fluid vertical thin menu" style="margin:0">
 {{#each list as |collection|}}
-    <a class="item">
+    <a class="item" {{action "collectionClicked" collection._id collection.name}} >
         {{#if (eq collection.public true)}}
             <div class="ui tiny inverted blue label">Public</div>
         {{/if}}

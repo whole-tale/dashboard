@@ -6,7 +6,7 @@ export default Ember.Component.extend({
     selectedFile: null,
     actions: {
       collectionClicked : function(collectionID, collectionName) {
-        this.sendAction('collectionClicked', collectionID, collectionName );
+        this.sendAction('action', collectionID, collectionName );
       }
     }
 });
