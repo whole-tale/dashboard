@@ -1,14 +1,27 @@
-<div class="ui fluid vertical thin menu" style="margin:0">
-{{#each list as |collection|}}
-    <a class="item" {{action "collectionClicked" collection._id collection.name}} >
-        {{#if (eq collection.public true)}}
-            <div class="ui tiny inverted blue label">Public</div>
-        {{/if}}
+<div class="ui fluid vertical thin menu" style="margin:0; color: black">
+  {{#each list as |collection|}}
+    {{#if (eq selectedCollectionID collection._id)}}
+    <a class="active item" {{action "collectionClicked" collection._id collection.name}}>
+      {{#if (eq collection.public true)}}
+          <div class="ui tiny inverted blue label">Public</div>
+      {{/if}}
       {{#if (eq collection.public false)}}
           <div class="ui tiny inverted blue label">Private</div>
       {{/if}}
-        {{collection.name}}
+      {{collection.name}}
     </a>
-{{/each}}
+    {{/if}}
+    {{#unless (eq selectedCollectionID collection._id)}}
+    <a class="item" {{action "collectionClicked" collection._id collection.name}}>
+      {{#if (eq collection.public true)}}
+          <div class="ui tiny inverted blue label">Public</div>
+      {{/if}}
+      {{#if (eq collection.public false)}}
+          <div class="ui tiny inverted blue label">Private</div>
+      {{/if}}
+      {{collection.name}}
+    </a>
+    {{/unless}}
+  {{/each}}
 </div>
 

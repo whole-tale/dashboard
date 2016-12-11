@@ -8,7 +8,7 @@
           <i class="edit icon"></i>
           Collection Editor
       {{/link-to}}
-      {{collection-browser list=fileData.collections action="collectionClicked"}}
+      {{collection-browser list=fileData.collections selectedCollectionID=collectionID action="collectionClicked"}}
     </div>
     <div class="thirteen wide column" style="margin:0">
       {{directory-browser folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}

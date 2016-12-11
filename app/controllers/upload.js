@@ -58,6 +58,9 @@ export default Ember.Controller.extend({
       var folderContents = this.store.query('folder', { parentId: collectionID, parentType: "collection"});
       var collections = this.get('store').findAll('collection');
 
+      this.set("collectionID", collectionID);
+      this.set("collectionName", collectionName);
+
       var newModel =  { 'folderContents' : folderContents, 'collections' : collections, 'itemContents' : null};
       this.set("fileData", newModel);
 
