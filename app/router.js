@@ -11,18 +11,26 @@ Router.map(function() {
   this.route('contact');
   this.route('about');
 
-  // Data Routes
+  // Menu Routes
 
+  this.route('explore');
   this.route('search');
-  this.route('research');
+  this.route('compose');
+  this.route('upload');
+  this.route('status');
+  this.route('login');
+
+  this.route('collaborators', function(){
+    this.route('list', { path: '/' });
+    this.route('view', { path: '/view/:user_id' });
+  });
 
   // Data Routes
 
   this.route('nextcloud');
-  this.route('data-upload');
 
 
-  this.route('drives', function(){
+  this.route('collections', function(){
     this.route('list', { path: '/' });
     this.route('view', { path: '/view/:collection_id' });
     this.route('edit', { path: '/edit/:collection_id' });

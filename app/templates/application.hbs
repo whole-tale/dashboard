@@ -1,19 +1,13 @@
-
-<div class="ui pushable segment component context">
-  {{partial "common/header"}}
-
+<div class="wholetale view pusher">
   {{partial "common/menu"}}
 
-    <div class="pusher">
-        <div class="main page">
-              {{outlet}}
-        </div>
+  {{partial "common/header"}}
+
+
+    <div class="main page">
+      {{outlet}}
     </div>
-
-  {{partial "common/footer"}}
-
 </div>
-
 
 
 

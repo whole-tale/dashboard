@@ -1,0 +1,27 @@
+<div class="ui two item stackable mini secondary pagination menu">
+    <div class="item">
+        <div class="ui form pagination-form">
+            <div class="inline field">
+                <div class="ui small right labeled input">
+                    <label class="ui basic label">Page</label>
+                        <input type="text" value={{currentPage}} onchange={{action 'goToPage' value='target.value'}}
+                        class="page-input" size="4">
+                    <label class="ui basic label"> of </label>
+                    <label class="ui basic label">{{pageCount}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+        <div class="field">
+            <button class="tiny ui left attached button" {{action 'previous'}} disabled={{disablePageReverse}}>
+                <i class="fitted left arrow icon"></i>
+                Previous
+            </button>
+            <button class="tiny right attached ui button" {{action 'next'}} disabled={{disablePageForward}}>
+                Next
+                <i class="fitted right arrow icon"></i>
+            </button>
+        </div>
+    </div>
+</div>

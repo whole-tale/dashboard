@@ -1,11 +1,10 @@
 import Ember from 'ember';
 import layout from './template';
 import RSVP from 'rsvp';
-import loadRelationship from 'ember-osf/utils/load-relationship';
-import DebugLoggerMixin from 'ember-craft-repository/mixins/debug-logger';
+import loadRelationship from 'wholetale/utils/load-relationship';
 import _ from 'lodash/lodash';
 
-export default Ember.Component.extend(DebugLoggerMixin, {
+export default Ember.Component.extend( {
     layout,
     fileManager: Ember.inject.service(),
     tree_node: null,

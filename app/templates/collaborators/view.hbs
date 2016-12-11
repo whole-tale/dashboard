@@ -1,4 +1,4 @@
-<div class="ui large header"> Viewing Drive {{model.name}}</div>
+<div class="ui large header"> Viewing user {{model.name}}</div>
 
 <table class="ui celled padded table">
     <thead>
@@ -9,10 +9,18 @@
     <tbody>
         <tr class="center aligned">
             <td>
-                Description
+                First Name
             </td>
             <td>
-              {{model.description}}
+              {{model.firstName}}
+            </td>
+        </tr>
+        <tr class="center aligned">
+            <td>
+                Last Name
+            </td>
+            <td>
+              {{model.lastName}}
             </td>
         </tr>
         <tr class="center aligned">
@@ -21,14 +29,6 @@
             </td>
             <td>
               {{model._id}}
-            </td>
-        </tr>
-        <tr class="center aligned">
-            <td>
-                Size
-            </td>
-            <td>
-              {{model.size}} Bytes
             </td>
         </tr>
         <tr class="center aligned">
@@ -48,23 +48,17 @@
         </tr>
         <tr class="center aligned">
             <td>
-                Date Created
+                Date Joined
             </td>
             <td>
               {{moment-from-now model.created}}
             </td>
         </tr>
-        <tr class="center aligned">
-            <td>
-                Date Created
-            </td>
-            <td>
-              {{moment-from-now model.updated}}
-            </td>
-        </tr>
     </tbody>
 </table>
 
-{{#link-to "data.list" model._id class="ui blue button"}}<i class="open folder outline icon"></i> Data{{/link-to}}
-{{#link-to "drives.edit" model class="ui blue button"}}<i class="edit icon"></i> Edit{{/link-to}}
-{{#link-to "drives" class="ui blue button"}}<i class="list icon"></i> List Drives{{/link-to}}
+{{#link-to "collaborators" class="ui blue button"}}<i class="open folder outline icon"></i> All Collaborators{{/link-to}}
+
+
+{{file-manager}}
+

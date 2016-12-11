@@ -1,0 +1,32 @@
+<div class="ui inverted menu main navbar" style="margin:0">
+    <!--<div class="ui big black button item" {{action 'toggle' 'sub-sidebar'}}>-->
+        <!--<i class="white list icon"></i>-->
+    <!--</div>-->
+    <div class="header item logo">
+      {{#link-to 'index'}}
+          <img class="ui right spaced image logo header" src="/images/whole_tale_logo_text_long_light.png" alt="WholeTale Logo"/>
+      {{/link-to}}
+    </div>
+
+    <div class="right menu">
+        <div class="large header item" style="color: white">
+            Welcome, Joe Bloggs
+        </div>
+      {{#if loggedIn}}
+          <a {{action 'logout'}} class="item">
+              <i class="sign out icon"></i>
+              Logout
+          </a>
+
+      {{/if}}
+
+      {{#unless loggedIn}}
+        {{#link-to 'login' class="item"}}
+            <i class="sign in icon"></i>
+            Login
+        {{/link-to}}
+      {{/unless}}
+    </div>
+</div>
+
+

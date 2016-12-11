@@ -78,3 +78,8 @@ bower install --force
 bower prune
 
 
+## Notes
+
+We use Ember truth helpers to make the handle bars code more readable:
+
+https://github.com/jmurphyau/ember-truth-helpers

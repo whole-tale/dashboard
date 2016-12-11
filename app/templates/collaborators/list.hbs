@@ -1,0 +1,56 @@
+<div class="ui icon message">
+    <i class="blue collaborators icon"></i>
+    <div class="content">
+        <div class="ui grid">
+            <div class="eight wide column">
+                <p>There are {{model.length}} Collaborators</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<table class="ui celled padded table">
+    <thead>
+    <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Login</th>
+        <th>Joined</th>
+        <th>Public</th>
+        <th>Tools</th>
+    </tr></thead>
+    <tbody>
+    {{#each model as |collaborator|}}
+        <tr class="center aligned">
+            <td>
+                <div class="ui center aligned header">{{collaborator.firstName}}</div>
+            </td>
+            <td>
+                <div class="ui center aligned header">{{collaborator.lastName}}</div>
+            </td>
+            <td>
+              {{collaborator.login}}
+            </td>
+            <td>
+              {{moment-from-now collaborator.created}}
+            </td>
+            <td>
+              {{#if collaborator.public}}
+
+                  <i class="large green checkmark icon"></i>
+              {{/if}}
+              {{#unless collaborator.public}}
+
+                  <i class="large red remove icon"></i>
+              {{/unless}}
+            </td>
+            <td>
+              {{#link-to "collaborators.view" collaborator._id class="ui button"}}View{{/link-to}}
+
+            </td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>

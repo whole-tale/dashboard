@@ -4,7 +4,7 @@ export default Ember.Controller.extend({
   actions: {
     gotoDataset : function(name) {
       if (name === "Browser Upload")
-        this.transitionToRoute("data-upload");
+        this.transitionToRoute("upload");
       else
         this.transitionToRoute(name.toLowerCase());
     },
@@ -15,10 +15,10 @@ export default Ember.Controller.extend({
       this.transitionToRoute("search");
     },
     gotoDrives : function(name) {
-      this.transitionToRoute("drives");
+      this.transitionToRoute("upload");
     },
     gotoPublish : function(name) {
-        this.transitionToRoute("research");
+        this.transitionToRoute("compose");
     }
   },
 });

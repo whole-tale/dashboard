@@ -1,34 +1,53 @@
-{{#ui-sidebar class="ui left vertical inverted sidebar labeled icon menu" context=".component.context" id="sub-sidebar"}}
-    <div class="item">
-        <div class="header">Research</div>
-          <div class="menu">
-            {{#link-to 'index' invokeAction=(action 'closeMenu') class="item"}}
-                <i class="home icon"></i>
-                Dashboard
-            {{/link-to}}
-            {{#link-to 'search' invokeAction=(action 'closeMenu') class="item"}}
-                <i class="search icon"></i>
-                Search
-            {{/link-to}}
-            {{#link-to 'research' invokeAction=(action 'closeMenu') class="item"}}
-                <i class="book icon"></i>
-                Publish
-            {{/link-to}}
-          </div>
-    </div>
-  <div class="item">
-      <div class="header">Info</div>
-  <div class="menu">
-      <div class="item"></div>
-        {{#link-to 'about' invokeAction=(action 'closeMenu') class="item"}}
-            <i class="info icon"></i>
-            About
+{{#ui-sidebar class="ui left vertical inverted thin sidebar menu" id="sub-sidebar"}}
+
+      {{#link-to 'index' class="item" invokeAction=(action 'closeMenu' 'Dashboard')}}
+          <i class="home icon"></i>
+          Home
+      {{/link-to}}
+
+      {{#link-to 'explore' class="item" invokeAction=(action 'closeMenu' 'Explore')}}
+          <i class="video play icon"></i>
+          Explore
+      {{/link-to}}
+
+      {{#link-to 'search' class="item" invokeAction=(action 'closeMenu' 'Search')}}
+          <i class="search icon"></i>
+          Search
+      {{/link-to}}
+
+      {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose')}}
+          <i class="add circle icon"></i>
+          Compose
+      {{/link-to}}
+
+      {{#link-to 'upload' class="item" invokeAction=(action 'closeMenu' 'Upload')}}
+          <i class="upload icon"></i>
+          Upload
+      {{/link-to}}
+
+      {{#link-to 'status' class="item" invokeAction=(action 'closeMenu' 'Status')}}
+          <i class="line chart icon"></i>
+          Status
+      {{/link-to}}
+
+      {{#link-to 'collaborators' class="item" invokeAction=(action 'closeMenu' 'Collaborators')}}
+          <i class="users icon"></i>
+          Collaborate
+      {{/link-to}}
+
+      {{#if loggedIn}}
+        {{#link-to 'logout' class="item" invokeAction=(action 'closeMenu' 'Please Login')}}
+              <i class="sign out icon"></i>
+              Logout
         {{/link-to}}
-        {{#link-to 'contact' invokeAction=(action 'closeMenu') class="item"}}
-            <i class="mail icon"></i>
-            Contact
+
+      {{/if}}
+
+      {{#unless loggedIn}}
+        {{#link-to 'login' class="item" invokeAction=(action 'closeMenu' 'Please Login')}}
+            <i class="sign in icon"></i>
+            Login
         {{/link-to}}
-      </div>
-  </div>
+      {{/unless}}
 
 {{/ui-sidebar}}

@@ -1,8 +1,7 @@
 import Ember from 'ember';
 import layout from './template';
-import DebugLoggerMixin from 'ember-craft-repository/mixins/debug-logger';
 
-export default Ember.Component.extend(DebugLoggerMixin, {
+export default Ember.Component.extend({
     layout,
     fileManager: Ember.inject.service(),
     selectedFile: null,

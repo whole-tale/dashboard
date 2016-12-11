@@ -1,32 +1,27 @@
-<div class="ui inverted menu main navbar" style="margin:0">
-    <div class="ui big black button item" {{action 'toggle' 'sub-sidebar'}}>
-        <i class="white list icon"></i>
-    </div>
-    <div class="header item logo">
+<div class="ui fixed inverted menu main navbar" style="margin:0; padding: 0">
+    <!--<div class="ui big black button item" {{action 'toggle' 'sub-sidebar'}}>-->
+    <!--<i class="white list icon"></i>-->
+    <!--</div>-->
+
+    <div class="header item logo" {{action 'toggle' 'sub-sidebar'}}>
+        <!--<i class="white list icon"> </i>-->
       {{#link-to 'index'}}
           <img class="ui right spaced image logo header" src="/images/whole_tale_logo_text_long_light.png" alt="WholeTale Logo"/>
       {{/link-to}}
     </div>
 
-    <div class="right menu">
-        <div class="large header item" style="color: white">
-            Welcome, Joe Bloggs
-        </div>
-      {{#if loggedIn}}
-          <a {{action 'logout'}} class="item">
-              <i class="sign out icon"></i>
-              Logout
-          </a>
-
-      {{/if}}
-
-      {{#unless loggedIn}}
-        {{#link-to 'login' class="item"}}
-            <i class="sign in icon"></i>
-            Login
-        {{/link-to}}
-      {{/unless}}
+    <div class="current page item">
+        <span class="text"><i class="large blue browser icon"></i>  {{currentPage}}</span>
     </div>
+
+  {{#if loggedIn}}
+      <div class="right menu">
+          <div class="item" style="border: none">
+              <img class="ui avatar image" style="float:right; margin-top: -8px; padding-top: 0;" src="{{gravatarUrl}}" alt="User gravatar" width="25px">
+            {{user.fullName}}
+          </div>
+      </div>
+  {{/if}}
 </div>
 
 

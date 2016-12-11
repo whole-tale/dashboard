@@ -3,10 +3,10 @@
     <div class="content">
         <div class="ui grid">
             <div class="eight wide column">
-                <p>You have {{model.length}} drives</p>
+                <p>You have {{model.length}} collections</p>
             </div>
             <div class="eight wide right aligned column">
-                <div class="ui button">{{#link-to "drives.new" }}New{{/link-to}}</div>
+                <div class="ui button">{{#link-to "collections.new" }}New{{/link-to}}</div>
             </div>
         </div>
 
@@ -26,6 +26,7 @@
         <th>Created</th>
         <th>Updated</th>
         <th>Tools</th>
+        <th>Selected?</th>
     </tr></thead>
     <tbody>
     {{#each model as |collection|}}
@@ -43,7 +44,7 @@
               {{collection._modelType}}
             </td>
             <td>
-              {{collection.size}}
+              {{bytesToReadable collection.size}}
             </td>
             <td>
               {{#if collection.public}}
@@ -62,8 +63,10 @@
               {{moment-from-now collection.updated}}
             </td>
             <td>
-                {{#link-to "drives.view" collection class="ui button"}}View{{/link-to}}
-
+                {{#link-to "collections.view" collection class="ui button"}}View{{/link-to}}
+            </td>
+            <td>
+              {{ui-checkbox class="toggle" label="" checked=isSelected.collection._id onChange=(action "pre_checked" collection._id)}}
             </td>
         </tr>
     {{/each}}
