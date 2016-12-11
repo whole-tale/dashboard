@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 function iconTemplate(iconName) {
-  return '<img class="ui avatar image" style="float:right; margin-top: -8px; padding-top: 0;" src="' + iconName + '" width="25px">';
+  return '<img class="ui avatar image" style="margin-top: -8px; padding-top: 0;" src="' + iconName + '" width="25px">';
 }
 export function fileIconFor(filename/*, hash*/) {
 
@@ -16,10 +16,11 @@ export function fileIconFor(filename/*, hash*/) {
   var res = filename.split(".");
   var suffix = res[1];
 
-  if ((suffix === "ppt") || (suffix === "pptx")) return iconTemplate("ppt.jpg");
-  if ((suffix === "xls") || (suffix === "xlsx")) return iconTemplate("excel.jpg");
-  if (suffix === "pdf") return iconTemplate("pdf.jpg");
-  if ((suffix === "doc") || (suffix === "docx")) return iconTemplate("word.jpg");
+  if ((suffix === "ppt") || (suffix === "pptx")) return iconTemplate("/icons/ppt.jpg");
+  if ((suffix === "xls") || (suffix === "xlsx")) return iconTemplate("/icons/excel.jpg");
+  if (suffix === "pdf") return iconTemplate("/icons/pdf.jpg");
+  if ((suffix === "doc") || (suffix === "docx")) return iconTemplate("/icons/word.jpg");
+  if (suffix === "png")  return iconTemplate("/icons/png.png");
 
   // don;t know it
   return '<i class="large file outline icon"></i>';
