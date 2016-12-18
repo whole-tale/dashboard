@@ -1,18 +1,1 @@
-
-{{#if isFolder}}
-    <a class="ui level up icon" {{action itemClicked parentId null isNotRoot}}></a>
-{{/if}}
-<div class="ui collapsable grid" >
-    <div class="three wide column" style="margin:0">
-      {{#link-to 'collections' class="ui fluid small basic button"}}
-          <i class="edit icon"></i>
-          Collection Editor
-      {{/link-to}}
-      {{collection-browser list=fileData.collections selectedCollectionID=collectionID action="collectionClicked"}}
-    </div>
-    <div class="thirteen wide column" style="margin:0">
-      {{directory-browser folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
-    </div>
-</div>
-
-
+{{outlet}}

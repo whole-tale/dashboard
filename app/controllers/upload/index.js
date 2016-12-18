@@ -3,15 +3,52 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   collectionName : "Ians Test Collection",
   collectionID : "5811990986ed1d00011ad6d7",
+  fileBreadCrumbs : {},
+  currentBreadCrumb : [],
   isRoot : true,
   isNotRoot : false,
   parentId : null,
+  init() {
+    console.log("Heading into browse upload controller" );
+
+    var bc = {
+      "name" : this.get("collectionName"),
+      "id" : this.get("collectionID"),
+    };
+
+    this.set("currentBreadCrumb", bc);
+    this.set("fileBreadCrumbs", null); // new collection, reset crumbs
+
+  },
   actions: {
-    itemClicked : function(itemID, itemName, isFolder) {
-      if (isFolder="true") {
+    itemClicked : function(item, isFolder) {
+      console.log(item);
+      var itemID = item.get('_id');
+      var itemName = item.get('name');
+      var myController = this;
+      if (isFolder=="true") {
         console.log("Item ID is " + itemID);
 
-        var myController = this;
+        var previousBreadCrumb = this.get("currentBreadCrumb");
+
+        var bc = {
+          "name" : itemName,
+          "id" : itemID,
+        };
+
+        this.set("currentBreadCrumb", bc);
+
+        var fileBreadCrumbs = this.get("fileBreadCrumbs");
+        if (fileBreadCrumbs !==null) {
+
+          var bds = fileBreadCrumbs;
+          bds.pushObject(previousBreadCrumb);
+          fileBreadCrumbs=bds;
+        }
+        else
+          fileBreadCrumbs = [previousBreadCrumb];
+
+        this.set("fileBreadCrumbs", fileBreadCrumbs);
 
         this.store.find('folder', itemID).then( function (folder) {
           console.log(JSON.stringify(folder));
@@ -46,10 +83,15 @@ export default Ember.Controller.extend({
 
       }
       else {
-        alert("File clicked " + item);
-        // set("parentId", folder.parentId);
-        // set("isRoot", isRoot);
-        // set("isNotRoot", !isRoot);
+        console.log("File clicked " + itemName);
+        var url = 'https://girder.wholetale.org/api/v1/item/' + itemID + '/download?contentDisposition=attachment';
+        var client = new XMLHttpRequest();
+        client.open('GET', url);
+        client.onreadystatechange = function() {
+          item.set("edit_text", client.responseText);
+          myController.transitionToRoute('upload.view', item);
+        };
+        client.send();
       }
     },
     collectionClicked : function(collectionID, collectionName) {
@@ -64,8 +106,18 @@ export default Ember.Controller.extend({
       var newModel =  { 'folderContents' : folderContents, 'collections' : collections, 'itemContents' : null};
       this.set("fileData", newModel);
 
+      var bc = {
+        "name" : collectionName,
+        "id" : collectionID,
+      };
+
+      this.set("currentBreadCrumb", bc); // new collection, reset crumbs
+      this.set("fileBreadCrumbs", null); // new collection, reset crumbs
+
     },
-}
+    breadcrumbClicked : function(itemName) {
+    },
+  }
 });
 
 

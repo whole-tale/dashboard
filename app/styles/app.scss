@@ -27,7 +27,6 @@ p, .description, .item {
 .main.page {
   min-height:800px;
   padding: 60px 10px 10px 10px;
-  color: #efefef;
   margin: 0 10px 0 10px;
 }
 
@@ -129,4 +128,39 @@ p, .description, .item {
 
 .white {
   color :whitesmoke;
+}
+
+/* Ace Editor */
+
+/* Put your CSS here */
+
+pre {
+  height: 420px;
+}
+
+#editor {
+  height: 560px;
+}
+
+.full.screen.style {
+    width: 200% !important;
+    height: 200% !important;
+    margin: 0 0 0 0 !important;
+    border-radius: 0;
+}
+
+.denim.flipped {
+  color: #fff;
+  -webkit-transition: width 0s ease-out;
+  transition: width 0s ease-out;
+  background: rgba(1,20,36,0.6);
+  float: left;
+  width: 20%;
+}
+
+.ui.breadcrumb {
+  background-color: #efefef;
+  padding: 10px 0 10px 8px;
+  width :100%;
+  margin-bottom: 10px;
 }

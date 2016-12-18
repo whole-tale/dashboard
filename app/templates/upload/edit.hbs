@@ -1,0 +1,9 @@
+
+{{#link-to "upload" class="ui blue button"}}<i class="left arrow icon"></i> File Manager{{/link-to}}
+{{#link-to "upload.view" model class="ui blue button"}}<i class="edit icon"></i> View Details{{/link-to}}
+{{#link-to "upload.preview" model class="ui blue button"}}<i class="edit icon"></i> Preview{{/link-to}}
+
+
+{{text-editor content=model.edit_text action="textUpdated"}}
+
+<div class="ui submit button" {{action "updateTextFile"}}>Update</div>

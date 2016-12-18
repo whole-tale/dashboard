@@ -16,9 +16,14 @@ Router.map(function() {
   this.route('explore');
   this.route('search');
   this.route('compose');
-  this.route('upload');
   this.route('status');
   this.route('login');
+
+  this.route('upload', function(){
+    this.route('view', { path: '/view/:file_id' });
+    this.route('edit', { path: '/edit/:file_id' });
+    this.route('preview', { path: '/preview/:file_id' });
+  });
 
   this.route('collaborators', function(){
     this.route('list', { path: '/' });

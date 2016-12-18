@@ -1,4 +1,3 @@
-
 <table class="ui very basic single line table" style="margin:0">
     <thead>
     <tr>
@@ -11,7 +10,7 @@
     {{#each folderList as |item|}}
         <tr class="left aligned">
             <td>
-                <a href="#" {{action "clickedFolder" item._id item.name}}>
+                <a href="#" {{action "clickedFolder" item}}>
                     <i class="large folder outline icon"></i> {{item.name}}
                 </a>
             </td>
@@ -29,7 +28,7 @@
     {{#each fileList as |item|}}
         <tr class="left aligned">
             <td>
-                <a href="#" {{action "clickedFile" item._id item.name}}>
+                <a href="#" {{action "clickedFile" item}}>
                   {{{file-icon-for item.name}}} {{item.name}}
                 </a>
 
@@ -47,3 +46,7 @@
     {{/each}}
     </tbody>
 </table>
+
+{{#if showEditor}}
+  {{code-editor content=textData fileID=fileIdentifier}}
+{{/if}}

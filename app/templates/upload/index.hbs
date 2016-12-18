@@ -1,0 +1,32 @@
+
+<div class="ui collapsable grid" style="margin-bottom: 0; padding-bottom: 0;">
+    <div class="three wide column" style="margin:0">
+      {{#link-to 'collections' class="ui fluid small basic button"}}
+          <i class="edit icon"></i>
+          Collection Editor
+      {{/link-to}}
+    </div>
+    <div class="thirteen wide column" style="margin:0">
+
+        <div class="ui large breadcrumb">
+          {{#each fileBreadCrumbs as |bc|}}
+              <a class="section" {{action "breadcrumbClicked" bc.name}}>{{bc.name}}</a>
+              <i class="right chevron icon divider"></i>
+          {{/each}}
+
+            <div class="active section">{{currentBreadCrumb.name}}</div>
+        </div>
+    </div>
+</div>
+
+<div class="ui collapsable grid" style="margin-top: 0;padding-top: 0;">
+    <div class="three wide column" style="margin:0">
+      {{collection-browser list=fileData.collections selectedCollectionID=collectionID action="collectionClicked"}}
+    </div>
+    <div class="thirteen wide column" style="margin:0">
+
+      {{directory-browser folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
+    </div>
+</div>
+
+

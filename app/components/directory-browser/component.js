@@ -4,13 +4,13 @@ import layout from './template';
 
 export default Ember.Component.extend({
     layout,
+  showEditor : false,
     actions: {
-      clickedFile : function(itemID, itemName, ) {
-        this.sendAction('action', itemID,  itemName, "false");
-    },
-      clickedFolder : function(itemID, itemName) {
-        this.sendAction('action', itemID,  itemName, "true");
-      }
-
+      clickedFolder : function(item) {
+        this.sendAction('action', item,  "true");
+      },
+      clickedFile: function(item) {
+        this.sendAction('action', item, "false");
+      },
     }
 });

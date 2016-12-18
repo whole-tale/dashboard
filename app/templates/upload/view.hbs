@@ -1,0 +1,68 @@
+
+{{#link-to "upload" class="ui blue button"}}<i class="left arrow icon"></i> File Manager{{/link-to}}
+{{#link-to "upload.edit" model class="ui blue button"}}<i class="edit icon"></i> Edit{{/link-to}}
+{{#link-to "upload.preview" model class="ui blue button"}}<i class="edit icon"></i> Preview{{/link-to}}
+
+<br><br>
+
+<div class="ui two column stackable grid">
+    <div class="column">
+        <div class="ui segment">
+            <div class="ui header">
+                <i class="tasks icon"></i> File Metadata
+            </div>
+          <br>
+
+            <div class="ui form">
+                <div class="field">
+                    <label>File Name</label>
+                    <input type="text" name="file-name" placeholder="File Name" value="{{model.name}}">
+                </div>
+                <div class="field">
+                    <label>Description</label>
+                    <textarea>{{model.description}}</textarea>
+                </div>
+
+                <div class="field">
+
+                </div>
+
+                <div class="ui submit button" {{action "updateDetails" model}}>Update</div>
+            </div>
+
+        </div>
+    </div>
+    <div class="column">
+        <div class="ui segment">
+            <div class="ui header">
+                <i class="info circle icon"></i> File Properties
+            </div>
+            <form class="ui form">
+              <br>
+                <div class="field">
+                    <label>File ID</label>
+                    <input type="text" name="file-id" placeholder="File ID" value="{{model._id}}" disabled>
+                </div>
+
+                <div class="field">
+                    <label>File Size</label>
+                    <input type="text" name="file-size" placeholder="File Size" value="{{bytesToReadable model.size}}" disabled>
+                </div>
+
+                <div class="field">
+                    <label>Date Created</label>
+                    <input type="text" name="date-created" placeholder="Date Created" value="{{moment-from-now model.created}}" disabled>
+                </div>
+
+                <div class="field">
+                    <label>Last Updated</label>
+                    <input type="text" name="last-updated" placeholder="Last Updated" value="{{moment-from-now model.updated}}" disabled>
+                </div>
+          </form>
+    </div>
+    </div>
+</div>
+
+
+
+
