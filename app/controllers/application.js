@@ -9,6 +9,7 @@ export default Ember.Controller.extend({
   user : {fullName :"John Winter"},
   gravatarUrl : "/images/avatar.png",
   currentPage : "Dashboard",
+  currentIcon : "browser",
   routing: Ember.inject.service('-routing'),
 
   checkMyRouteName: Ember.computed(function() {
@@ -28,8 +29,9 @@ export default Ember.Controller.extend({
     logout : function() {
       alert("Do logout stuff!");
     },
-    closeMenu : function(pageTitle) {
+    closeMenu : function(pageTitle, icon) {
       this.set('currentPage', pageTitle);
+      this.set('currentIcon', icon);
       $('.sidebar').sidebar("toggle");
     },
 

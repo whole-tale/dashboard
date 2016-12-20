@@ -1,36 +1,36 @@
-{{#ui-sidebar class="ui left vertical inverted thin sidebar menu" id="sub-sidebar"}}
+{{#ui-sidebar class="ui left vertical inverted thin sidebar blue menu" id="sub-sidebar"}}
 
-      {{#link-to 'index' class="item" invokeAction=(action 'closeMenu' 'Dashboard')}}
+      {{#link-to 'index' class="item" invokeAction=(action 'closeMenu' 'Dashboard' 'home')}}
           <i class="home icon"></i>
           Home
       {{/link-to}}
 
-      {{#link-to 'explore' class="item" invokeAction=(action 'closeMenu' 'Explore')}}
+      {{#link-to 'explore' class="item" invokeAction=(action 'closeMenu' 'Explore' 'play')}}
           <i class="video play icon"></i>
           Explore
       {{/link-to}}
 
-      {{#link-to 'search' class="item" invokeAction=(action 'closeMenu' 'Search')}}
+      {{#link-to 'search' class="item" invokeAction=(action 'closeMenu' 'Search' 'search')}}
           <i class="search icon"></i>
           Search
       {{/link-to}}
 
-      {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose')}}
+      {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'add circle')}}
           <i class="add circle icon"></i>
           Compose
       {{/link-to}}
 
-      {{#link-to 'upload' class="item" invokeAction=(action 'closeMenu' 'Upload')}}
+      {{#link-to 'upload' class="item" invokeAction=(action 'closeMenu' 'Upload' 'upload')}}
           <i class="upload icon"></i>
           Upload
       {{/link-to}}
 
-      {{#link-to 'status' class="item" invokeAction=(action 'closeMenu' 'Status')}}
+      {{#link-to 'status' class="item" invokeAction=(action 'closeMenu' 'Status' 'line chart')}}
           <i class="line chart icon"></i>
           Status
       {{/link-to}}
 
-      {{#link-to 'collaborators' class="item" invokeAction=(action 'closeMenu' 'Collaborators')}}
+      {{#link-to 'collaborators' class="item" invokeAction=(action 'closeMenu' 'Collaborators' 'users')}}
           <i class="users icon"></i>
           Collaborate
       {{/link-to}}

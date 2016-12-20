@@ -1,19 +1,37 @@
 import Ember from 'ember';
+var inject = Ember.inject;
 
 // for dev:
 
-var collectionName = "Ians Test Collection";
-var collectionID = "5811990986ed1d00011ad6d7";
 
 export default Ember.Route.extend({
+  internalState: inject.service(),
   model: function() {
+    var state = this.get('internalState');
 
-    console.log("loading the rooute for the index again");
+    var collectionID= state.getCurrentCollectionID();
+    var folderID = state.getCurrentFolderID();
 
-    var folderContents = this.store.query('folder', { parentId: collectionID, parentType: "collection"});
+    console.log("loading the route for the index again");
+    console.log("Collection ID: " + collectionID);
+    console.log("Folder ID: " + folderID);
+
+    var folderContents=null;
+    var itemContents=null;
+
+    if (folderID === null || folderID === "null" ) {
+      folderContents = this.store.query('folder', { parentId: collectionID, parentType: "collection"});
+    } else {
+      console.log("Folder != null, so loading folder and items");
+      folderContents = this.get('store').query('folder', { parentId: folderID, parentType: "folder"});
+      itemContents= this.get('store').query('item', { folderId: folderID});
+      console.log("Folder != null, leaving");
+    }
+
+
     var collections = this.get('store').findAll('collection');
 
-    return { 'folderContents' : folderContents, 'collections' : collections, 'itemContents' : null};
+    return { 'folderContents' : folderContents, 'collections' : collections, 'itemContents' : itemContents};
   },
 
   setupController: function(controller, model) {

@@ -1,4 +1,4 @@
-<div class="ui fluid vertical thin denim darkblue menu" style="margin:0;">
+<div class="ui fluid vertical thin inverted blue menu" style="margin:0;">
   {{#each list as |collection|}}
     {{#if (eq selectedCollectionID collection._id)}}
     <a class="active item" {{action "collectionClicked" collection._id collection.name}}>

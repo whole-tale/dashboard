@@ -14,6 +14,14 @@ export default Ember.Service.extend({
     return localStorage.currentCollectionID;
   },
 
+  setCurrentCollectionName: function(val) {
+    localStorage.currentCollectionName = val;
+  },
+
+  getCurrentCollectionName: function() {
+    return localStorage.currentCollectionName;
+  },
+
   setCurrentFolderID: function(val) {
     localStorage.currentFolderID = val;
   },
@@ -29,5 +37,21 @@ export default Ember.Service.extend({
   getCurrentFileBreadcrumbs: function() {
     return JSON.parse(localStorage.currentFileBreadcrumbs);
   },
+
+  setCurrentBreadCrumb: function(val) {
+    localStorage.currentBreadCrumb= JSON.stringify(val);
+  },
+
+  getCurrentBreadCrumb: function() {
+    return JSON.parse(localStorage.currentBreadCrumb);
+  },
+
+  toString: function () {
+      return "Collection ID: " + localStorage.currentCollectionID +
+        ", Collection Name: " + localStorage.currentCollectionName +
+        ", Current Folder ID: " + localStorage.currentFolderID +
+        ", CurrentFileBreadcrumbs: " + localStorage.currentFileBreadcrumbs +
+        ", CurrentBreadCrumb: " + localStorage.currentBreadCrumb;
+  }
 
 });

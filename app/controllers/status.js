@@ -5,7 +5,8 @@ export default Ember.Controller.extend({
   internalState: inject.service(),
 
   init() {
- //   this.get('internalState').setCurrentFileBreadcrumbs(["anID", "anID2"]);
+    // testing
+    this.get('internalState').setCurrentFileBreadcrumbs(["anID", "anID2"]);
 
     console.log("The value saved as ");
     console.log(this.get('internalState').getCurrentFileBreadcrumbs());
