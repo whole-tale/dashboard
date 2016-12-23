@@ -1,9 +1,13 @@
 import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
 
+function endsWith(str, suffix) {
+  return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
 export default Ember.Controller.extend({
-  edit_text:null,
-  isEditable: false,
+  img_bytes:null,
+  isViewable: false,
   init() {
   },
 
@@ -16,14 +20,13 @@ export default Ember.Controller.extend({
     var itemID = model.get('_id');
     var size = model.get('size');
 
-    if (size < 1000000) {
-      console.log("File loading " + model.get('name'));
+    if ((size < 1000000) && (endsWith(model, ".png") )) {
       var url = 'https://girder.wholetale.org/api/v1/item/' + itemID + '/download?contentDisposition=attachment';
       var client = new XMLHttpRequest();
       client.open('GET', url);
       client.onreadystatechange = function() {
-        me.set("edit_text", client.responseText);
-        me.set("isEditable", true);
+        me.set("img_bytes", client.responseText);
+        me.set("isViewable", true);
       };
       client.send();
     }

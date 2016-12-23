@@ -3,3 +3,17 @@
 {{#link-to "upload.view" model class="ui blue button"}}<i class="edit icon"></i> View Details{{/link-to}}
 {{#link-to "upload.edit" model class="ui blue button"}}<i class="edit icon"></i> Edit{{/link-to}}
 
+{{#if isViewable}}
+    <img src="{{img_bytes}}">
+{{else}}
+    <div class="ui icon message">
+        <i class="alert icon"></i>
+        <div class="content">
+            <div class="header">
+                No preview available...
+            </div>
+            <p>Preview is not available for this file.</p>
+        </div>
+    </div>
+
+{{/if}}

@@ -1,8 +1,15 @@
 import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
+var inject = Ember.inject;
 
 export default Ember.Controller.extend({
+  internalState: inject.service(),
+  fileBreadCrumbs : {},
+  currentBreadCrumb : [],
   init() {
+    var state = this.get('internalState');
+    this.set("currentBreadCrumb", state.getCurrentBreadCrumb());
+    this.set("fileBreadCrumbs", state.getCurrentFileBreadcrumbs());
   },
 
   valueObserver : Ember.observer("model", function (sender, key, value) {
@@ -29,8 +36,14 @@ actions: {
 
 
       item.save().then(onSuccess, onFail);
+    },
+  textUpdated : function () {
+      // do something with
+
+      console.log(this.get('mode').get('description'));
     }
 
-  }
+
+}
 
 });

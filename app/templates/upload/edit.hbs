@@ -1,9 +1,21 @@
 
+
 {{#link-to "upload" class="ui blue button"}}<i class="left arrow icon"></i> File Manager{{/link-to}}
 {{#link-to "upload.view" model class="ui blue button"}}<i class="edit icon"></i> View Details{{/link-to}}
 {{#link-to "upload.preview" model class="ui blue button"}}<i class="edit icon"></i> Preview{{/link-to}}
 
-
-{{text-editor content=edit_text action="textUpdated"}}
+{{#if isEditable}}
+  {{text-editor content=edit_text action="textUpdated"}}
+{{else}}
+    <div class="ui icon message">
+        <i class="alert icon"></i>
+        <div class="content">
+            <div class="header">
+                Editing not supported!
+            </div>
+            <p>Either the file is not a text file or the size is larger than the supported size. This file cannot be edited in WholeTale.</p>
+        </div>
+    </div>
+{{/if}}
 
 <div class="ui blue submit button" {{action "updateTextFile"}}>Update</div>

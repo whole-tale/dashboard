@@ -1,13 +1,26 @@
+<div class="ui grid">
+    <div class="one wide column">
+      {{#link-to "upload" class="ui fluid small basic blue button"}}<i class="left arrow icon"></i> {{/link-to}}
+    </div>
+    <div class="fifteen wide column" >
+        <div class="ui breadcrumb">
+          {{#each fileBreadCrumbs as |bc|}}
+              <a class="section" {{action "breadcrumbClicked" bc.name}}>{{bc.name}}</a>
+              <i class="right chevron icon divider"></i>
+          {{/each}}
 
-{{#link-to "upload" class="ui blue button"}}<i class="left arrow icon"></i> File Manager{{/link-to}}
-{{#link-to "upload.edit" model class="ui blue button"}}<i class="edit icon"></i> Edit{{/link-to}}
-{{#link-to "upload.preview" model class="ui blue button"}}<i class="edit icon"></i> Preview{{/link-to}}
+            <div class="active section">{{currentBreadCrumb.name}}</div>
+        </div>
+    </div>
+</div>
+
+<div style="padding: 0 0 0 0; margin: 1px 0 0 5px;">
+  {{#link-to "upload.edit" model class="ui tiny basic blue button"}}<i class="edit icon"></i> Edit{{/link-to}}
+  {{#link-to "upload.preview" model class="ui tiny basic blue button"}}<i class="edit icon"></i> Preview{{/link-to}}
+</div>
 
 <br><br>
 
-<div class="ui two column stackable grid">
-    <div class="column">
-        <div class="ui segment">
             <div class="ui header">
                 <i class="tasks icon"></i> File Metadata
             </div>
@@ -20,7 +33,11 @@
                 </div>
                 <div class="field">
                     <label>Description</label>
-                    <textarea>{{model.description}}</textarea>
+
+                    <div class="ui raised segment">
+                      {{medium-content-editable value=model.description options=mediumEditorOptions onFinishedTyping=(action "textUpdated")}}
+                    </div>
+
                 </div>
 
                 <div class="field">
@@ -30,14 +47,11 @@
                 <div class="ui blue submit button" {{action "updateDetails" model}}>Update</div>
             </div>
 
-        </div>
-    </div>
-    <div class="column">
-        <div class="ui segment">
+
             <div class="ui header">
                 <i class="info circle icon"></i> File Properties
             </div>
-            <form class="ui form">
+            <div class="ui form">
               <br>
                 <div class="field">
                     <label>File ID</label>
@@ -58,10 +72,7 @@
                     <label>Last Updated</label>
                     <input type="text" name="last-updated" placeholder="Last Updated" value="{{moment-from-now model.updated}}" disabled>
                 </div>
-          </form>
-    </div>
-    </div>
-</div>
+          </div>
 
 
 
