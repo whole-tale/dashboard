@@ -1,6 +1,19 @@
 import Ember from 'ember';
 var inject = Ember.inject;
 
+function wrapItem (itemID, itemName, isCollection) {
+  return {
+    "name": itemName,
+    "id": itemID,
+    "isCollection": isCollection,
+    get: function (name) {
+      if (name === "name") return itemName;
+      else if (name === "id") return itemID;
+      else return null;
+    }
+  }
+}
+
 export default Ember.Controller.extend({
   internalState: inject.service(),
   fileBreadCrumbs : {},
@@ -20,15 +33,13 @@ export default Ember.Controller.extend({
     this.set("collectionID", state.getCurrentCollectionID());
     this.set("collectionName", state.getCurrentCollectionName());
 
-    var bc = {
-      "id" : state.getCurrentCollectionID(),
-      "name" : state.getCurrentCollectionName()
-    };
+    var bc = wrapItem(state.getCurrentCollectionID(), state.getCurrentCollectionName(), true);
 
     this.set("currentBreadCrumb", bc);
-    this.set("fileBreadCrumbs", null); // new collection, reset crumbs
+    this.set("fileBreadCrumbs", state.getCurrentFileBreadcrumbs()); // new collection, reset crumbs
+
     state.setCurrentBreadCrumb(bc);
-    state.setCurrentFileBreadcrumbs(null); // new collection, reset crumbs
+    state.setCurrentFileBreadcrumbs(state.getCurrentFileBreadcrumbs()); // new collection, reset crumbs
   },
   actions: {
     itemClicked : function(item, isFolder) {
@@ -44,11 +55,7 @@ export default Ember.Controller.extend({
 
         var previousBreadCrumb = state.getCurrentBreadCrumb();
 
-        var bc = {
-          "name" : itemName,
-          "id" : itemID,
-          "isCollection" : false
-        };
+        var bc = wrapItem(itemID, itemName, false);
 
         state.setCurrentBreadCrumb(bc);
 
@@ -98,6 +105,7 @@ export default Ember.Controller.extend({
           //   alert("Folder clicked and delving into " + itemName);
 
           console.log(newModel);
+          console.log(state.toString());
 
           myController.set("fileData", newModel);
         });
@@ -122,11 +130,7 @@ export default Ember.Controller.extend({
       var newModel =  { 'folderContents' : folderContents, 'collections' : collections, 'itemContents' : null};
       this.set("fileData", newModel);
 
-      var bc = {
-        "name" : collectionName,
-        "id" : collectionID,
-        "isCollection" : true
-      };
+      var bc = wrapItem(collectionID, collectionName, true);
 
       state.setCurrentBreadCrumb( bc); // new collection, reset crumbs
       state.setCurrentFileBreadcrumbs(null); // new collection, reset crumbs
@@ -138,11 +142,15 @@ export default Ember.Controller.extend({
       this.set("collectionName", collectionName);
 
       console.log("New collection name is: " + collectionName);
+      console.log(state.toString());
 
     },
     breadcrumbClicked : function(item) {
       var state = this.get('internalState');
       var crumbs = state.getCurrentFileBreadcrumbs();
+
+      console.log("Breadcrumb clicked on item ");
+      console.log(item);
 
       var newCrumbs = [];
       for (var i; i< crumbs.length; ++i) {
@@ -152,10 +160,10 @@ export default Ember.Controller.extend({
             newCrumbs.append(crumbs[i]);
       }
 
-      if (item.isColllection)
-        this.collectionClicked(item.id, item.name);
+      if (item.isCollection)
+        this.send('collectionClicked',item.id, item.name);
       else
-        this.collectionClicked({_id : item.id, name : item.name}, "true");
+        this.send('itemClicked', item, "true");
     },
   }
 });
