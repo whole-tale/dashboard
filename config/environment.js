@@ -45,6 +45,9 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV.apiHost = 'https://girder.wholetale.org';
+    ENV.apiPath = '/api/v1';
+    ENV.apiUrl = 'https://girder.wholetale.org/api/v1';
   }
 
   if (environment === 'test') {
@@ -56,10 +59,15 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
+    ENV.apiHost = 'https://girder.wholetale.org';
+    ENV.apiPath = '/api/v1';
+    ENV.apiUrl = 'https://girder.wholetale.org/api/v1';
   }
 
   if (environment === 'production') {
-
+    ENV.apiHost = 'https://girder.wholetale.org';
+    ENV.apiPath = '/api/v1';
+    ENV.apiUrl = 'https://girder.wholetale.org/api/v1';
   }
 
   return ENV;

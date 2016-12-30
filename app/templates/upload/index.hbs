@@ -1,7 +1,7 @@
 
 <div class="ui large breadcrumb">
   {{#each fileBreadCrumbs as |bc|}}
-      <a class="section" {{action "breadcrumbClicked" bc.name}}>{{bc.name}}</a>
+      <a class="section" {{action "breadcrumbClicked" bc}}>{{bc.name}}</a>
       <i class="right chevron icon divider"></i>
   {{/each}}
 

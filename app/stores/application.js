@@ -1,7 +1,7 @@
 import adaptersMapping from '../mappings/adapters';
 import DS from 'ember-data';
 
-// uses the maps in mapings/adapters to mapy from each model to an adapter
+// uses the maps in mappings/adapters to map from each model to an adapter
 // Since an adapter provides the implementation to the backend API, we
 // can use this to talk to multiple backends simulataneously
 

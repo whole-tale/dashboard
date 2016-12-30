@@ -1,8 +1,26 @@
+<div class="ui grid">
+    <div class="one wide column" style="padding: 0 0 0 0; margin: 0px 0 0 0;">
+      {{#link-to "upload" class="ui fluid small blue button"}}<i class="left arrow icon"></i> {{/link-to}}
+    </div>
+    <div class="fifteen wide column" style="padding: 0 0 0 0; margin: 0px 0 0 0;">
+        <div class="ui large breadcrumb">
+          {{#each fileBreadCrumbs as |bc|}}
+              <a class="section" {{action "breadcrumbClicked" bc.name}}>{{bc.name}}</a>
+              <i class="right chevron icon divider"></i>
+          {{/each}}
+
+            <div class="active section">{{currentBreadCrumb.name}}</div>
+        </div>
+    </div>
+</div>
+
+<div class="ui tool segment">
+    <span class="ui header" style="margin-right: 10px">Tools</span>
+  {{#link-to "upload.view" model class="ui blue button"}}<i class="edit icon"></i> View Details{{/link-to}}
+    <a href="{{filePreviewURL}}" class="ui small blue button" target="_blank"><i class="eye icon"></i> Preview</a>
+</div>
 
 
-{{#link-to "upload" class="ui blue button"}}<i class="left arrow icon"></i> File Manager{{/link-to}}
-{{#link-to "upload.view" model class="ui blue button"}}<i class="edit icon"></i> View Details{{/link-to}}
-{{#link-to "upload.preview" model class="ui blue button"}}<i class="edit icon"></i> Preview{{/link-to}}
 
 {{#if isEditable}}
   {{text-editor content=edit_text action="textUpdated"}}

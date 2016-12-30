@@ -47,6 +47,7 @@ export default Ember.Controller.extend({
         var bc = {
           "name" : itemName,
           "id" : itemID,
+          "isCollection" : false
         };
 
         state.setCurrentBreadCrumb(bc);
@@ -124,16 +125,37 @@ export default Ember.Controller.extend({
       var bc = {
         "name" : collectionName,
         "id" : collectionID,
+        "isCollection" : true
       };
 
       state.setCurrentBreadCrumb( bc); // new collection, reset crumbs
       state.setCurrentFileBreadcrumbs(null); // new collection, reset crumbs
 
+      this.set("fileBreadCrumbs", null);
+      this.set("currentBreadCrumb", bc);
+
       this.set("collectionID", collectionID);
       this.set("collectionName", collectionName);
 
+      console.log("New collection name is: " + collectionName);
+
     },
-    breadcrumbClicked : function(itemName) {
+    breadcrumbClicked : function(item) {
+      var state = this.get('internalState');
+      var crumbs = state.getCurrentFileBreadcrumbs();
+
+      var newCrumbs = [];
+      for (var i; i< crumbs.length; ++i) {
+          if (crumbs[i].name === item.name) {
+            break;
+          } else
+            newCrumbs.append(crumbs[i]);
+      }
+
+      if (item.isColllection)
+        this.collectionClicked(item.id, item.name);
+      else
+        this.collectionClicked({_id : item.id, name : item.name}, "true");
     },
   }
 });

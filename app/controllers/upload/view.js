@@ -3,6 +3,8 @@ import EmberUploader from 'ember-uploader';
 var inject = Ember.inject;
 
 export default Ember.Controller.extend({
+  apiCall : Ember.inject.service('api-call'),
+  filePreviewURL : "",
   internalState: inject.service(),
   fileBreadCrumbs : {},
   currentBreadCrumb : [],
@@ -16,6 +18,8 @@ export default Ember.Controller.extend({
     console.log("Controller observer hook is called from nested 'view'");
     var model = this.get('model');
     console.log(model);
+
+    this.set('filePreviewURL', this.get('apiCall').getPreviewLink(model.get('._id')));
   }),
 
 actions: {
@@ -37,13 +41,15 @@ actions: {
 
       item.save().then(onSuccess, onFail);
     },
-  textUpdated : function () {
+  textUpdated : function (text) {
       // do something with
 
-      console.log(this.get('mode').get('description'));
-    }
+      console.log(this.get('model').get('description'));
+    },
+  breadcrumbClicked : function(item) {
+      this.send("action", item);
+  }
 
-
-}
+  }
 
 });

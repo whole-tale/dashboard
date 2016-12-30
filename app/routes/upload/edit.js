@@ -18,18 +18,20 @@ export default Ember.Route.extend({
     model(params, transition) {
       var fileId;
 
-      console.log("In the file view routes and params is" );
+      console.log("In the file edit route and params is" );
       console.log(params);
-    //  console.log(transition.params);
 
       if (params.hasOwnProperty("file_id"))
         fileId = params.file_id;
       else
-        fileId = transition.params['data.list'].file_id;
+        fileId = transition.params['upload.edit'].file_id;
 
       console.log("The fieldID " + fileId);
 
-      return this.store.get('item', fileId);
+      var fileObj = this.store.findRecord('item', fileId);
+
+      console.log(fileObj);
+      return fileObj;
     },
   setupController: function(controller) {
     console.log("Setup Controller in the route for view" );

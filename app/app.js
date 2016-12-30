@@ -18,4 +18,6 @@ App = Ember.Application.extend({
 
 loadInitializers(App, config.modulePrefix);
 
+console.log("The app is running in " + config.environment + " mode");
+console.log("The API is " + config.apiUrl);
 export default App;

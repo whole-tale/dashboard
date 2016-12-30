@@ -1,7 +1,8 @@
 import Ember from 'ember';
-import EmberUploader from 'ember-uploader';
 
 export default Ember.Controller.extend({
+  apiCall : Ember.inject.service('api-call'),
+  filePreviewURL : "",
   edit_text:null,
   isEditable: false,
   init() {
@@ -12,20 +13,18 @@ export default Ember.Controller.extend({
     var model = this.get('model');
     console.log(model);
 
+    this.set('filePreviewURL', this.get('apiCall').getPreviewLink(model.get('._id')));
+
     var me=this;
     var itemID = model.get('_id');
     var size = model.get('size');
 
     if (size < 1000000) {
       console.log("File loading " + model.get('name'));
-      var url = 'https://girder.wholetale.org/api/v1/item/' + itemID + '/download?contentDisposition=attachment';
-      var client = new XMLHttpRequest();
-      client.open('GET', url);
-      client.onreadystatechange = function() {
-        me.set("edit_text", client.responseText);
+      this.get('apiCall').getFileContents(itemID, function (response) {
+        me.set("edit_text", response);
         me.set("isEditable", true);
-      };
-      client.send();
+      });
     }
   }),
 

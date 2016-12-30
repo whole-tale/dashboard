@@ -1,9 +1,9 @@
 <div class="ui grid">
-    <div class="one wide column">
-      {{#link-to "upload" class="ui fluid small basic blue button"}}<i class="left arrow icon"></i> {{/link-to}}
+    <div class="one wide column" style="padding: 0 0 0 0; margin: 0px 0 0 0;">
+      {{#link-to "upload" class="ui fluid small blue button"}}<i class="left arrow icon"></i> {{/link-to}}
     </div>
-    <div class="fifteen wide column" >
-        <div class="ui breadcrumb">
+    <div class="fifteen wide column" style="padding: 0 0 0 0; margin: 0px 0 0 0;">
+        <div class="ui large breadcrumb">
           {{#each fileBreadCrumbs as |bc|}}
               <a class="section" {{action "breadcrumbClicked" bc.name}}>{{bc.name}}</a>
               <i class="right chevron icon divider"></i>
@@ -14,65 +14,64 @@
     </div>
 </div>
 
-<div style="padding: 0 0 0 0; margin: 1px 0 0 5px;">
-  {{#link-to "upload.edit" model class="ui tiny basic blue button"}}<i class="edit icon"></i> Edit{{/link-to}}
-  {{#link-to "upload.preview" model class="ui tiny basic blue button"}}<i class="edit icon"></i> Preview{{/link-to}}
+<div class="ui tool segment">
+    <span class="ui header" style="margin-right: 10px">Tools</span>
+  {{#link-to "upload.edit" model class="ui small blue button"}}<i class="edit icon"></i> Edit{{/link-to}}
+  <a href="{{filePreviewURL}}" class="ui small blue button" target="_blank"><i class="eye icon"></i> Preview</a>
 </div>
 
-<br><br>
+<div class="ui header">
+    <i class="info circle icon"></i> File Info
+</div>
+<br>
 
-            <div class="ui header">
-                <i class="tasks icon"></i> File Metadata
-            </div>
-          <br>
+<div class="ui form">
+    <div class="field">
+        <label>File Name</label>
+        <input type="text" name="file-name" placeholder="File Name" value="{{model.name}}">
+    </div>
+    <div class="field">
+        <label>Description</label>
 
-            <div class="ui form">
-                <div class="field">
-                    <label>File Name</label>
-                    <input type="text" name="file-name" placeholder="File Name" value="{{model.name}}">
-                </div>
-                <div class="field">
-                    <label>Description</label>
+        <div class="ui raised segment">
+          {{medium-content-editable value=model.description options=mediumEditorOptions onFinishedTyping=(action "textUpdated")}}
+        </div>
 
-                    <div class="ui raised segment">
-                      {{medium-content-editable value=model.description options=mediumEditorOptions onFinishedTyping=(action "textUpdated")}}
-                    </div>
+    </div>
 
-                </div>
+    <div class="field">
 
-                <div class="field">
+    </div>
 
-                </div>
-
-                <div class="ui blue submit button" {{action "updateDetails" model}}>Update</div>
-            </div>
+    <div class="ui blue submit button" {{action "updateDetails" model}}>Update</div>
+</div>
 
 
-            <div class="ui header">
-                <i class="info circle icon"></i> File Properties
-            </div>
-            <div class="ui form">
-              <br>
-                <div class="field">
-                    <label>File ID</label>
-                    <input type="text" name="file-id" placeholder="File ID" value="{{model._id}}" disabled>
-                </div>
+<div class="ui header">
+    <i class="tasks icon"></i> File Properties
+</div>
+<div class="ui form">
+    <br>
+    <div class="field">
+        <label>File ID</label>
+        <input type="text" name="file-id" placeholder="File ID" value="{{model._id}}" disabled>
+    </div>
 
-                <div class="field">
-                    <label>File Size</label>
-                    <input type="text" name="file-size" placeholder="File Size" value="{{bytesToReadable model.size}}" disabled>
-                </div>
+    <div class="field">
+        <label>File Size</label>
+        <input type="text" name="file-size" placeholder="File Size" value="{{bytesToReadable model.size}}" disabled>
+    </div>
 
-                <div class="field">
-                    <label>Date Created</label>
-                    <input type="text" name="date-created" placeholder="Date Created" value="{{moment-from-now model.created}}" disabled>
-                </div>
+    <div class="field">
+        <label>Date Created</label>
+        <input type="text" name="date-created" placeholder="Date Created" value="{{moment-from-now model.created}}" disabled>
+    </div>
 
-                <div class="field">
-                    <label>Last Updated</label>
-                    <input type="text" name="last-updated" placeholder="Last Updated" value="{{moment-from-now model.updated}}" disabled>
-                </div>
-          </div>
+    <div class="field">
+        <label>Last Updated</label>
+        <input type="text" name="last-updated" placeholder="Last Updated" value="{{moment-from-now model.updated}}" disabled>
+    </div>
+</div>
 
 
 
