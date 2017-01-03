@@ -3,6 +3,7 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   apiCall : Ember.inject.service('api-call'),
   filePreviewURL : "",
+  fileDownloadURL : "",
   edit_text:null,
   isEditable: false,
   init() {
@@ -14,6 +15,7 @@ export default Ember.Controller.extend({
     console.log(model);
 
     this.set('filePreviewURL', this.get('apiCall').getPreviewLink(model.get('._id')));
+    this.set('fileDownloadURL', this.get('apiCall').getDownloadLink(model.get('._id')));
 
     var me=this;
     var itemID = model.get('_id');
@@ -41,6 +43,7 @@ actions: {
 
   }
 
-  }
+
+}
 
 });

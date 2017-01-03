@@ -5,6 +5,7 @@ var inject = Ember.inject;
 export default Ember.Controller.extend({
   apiCall : Ember.inject.service('api-call'),
   filePreviewURL : "",
+  fileDownloadURL : "",
   internalState: inject.service(),
   fileBreadCrumbs : {},
   currentBreadCrumb : [],
@@ -20,6 +21,7 @@ export default Ember.Controller.extend({
     console.log(model);
 
     this.set('filePreviewURL', this.get('apiCall').getPreviewLink(model.get('._id')));
+    this.set('fileDownloadURL', this.get('apiCall').getDownloadLink(model.get('._id')));
   }),
 
 actions: {
@@ -45,11 +47,7 @@ actions: {
       // do something with
 
       console.log(this.get('model').get('description'));
-    },
-  breadcrumbClicked : function(item) {
-      this.send("action", item);
-  }
-
+    }
   }
 
 });

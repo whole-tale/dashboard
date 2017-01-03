@@ -5,7 +5,7 @@
     <div class="fifteen wide column" style="padding: 0 0 0 0; margin: 0px 0 0 0;">
         <div class="ui large breadcrumb">
           {{#each fileBreadCrumbs as |bc|}}
-              <a class="section" {{action "breadcrumbClicked" bc.name}}>{{bc.name}}</a>
+              <a class="section" {{action "breadcrumbClicked" bc target=index}}>{{bc.name}}</a>
               <i class="right chevron icon divider"></i>
           {{/each}}
 
@@ -17,7 +17,8 @@
 <div class="ui tool segment">
     <span class="ui header" style="margin-right: 10px">Tools</span>
   {{#link-to "upload.edit" model class="ui small blue button"}}<i class="edit icon"></i> Edit{{/link-to}}
-  <a href="{{filePreviewURL}}" class="ui small blue button" target="_blank"><i class="eye icon"></i> Preview</a>
+    <a href="{{filePreviewURL}}" class="ui small blue button" target="_blank"><i class="eye icon"></i> Preview</a>
+    <a href="{{fileDownloadURL}}" class="ui small blue button"><i class="cloud download icon"></i>Download</a>
 </div>
 
 <div class="ui header">

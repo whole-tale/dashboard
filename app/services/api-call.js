@@ -19,5 +19,10 @@ export default Ember.Service.extend({
 
 //    https://girder.wholetale.org/api/v1/file/584ed73a548a6f00017d7504/download?contentDisposition=inline
 
+  },
+
+  getDownloadLink :function (itemID) {
+    return config.apiUrl + '/item/' + itemID + '/download?contentDisposition=attachment';
   }
-});
+
+  });
