@@ -1,7 +1,9 @@
 import Ember from 'ember';
 
 
-export default Ember.Route.extend({
+import AuthenticateRoute from 'wholetale/routes/authenticate';
+
+export default AuthenticateRoute.extend({
  model: function(params) {
    console.log("The parameters are ");
    console.log(params);

@@ -36,10 +36,10 @@
       {{/link-to}}
 
       {{#if loggedIn}}
-        {{#link-to 'logout' class="item" invokeAction=(action 'closeMenu' 'Please Login')}}
+        <a class="item" {{action 'closeMenu' 'logout'}}>
               <i class="sign out icon"></i>
               Logout
-        {{/link-to}}
+        </a>
 
       {{/if}}
 

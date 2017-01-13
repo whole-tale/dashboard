@@ -1,6 +1,7 @@
 import Ember from 'ember';
 var inject = Ember.inject;
 
+
 export default Ember.Controller.extend({
   internalState: inject.service(),
   body : "Enter description here ...",
@@ -12,14 +13,18 @@ export default Ember.Controller.extend({
     "forcePlainText": true
   },
   init() {
+    this._super();
     // testing
     this.get('internalState').setCurrentFileBreadcrumbs(["anID", "anID2"]);
 
     console.log("The value saved as ");
     console.log(this.get('internalState').getCurrentFileBreadcrumbs());
 
-
   },
+  didInsertElement() {
+    alert("Grider Cookie is " + document.girderToken);
+  },
+
   actions: {
     textUpdated: function(newVal) {
       var val = this.get("body");

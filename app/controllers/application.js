@@ -1,23 +1,27 @@
 import Ember from 'ember';
+var inject = Ember.inject;
 
 const {
   getOwner
 } = Ember;
 
 export default Ember.Controller.extend({
+  // requires the sessions controller
+  userAuth: Ember.inject.service('user-auth'),
 
   user : {fullName :"John Winter"},
   gravatarUrl : "/images/avatar.png",
   currentPage : "Dashboard",
   currentIcon : "browser",
   routing: Ember.inject.service('-routing'),
+  loggedIn : false,
 
+  init() {
+    this._super();
+  },
   checkMyRouteName: Ember.computed(function() {
     return this.get('routing.currentRouteName');
   }),
-
-  loggedIn : false,
-
   actions: {
     toggle: function(subSidebarName) {
       console.log(subSidebarName);
@@ -27,13 +31,21 @@ export default Ember.Controller.extend({
       ;
     },
     logout : function() {
-      alert("Do logout stuff!");
+      // alert("logout");
+
+      this.get('userAuth').logoutCurrentUser();
+      this.transitionToRoute('login');
     },
     closeMenu : function(pageTitle, icon) {
       this.set('currentPage', pageTitle);
       this.set('currentIcon', icon);
       $('.sidebar').sidebar("toggle");
+
+      if (pageTitle === "logout") {
+        this.send("logout"); // call logout above.
+      }
     },
 
   }
+
 });

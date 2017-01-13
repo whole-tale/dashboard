@@ -27,21 +27,39 @@ export default Ember.Controller.extend({
 actions: {
     download: function(itemID, itemName, ) {
     },
-    updateDetails: function (item) {
-      console.log("Updating the File details!!");
+    updateDetails: function () {
+      var component = this;
+      component.set("details_updating", false);
 
+      console.log("Updating the File details!!");
+      var item = this.get('model');
+      console.log(item.changedAttributes());
+
+      var description = this.get('model').get('description');
+      var name = this.get('model').get('name');
       var onSuccess = function(item) {
-        self.transitionToRoute('upload.view', item);
+        component.set("details_updated", true);
+
+        Ember.run.later((function() {
+          controller.set("details_updated", false);
+          component.transitionToRoute('upload.view', item);
+        }), 1000);
       };
 
       var onFail = function(item) {
         // deal with the failure here
-        alert(item);
+        component.set("details_not_updated", true);
         console.log(item);
+
+        Ember.run.later((function() {
+          component.set("details_not_updated", false);
+        }), 5000);
+
       };
 
 
-      item.save().then(onSuccess, onFail);
+      this.get("apiCall").putItemDetails(item.get('_id'), name, description, onSuccess, onFail);
+
     },
   textUpdated : function (text) {
       // do something with

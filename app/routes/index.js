@@ -48,7 +48,9 @@ let dataWorkspaces = [
   }
 ];
 
-export default Ember.Route.extend({
+import AuthenticateRoute from 'wholetale/routes/authenticate';
+
+export default AuthenticateRoute.extend({
   model() {
     var real=false;
 

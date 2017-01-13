@@ -3,22 +3,31 @@
     <!--<i class="white list icon"></i>-->
     <!--</div>-->
 
-    <div class="header item logo" {{action 'toggle' 'sub-sidebar'}}>
-        <!--<i class="white list icon"> </i>-->
-      {{#link-to 'index'}}
-          <img class="ui right spaced image logo header" src="/images/whole_tale_logo_text_long_light.png" alt="WholeTale Logo"/>
-      {{/link-to}}
-    </div>
+{{#if loggedIn}}
 
-    <div class="current page item">
-        <span class="text"><i class="large white {{currentIcon}} icon"></i>  {{currentPage}}</span>
+        <a class="header item logo" {{action 'toggle' 'sub-sidebar'}}>
+<!--
+        <i class="large white list icon" style="margin:0; padding:0"></i>
+-->
+        <img class="ui right spaced image logo header" src="/images/whole_tale_logo_text_long_light.png" alt="WholeTale Logo"/>
+    </a>
+{{else}}
+<div class="header item logo">
+    <img class="ui right spaced image logo header" src="/images/whole_tale_logo_text_long_light.png" alt="WholeTale Logo"/>
+</div>
+{{/if}}
+
+  {{#if loggedIn}}
+        <div class="current page item">
+        <span class="text"><i class="white {{currentIcon}} icon"></i>  {{currentPage}}</span>
     </div>
+  {{/if}}
 
   {{#if loggedIn}}
       <div class="right menu">
           <div class="item" style="border: none">
               <img class="ui avatar image" style="float:right; margin-top: -8px; padding-top: 0;" src="{{gravatarUrl}}" alt="User gravatar" width="25px">
-            {{user.fullName}}
+            {{user.firstName}}&nbsp;{{user.lastName}}
           </div>
       </div>
   {{/if}}

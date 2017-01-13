@@ -4,9 +4,12 @@ var inject = Ember.inject;
 // for dev:
 
 
-export default Ember.Route.extend({
+import AuthenticateRoute from 'wholetale/routes/authenticate';
+
+export default AuthenticateRoute.extend({
   internalState: inject.service(),
   model: function() {
+    this._super();
     var state = this.get('internalState');
 
     var collectionID= state.getCurrentCollectionID();

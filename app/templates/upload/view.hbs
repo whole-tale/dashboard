@@ -26,10 +26,10 @@
 </div>
 <br>
 
-<div class="ui form">
+<form class="ui form" {{action "updateDetails" on="submit"}}>
     <div class="field">
         <label>File Name</label>
-        <input type="text" name="file-name" placeholder="File Name" value="{{model.name}}">
+        {{input type="text" name="file-name" placeholder="File Name" value=model.name}}
     </div>
     <div class="field">
         <label>Description</label>
@@ -40,13 +40,38 @@
 
     </div>
 
-    <div class="field">
+  {{input type="submit" class="ui blue submit button" value="Update"}}
+</form>
 
+{{#if details_updating}}
+    <div class="ui segment" style="height:100px">
+        <div class="ui active inverted dimmer">
+            <div class="ui text loader">Saving details...</div>
+        </div>
     </div>
+{{/if}}
 
-    <div class="ui blue submit button" {{action "updateDetails" model}}>Update</div>
-</div>
+{{#if details_updated}}
+    <div class="ui green icon message">
+        <i class="checkmark icon"></i>
+        <div class="content">
+            <div class="header">
+                The name and description has been saved !
+            </div>
+        </div>
+    </div>
+{{/if}}
 
+{{#if details_not_updated}}
+    <div class="ui red icon message">
+        <i class="remove circle icon"></i>
+        <div class="content">
+            <div class="header">
+                The details could not be saved !
+            </div>
+        </div>
+    </div>
+{{/if}}
 
 <div class="ui header">
     <i class="tasks icon"></i> File Properties
