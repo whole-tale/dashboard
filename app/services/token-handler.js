@@ -20,7 +20,7 @@ export default Ember.Service.extend({
   },
 
   deleteCookie : function ( name, path, domain ) {
-    if( get_cookie( name ) ) {
+    if( getCookie( name ) ) {
       document.cookie = name + "=" +
         ((path) ? ";path="+path:"")+
         ((domain)?";domain="+domain:"") +
