@@ -35,7 +35,9 @@ export default Ember.Service.extend({
   },
 
   getCurrentFileBreadcrumbs: function() {
-    return JSON.parse(localStorage.currentFileBreadcrumbs);
+    var bcs = localStorage.currentFileBreadcrumbs;
+    if (!bcs) return null;
+    return JSON.parse(bcs);
   },
 
   setCurrentBreadCrumb: function(val) {

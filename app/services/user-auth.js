@@ -18,7 +18,7 @@ export default Ember.Service.extend({
 
     if (request.status === 200) {
       var userJS = request.responseText.trim();
-      if ((userJS == null) || (userJS === "") || (userJS=="null")) {
+      if ((userJS == null) || (userJS === "") || (userJS==="null")) {
         console.log("User is null in api call");
         return null;
       } else {
