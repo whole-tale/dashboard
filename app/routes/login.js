@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
   model: function(params) {
+    console.log("In login route");
     var http = location.protocol;
     var slashes = http.concat("//");
     var ishttp = (location.port === '') || (location.port === 80) || (location.port === 443);
