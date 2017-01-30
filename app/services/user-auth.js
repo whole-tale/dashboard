@@ -16,7 +16,7 @@ export default Ember.Service.extend({
 
     request.send();
 
-    if (request.status === 200) {
+    if (request.status == 200) {
       var userJS = request.responseText.trim();
       if ((userJS == null) || (userJS === "") || (userJS==="null")) {
         console.log("User is null in api call");
@@ -38,7 +38,7 @@ export default Ember.Service.extend({
 
   getCurrentUser() {
     var userID = localStorage.currentUserID;
-    if ((userID == null) || (userID === "") || (userID === "undefined")) return null;
+    if ( (userID == "null") || (userID == null) || (userID === "") || (userID === "undefined")) return null;
 
     return this.get('store').find('user', userID);
   },
