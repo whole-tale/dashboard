@@ -10,12 +10,20 @@
 
 <div class="ui collapsable grid" >
     <div class="three wide column" >
-      {{collection-browser list=fileData.collections selectedCollectionID=collectionID action="collectionClicked"}}
+        <div class="ui collapsable grid" >
+            {{collection-browser list=fileData.collections selectedCollectionID=collectionID action="collectionClicked"}}
+        </div>
     </div>
     <div class="thirteen wide column">
-
-      {{directory-browser folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
+        <div class="ui collapsable grid" >
+            {{#unless dropzone-hidden}}
+                <div class="sixteen wide column">
+                    {{drop-zone url="/endpoint"}}
+                </div>
+            {{/unless}}
+            <div class="sixteen wide column">
+                {{directory-browser folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
+            </div>
+        </div>
     </div>
 </div>
-
-

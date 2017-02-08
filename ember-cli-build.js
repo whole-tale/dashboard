@@ -7,6 +7,10 @@ module.exports = function(defaults) {
     // Add options here
     mediumEditorOptions: {
       theme: 'tim'
+    },
+    
+    emberCliDropzonejs: {
+      includeDropzoneCss: false
     }
   });
 
