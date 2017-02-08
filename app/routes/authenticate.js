@@ -13,7 +13,7 @@ export default Ember.Route.extend({
     var router =this;
 
     if (( token == null) || (token === "")) {
-      console.log("No token!!!");
+    //   console.log("No token!!!");
       router.transitionTo('login');
     }
 
@@ -29,7 +29,7 @@ export default Ember.Route.extend({
                 accessToken: token,
                 user : user,
               });
-              
+
               router.set('token', token);
               router.set('currentUser', user.getProperties('username', 'name', 'email'));
 
