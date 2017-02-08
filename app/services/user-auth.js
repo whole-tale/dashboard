@@ -26,16 +26,15 @@ export default Ember.Service.extend({
                 return null;
             }
             else {
-                // console.log(userJS);
-                let userObj = JSON.parse(userJS);
-                let userRec = self.get('store').createRecord('user', userObj);
+                let userRec = self.get('store').createRecord('user', userJS);
                 // console.log("User not is null in api call");
-                localStorage.currentUserID = userRec.get('_id'); // store logged in user locally
+                localStorage.currentUserID = userJS._id; // store logged in user locally
 
                 return userRec;
             }
         })
-        .catch(() => {
+        .catch(e => {
+            // console.log(e);
             return null;
         });
   },
