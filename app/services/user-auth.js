@@ -26,7 +26,7 @@ export default Ember.Service.extend({
                 return null;
             }
             else {
-                let userRec = self.get('store').createRecord('user', userJS);
+                let userRec = self.get('store').createRecord('user', userJS);   //BUG: this call returns an empty object
                 // console.log("User not is null in api call");
                 localStorage.currentUserID = userJS._id; // store logged in user locally
 
@@ -49,23 +49,25 @@ export default Ember.Service.extend({
   },
 
   logoutCurrentUser() {
+    let self  = this;
+    let token = this.get('tokenHandler').getWholeTaleAuthToken();
 
-    var token = this.get('tokenHandler').getWholeTaleAuthToken();
-    var url = config.apiUrl + '/token/session';
-    var request = new XMLHttpRequest();
+    let url = config.apiUrl + '/token/session';
+    let options = {
+        method: 'DELETE',
+        headers: {
+            'Girder-Token': token
+        }
+    };
 
-    var self = this;
-    request.open('DELETE', url, false);
-    request.setRequestHeader("Girder-Token", token);
-
-    request.send();
-
-    if (request.status === 200) {
-      self.get('tokenHandler').releaseWholeTaleCookie();
-      localStorage.currentUserID = null;
-    } else {
-      //alert("Could not log out!");
-    }
+    this.get('authRequest').send(url, options)
+        .then(() => {
+            self.get('tokenHandler').releaseWholeTaleCookie();
+            localStorage.currentUserID = null;
+        })
+        .catch(() => {
+            //alert("Could not log out!");
+        });
   }
 
 });
