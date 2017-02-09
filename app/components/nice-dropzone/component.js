@@ -19,37 +19,61 @@ var dragTimer;
 //      in the upload progress pane.
 export default Ember.Component.extend({
     layout,
-    // dropzone_hidden: true,
+    files: Ember.A(),
     initialized_listeners: false,
+    
     didRender() {
         Ember.$('.dropzone').addClass('hidden');
         this.resizeDropzone();
         if(!this.initialized_listeners) {
             let self = this;
+
             Ember.$('#dz-drag').on('dragover', this.showDropzone.bind(this));
             Ember.$('.dropzone').on('dragover', this.showDropzone.bind(this));
+
             Ember.$('#dz-drag').on('dragleave', function(evt) {
                 window.clearTimeout(dragTimer);
                 dragTimer = window.setTimeout(function() {
                     Ember.$('.dropzone').addClass('hidden');
                 }, 85);
             });
+
             this.set('initialized_listeners', true);
         }
     },
 
     resizeDropzone() {
         let viewport = Ember.$(document);
+
         Ember.$('#dz-drag').height(viewport.height()-180);
         Ember.$('.dropzone .dz-message').height(viewport.height()-180);
     },
 
     showDropzone(evt) {
         let self = this;
+
         let dt = evt.originalEvent.dataTransfer;
         if (dt.types && (dt.types.indexOf ? dt.types.indexOf('Files') != -1 : dt.types.includes('Files'))) {
             window.clearTimeout(dragTimer);
             Ember.$('.dropzone').removeClass('hidden');
+        }
+    },
+
+    actions: {
+        cleanUpDropzone(params) {
+            this.files.pushObject(params);
+            this.set('processing', true);
+            Dropzone.forElement(".dropzone").removeAllFiles();
+            Ember.$('.dropzone').addClass('hidden');
+        },
+
+        closeMessage() {
+            Ember.$('.message').addClass('hidden');
+            this.set('files', Ember.A());
+        },
+
+        showMessage() {
+            Ember.$('.message').removeClass('hidden');
         }
     }
 });

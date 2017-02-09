@@ -19,6 +19,16 @@ div.overlay {
     position:absolute !important;
 }
 
+div.upload.progress {
+    width:50%;
+    z-index:100;
+    opacity:.9;
+    padding:20px 20px;
+    position:fixed;
+    bottom:0;
+    right:0
+}
+
 .ui.inverted.blue.menu {
   border: 0px solid transparent;
   background: #283b49;

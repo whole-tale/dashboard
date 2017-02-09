@@ -1,3 +1,19 @@
+{{#if processing}}
+    <div class="ui floating black upload progress message">
+        <i class="close icon" {{action 'closeMessage' on='click'}}></i>
+        <div class="header">File Uploads</div>
+        {{#each files as |file|}}
+            {{#if (eq file.status "error")}}
+                <p><i class="red remove icon"></i>{{file.name}}</p>
+            {{else if (lt file.upload.progress 100)}}
+
+            {{else}}
+                <p><i class="green checkmark icon"></i>{{file.name}}</p>
+            {{/if}}
+        {{/each}}
+    </div>
+{{/if}}
+
 <div id="dz-drag">
-    {{drop-zone url="/endpoint"}}
+    {{drop-zone complete=(action 'cleanUpDropzone') addedfile=(action 'showMessage')}}
 </div>
