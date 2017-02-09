@@ -11,6 +11,14 @@ body {
   font-family: 'Open Sans', 'Helvetica Neue', sans-serif !important;
 }
 
+.hidden {
+    display:none !important;
+}
+
+div.overlay {
+    position:absolute !important;
+}
+
 .ui.inverted.blue.menu {
   border: 0px solid transparent;
   background: #283b49;

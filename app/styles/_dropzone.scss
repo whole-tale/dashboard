@@ -7,11 +7,13 @@
   box-sizing: border-box; }
 
 .dropzone {
-  min-height: 120px;
+  min-height:120px;
   border-radius: 3px;
   border: 3px dashed rgba(40, 59, 73, .7);
-  background: white;
-  // padding: 20px 20px;
+  background: #dedeef;
+  opacity:.7;
+  padding: 20px 20px;
+  z-index:100;
   }
   .dropzone.dz-clickable {
     cursor: pointer; }
@@ -27,14 +29,15 @@
       opacity: 0.5; }
   .dropzone .dz-message {
     text-align: center;
-    // margin: 1em 0;
+    margin: 1em 0;
+    line-height: 1px;
     height: 120px;
     width: 9999px;
-    opacity: .5;
+    opacity: .8;
     background-image: url('/images/cloud-upload.png');
     background-repeat: no-repeat;
-    background-position: center bottom;
-    // background-attachment: absolute;
+    background-position: center center;
+    background-attachment:scroll;
     background-size: 170px 128px;
     display: table-cell;
     vertical-align: bottom;

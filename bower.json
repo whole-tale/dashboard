@@ -6,6 +6,7 @@
     "pretender": "0.7.0",
     "semantic-ui": "2.2.6",
     "Faker": "3.1.0",
-    "medium-editor": "5.14.4"
+    "medium-editor": "5.14.4",
+    "dropzone": "^4.3.0"
   }
 }
