@@ -11,7 +11,7 @@ function wrapItem (itemID, itemName, isCollection) {
       else if (name === "id") return itemID;
       else return null;
     }
-  }
+  };
 }
 
 export default Ember.Controller.extend({
@@ -167,7 +167,3 @@ export default Ember.Controller.extend({
     },
   }
 });
-
-
-
-

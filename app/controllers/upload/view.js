@@ -25,7 +25,7 @@ export default Ember.Controller.extend({
   }),
 
 actions: {
-    download: function(itemID, itemName, ) {
+    download: function(itemID, itemName) {
     },
     updateDetails: function () {
       var component = this;
@@ -41,7 +41,7 @@ actions: {
         component.set("details_updated", true);
 
         Ember.run.later((function() {
-          controller.set("details_updated", false);
+          component.set("details_updated", false);
           component.transitionToRoute('upload.view', item);
         }), 1000);
       };

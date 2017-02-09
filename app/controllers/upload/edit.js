@@ -31,7 +31,7 @@ export default Ember.Controller.extend({
   }),
 
 actions: {
-    download: function(itemID, itemName, ) {
+    download: function(itemID, itemName) {
     },
   textUpdated: function(newVal) {
     this.set('textContents', newVal);
