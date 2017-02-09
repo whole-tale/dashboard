@@ -1,5 +1,6 @@
 {
   "predef": [
+    "$",
     "document",
     "window",
     "-Promise",
@@ -7,10 +8,10 @@
   ],
   "browser": true,
   "boss": true,
-  "curly": true,
+  "curly": false,
   "debug": false,
   "devel": true,
-  "eqeqeq": true,
+  "eqeqeq": false,
   "evil": true,
   "forin": false,
   "immed": false,
@@ -29,5 +30,5 @@
   "white": false,
   "eqnull": true,
   "esversion": 6,
-  "unused": true
+  "unused": false
 }

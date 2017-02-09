@@ -44,7 +44,7 @@
               {{collection._modelType}}
             </td>
             <td>
-              {{bytesToReadable collection.size}}
+              {{bytes-to-readable collection.size}}
             </td>
             <td>
               {{#if collection.public}}
@@ -57,10 +57,10 @@
               {{/unless}}
             </td>
             <td>
-              {{moment-from-now collection.created}}
+              {{from-now collection.created}}
             </td>
             <td>
-              {{moment-from-now collection.updated}}
+              {{from-now collection.updated}}
             </td>
             <td>
                 {{#link-to "collections.view" collection class="ui button"}}View{{/link-to}}

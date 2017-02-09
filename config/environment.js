@@ -18,6 +18,9 @@ module.exports = function(environment) {
     environment: environment,
     rootURL: '/',
     locationType: 'auto',
+    torii: {
+        providers: { /*....*/ }
+    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
