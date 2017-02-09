@@ -21,7 +21,7 @@ export default Ember.Component.extend({
     layout,
     files: Ember.A(),
     initialized_listeners: false,
-    
+
     didRender() {
         Ember.$('.dropzone').addClass('hidden');
         this.resizeDropzone();
@@ -63,7 +63,7 @@ export default Ember.Component.extend({
         cleanUpDropzone(params) {
             this.files.pushObject(params);
             this.set('processing', true);
-            Dropzone.forElement(".dropzone").removeAllFiles();
+            window.Dropzone.forElement(".dropzone").removeAllFiles();
             Ember.$('.dropzone').addClass('hidden');
         },
 
