@@ -1,20 +1,46 @@
 
-<div class="search area">
+<div class="ui three cards" style="margin: 20px 10% 20px 10%">
+    <div class="card">
+        <div class="content">
+            <div class="header">Compute</div>
+            <div class="description">
+                Description...
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="content">
+            <div class="header">Collaborate</div>
+            <div class="description">
+                Description...
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="content">
+            <div class="header">Reproduce</div>
+            <div class="description">
+                Description...
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="login area">
             <div class="ui huge header">LOGIN</div>
 
     <div class="ui raised segment">
         <div class="ui stackable grid">
             <div class="ten wide column">
-                <br>
-                <br>
-                <br>
-              {{#each-in model as  |provider url|}}
+              {{#each-in  as  |provider url|}}
                 {{#if (eq provider "Globus")}}
                         <a class="ui large blue button" {{action "login" url}}>
-                    Login Using {{provider}}
+                    Access WholeTale
                   </a>
                 {{/if}}
               {{/each-in}}
+                <br>
+                <br>
             </div>
             <div class="six wide right aligned column">
                 <div class="ui small image">
@@ -37,7 +63,6 @@
             <div class="ui header header">
                 In order to use the Wholetale app, you need to be able to sign in using Globus. Click below to find out more.
             </div>
-            <a class="ui button" target="_blank" href="https://docs.globus.org/how-to/get-started/">Globus Howto</a>
         </div>
     </div>
 {{/ui-accordion}}
