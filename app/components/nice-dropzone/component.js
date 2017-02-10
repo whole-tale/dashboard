@@ -20,33 +20,21 @@ var dragTimer;
 export default Ember.Component.extend({
     layout,
     files: Ember.A(),
-    initialized_listeners: false,
 
     didRender() {
-        Ember.$('.dropzone').addClass('hidden');
+        let self = this;
+
         this.resizeDropzone();
-        if(!this.initialized_listeners) {
-            let self = this;
-
-            Ember.$('#dz-drag').on('dragover', this.showDropzone.bind(this));
-            Ember.$('.dropzone').on('dragover', this.showDropzone.bind(this));
-
-            Ember.$('#dz-drag').on('dragleave', function(evt) {
-                window.clearTimeout(dragTimer);
-                dragTimer = window.setTimeout(function() {
-                    Ember.$('.dropzone').addClass('hidden');
-                }, 85);
-            });
-
-            this.set('initialized_listeners', true);
-        }
+        Ember.$('.dropzone').addClass('hidden');
+        Ember.$('.droppable').on('dragover', this.showDropzone.bind(this));
+        Ember.$('.dropzone').on('dragover', function(evt) {
+            self.showDropzone.call(self, evt);
+        });
     },
 
     resizeDropzone() {
-        let viewport = Ember.$(document);
-
-        Ember.$('#dz-drag').height(viewport.height()-180);
-        Ember.$('.dropzone .dz-message').height(viewport.height()-180);
+        let viewport = Ember.$('.component.context');
+        Ember.$('.dropzone .dz-message').height(viewport.height());
     },
 
     showDropzone(evt) {
@@ -74,6 +62,13 @@ export default Ember.Component.extend({
 
         showMessage() {
             Ember.$('.message').removeClass('hidden');
+        },
+
+        hideDropzone() {
+            window.clearTimeout(dragTimer);
+            dragTimer = window.setTimeout(function() {
+                Ember.$('.dropzone').addClass('hidden');
+            }, 85);
         }
     }
 });

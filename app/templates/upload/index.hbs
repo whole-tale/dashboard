@@ -16,11 +16,11 @@
     </div>
     <div class="thirteen wide column">
         <div class="ui collapsable grid" >
-            <div class="sixteen wide column overlay">
-                {{nice-dropzone}}
-            </div>
             <div class="sixteen wide column">
                 {{directory-browser folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
+            </div>
+            <div class="sixteen wide column overlay">
+                {{nice-dropzone}}
             </div>
         </div>
     </div>
