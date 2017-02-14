@@ -10,16 +10,9 @@ export default Ember.Service.extend({
 
   getCurrentUserFromServer:function () {
     let self = this;
-    let token = this.get('tokenHandler').getWholeTaleAuthToken();
 
     let url = config.apiUrl + '/user/me';
-    let options = {
-        headers: {
-            'Girder-Token': token
-        }
-    };
-
-    return this.get('authRequest').send(url, options)
+    return this.get('authRequest').send(url)
         .then(userJS => {
             if ((userJS == null) || (userJS === "") || (userJS==="null")) {
                 // console.log("User is null in api call");
@@ -50,14 +43,10 @@ export default Ember.Service.extend({
 
   logoutCurrentUser() {
     let self  = this;
-    let token = this.get('tokenHandler').getWholeTaleAuthToken();
 
     let url = config.apiUrl + '/token/session';
     let options = {
-        method: 'DELETE',
-        headers: {
-            'Girder-Token': token
-        }
+        method: 'DELETE'
     };
 
     this.get('authRequest').send(url, options)

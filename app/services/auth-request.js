@@ -4,12 +4,22 @@ import config from '../config/environment';
 import _ from 'lodash/lodash';
 
 export default Ember.Service.extend({
+    tokenHandler: Ember.inject.service(),
+
     ////////////////////////////////////////////////////////////////////////////
     authenticatedAJAX: function(options) {
         if(config.authorizationType === 'cookie') {
             Ember.merge(options, {
                 xhrFields: {
                     withCredentials: true
+                }
+            });
+        }
+        else {
+            let token = this.get('tokenHandler').getWholeTaleAuthToken();
+            options = Ember.merge(options, {
+                headers: {
+                    'Girder-Token': token
                 }
             });
         }
