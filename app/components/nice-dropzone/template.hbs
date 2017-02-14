@@ -14,10 +14,8 @@
     </div>
 {{/if}}
 
-<!-- <div id="dz-drag" style=""> -->
-    {{drop-zone
-        complete=(action 'cleanUpDropzone')
-        addedfile=(action 'showMessage')
-        dragleave=(action 'hideDropzone')
-    }}
-<!-- </div> -->
+{{drop-zone
+    complete=(action 'cleanUpDropzone')
+    addedfile=(action 'showMessage')
+    dragleave=(action 'hideDropzone')
+}}

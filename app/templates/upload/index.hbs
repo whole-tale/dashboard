@@ -20,7 +20,9 @@
                 {{directory-browser folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
             </div>
             <div class="sixteen wide column overlay">
-                {{nice-dropzone}}
+                {{#unless currentBreadCrumb.isCollection}}
+                    {{nice-dropzone}}
+                {{/unless}}
             </div>
         </div>
     </div>
