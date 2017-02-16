@@ -25,7 +25,6 @@ export default Ember.Controller.extend({
   collectionName : null,
   init() {
     var state = this.get('internalState');
-
     state.setCurrentFolderID(null);
 
     console.log("Heading into browse upload controller" );
@@ -42,6 +41,26 @@ export default Ember.Controller.extend({
     state.setCurrentFileBreadcrumbs(state.getCurrentFileBreadcrumbs()); // new collection, reset crumbs
   },
   actions: {
+    refresh() {
+        console.log("refreshed");
+        var state = this.get('internalState');
+        var myController = this;
+        let itemID = state.getCurrentFolderID();
+        var folderContents = myController.store.query('folder', { parentId: itemID, parentType: "folder"});
+
+        var itemContents = myController.store.query('item', { folderId: itemID});
+
+        var collections = myController.store.findAll('collection');
+
+        var newModel = {'folderContents':folderContents,'itemContents': itemContents,'collections':collections};
+
+        //   alert("Folder clicked and delving into " + itemName);
+
+        console.log(newModel);
+        console.log(state.toString());
+
+        myController.set("fileData", newModel);
+    },
     itemClicked : function(item, isFolder) {
       var state = this.get('internalState');
       console.log(item);

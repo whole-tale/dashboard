@@ -1,4 +1,5 @@
-<table class="ui very basic single line table droppable" style="margin:0">
+<div style="overflow-y:scroll;" id="dir-browser">
+<table class="ui very basic single line table droppable" style="margin:0;">
     <thead>
     <tr>
         <th>Name</th>
@@ -46,7 +47,7 @@
     {{/each}}
     </tbody>
 </table>
-
+</div>
 {{#if showEditor}}
   {{code-editor content=textData fileID=fileIdentifier}}
 {{/if}}

@@ -1,17 +1,26 @@
-<div id="upload-progress" class="ui floating black progress upload hidden message">
-    <i class="close icon" {{action 'closeMessage' on='click'}}></i>
+<div id="upload-progress" class="ui black progress upload hidden floating message">
+    {{#unless processingQueue}}
+        <i class="close icon" {{action 'closeMessage' on='click'}}></i>
+    {{else}}
+        <button class="ui mini right floated button" {{action 'cancelUploads'}}>Cancel</button>
+    {{/unless}}
     <div class="header">File Uploads</div>
     {{#each files as |file|}}
         {{#if (eq file.status "error")}}
-            <p><i class="red remove icon"></i>{{file.name}}</p>
-        {{else if (lt file.upload.progress 100)}}
-            <p>uploading {{file.name}}</p>
+            <p><i class="red remove icon"></i>{{file.name}} - {{file.error}}</p>
+        {{else if (eq file.status "success")}}
+            <p><i class="green check icon"></i>{{file.name}}</p>
+        {{else if (eq file.status "canceled")}}
+            <p><i class="red remove icon"></i>{{file.name}} -  Cancelled</p>
         {{else}}
-            <p><i class="green checkmark icon"></i>{{file.name}}</p>
+            <p>
+                {{#ui-progress class="small" value=file.progress progress=file.progress total=100}}
+                    <div label="large label">{{file.name}}</div>
+                    <div class="bar"></div>
+                {{/ui-progress}}
+            </p>
         {{/if}}
     {{/each}}
 </div>
 
-{{drop-zone
-    autoProcessQueue=false
-}}
+{{drop-zone class="hidden" autoProcessQueue=false}}

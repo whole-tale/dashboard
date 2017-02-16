@@ -1,6 +1,6 @@
 /*
   @module wholetale
-  @submodule gddropzone
+  @submodule nice- dropzone
 */
 import Ember from 'ember';
 import layout from './template';
@@ -9,28 +9,28 @@ import RSVP from 'rsvp';
 import config from '../../config/environment';
 
 var dragTimer;
+var debounceTimeout;
 
-// A google drive like dropzone.
-// Intended to mimic how google drive handles file uploads.
-// How I'd like for this to behave:
-//   0) Dropzone is initially hidden
-//   1) Show dropzone when dragging files (not folders or page elements)
-//      over the page.
-//   2) Re-hide when dropped
-//   3) Show file upload progress pane in lower right.
-//   4) On complete, check for errors and display green check or red X
-//      in the upload progress pane.
 export default Ember.Component.extend({
+    layout,
     authRequest: Ember.inject.service(),
     tokenHandler: Ember.inject.service(),
-    layout,
     files: Ember.A(),
-    dropzone: null,
+    processingQueue: false,
+    deferredQueueComplete: RSVP.defer(),
+
+    wrapFileData(file) {
+        return {
+            id: file.id,
+            name: file.name,
+            status: file.status,
+            error: file.error,
+            progress: file.upload.progress
+        };
+    },
 
     didRender() {
         let self = this;
-
-        Ember.$('.dropzone').addClass('hidden');
 
         this.resizeDropzone();
         Ember.$('.droppable').on('dragover', this.showDropzone.bind(this));
@@ -42,12 +42,21 @@ export default Ember.Component.extend({
     },
 
     didInsertElement() {
+        this.initializeDropzone();
+    },
+
+    initializeDropzone() {
         let dz = window.Dropzone.forElement(".dropzone");
         dz.options.url = config.apiUrl + '/file/chunk';
         dz.options.paramName = "chunk";
         dz.options.headers = {'Girder-Token':this.get('tokenHandler').getWholeTaleAuthToken()};
-        dz.on("addedfile", this.addedFile.bind(this));
+        dz.on("addedfile", this.debounceAddedFile.bind(this));
         dz.on("sending", this.sending.bind(this));
+        dz.on("uploadprogress", this.uploadProgress.bind(this));
+        dz.on("success", this.uploadProgress.bind(this));
+        dz.on("queuecomplete", this.queueComplete.bind(this));
+        dz.on("error", this.error.bind(this));
+        dz.on("canceled", this.uploadProgress.bind(this));
     },
 
     resizeDropzone() {
@@ -57,7 +66,6 @@ export default Ember.Component.extend({
 
     showDropzone(evt) {
         let self = this;
-
         let dt = evt.originalEvent.dataTransfer;
         if (dt.types && (dt.types.indexOf ? dt.types.indexOf('Files') != -1 : dt.types.includes('Files'))) {
             window.clearTimeout(dragTimer);
@@ -66,20 +74,25 @@ export default Ember.Component.extend({
     },
 
     addedFile() {
+        if(this.processingQueue) return;
         let self = this;
         let dz = window.Dropzone.forElement(".dropzone");
         Ember.$('.dropzone').addClass('hidden');
 
+        this.set('processingQueue', true);
         this.showMessage();
         this.processQueue()
             .then(()=>{
                 dz.processQueue();
+                return self.deferredQueueComplete.promise;
             })
             .catch(e=>{
                 console.log(e);
             })
             .finally(() => {
+                self.set('processingQueue', false);
                 self.cleanUpDropzone();
+                self.sendAction('refresh');
             });
     },
 
@@ -107,9 +120,10 @@ export default Ember.Component.extend({
             })
             .then(rep => {
                 file.id = rep._id;
+                self.files.pushObject(self.wrapFileData(file));
             });
             return p;
-        }, new RSVP.Promise(resolve=>{resolve(true)}));
+        }, new RSVP.Promise(resolve=>{resolve(true);}));
         return p_create_files;
     },
 
@@ -118,13 +132,25 @@ export default Ember.Component.extend({
         formData.append("offset", 0);
     },
 
-    //
-    // errorHandler(e, message, xhr) {
-    //     console.log(params);
-    // },
-    //
+    uploadProgress(file) {
+        let idx = this.files.findIndex(_file => {
+            return file.id == _file.id;
+        });
+        this.files[idx] = this.wrapFileData(file);
+        this.files.arrayContentDidChange(idx);
+    },
+
+    queueComplete() {
+        this.deferredQueueComplete.resolve(true);
+    },
+
+    error(file) {
+        file.error = file.xhr.statusText;
+        this.uploadProgress(file);
+    },
 
     cleanUpDropzone(params) {
+        this.set('deferredQueueComplete', RSVP.defer());
         window.Dropzone.forElement(".dropzone").removeAllFiles();
     },
 
@@ -140,10 +166,21 @@ export default Ember.Component.extend({
         }, 85);
     },
 
+    debounceAddedFile() {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(this.addedFile.bind(this), 100);
+    },
+
     actions: {
         closeMessage() {
             Ember.$('#upload-progress').addClass('hidden');
-            // this.set('files', Ember.A());
-        }
+            this.set('files', Ember.A());
+            this.files.arrayContentDidChange();
+        },
+
+        cancelUploads(file) {
+            let dz = window.Dropzone.forElement(".dropzone");
+            dz.removeAllFiles(true);
+        },
     }
 });

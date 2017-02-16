@@ -4,7 +4,7 @@ import layout from './template';
 
 export default Ember.Component.extend({
     layout,
-  showEditor : false,
+    showEditor : false,
     actions: {
       clickedFolder : function(item) {
         this.sendAction('action', item,  "true");

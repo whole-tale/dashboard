@@ -21,7 +21,7 @@
             </div>
             <div class="sixteen wide column overlay">
                 {{#unless currentBreadCrumb.isCollection}}
-                    {{nice-dropzone folderId=currentBreadCrumb.id}}
+                    {{nice-dropzone folderId=currentBreadCrumb.id refresh=(action 'refresh')}}
                 {{/unless}}
             </div>
         </div>
