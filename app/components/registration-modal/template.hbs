@@ -1,0 +1,46 @@
+{{#ui-modal name="harvester" class="small harvester" onApprove=(action 'register') onDeny=(action 'cancel')}}
+    <div class="header">Search for Data Sources</div>
+    <div class="content">
+        <div class="ui basic segment">
+            <form class="ui form">
+                <div class="inline field">
+                    <label>DOI/DataId</label>
+                    {{input type="text" value=searchDataId}}
+                    <div class="ui inline button" {{action 'search' on='click'}}>Search</div>
+                </div>
+                <div class="ui secondary segment">
+                    {{#ui-dropdown class="fluid selection" selected=data onChange=(action (mut data))}}
+                        <i class="dropdown icon"></i>
+                        <div class="default text">Select Data Sources</div>
+                        <div class="menu">
+                            {{#each datasources as |item|}}
+                                <div class="item" data-value="{{item.doi}}">
+                                    {{item.name}}
+                                </div>
+                            {{/each}}
+                        </div>
+                    {{/ui-dropdown}}
+                </div>
+                <div class="ui tertiary segment">
+                    <div class="inline field">
+                        <label>Folder Name</label>
+                        {{input type="text" value=name}}
+                    </div>
+                    <p>DOI: {{doi}}</p>
+                    <p>DataId: {{dataId}}</p>
+                    <p>Repository: {{repository}}</p>
+                    <p>Size:       {{size}}</p>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui deny button">
+            Cancel
+        </div>
+        <div class="ui positive register disabled right labeled icon button">
+            Register
+            <i class="icon register"></i>
+        </div>
+    </div>
+{{/ui-modal}}

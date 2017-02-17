@@ -11,6 +11,28 @@ body {
   font-family: 'Open Sans', 'Helvetica Neue', sans-serif !important;
 }
 
+i.icon.dataone:after {
+    background-size: 24px 24px;
+    background-image: url(/icons/DataONE_icon.jpg);
+    display: inline-block;
+    content:"";
+    width: 24px;
+    height: 24px;
+}
+
+i.icon.globus:after {
+    background-size: 32px 24px;
+    background-image: url(/icons/Globus_icon.png);
+    display: inline-block;
+    content:"";
+    width: 32px;
+    height: 24px;
+}
+
+.globusblue {
+    background-color:#3560A0 !important;
+}
+
 .hidden {
     display:none !important;
 }

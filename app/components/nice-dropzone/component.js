@@ -74,10 +74,10 @@ export default Ember.Component.extend({
     },
 
     addedFile() {
+        Ember.$('.dropzone').addClass('hidden');
         if(this.processingQueue) return;
         let self = this;
         let dz = window.Dropzone.forElement(".dropzone");
-        Ember.$('.dropzone').addClass('hidden');
 
         this.set('processingQueue', true);
         this.showMessage();
@@ -122,6 +122,7 @@ export default Ember.Component.extend({
                 file.id = rep._id;
                 self.files.pushObject(self.wrapFileData(file));
             });
+
             return p;
         }, new RSVP.Promise(resolve=>{resolve(true);}));
         return p_create_files;
@@ -163,7 +164,7 @@ export default Ember.Component.extend({
         window.clearTimeout(dragTimer);
         dragTimer = window.setTimeout(function() {
             Ember.$('.dropzone').addClass('hidden');
-        }, 85);
+        }, 10);
     },
 
     debounceAddedFile() {

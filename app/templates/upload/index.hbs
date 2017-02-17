@@ -1,4 +1,3 @@
-
 <div class="ui large breadcrumb">
   {{#each fileBreadCrumbs as |bc|}}
       <a class="section" {{action "breadcrumbClicked" bc}}>{{bc.name}}</a>
@@ -10,7 +9,7 @@
 
 <div class="ui collapsable grid" >
     <div class="three wide column" >
-        <div class="ui collapsable grid" >
+        <div class="ui collapsable grid">
             {{collection-browser list=fileData.collections selectedCollectionID=collectionID action="collectionClicked"}}
         </div>
     </div>
