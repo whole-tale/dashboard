@@ -11,6 +11,13 @@ body {
   font-family: 'Open Sans', 'Helvetica Neue', sans-serif !important;
 }
 
+.main.page {
+  min-height:800px;
+  padding: 55px 5px 5px 10px;
+  margin: 0 10px 0 10px;
+}
+
+
 i.icon.dataone:after {
     background-size: 24px 24px;
     background-image: url(/icons/DataONE_icon.jpg);
@@ -127,22 +134,36 @@ div.upload.progress {
 }
 
 .ui.breadcrumb {
-  background-color: #283b49;
-  color: white;
+  color: #283b49;
+  background-color: #efefef;
   padding: 8px 4px 8px 10px;
   width :100%;
-  margin-top: 0;
-  margin-bottom: 0;
-  margin-left: 5px;
-  margin-right: 0;
+  margin: 0 0 5px 0;
 }
 
+/* This removes all padding from any grid configuration */
+
 .ui.grid {
-  margin-top: 0;
-  margin-bottom: 0;
-  margin-left: 0;
-  margin-right: 0;
+  margin :0;
+  padding: 0;
 }
+
+.ui.grid > * {
+  margin: 0;
+  padding: 0;
+}
+
+.ui.grid > .column:not(.row), .ui.grid > .row > .column {
+  padding: 0;
+  margin: 0;
+}
+
+.ui.grid > .column:not(.row) {
+  margin: 0;
+  padding: 0;
+}
+
+/* End grid configuration */
 
 .ui.breadcrumb:hover {
   color: #a5a5a5;
@@ -161,17 +182,6 @@ div.upload.progress {
   vertical-align: baseline;
 }
 
-
-.ui.grid > .column:not(.row), .ui.grid > .row > .column {
-  padding-left: 0.4em;
-  padding-right: 0.4em;
-  margin: 0;
-}
-.ui.grid > .column:not(.row) {
-  padding-top: 0.4rem;
-  padding-bottom: 0.4rem;
-}
-
 .white {
   color: #ffffff;
 }
@@ -184,12 +194,6 @@ a {
 
 p, .description, .item {
   font-size: 1.0em;
-}
-
-.main.page {
-  min-height:800px;
-  padding: 60px 10px 10px 10px;
-  margin: 0 10px 0 10px;
 }
 
 .main.screen.left {
@@ -335,3 +339,4 @@ blockquote {
   margin-bottom: 8px;
   padding: 8px;
 }
+
