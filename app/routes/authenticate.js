@@ -37,7 +37,7 @@ export default Ember.Route.extend({
           router.set('token', token);
           router.set('currentUser', user.getProperties('username', 'name', 'email'));
 
-          alert('token = ' +  token + " and " + user.get('firstName') + " " + user.get('lastName'));
+        //  alert('token = ' +  token + " and " + user.get('firstName') + " " + user.get('lastName'));
           return user;
         }
       });
