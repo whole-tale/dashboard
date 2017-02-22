@@ -70,7 +70,7 @@ export default Ember.Component.extend({
             let options = {
                 method: 'GET',
                 data: {
-                    dataId: this.searchDataId
+                    dataId: JSON.stringify(this.searchDataId.split())
                 }
             };
 
