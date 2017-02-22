@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
+import config from '../config/environment';
 
 function endsWith(str, suffix) {
   return str.indexOf(suffix, str.length - suffix.length) !== -1;
@@ -21,7 +22,7 @@ export default Ember.Controller.extend({
     var size = model.get('size');
 
     if ((size < 1000000) && (endsWith(model, ".png") )) {
-      var url = 'https://girder.wholetale.org/api/v1/item/' + itemID + '/download?contentDisposition=attachment';
+      let url = config.apiUrl + '/item/' + itemID + '/download?contentDisposition=attachment';
       var client = new XMLHttpRequest();
       client.open('GET', url);
       client.onreadystatechange = function() {
