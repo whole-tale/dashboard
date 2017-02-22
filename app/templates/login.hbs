@@ -32,11 +32,14 @@
     <div class="ui raised segment">
         <div class="ui stackable grid">
             <div class="ten wide column">
-              {{#each-in  as  |provider url|}}
+                <br>
+                <br>
+                <br>
+              {{#each-in model as |provider url|}}
                 {{#if (eq provider "Globus")}}
-                        <a class="ui large blue button" {{action "login" url}}>
+                      <a class="ui large blue button" {{action "login" url}}>
                     Access WholeTale
-                  </a>
+                      </a>
                 {{/if}}
               {{/each-in}}
                 <br>
