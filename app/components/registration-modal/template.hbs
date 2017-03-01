@@ -9,6 +9,15 @@
                     <div class="ui inline button" {{action 'search' on='click'}}>Search</div>
                 </div>
                 <div class="ui secondary segment">
+                    {{#if (gt num_results -1)}}
+                        <p>Found {{num_results}} result(s)</p>
+                        {{#unless dataId}}
+                            <b>Select one of the datasets found</b>
+                        {{/unless}}
+                    {{else if searching}}
+                        <div class="ui active inline indeterminate tiny loader"></div>Searching DataONE and Globus
+                        <p></p>
+                    {{/if}}
                     {{#ui-dropdown class="fluid selection" selected=data onChange=(action (mut data))}}
                         <i class="dropdown icon"></i>
                         <div class="default text">Select Data Sources</div>
@@ -26,10 +35,10 @@
                         <label>Folder Name</label>
                         {{input type="text" classNameBindings="ui fluid" value=name}}
                     </div>
-                    <p>DOI: {{doi}}</p>
-                    <p>DataId: {{dataId}}</p>
+                    <p>DOI:        {{doi}}   </p>
+                    <p>DataId:     {{dataId}}</p>
                     <p>Repository: {{repository}}</p>
-                    <p>Size:       {{size}}</p>
+                    <p>Size:       {{size}}  </p>
                 </div>
             </form>
         </div>
