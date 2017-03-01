@@ -5,30 +5,38 @@
             <form class="ui form">
                 <div class="inline field">
                     <label>DOI/DataId</label>
-                    {{input type="text" value=searchDataId}}
+                    {{input type="text" id="searchbox" value=searchDataId}}
                     <div class="ui inline button" {{action 'search' on='click'}}>Search</div>
                 </div>
-                <div class="ui secondary segment">
+                <div class="ui secondary hidden segment" id="results">
                     {{#if (gt num_results -1)}}
                         <p>Found {{num_results}} result(s)</p>
                         {{#unless dataId}}
                             <b>Select one of the datasets found</b>
                         {{/unless}}
-                    {{else if searching}}
-                        <div class="ui active inline indeterminate tiny loader"></div>Searching DataONE and Globus
-                        <p></p>
-                    {{/if}}
-                    {{#ui-dropdown class="fluid selection" selected=data onChange=(action (mut data))}}
+                        {{#ui-dropdown class="fluid selection" selected=data onChange=(action (mut data))}}
                         <i class="dropdown icon"></i>
                         <div class="default text">Select Data Sources</div>
                         <div class="menu">
                             {{#each datasources as |item|}}
-                                <div class="item" data-value="{{item.doi}}">
-                                    {{item.name}}
-                                </div>
+                            <div class="item" data-value="{{item.doi}}">
+                                {{item.name}}
+                            </div>
                             {{/each}}
                         </div>
-                    {{/ui-dropdown}}
+                        {{/ui-dropdown}}
+                    {{else if searching}}
+                        <div class="ui active inline indeterminate tiny loader"></div>Searching DataONE and Globus
+                        <p></p>
+                    {{/if}}
+
+                    {{#if error}}
+                        <div class="ui negative message">
+                            <div class="header"></div>
+                            <p>{{errorMessage}}</p>
+                        </div>
+                    {{/if}}
+
                 </div>
                 <div class="ui tertiary segment">
                     <div class="inline field">

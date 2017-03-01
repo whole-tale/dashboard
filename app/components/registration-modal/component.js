@@ -12,6 +12,8 @@ export default Ember.Component.extend({
     datasources: Ember.A(),
 
     num_results: -1,
+    error: false,
+    errorMessage: '',
     searching: false,
     searchDataId: '',
     dataId: '',
@@ -42,7 +44,12 @@ export default Ember.Component.extend({
 
     clearModal() {
         Ember.$('.ui.dropdown').dropdown('clear');
+        Ember.$('#results').addClass('hidden');
+        Ember.$('#searchbox').val('');
+
         this.set('datasources', Ember.A());
+        this.set('error', false);
+        this.set('errorMessage', '');
         this.set('num_results', -1);
         this.set('dataId', '');
         this.set('doi', '');
@@ -76,7 +83,9 @@ export default Ember.Component.extend({
         },
 
         search() {
+            this.clearModal();
             this.set('searching', true);
+            Ember.$('#results').removeClass('hidden');
 
             let url = config.apiUrl + '/repository/lookup';
             let options = {
@@ -89,8 +98,10 @@ export default Ember.Component.extend({
             let self = this;
             return self.get('authRequest').send(url, options)
                 .then(rep => {
+                    self.set('error', false);
                     self.set('num_results', rep.length);
                     self.datasources.pushObjects(rep);
+
                     if(rep.length === 1) {
                         Ember.$('.ui.dropdown').dropdown('set text', self.datasources[0].name);
                         Ember.$('.ui.dropdown').dropdown('set value', self.datasources[0].dataId);
@@ -104,7 +115,9 @@ export default Ember.Component.extend({
                     }
                 })
                 .catch(e => {
-                    console.log(e);
+                    console.log("Error: " + e);
+                    self.set('error', true);
+                    self.set('errorMessage', 'No matching results found.');
                     self.disableRegister();
                 })
                 .finally((_) => {
