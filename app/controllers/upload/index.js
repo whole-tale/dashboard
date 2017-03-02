@@ -184,5 +184,10 @@ export default Ember.Controller.extend({
       else
         this.send('itemClicked', item, "true");
     },
+    openModal() {
+      let modal = Ember.$('.ui.harvester.modal');
+      modal.parent().prependTo(Ember.$(document.body));
+      modal.modal('show');
+    }
   }
 });

@@ -19,21 +19,21 @@ body {
 
 
 i.icon.dataone:after {
-    background-size: 24px 24px;
+    background-size: 20px 20px;
     background-image: url(/icons/DataONE_icon.jpg);
     display: inline-block;
     content:"";
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
 }
 
 i.icon.globus:after {
-    background-size: 32px 24px;
+    background-size: 24px 16px;
     background-image: url(/icons/Globus_icon.png);
     display: inline-block;
     content:"";
-    width: 32px;
-    height: 24px;
+    width: 24px;
+    height: 16px;
 }
 
 .globusblue {

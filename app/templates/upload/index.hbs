@@ -8,12 +8,32 @@
 </div>
 
 <div class="ui collapsable grid" >
-    <div class="three wide column" >
+    <div class="three wide column" style="padding-right: 10px;">
         <div class="ui collapsable grid">
             {{collection-browser list=fileData.collections selectedCollectionID=collectionID action="collectionClicked"}}
         </div>
     </div>
-    <div class="thirteen wide column" style="padding-left: 10px;">
+    <div class="thirteen wide column">
+        <div class="ui collapsable grid" >
+          <div class="eight wide column">
+              <button class="ui blue basic button">
+                  <i class="cloud upload icon"></i>
+                  <span>Upload</span>
+              </button>
+          </div>
+          <div class="eight wide column">
+              <div class="two ui buttons" {{action 'openModal' on='click'}}>
+                  <button class="ui blue basic button" style="padding: 8px; margin:0">
+                      <div style="float: left; position: relative;"><i class="dataone icon"></i></div>
+                      <div style="padding-left:5px; color: #303f54; margin-top: 5px">Connect DataONE</div>
+                  </button>
+                  <button class="ui globusblue button" style="padding: 8px; margin:0">
+                      <div style="float: left; position: relative;"><i class="globus icon"></i></div>
+                      <div style="padding-left:15px; color: white; margin-top: 2px"> Connect Globus</div>
+                  </button>
+              </div>
+          </div>
+        </div>
         <div class="ui collapsable grid" >
             <div class="sixteen wide column">
                 {{directory-browser folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
