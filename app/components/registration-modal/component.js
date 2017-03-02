@@ -11,6 +11,10 @@ export default Ember.Component.extend({
 
     datasources: Ember.A(),
 
+    num_results: -1,
+    error: false,
+    errorMessage: '',
+    searching: false,
     searchDataId: '',
     dataId: '',
     doi: '',
@@ -18,9 +22,12 @@ export default Ember.Component.extend({
     repository: '',
     size: '',
 
-    dataMut: Ember.observer('data', function() {
-        let dataId = this.get('data');
-        if(!dataId) return;
+    disableRegister() {
+        Ember.$('.icon.register').removeClass('checkmark');
+        Ember.$('.ui.positive.register.button').addClass('disabled');
+    },
+
+    enableRegister(dataId) {
         let ds = this.datasources.find(ds => {
             return (dataId == ds.dataId || dataId == ds.doi);
         });
@@ -30,23 +37,20 @@ export default Ember.Component.extend({
         this.set('name', ds.name);
         this.set('repository', ds.repository);
         this.set('size', ds.size);
-    }),
 
-    disableRegister() {
-        Ember.$('.icon.register').removeClass('checkmark');
-        Ember.$('.ui.positive.register.button').addClass('disabled');
-        this.clearModal();
-    },
-
-    enableRegister() {
         Ember.$('.icon.register').addClass('checkmark');
         Ember.$('.ui.positive.register.button').removeClass('disabled');
     },
 
     clearModal() {
         Ember.$('.ui.dropdown').dropdown('clear');
+        Ember.$('#results').addClass('hidden');
+        Ember.$('#searchbox').val('');
+
         this.set('datasources', Ember.A());
-        this.datasources.arrayContentDidChange();
+        this.set('error', false);
+        this.set('errorMessage', '');
+        this.set('num_results', -1);
         this.set('dataId', '');
         this.set('doi', '');
         this.set('name', '');
@@ -54,39 +58,71 @@ export default Ember.Component.extend({
         this.set('size', '');
     },
 
+    didRender() {
+        let self = this;
+        Ember.$('.ui.dropdown').dropdown({
+            onChange: function(dataId) {
+                if(!dataId || dataId === "") {
+                    self.disableRegister();
+                    return;
+                }
+                self.enableRegister(dataId);
+            }
+        });
+    },
+
     actions: {
         register() {
+            this.clearModal();
             this.disableRegister();
         },
 
         cancel() {
-            // Ember.$('.ui.modal').modal('hide');
+            this.clearModal();
             this.disableRegister();
         },
 
         search() {
+            this.clearModal();
+            this.set('searching', true);
+            Ember.$('#results').removeClass('hidden');
 
             let url = config.apiUrl + '/repository/lookup';
             let options = {
                 method: 'GET',
                 data: {
-                    dataId: this.searchDataId
+                    dataId: JSON.stringify(this.searchDataId.split())
                 }
             };
 
             let self = this;
             return self.get('authRequest').send(url, options)
                 .then(rep => {
-                    console.log(rep);
+                    self.set('error', false);
+                    self.set('num_results', rep.length);
                     self.datasources.pushObjects(rep);
-                    self.datasources.arrayContentDidChange();
-                    self.enableRegister();
+
+                    if(rep.length === 1) {
+                        Ember.$('.ui.dropdown').dropdown('set text', self.datasources[0].name);
+                        Ember.$('.ui.dropdown').dropdown('set value', self.datasources[0].dataId);
+                    }
+                    else {
+                        Ember.$('.ui.dropdown').dropdown('set visible');
+                        Ember.$('.ui.dropdown').dropdown('set active');
+                        let menu = Ember.$('.ui.dropdown .menu');
+                        menu.removeClass('hidden');
+                        menu.addClass('transition visible');
+                    }
                 })
                 .catch(e => {
-                    console.log(e);
+                    console.log("Error: " + e);
+                    self.set('error', true);
+                    self.set('errorMessage', 'No matching results found.');
                     self.disableRegister();
                 })
-                .finally((_) => {});
+                .finally((_) => {
+                    self.set('searching', false);
+                });
         }
     }
 });
