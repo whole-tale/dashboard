@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import layout from './template';
 import RSVP from 'rsvp';
+import EventStream from 'npm:sse.js';
 
 import config from '../../config/environment';
 
@@ -8,6 +9,7 @@ export default Ember.Component.extend({
     layout,
     authRequest: Ember.inject.service(),
     internalState: Ember.inject.service(),
+    tokenHandler: Ember.inject.service(),
 
     datasources: Ember.A(),
 
@@ -71,6 +73,20 @@ export default Ember.Component.extend({
         });
     },
 
+    getEventStream() {
+        let token = this.get('tokenHandler').getWholeTaleAuthToken();
+        let source = new EventStream.SSE(config.apiUrl+"/notification/stream?timeout=15000", {headers: {'Girder-Token': token}});
+
+        source.addEventListener('message', function(evt) {
+          let payload = JSON.parse(evt.data);
+          console.log(payload); //TODO: Make a nice gui for the notifications
+        });
+
+        source.stream();
+
+        return source;
+    },
+
     actions: {
         register() {
             this.set('error', false);
@@ -106,13 +122,19 @@ export default Ember.Component.extend({
                     dataMap: dataMap
                 }
             };
+
+            let source = this.getEventStream();
+
             this.get('authRequest').send(url, options)
                 .then(rep => {
-                    alert("Primitive notification to tell you that your dataset registration has completed!");
+                    // alert("Primitive notification to tell you that your dataset registration has completed!");
                 })
                 .catch(e => {
-                    alert("[Error] Primitive notification to tell you that your dataset registration has failed!");
+                    // alert("[Error] Primitive notification to tell you that your dataset registration has failed!");
                     console.log(e);
+                })
+                .finally(_ => {
+                    source.close();
                 });
 
             this.clearModal();
