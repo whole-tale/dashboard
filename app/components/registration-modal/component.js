@@ -7,7 +7,7 @@ import config from '../../config/environment';
 export default Ember.Component.extend({
     layout,
     authRequest: Ember.inject.service(),
-    tokenHandler: Ember.inject.service(),
+    internalState: Ember.inject.service(),
 
     datasources: Ember.A(),
 
@@ -73,6 +73,48 @@ export default Ember.Component.extend({
 
     actions: {
         register() {
+            this.set('error', false);
+
+            let folderId = this.get('internalState').getCurrentFolderID();
+            let parentType, parentId;
+            console.log(folderId);
+            if(folderId !== "null") {
+                console.log("should not see me");
+                parentType = "folder";
+                parentId = folderId;
+            }
+            else {
+                parentType = "collection";
+                parentId = this.get('internalState').getCurrentCollectionID();
+            }
+
+            let queryParams = "?"+[
+                "parentType="+parentType,
+                "parentId="+parentId,
+                "public=false"
+            ].join('&');
+
+            let dataMap = JSON.stringify([{
+                name: this.name,
+                dataId: this.dataId,
+                repository: this.repository
+            }]);
+
+            let url = config.apiUrl + '/folder/register' + queryParams;
+            let options = {
+                method: 'POST',
+                data: {
+                    dataMap: dataMap
+                }
+            };
+            this.get('authRequest').send(url, options)
+                .then(rep => {
+                    alert("Primitive notification to tell you that your dataset registration has completed!");
+                })
+                .catch(e => {
+                    console.log(e);
+                });
+
             this.clearModal();
             this.disableRegister();
         },
