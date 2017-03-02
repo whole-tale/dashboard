@@ -77,9 +77,8 @@ export default Ember.Component.extend({
 
             let folderId = this.get('internalState').getCurrentFolderID();
             let parentType, parentId;
-            console.log(folderId);
+
             if(folderId !== "null") {
-                console.log("should not see me");
                 parentType = "folder";
                 parentId = folderId;
             }
@@ -112,6 +111,7 @@ export default Ember.Component.extend({
                     alert("Primitive notification to tell you that your dataset registration has completed!");
                 })
                 .catch(e => {
+                    alert("[Error] Primitive notification to tell you that your dataset registration has failed!");
                     console.log(e);
                 });
 
