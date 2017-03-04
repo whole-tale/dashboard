@@ -1,51 +1,54 @@
-<div class="ui raised fluid fish segment">
-  <div class="ui stackable two column grid" style="margin:0; padding:10px">
-      <div class="column" style="margin:0; padding:0">
-        {{info-box color="white" icon="file" title="CONTRIBUTED DATASETS" value="77" }}
-      </div>
+<style>
+    .ui.inverted.grey.segment {
+        background-color: #f3f3f3 !important;
+        color: #FFFFFF !important;
+    }
+</style>
+<div class="ui grid" style="padding-top: 20px">
 
-      <div class="column" style="margin:0; padding:0">
-        {{info-box color="white" icon="file" title="ACCESSED DATASETS" value="77" }}
-      </div>
+    <div class="two wide column">
 
+    </div>
+    <div class="fourteen wide column">
+        <div class="ui huge header">Research Environments</div>
 
-  </div>
-    <div class="ui stackable two column grid" style="margin:0; padding:10px">
-        <div class="column" style="margin:0; padding:0">
-          {{info-box color="white" icon="disk outline" title="STORAGE" value="100MB" }}
-        </div>
-        <div class="column" style="margin:0; padding:0">
-          {{info-box color="white" icon="desktop" title="COMPUTE" value="24%" }}
-        </div>
-  </div>
-    <div class="ui stackable three column grid" style="margin:0; padding:10px">
-        <div class="column" style="margin:0; padding:0">
-          {{info-box color="white" icon="disk outline" title="FRONTENDS" value="8" }}
+        <p style="padding-bottom: 5px">Launch an existing research environment, or customize a new one to choose particular computational tools and data sets.  Any new research environments that
+        you create will be listed here.  Return whenever you need to analyze and compute using these environments.
+        </p>
+    </div>
+
+    <div class="center aligned two wide column">
+
+        <br>
+        <i class="huge dashboard icon"></i>
+        <div class="ui large header">
+            Analyze/<br>Compute
         </div>
 
-        <div class="column" style="margin:0; padding:0">
-          {{info-box color="white" icon="disk outline" title="DRIVES" value="8" }}
+    </div>
+    <div class="fourteen wide column">
+        <div class="ui inverted grey segment">
+        <div class="ui six doubling cards" style="padding: 5px 20px 5px 20px">
+            <div class="card">
+                    <div class="image">
+                      <img src="/images/frontends/jupyter.png">
+                    </div>
+                    <div class="content">
+                        <a class="header">Sea Surface
+                            Temp Analysis</a>
+                    </div>
+            </div>
+            <div class="card">
+                <div class="image">
+                    <img src="/images/frontends/rstudio.png">
+                </div>
+                <div class="content">
+                    <a class="header">Biodiversity &
+                        Climate model</a>
+                </div>
+            </div>
         </div>
-        <div class="column" style="margin:0; padding:0">
-          {{info-box color="white" icon="book" title="RESEARCH PRODUCTS" value="3" }}
         </div>
     </div>
+
 </div>
-
-<!--<div class="ui horizontal divider"></div>-->
-
-<!--
-<div class="ui three column grid">
-    <div class="column">
-      {{big-button  color="blue" icon="search" title="Search" action="gotoSearch" img="images/search.jpg"}}
-    </div>
-
-    <div class="column">
-      {{big-button  color="blue" icon="disk outline" title="Your Drives" action="gotoDrives" img="images/drives.png"}}
-    </div>
-
-    <div class="column">
-      {{big-button  color="blue" icon="book" title="Research Products" action="gotoPublish" img="images/research.png" }}
-    </div>
-</div>
--->
