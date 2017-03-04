@@ -55,6 +55,7 @@
     "loader.js": "^4.0.10",
     "medium-editor": "5.22.1",
     "semantic-ui-ember": "2.0.1",
+    "sse.js": "^0.4.4",
     "torii": "^0.8.0"
   },
   "dependencies": {

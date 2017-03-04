@@ -1,12 +1,14 @@
 import Ember from 'ember';
 import layout from './template';
 import RSVP from 'rsvp';
+import EventStream from 'npm:sse.js';
 
 import config from '../../config/environment';
 
 export default Ember.Component.extend({
     layout,
     authRequest: Ember.inject.service(),
+    internalState: Ember.inject.service(),
     tokenHandler: Ember.inject.service(),
 
     datasources: Ember.A(),
@@ -71,8 +73,70 @@ export default Ember.Component.extend({
         });
     },
 
+    getEventStream() {
+        let token = this.get('tokenHandler').getWholeTaleAuthToken();
+        let source = new EventStream.SSE(config.apiUrl+"/notification/stream?timeout=15000", {headers: {'Girder-Token': token}});
+
+        source.addEventListener('message', function(evt) {
+          let payload = JSON.parse(evt.data);
+          console.log(payload); //TODO: Make a nice gui for the notifications
+        });
+
+        source.stream();
+
+        return source;
+    },
+
     actions: {
         register() {
+            this.set('error', false);
+
+            let folderId = this.get('internalState').getCurrentFolderID();
+            let parentType, parentId;
+
+            if(folderId !== "null") {
+                parentType = "folder";
+                parentId = folderId;
+            }
+            else {
+                parentType = "collection";
+                parentId = this.get('internalState').getCurrentCollectionID();
+            }
+
+            let queryParams = "?"+[
+                "parentType="+parentType,
+                "parentId="+parentId,
+                "public=false"
+            ].join('&');
+
+            let dataMap = JSON.stringify([{
+                name: this.name,
+                dataId: this.dataId,
+                repository: this.repository
+            }]);
+
+            let url = config.apiUrl + '/folder/register' + queryParams;
+            let options = {
+                method: 'POST',
+                data: {
+                    dataMap: dataMap
+                }
+            };
+
+            let source = this.getEventStream();
+
+            this.get('authRequest').send(url, options)
+                .then(rep => {
+                    // alert("Primitive notification to tell you that your dataset registration has completed!");
+                })
+                .catch(e => {
+                    // alert("[Error] Primitive notification to tell you that your dataset registration has failed!");
+                    console.log(e);
+                })
+                .finally(_ => {
+                    source.close();
+                });
+
             this.clearModal();
             this.disableRegister();
         },
