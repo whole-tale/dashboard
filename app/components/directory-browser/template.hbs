@@ -9,7 +9,7 @@
       </tr></thead>
       <tbody>
       {{#each folderList as |item|}}
-          <tr class="left aligned">
+          <tr class="left aligned contextmenu" id={{item.id}}>
               <td>
                   <a href="#" {{action "clickedFolder" item}}>
                       <i class="large folder outline icon"></i> {{item.name}}
@@ -27,7 +27,7 @@
           </tr>
       {{/each}}
       {{#each fileList as |item|}}
-          <tr class="left aligned">
+          <tr class="left aligned contextmenu" id={{item.id}}>
               <td>
                   <a href="#" {{action "clickedFile" item}}>
                     {{{file-icon-for item.name}}} {{item.name}}
@@ -51,4 +51,6 @@
   {{#if showEditor}}
     {{code-editor content=textData fileID=fileIdentifier}}
   {{/if}}
+
+  {{nice-context-menu id="directory-context-menu" class="hidden" onClose=(action "hide")}}
 </div>
