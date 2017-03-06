@@ -16,10 +16,13 @@
     <div class="thirteen wide column">
         <div class="ui collapsable grid" >
           <div class="eight wide column">
-              <button class="ui blue basic button">
-                  <i class="cloud upload icon"></i>
-                  <span>Upload</span>
-              </button>
+              {{#unless currentBreadCrumb.isCollection}}
+                  {{input type="file" value=file class="nice upload hidden"}}
+                  <button class="ui blue basic button" {{action "selectUpload"}}>
+                      <i class="cloud upload icon"></i>
+                      <span>Upload</span>
+                  </button>
+              {{/unless}}
           </div>
           <div class="eight wide column">
               <div class="two ui buttons" {{action 'openModal' on='click'}}>

@@ -1,4 +1,6 @@
 import Ember from 'ember';
+import RSVP from 'rsvp';
+import config from '../../config/environment';
 var inject = Ember.inject;
 
 function wrapItem (itemID, itemName, isCollection) {
@@ -16,6 +18,7 @@ function wrapItem (itemID, itemName, isCollection) {
 
 export default Ember.Controller.extend({
   internalState: inject.service(),
+  authRequest: inject.service(),
   fileBreadCrumbs : {},
   currentBreadCrumb : [],
   isRoot : true,
@@ -23,6 +26,13 @@ export default Ember.Controller.extend({
   parentId : null,
   collectionID : null,
   collectionName : null,
+  fileChosen: Ember.observer('file', function() {
+      let files = Ember.$('.nice.upload.hidden')[0].files;
+      let dz = window.Dropzone.forElement(".dropzone");
+      for(let i = 0; i < files.length; i++) {
+          dz.addFile(files[i]);
+      }
+  }),
   init() {
     var state = this.get('internalState');
     state.setCurrentFolderID(null);
@@ -183,6 +193,9 @@ export default Ember.Controller.extend({
         this.send('collectionClicked',item.id, item.name);
       else
         this.send('itemClicked', item, "true");
+    },
+    selectUpload() {
+        Ember.$('.nice.upload.hidden').click();
     },
     openModal() {
       let modal = Ember.$('.ui.harvester.modal');
