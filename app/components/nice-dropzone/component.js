@@ -103,7 +103,6 @@ export default Ember.Component.extend({
     processQueue() {
         let self = this;
         let dz = window.Dropzone.forElement(".dropzone");
-        let folderId, parentType, parentId;
         let p_create_files = dz.files.reduce((p, file) => {
             p = p.then(() => {
                 let url = config.apiUrl + '/file';

@@ -18,7 +18,6 @@ function wrapItem (itemID, itemName, isCollection) {
 
 export default Ember.Controller.extend({
   internalState: inject.service(),
-  authRequest: inject.service(),
   fileBreadCrumbs : {},
   currentBreadCrumb : [],
   isRoot : true,
