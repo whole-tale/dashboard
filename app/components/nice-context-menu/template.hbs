@@ -1,21 +1,15 @@
-<ul {{action "close" on="click"}} class="context-menu-list context-menu-root" style="/* width: 208px; *//* top: 296px; *//* left: 92px; *//* z-index: 1; */">
-    <li class="context-menu-item context-menu-icon context-menu-icon-edit">
-        <span>Edit</span>
-    </li>
-    <li class="context-menu-item context-menu-icon context-menu-icon-cut context-menu-visible">
-        <span>Cut</span>
-    </li>
-    <li class="context-menu-item context-menu-icon context-menu-icon-copy">
-        <span>Copy</span>
-    </li>
-    <li class="context-menu-item context-menu-icon context-menu-icon-paste">
-        <span>Paste</span>
-    </li>
-    <li class="context-menu-item context-menu-icon context-menu-icon-delete">
-        <span>Delete</span>
-    </li>
+<ul class="context-menu-list context-menu-root">
+    {{#each menuItems as |menuItem|}}
+        {{#if menuItem.separator}}
+            <li class="context-menu-item context-menu-separator context-menu-not-selectable"></li>
+        {{else}}
+            <li class="context-menu-item" {{action "clicked" menuItem.name}}>
+                <i class="large blue icon {{menuItem.icon}}"></i><span>{{menuItem.label}}</span>
+            </li>
+        {{/if}}
+    {{/each}}
     <li class="context-menu-item context-menu-separator context-menu-not-selectable"></li>
-    <li class="context-menu-item context-menu-icon context-menu-icon-quit">
-        <span>Quit</span>
+    <li class="context-menu-item">
+        <i class="large blue icon sign out"></i><span>Quit</span>
     </li>
 </ul>

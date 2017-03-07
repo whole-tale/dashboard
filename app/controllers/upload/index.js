@@ -25,7 +25,9 @@ export default Ember.Controller.extend({
   parentId : null,
   collectionID : null,
   collectionName : null,
+  file: '',
   fileChosen: Ember.observer('file', function() {
+      if(this.get('file') == "") return;
       let files = Ember.$('.nice.upload.hidden')[0].files;
       let dz = window.Dropzone.forElement(".dropzone");
       for(let i = 0; i < files.length; i++) {

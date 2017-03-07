@@ -52,5 +52,11 @@
     {{code-editor content=textData fileID=fileIdentifier}}
   {{/if}}
 
-  {{nice-context-menu id="directory-context-menu" class="hidden" onClose=(action "hide")}}
+  {{nice-context-menu
+      id="directory-context-menu"
+      menuItems=menuItems
+      class="hidden"
+      onClose=(action "closedContextMenu")
+      onClick=(action "clickedContextMenuItem")
+  }}
 </div>
