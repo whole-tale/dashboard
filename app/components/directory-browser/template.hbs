@@ -9,11 +9,21 @@
       </tr></thead>
       <tbody>
       {{#each folderList as |item|}}
-          <tr class="left aligned contextmenu" id={{item.id}}>
+          <tr class="left aligned contextmenu" id={{item.id}} {{action "openedContextMenu" item on="contextMenu"}}>
               <td>
-                  <a href="#" {{action "clickedFolder" item}}>
-                      <i class="large folder outline icon"></i> {{item.name}}
-                  </a>
+                  {{#if (eq renaming item.id)}}
+                      <form class="ui form">
+                          <div class="inline field">
+                              <i class="large folder outline icon"></i>
+                              {{input type="text" value=item.name}}
+                              <button class="ui button" {{action "updateModel" item}}>Rename</button>
+                          </div>
+                      </form>
+                  {{else}}
+                      <a href="#" {{action "clickedFolder" item}}>
+                          <i class="large folder outline icon"></i> {{item.name}}
+                      </a>
+                  {{/if}}
               </td>
               <td >
                 {{from-now item.created}}
@@ -27,12 +37,21 @@
           </tr>
       {{/each}}
       {{#each fileList as |item|}}
-          <tr class="left aligned contextmenu" id={{item.id}}>
+          <tr class="left aligned contextmenu" id={{item.id}} {{action "openedContextMenu" item on="contextMenu"}}>
               <td>
-                  <a href="#" {{action "clickedFile" item}}>
-                    {{{file-icon-for item.name}}} {{item.name}}
-                  </a>
-
+                  {{#if (eq renaming item.id)}}
+                      <form class="ui form">
+                          <div class="inline field">
+                              {{{file-icon-for item.name}}}
+                              {{input type="text" value=item.name}}
+                              <button class="ui button" {{action "updateModel" item}}>Rename</button>
+                          </div>
+                      </form>
+                  {{else}}
+                      <a href="#" {{action "clickedFile" item}}>
+                        {{{file-icon-for item.name}}} {{item.name}}
+                      </a>
+                  {{/if}}
               </td>
               <td >
                 {{from-now item.created}}
