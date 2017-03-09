@@ -12,13 +12,13 @@
           <tr class="left aligned contextmenu" id={{item.id}} {{action "openedContextMenu" item on="contextMenu"}}>
               <td>
                   {{#if (eq renaming item.id)}}
-                      <form class="ui form">
+                      <div class="ui form">
                           <div class="inline field">
                               <i class="large folder outline icon"></i>
                               {{input type="text" value=item.name}}
                               <button class="ui button" {{action "updateModel" item}}>Rename</button>
                           </div>
-                      </form>
+                      </div>
                   {{else}}
                       <a href="#" {{action "clickedFolder" item}}>
                           <i class="large folder outline icon"></i> {{item.name}}
@@ -40,13 +40,13 @@
           <tr class="left aligned contextmenu" id={{item.id}} {{action "openedContextMenu" item on="contextMenu"}}>
               <td>
                   {{#if (eq renaming item.id)}}
-                      <form class="ui form">
+                      <div class="ui form">
                           <div class="inline field">
                               {{{file-icon-for item.name}}}
                               {{input type="text" value=item.name}}
                               <button class="ui button" {{action "updateModel" item}}>Rename</button>
                           </div>
-                      </form>
+                      </div>
                   {{else}}
                       <a href="#" {{action "clickedFile" item}}>
                         {{{file-icon-for item.name}}} {{item.name}}

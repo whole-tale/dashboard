@@ -22,6 +22,27 @@ export default Ember.Component.extend({
     renaming: false,
     confirmDisabled: "disabled",
 
+    didRender() {
+        if(this.renaming) {
+            var timer;
+
+            let self = this;
+            let cancelRenaming = function() {
+                self.set("renaming", false);
+                self.selectedItem.rollbackAttributes();
+            }
+
+            let input = this.selectedRow.find("input");
+
+            input.focus();
+
+            input.on("blur", function() {
+                if(timer) window.clearTimeout(timer);
+                timer = window.setTimeout(cancelRenaming, 200);
+            });
+        }
+    },
+
     actions: {
         clickedFolder : function(item) {
             this.sendAction('action', item,  "true");
@@ -100,6 +121,7 @@ export default Ember.Component.extend({
         remove(file) {
             this.set('fileToRemove', file);
             this.set("confirmValue", "");
+            this.set("confirmDisabled", "disabled");
 
             let prompt = Ember.$('#confirm-remove');
             prompt.css({
