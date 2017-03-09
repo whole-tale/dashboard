@@ -39,6 +39,7 @@ export default DS.RESTAdapter.extend({
     // But Girder returns 200, so we have to override the response to prevent
     // ember from throwing an exception when deleting a model.
     deleteRecord(store, type, snapshot) {
+        let response = this._super(store, type, snapshot);
         return null;
     },
 
