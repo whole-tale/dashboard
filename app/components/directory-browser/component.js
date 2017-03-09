@@ -20,6 +20,7 @@ export default Ember.Component.extend({
 
     selectedItem: null,
     renaming: false,
+    confirmDisabled: "disabled",
 
     actions: {
         clickedFolder : function(item) {
@@ -31,6 +32,8 @@ export default Ember.Component.extend({
         },
 
         openedContextMenu(item) {
+            this.send("closedPrompt", ".prompt");
+
             //unhide the context menu and position it close to where the user
             //right-clicked
             let ctxt = Ember.$('#directory-context-menu');
@@ -95,7 +98,34 @@ export default Ember.Component.extend({
         },
 
         remove(file) {
-            console.log("remove "+file.get('name'));
+            this.set('fileToRemove', file);
+            this.set("confirmValue", "");
+
+            let prompt = Ember.$('#confirm-remove');
+            prompt.css({
+                position:"absolute",
+                top:event.layerY+"px",
+                left:event.layerX+"px"
+            });
+            prompt.removeClass("hidden");
         },
+
+        confirmedRemove() {
+            Ember.$("#confirm-remove").addClass("hidden");
+            this.fileToRemove.destroyRecord();
+        },
+
+        closedPrompt(prompt) {
+            Ember.$(prompt).addClass("hidden");
+        },
+
+        confirmValueEquals(value) {
+            if(this.confirmValue === value) {
+                this.set('confirmDisabled', '');
+            }
+            else {
+                this.set('confirmDisabled', 'disabled');
+            }
+        }
     }
 });
