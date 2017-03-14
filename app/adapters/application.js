@@ -23,14 +23,20 @@ export default DS.RESTAdapter.extend({
     // where queryParams is a hash object.
     urlForUpdateRecord(id, modelName, snapshot) {
         let url = this._super(id, modelName, snapshot);
-        if(snapshot.adapterOptions.queryParams) {
-            let queryParams = snapshot.adapterOptions.queryParams;
-            let keys = Object.keys(queryParams);
-            let q = keys.reduce((_q, key) => {
-                _q.push(key+"="+queryParams[key]);
-                return _q;
-            }, []);
-            return url + "?"+q.join('&');
+        let queryParams = snapshot.adapterOptions.queryParams;
+        if(queryParams) {
+            let q = this.buildQueryParams(queryParams);
+            return url+"?"+q;
+        }
+        return url;
+    },
+
+    urlForCreateRecord(modelName, snapshot) {
+        let url = this._super(modelName, snapshot);
+        let queryParams = snapshot.adapterOptions.queryParams;
+        if(queryParams) {
+            let q = this.buildQueryParams(queryParams);
+            return url+"?"+q;
         }
         return url;
     },
@@ -47,6 +53,15 @@ export default DS.RESTAdapter.extend({
         if (params.requestType === 'createRecord') { return 'PUT'; }
         return this._super(params);
     },
+
+    buildQueryParams(queryParams) {
+        let keys = Object.keys(queryParams);
+        let q = keys.reduce((_q, key) => {
+            _q.push(key+"="+queryParams[key]);
+            return _q;
+        }, []);
+        return q.join('&');
+    }
 });
 
 //.volatile()

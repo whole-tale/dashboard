@@ -23,9 +23,13 @@
                       <span>Upload</span>
                   </button>
               {{/unless}}
+              <button class="ui blue basic button" {{action "openModal" "newfolder" on="click"}}>
+                  <i class="cloud upload icon"></i>
+                  <span>New Folder</span>
+              </button>
           </div>
           <div class="eight wide column">
-              <div class="two ui buttons" {{action 'openModal' on='click'}}>
+              <div class="two ui buttons" {{action 'openModal' "harvester" on='click'}}>
                   <button class="ui blue basic button" style="padding: 8px; margin:0">
                       <div style="float: left; position: relative;"><i class="dataone icon"></i></div>
                       <div style="padding-left:5px; color: #303f54; margin-top: 5px">Connect DataONE</div>
@@ -49,3 +53,5 @@
         </div>
     </div>
 </div>
+
+{{create-folder-modal onNewFolder=(action "insertNewFolder")}}

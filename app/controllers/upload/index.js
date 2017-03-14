@@ -57,6 +57,7 @@ export default Ember.Controller.extend({
         var state = this.get('internalState');
         var myController = this;
         let itemID = state.getCurrentFolderID();
+
         var folderContents = myController.store.query('folder', { parentId: itemID, parentType: "folder"});
 
         var itemContents = myController.store.query('item', { folderId: itemID});
@@ -198,10 +199,20 @@ export default Ember.Controller.extend({
     selectUpload() {
         Ember.$('.nice.upload.hidden').click();
     },
-    openModal() {
-      let modal = Ember.$('.ui.harvester.modal');
+    openModal(modalName) {
+      let modal = Ember.$('.ui.'+modalName+'.modal');
       modal.parent().prependTo(Ember.$(document.body));
       modal.modal('show');
+    },
+    insertNewFolder(folder) {
+        let parentId = folder.get('parentId');
+        let parentType = folder.get('parentCollection');
+
+        let folderContents = this.store.query('folder', { parentId: parentId, parentType: parentType});
+        let itemContents = this.fileData.itemContents;
+        let collections = this.fileData.collections;
+        let newModel = {'folderContents':folderContents,'itemContents': itemContents,'collections':collections};
+        this.set('fileData', newModel);
     }
   }
 });

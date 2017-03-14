@@ -103,7 +103,17 @@ export default Ember.Component.extend({
         },
 
         move(file) {
-            console.log("move "+file.get('name'));
+            this.set('fileToMove', file);
+            Ember.$('#move-file').removeClass('hidden');
+        },
+
+        moveFile() {
+            Ember.$('#move-file').addClass('hidden');
+
+            let queryParams = {folderId: this.moveTo};
+            this.fileToMove.save({ adapterOptions: {queryParams: queryParams} });
+
+            this.set('moveTo', '');
         },
 
         rename(file) {

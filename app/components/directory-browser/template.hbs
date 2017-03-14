@@ -93,4 +93,19 @@
         <div class="ui button {{confirmDisabled}}" {{action "confirmedRemove" on="click"}}>Confirm</div>
     </div>
   </div>
+
+  <div class="ui attached hidden message prompt" id="move-file">
+    <i class="close icon" {{action "closedPrompt" "#move-file" on="click"}}></i>
+    <div class="header">
+    </div>
+    <p>(WIP) Type the parent id of the folder you want to move this to!</p>
+    <div class="ui form attached fluid segment">
+        <div class="field">
+            <label>Parent Id</label>
+            {{input type="text" value=moveTo}}
+        </div>
+        <div class="ui button" {{action "moveFile" on="click"}}>Move</div>
+    </div>
+  </div>
+
 </div>
