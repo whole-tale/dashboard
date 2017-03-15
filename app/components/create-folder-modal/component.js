@@ -17,15 +17,10 @@ export default Ember.Component.extend({
     actions: {
         createFolder() {
             let self = this;
-            let parentId, parentType, folderId = this.get('internalState').getCurrentFolderID();
-            if(folderId === "null") {
-                parentId = this.get('internalState').getCurrentCollectionID();
-                parentType = "collection";
-            }
-            else {
-                parentId = folderId;
-                parentType = "folder";
-            }
+            let state = this.get('internalState');
+
+            let parentId = state.getCurrentParentId();
+            let parentType = state.getCurrentParentType();
 
             let queryParams = {
                 parentType: parentType,

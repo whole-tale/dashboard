@@ -48,6 +48,22 @@ export default Ember.Service.extend({
     return JSON.parse(localStorage.currentBreadCrumb);
   },
 
+  getCurrentParentId: function() {
+    if(localStorage.currentFolderID === "null") {
+        return localStorage.currentCollectionID;
+    }
+    else {
+        return localStorage.currentFolderID;
+    }
+  },
+
+  getCurrentParentType: function() {
+      if(localStorage.currentFolderID === "null") {
+          return "collection";
+      }
+      return "folder";
+  },
+
   toString: function () {
       return "Collection ID: " + localStorage.currentCollectionID +
         ", Collection Name: " + localStorage.currentCollectionName +
