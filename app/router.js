@@ -44,6 +44,20 @@ Router.map(function() {
   this.route('data', function() {
     this.route('list', { path: '/:collection_id' });
   });
+
+
+  this.route('image', function(){
+    this.route('view', { path: '/view/:image_id' });
+  });
+
+  this.route('folder', function(){
+    this.route('view', { path: '/view/:folder_id' });
+  });
+
+  this.route('tale', function(){
+    this.route('view', { path: '/view/:tale_id' });
+  });
+
 });
 
 export default Router;

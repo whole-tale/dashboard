@@ -1,0 +1,81 @@
+<div class="ui tool segment">
+  <div class="ui small blue button" {{action 'back'}}><i class="caret left icon"></i> Back </div>
+</div>
+
+<div class="ui header">
+    <i class="info circle icon"></i> Image Info
+</div>
+<br>
+
+<form class="ui form" {{action "updateDetails" on="submit"}}>
+    <div class="field">
+        <label>Image Name</label>
+        {{input type="text" name="file-name" placeholder="File Name" value=model.name}}
+    </div>
+    <div class="field">
+        <label>Description</label>
+
+            <textarea disabled rows="2">{{model.description}}</textarea>
+
+    </div>
+
+<!--
+  {{input type="submit" class="ui blue submit button" value="Update"}}
+-->
+</form>
+
+{{#if details_updating}}
+    <div class="ui segment" style="height:100px">
+        <div class="ui active inverted dimmer">
+            <div class="ui text loader">Saving details...</div>
+        </div>
+    </div>
+{{/if}}
+
+{{#if details_updated}}
+    <div class="ui green icon message">
+        <i class="checkmark icon"></i>
+        <div class="content">
+            <div class="header">
+                The name and description has been saved !
+            </div>
+        </div>
+    </div>
+{{/if}}
+
+{{#if details_not_updated}}
+    <div class="ui red icon message">
+        <i class="remove circle icon"></i>
+        <div class="content">
+            <div class="header">
+                The details could not be saved !
+            </div>
+        </div>
+    </div>
+{{/if}}
+
+<div class="ui header">
+    <i class="tasks icon"></i> Image Properties
+</div>
+<div class="ui form">
+    <br>
+    <div class="field">
+        <label>Image ID</label>
+        <input type="text" name="file-id" placeholder="File ID" value="{{model._id}}" disabled>
+    </div>
+
+
+    <div class="field">
+        <label>Image Created</label>
+        <input type="text" name="date-created" placeholder="Date Created" value="{{from-now model.created}}" disabled>
+    </div>
+
+    <div class="field">
+        <label>Image Updated</label>
+        <input type="text" name="last-updated" placeholder="Last Updated" value="{{from-now model.updated}}" disabled>
+    </div>
+</div>
+
+
+
+
