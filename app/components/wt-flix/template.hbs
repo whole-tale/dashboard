@@ -1,13 +1,13 @@
 <div class="ui inverted grey segment">
     <div class="ui six doubling cards" style="padding: 5px 20px 5px 20px">
 
-      {{#each images as |image|}}
+      {{#each modelsInView as |model|}}
             <div class="card">
                 <div class="image">
-                    <img src="{{image.icon}}">
+                    <img src="{{model.icon}}">
                 </div>
                 <div class="content">
-                    <a class="header">{{image.name}}</a>
+                    <a class="header">{{model.name}}</a>
                 </div>
             </div>
       {{/each}}
@@ -16,28 +16,17 @@
     <div class="ui grid">
         <div class="center aligned sixteen wide column">
             <div class="ui pagination menu">
-                <a class="item">
+                <a class="{{leftButtonState}} item" {{action "leftButtonClicked"}}>
                     <i class="left arrow icon"></i>
                 </a>
-                <a class="active item">
-                    1
-                </a>
-                <div class="disabled item">
-                    ...
-                </div>
-                <a class="item">
-                    10
-                </a>
-                <a class="item">
-                    11
-                </a>
-                <a class="item">
-                    12
-                </a>
-                <a class="item">
+              {{#each paginateArray as |paginateItem|}}
+                  <a class="{{paginateItem.state}} item" {{action "tabClicked" paginateItem.number}}>
+                    {{paginateItem.number}}
+                  </a>
+              {{/each}}
+                <a class="{{rightButtonState}} item" {{action "rightButtonClicked"}}>
                     <i class="right arrow icon"></i>
                 </a>
-
             </div>
         </div>
     </div>
