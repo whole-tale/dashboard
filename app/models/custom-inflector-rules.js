@@ -8,6 +8,7 @@ inflector.uncountable('item');
 inflector.uncountable('user');
 inflector.uncountable('image');
 inflector.uncountable('registered');
+inflector.uncountable('tale');
 
 // Meet Ember Inspector's expectation of an export
 export default {};

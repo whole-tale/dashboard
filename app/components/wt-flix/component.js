@@ -57,11 +57,40 @@ export default Ember.Component.extend({
     var startingPosition = (pageNumber-1)*paginateSize;
     var endingPosition = ((pageNumber-1)*paginateSize)+paginateSize;
     var iterateNumber=0;
-    models.forEach(function(model){
 
+    if (pageNumber == 1)
+      component.set('leftButtonState', "disabled");
+    else
+      component.set('leftButtonState', "");
+
+    if (pageNumber == totalPages)
+      component.set('rightButtonState', "disabled");
+    else
+      component.set('rightButtonState', "");
+
+    models.forEach(function(model){
       if ((iterateNumber>=startingPosition) && (iterateNumber<endingPosition)) {
-        modelsInView.push(model)
+        console.log("Icon field is--" + model.get("icon") + "--");
+        if (typeof model.get("icon") === "undefined" ) {
+          console.log("Checking meta fields: " + model.get("meta"));
+          if (typeof model.get("meta") !== "undefined") {
+               if (model['meta']['provider'] === "DataONE")
+                 model['icon'] = "/icons/d1-logo-large.png";
+               else
+                 model['icon'] = "/icons/globus-logo-large.png";
+          }
+        }
+        var name = model.get('name');
+
+        if (name.length > 20)
+          model.set('tagName', name.substring(0,20) + "..");
+        else
+          model.set('tagName', name);
+
+        modelsInView.push(model);
       }
+
+
       ++iterateNumber;
     });
 

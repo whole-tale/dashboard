@@ -6,8 +6,10 @@
                 <div class="image">
                     <img src="{{model.icon}}" style="height:150px;" height="150px">
                 </div>
-                <div class="content">
-                    <a class="header">{{model.name}}</a>
+                <div class="content" style="color: #515151">
+                  {{#ui-popup html=model.name}}
+                      {{model.tagName}}
+                  {{/ui-popup}}
                 </div>
             </div>
       {{/each}}

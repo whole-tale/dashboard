@@ -8,7 +8,7 @@ export default AuthenticateRoute.extend({
 
       return {
         images: this.get('store').findAll('image'),
-        dataRegistered: this.get('store').query('folder', {'registered' : ""})
+        dataRegistered: this.get('store').query('folder', {adapterOptions:{registered: true}})
       };
   }
 });

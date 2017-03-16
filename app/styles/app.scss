@@ -346,3 +346,12 @@ blockquote {
   background-color: #f3f3f3 !important;
   color: #FFFFFF !important;
 }
+
+.truncate {
+  color: #515151;
+  white-space: nowrap;
+  width: 100%;                   /* IE6 needs any width */
+  overflow: hidden;              /* "overflow" value must be different from  visible"*/
+  -o-text-overflow: ellipsis;    /* Opera < 11*/
+  text-overflow:    ellipsis;    /* IE, Safari (WebKit), Opera >= 11, FF > 6 */
+}

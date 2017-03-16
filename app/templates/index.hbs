@@ -1,3 +1,4 @@
+
 <div class="ui grid" style="padding-top: 20px">
 
     <div class="two wide column">
@@ -21,7 +22,35 @@
 
     </div>
     <div class="fourteen wide column">
-      {{wt-flix models=model.images paginateOn=3}}
+      {{wt-flix models=model.images paginateOn=5}}
+    </div>
+
+</div>
+
+<div class="ui grid" style="padding-top: 20px">
+
+    <div class="two wide column">
+
+    </div>
+    <div class="fourteen wide column">
+        <div class="ui huge header">Imported Data</div>
+
+        <p style="padding-bottom: 5px">Register data with Whole Tale to be used in your Research Environments.  Data sets can be registered from data repositories like DataONE and Globus, and
+            from other web locations. Once registered, each data set can be attached multiple research environments for analysis.
+        </p>
+    </div>
+
+    <div class="center aligned two wide column">
+
+        <br>
+        <i class="huge dashboard icon"></i>
+        <div class="ui large header">
+            Register<br>Data
+        </div>
+
+    </div>
+    <div class="fourteen wide column">
+      {{wt-flix models=model.dataRegistered paginateOn=5}}
     </div>
 
 </div>
