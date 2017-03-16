@@ -8,7 +8,7 @@ export default AuthenticateRoute.extend({
 
       return {
         images: this.get('store').findAll('image'),
-//        dataWorkspaces: this.get('store').findAll('data-workspace')
+        dataRegistered: this.get('store').query('folder', {'registered' : ""})
       };
   }
 });
