@@ -1,20 +1,7 @@
 
-<div class="ui large header">Private PODs <img class="logo" src="/images/demo.png"></div>
+<div class="ui large header">Images</div>
 
-<div class="ui base segment" style="margin-left: 15%; margin-right: 15%">
-  {{pod-cards user=currentUser filter=filter pageSize=3 isPublic=false}}
+<div class="fourteen wide column">
+  {{wt-flix models=model.images paginateOn=9}}
 </div>
 
-<div class="ui horizontal divider">
-    Public
-</div>
-
-<div class="ui inverted grey segment" style="background-color: #666666 ;margin-left: 10%; margin-right: 10%" >
-    <div class="ui stackable grid">
-        <div class="two wide column"></div>
-        <div class="twelve wide column">
-          {{pod-cards user=currentUser filter=filter pageSize=3 isPublic=true}}
-        </div>
-        <div class="two wide column"></div>
-    </div>
-</div>

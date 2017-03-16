@@ -30,7 +30,7 @@ export default Ember.Component.extend({
             let cancelRenaming = function() {
                 self.set("renaming", false);
                 self.selectedItem.rollbackAttributes();
-            }
+            };
 
             let input = this.selectedRow.find("input");
 
