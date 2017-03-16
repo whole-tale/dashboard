@@ -41,6 +41,15 @@ export default DS.RESTAdapter.extend({
         return url;
     },
 
+    urlForQuery(query, modelName) {
+        let url = this._super(query, modelName);
+        if(query.adapterOptions) {
+            let registered = query.adapterOptions.registered;
+            if(registered) url += "/registered";
+        }
+        return url;
+    },
+
     // Ember likes "204 no content" responses when making a DELETE request.
     // But Girder returns 200, so we have to override the response to prevent
     // ember from throwing an exception when deleting a model.
