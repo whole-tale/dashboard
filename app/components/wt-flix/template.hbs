@@ -1,0 +1,44 @@
+<div class="ui inverted grey segment">
+    <div class="ui six doubling cards" style="padding: 5px 20px 5px 20px">
+
+      {{#each images as |image|}}
+            <div class="card">
+                <div class="image">
+                    <img src="{{image.icon}}">
+                </div>
+                <div class="content">
+                    <a class="header">{{image.name}}</a>
+                </div>
+            </div>
+      {{/each}}
+    </div>
+
+    <div class="ui grid">
+        <div class="center aligned sixteen wide column">
+            <div class="ui pagination menu">
+                <a class="item">
+                    <i class="left arrow icon"></i>
+                </a>
+                <a class="active item">
+                    1
+                </a>
+                <div class="disabled item">
+                    ...
+                </div>
+                <a class="item">
+                    10
+                </a>
+                <a class="item">
+                    11
+                </a>
+                <a class="item">
+                    12
+                </a>
+                <a class="item">
+                    <i class="right arrow icon"></i>
+                </a>
+
+            </div>
+        </div>
+    </div>
+</div>

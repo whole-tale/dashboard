@@ -1,9 +1,3 @@
-<style>
-    .ui.inverted.grey.segment {
-        background-color: #f3f3f3 !important;
-        color: #FFFFFF !important;
-    }
-</style>
 <div class="ui grid" style="padding-top: 20px">
 
     <div class="two wide column">
@@ -13,7 +7,7 @@
         <div class="ui huge header">Research Environments</div>
 
         <p style="padding-bottom: 5px">Launch an existing research environment, or customize a new one to choose particular computational tools and data sets.  Any new research environments that
-        you create will be listed here.  Return whenever you need to analyze and compute using these environments.
+            you create will be listed here.  Return whenever you need to analyze and compute using these environments.
         </p>
     </div>
 
@@ -27,28 +21,7 @@
 
     </div>
     <div class="fourteen wide column">
-        <div class="ui inverted grey segment">
-        <div class="ui six doubling cards" style="padding: 5px 20px 5px 20px">
-            <div class="card">
-                    <div class="image">
-                      <img src="/images/frontends/jupyter.png">
-                    </div>
-                    <div class="content">
-                        <a class="header">Sea Surface
-                            Temp Analysis</a>
-                    </div>
-            </div>
-            <div class="card">
-                <div class="image">
-                    <img src="/images/frontends/rstudio.png">
-                </div>
-                <div class="content">
-                    <a class="header">Biodiversity &
-                        Climate model</a>
-                </div>
-            </div>
-        </div>
-        </div>
+      {{wt-flix images=model.images}}
     </div>
 
 </div>
