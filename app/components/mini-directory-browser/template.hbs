@@ -1,0 +1,25 @@
+<!-- app/components/mini-directory-browser/template.hbs -->
+<div class="ui message context-menu-like">
+    <i class="close icon" {{action "close" on="click"}}></i>
+    <div class="header">
+        Move file {{fileToMove.name}}
+    </div>
+    <div class="ui divider"></div>
+    <div class="ui list">
+        {{#each folders as |item|}}
+            <div class="item context-menu-item" id={{item.id}} {{action "clickedRow" item on="click"}}>
+                <i class="large folder outline icon"></i>
+                <div class="content inline" style="width:100%;">
+                    {{item.name}}
+                    {{#if item.selected}}<i class="chevron right icon" style="float:right;" {{action "clickedNextFolder" item on="click"}}></i>{{/if}}
+                </div>
+            </div>
+        {{/each}}
+    </div>
+    {{#if moveTo}}
+        <div class="ui divider"></div>
+        <div style="text-align:center;">
+            <div class="ui blue button" {{action "move"}}>Move</div>
+        </div>
+    {{/if}}
+</div>

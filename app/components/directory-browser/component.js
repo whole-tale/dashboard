@@ -45,6 +45,7 @@ export default Ember.Component.extend({
 
     actions: {
         clickedFolder : function(item) {
+            console.log("clicked "+item.id);
             this.sendAction('action', item,  "true");
         },
 
@@ -83,9 +84,18 @@ export default Ember.Component.extend({
             if(this.selectedRow) this.selectedRow.css({background: ""});
         },
 
+        closedMiniBrowser: function() {
+             let mini = Ember.$('#mini-browser');
+             mini.addClass('hidden');
+        },
+
         clickedContextMenuItem: function(menuItem) {
             let file = this.selectedItem;
             this.actions[menuItem].call(this, file);
+        },
+
+        clickedMiniBrowserItem: function(item) {
+
         },
 
         updateModel(file) {
@@ -104,16 +114,27 @@ export default Ember.Component.extend({
 
         move(file) {
             this.set('fileToMove', file);
-            Ember.$('#move-file').removeClass('hidden');
+            let mini = Ember.$('#mini-browser');
+            
+            mini.css({
+                top: event.layerY+"px",
+                left: event.layerX+"px",
+                position: "absolute"
+            });
+            mini.removeClass('hidden');
         },
 
-        moveFile() {
-            Ember.$('#move-file').addClass('hidden');
+        moveFile(fileToMove, moveTo) {
+            let self = this;
 
-            let queryParams = {folderId: this.moveTo};
-            this.fileToMove.save({ adapterOptions: {queryParams: queryParams} });
+            Ember.$('#mini-browser').addClass('hidden');
 
-            this.set('moveTo', '');
+            let queryParams = {folderId: moveTo.get('id')};
+            this.fileToMove.save({ adapterOptions: {queryParams: queryParams} })
+                .then(_ => {
+                    self.set('fileList', self.fileList.reject(item=>{return item.id === fileToMove.id;}));
+                    self.set('folderList', self.folderList.reject(item=>{return item.id === fileToMove.id;}));
+                });
         },
 
         rename(file) {

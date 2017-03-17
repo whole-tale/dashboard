@@ -21,6 +21,28 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, .5);
 }
 
+.context-menu-like {
+    position: absolute;
+    display: inline-block;
+    min-width: 180px;
+    max-width: 363px;
+    padding: .25em 0;
+    margin: .3em;
+    // font-family: inherit;
+    // font-size: inherit;
+    font-family: 'Open Sans', 'Helvetica Neue', sans-serif !important;
+    font-size: 1em;
+    font-style: normal;
+    font-weight: bold;
+    line-height: 1;
+    list-style-type: none;
+    background: #fff;
+    border: 1px solid #bebebe;
+    border-radius: .2em;
+    -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, .5);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .5);
+}
+
 .context-menu-item:hover {
     color:#fff;
     cursor:pointer;
