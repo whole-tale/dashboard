@@ -42,6 +42,16 @@ i.icon.globus:after {
     background-color:#3560A0 !important;
 }
 
+i.icon.criss.cross {
+  background-size: 60px 60px;
+  background-image: url(/icons/criss-cross.png);
+  display: inline-block;
+  content:"";
+  width: 60px;
+  height: 60px;
+  margin:auto;
+}
+
 .hidden {
     display:none !important;
 }

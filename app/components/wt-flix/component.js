@@ -72,12 +72,15 @@ export default Ember.Component.extend({
       if ((iterateNumber>=startingPosition) && (iterateNumber<endingPosition)) {
         console.log("Icon field is--" + model.get("icon") + "--");
         if (typeof model.get("icon") === "undefined" ) {
-          console.log("Checking meta fields: " + model.get("meta"));
           if (typeof model.get("meta") !== "undefined") {
-               if (model['meta']['provider'] === "DataONE")
-                 model['icon'] = "/icons/d1-logo-large.png";
-               else
-                 model['icon'] = "/icons/globus-logo-large.png";
+            var meta = model.get("meta");
+            console.log("Checking meta fields: " + meta);
+            if (meta['provider'] !== "DataONE")
+              model['icon'] = "/icons/globus-logo-large.png";
+            else
+              model['icon'] = "/icons/d1-logo-large.png";
+          } else {
+            model['icon'] = "/images/whole_tale_logo.png";
           }
         }
         var name = model.get('name');

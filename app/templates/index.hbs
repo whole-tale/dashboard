@@ -22,7 +22,7 @@
 
     </div>
     <div class="fourteen wide column">
-      {{wt-flix models=model.images paginateOn=5}}
+      {{wt-flix models=model.images paginateOn=5 modelView="image.view"}}
     </div>
 
 </div>
@@ -50,7 +50,35 @@
 
     </div>
     <div class="fourteen wide column">
-      {{wt-flix models=model.dataRegistered paginateOn=5}}
+      {{wt-flix models=model.dataRegistered paginateOn=5 modelView="folder.view"}}
+    </div>
+
+</div>
+
+<div class="ui grid" style="padding-top: 20px">
+
+    <div class="two wide column">
+
+    </div>
+    <div class="fourteen wide column">
+        <div class="ui huge header">Published Tales</div>
+
+        <p style="padding-bottom: 5px">Publish results by describing the whole tale associated with your research, including research environment in which work was conducted, the source data
+            used in analyses and models, and the resulting derived data and visualizations.
+        </p>
+    </div>
+
+    <div class="center aligned two wide column">
+
+        <br>
+        <i class="criss cross icon"></i>
+        <div class="ui large header">
+            Published<br>Results
+        </div>
+
+    </div>
+    <div class="fourteen wide column">
+      {{wt-flix models=model.tales paginateOn=5 modelView="tale.view"}}
     </div>
 
 </div>

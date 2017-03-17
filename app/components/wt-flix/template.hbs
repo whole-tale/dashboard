@@ -1,15 +1,21 @@
+<style>
+    .ui[class*="top attached"].label, .ui.attached.label {
+        padding: 5px!important;
+    }
+</style>
 <div class="ui inverted grey segment">
     <div class="ui six doubling cards" style="padding: 5px 20px 5px 20px">
 
       {{#each modelsInView as |model|}}
             <div class="card">
                 <div class="image">
-                    <img src="{{model.icon}}" style="height:150px;" height="150px">
+                    <img src="{{model.icon}}" style="height:140px;" height="140px">
                 </div>
                 <div class="content" style="color: #515151">
                   {{#ui-popup html=model.name}}
                       {{model.tagName}}
                   {{/ui-popup}}
+                  {{#link-to modelView model class="ui tiny bottom right attached grey label"}}<i class="timy external icon" style="margin: 0;"></i>{{/link-to}}
                 </div>
             </div>
       {{/each}}
@@ -19,7 +25,7 @@
         <div class="center aligned sixteen wide column">
             <div class="ui pagination menu">
                 <a class="{{leftButtonState}} item" {{action "leftButtonClicked"}}>
-                    <i class="left arrow icon"></i>
+                    <i class="caret left icon"></i>
                 </a>
               {{#each paginateArray as |paginateItem|}}
                   <a class="{{paginateItem.state}} item" {{action "tabClicked" paginateItem.number}}>
@@ -27,7 +33,7 @@
                   </a>
               {{/each}}
                 <a class="{{rightButtonState}} item" {{action "rightButtonClicked"}}>
-                    <i class="right arrow icon"></i>
+                    <i class="caret right icon"></i>
                 </a>
             </div>
         </div>

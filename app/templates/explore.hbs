@@ -1,15 +1,14 @@
 
 <div class="ui large header">Images</div>
 
-<div class="fourteen wide column">
-  {{wt-flix models=model.images paginateOn=9}}
-</div>
+  {{wt-flix models=model.images paginateOn=9 modelView="image.view"}}
 
 
 <div class="ui large header">Registered Data Sets</div>
 
-    <div class="fourteen wide column">
-      {{wt-flix models=model.dataRegistered paginateOn=10}}
-    </div>
+{{wt-flix models=model.dataRegistered paginateOn=10 modelView="folder.view"}}
 
 
+<div class="ui large header">Published Tales</div>
+
+{{wt-flix models=model.tales paginateOn=5 modelView="tale.view"}}
