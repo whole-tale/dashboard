@@ -18,6 +18,7 @@ function wrapItem (itemID, itemName, isCollection) {
 
 export default Ember.Controller.extend({
   internalState: inject.service(),
+  store: inject.service(),
   fileBreadCrumbs : {},
   currentBreadCrumb : [],
   isRoot : true,
@@ -75,13 +76,13 @@ export default Ember.Controller.extend({
     },
     itemClicked : function(item, isFolder) {
       var state = this.get('internalState');
-      console.log(item);
+      var myController = this;
+
       var itemID = item.get('_id');
       var itemName = item.get('name');
-      var myController = this;
+
       if (isFolder=="true") {
         console.log("Item ID is " + itemID);
-
         state.setCurrentFolderID(itemID);
 
         var previousBreadCrumb = state.getCurrentBreadCrumb();
@@ -91,7 +92,6 @@ export default Ember.Controller.extend({
         state.setCurrentBreadCrumb(bc);
 
         console.log("State toString " + state.toString());
-
         var fileBreadCrumbs = state.getCurrentFileBreadcrumbs();
         if (fileBreadCrumbs !==null) {
 
@@ -99,20 +99,20 @@ export default Ember.Controller.extend({
           bds.pushObject(previousBreadCrumb);
           fileBreadCrumbs=bds;
         }
-        else
+        else {
           fileBreadCrumbs = [previousBreadCrumb];
+        }
 
         state.setCurrentFileBreadcrumbs(fileBreadCrumbs);
 
-        console.log("State toString " + state.toString());
-
+        // console.log("State toString " + state.toString());
         this.set("currentBreadCrumb", state.getCurrentBreadCrumb());
         this.set("fileBreadCrumbs", state.getCurrentFileBreadcrumbs());
 
         this.store.find('folder', itemID).then( function (folder) {
-          console.log(JSON.stringify(folder));
+        //   console.log(JSON.stringify(folder));
 
-          console.log(folder.get('parentId').toString());
+        //   console.log(folder.get('parentId').toString());
 
           var isRoot =false;
 
@@ -121,22 +121,18 @@ export default Ember.Controller.extend({
           // if (parentFolder == null)
           // isRoot=true;
 
-          myController.set("parentId", folder.parentId);
+          myController.set("parentId", folder.get('parentId'));
           myController.set("isRoot", isRoot);
           myController.set("isNotRoot", !isRoot);
 
           var folderContents = myController.store.query('folder', { parentId: itemID, parentType: "folder"});
-
           var itemContents = myController.store.query('item', { folderId: itemID});
-
           var collections = myController.store.findAll('collection');
-
           var newModel = {'folderContents':folderContents,'itemContents': itemContents,'collections':collections};
-
           //   alert("Folder clicked and delving into " + itemName);
 
-          console.log(newModel);
-          console.log(state.toString());
+        //   console.log(newModel);
+        //   console.log(state.toString());
 
           myController.set("fileData", newModel);
         });
