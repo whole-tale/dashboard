@@ -1,25 +1,34 @@
 <!-- app/components/mini-directory-browser/template.hbs -->
 <div class="ui message context-menu-like">
-    <i class="close icon" {{action "close" on="click"}}></i>
-    <div class="header">
+    <i class="close icon clickable" {{action "close" on="click"}}></i>
+    <div class="header" style="margin-right:1em;">
         Move file {{fileToMove.name}}
     </div>
-    <div class="ui divider"></div>
-    <div class="ui list">
-        {{#each folders as |item|}}
-            <div class="item context-menu-item" id={{item.id}} {{action "clickedRow" item on="click"}}>
-                <i class="large folder outline icon"></i>
-                <div class="content inline" style="width:100%;">
-                    {{item.name}}
-                    {{#if item.selected}}<i class="chevron right icon" style="float:right;" {{action "clickedNextFolder" item on="click"}}></i>{{/if}}
-                </div>
-            </div>
-        {{/each}}
-    </div>
-    {{#if moveTo}}
+    {{#unless loading}}
         <div class="ui divider"></div>
-        <div style="text-align:center;">
-            <div class="ui blue button" {{action "move"}}>Move</div>
+        {{#if (eq directory.type "folder")}}
+            <i class="large level up icon clickable" {{action "clickedLevelUp" on="click"}}></i>
+        {{/if}}
+        <div class="ui list">
+            {{#each folders as |item|}}
+                <div class="item context-menu-item" id={{item.id}} {{action "clickedRow" item on="click"}}>
+                    <i class="large folder outline icon"></i>
+                    <div class="content inline" style="width:100%;">
+                        {{item.name}}
+                        {{#if item.selected}}<i class="large level down icon clickable" style="float:right;" {{action "clickedLevelDown" item on="click"}}></i>{{/if}}
+                    </div>
+                </div>
+            {{/each}}
         </div>
-    {{/if}}
+        {{#if moveTo}}
+            <div class="ui divider"></div>
+            <div style="text-align:center;">
+                <div class="ui blue button" {{action "move"}}>Move</div>
+            </div>
+        {{/if}}
+    {{else}}
+        {{#ui-progress class="ui top attached progress" value=990 progress=990 total=1000}}
+            <div class="bar"></div>
+        {{/ui-progress}}
+    {{/unless}}
 </div>

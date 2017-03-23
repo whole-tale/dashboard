@@ -94,10 +94,6 @@ export default Ember.Component.extend({
             this.actions[menuItem].call(this, file);
         },
 
-        clickedMiniBrowserItem: function(item) {
-
-        },
-
         updateModel(file) {
             let attrs = file.changedAttributes();
             let keys = Object.keys(attrs);
@@ -115,7 +111,7 @@ export default Ember.Component.extend({
         move(file) {
             this.set('fileToMove', file);
             let mini = Ember.$('#mini-browser');
-            
+
             mini.css({
                 top: event.layerY+"px",
                 left: event.layerX+"px",
@@ -129,11 +125,20 @@ export default Ember.Component.extend({
 
             Ember.$('#mini-browser').addClass('hidden');
 
-            let queryParams = {folderId: moveTo.get('id')};
+            // let queryParams = {folderId: moveTo.get('id')};
+            let queryParams = {};
+            if(fileToMove.get("_modelType") === "folder") {
+                queryParams['parentType'] = moveTo.get('_modelType');
+                queryParams['parentId'] = moveTo.get('id');
+            }
+            else {
+                queryParams['folderId'] = moveTo.get('id');
+            }
+
             this.fileToMove.save({ adapterOptions: {queryParams: queryParams} })
                 .then(_ => {
-                    self.set('fileList', self.fileList.reject(item=>{return item.id === fileToMove.id;}));
-                    self.set('folderList', self.folderList.reject(item=>{return item.id === fileToMove.id;}));
+                    if(self.fileList) self.set('fileList', self.fileList.reject(item=>{return item.id === fileToMove.id;}));
+                    if(self.folderList) self.set('folderList', self.folderList.reject(item=>{return item.id === fileToMove.id;}));
                 });
         },
 

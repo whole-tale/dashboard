@@ -52,6 +52,21 @@ i.icon.criss.cross {
   margin:auto;
 }
 
+i.icon.clickable:before {
+    font-size: 1em;
+    color: grey;
+}
+
+i.icon.clickable:hover:before {
+    font-size: 1.2em !important;
+    font-weight: lighter;
+    color: black;
+}
+
+i.icon.clickable:hover {
+    cursor:pointer;
+}
+
 .hidden {
     display:none !important;
 }
