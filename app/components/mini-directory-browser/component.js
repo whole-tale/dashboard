@@ -7,8 +7,29 @@ export default Ember.Component.extend({
 
     store: Ember.inject.service(),
 
+    fileToMoveChanged: Ember.observer('fileToMove', function() {
+        let self = this;
+        let store = this.get('store');
+        let fileToMove = this.get('fileToMove');
+
+        let parentId = fileToMove.get('parentId');
+        let parentType = fileToMove.get('parentCollection');
+
+        if(this.get('browsingFolderId') === parentId) return;
+        this.set('browsingFolderId', parentId);
+
+        store.find(parentType, parentId)
+            .then(folder => {
+                return store.query(parentType, { parentId: parentId, parentType: parentType});
+            })
+            .then(folders => {
+                folders = folders.reject(f=>{return f.id === fileToMove.id;});
+                self.set('folders', folders);
+            });
+    }),
+
     folders: Ember.A(),
-    menuItems: null,
+    browsingFolderId: null,
 
     moveTo: null,
     fileToMove: null,
@@ -16,7 +37,7 @@ export default Ember.Component.extend({
     clearSelected() {
         let previouslySelected = this.get('moveTo');
         if(previouslySelected !== null) {
-            this.folders.find(f=>{return previouslySelected.id === f.id}).set('selected', false);
+            this.folders.find(f=>{return previouslySelected.id === f.id;}).set('selected', false);
         }
         this.set('moveTo', null);
         this.get('folders').arrayContentDidChange();
@@ -37,10 +58,21 @@ export default Ember.Component.extend({
             });
         },
 
+        clickedLevelUp() {
+            let parentType = this.fileToMove.get('parentCollection');
+            let parentId = this.fileToMove.get('parentId');
+
+            if(parentType === "collection") {
+                return;  // Can't move files to collections
+            }
+
+
+        },
+
         clickedRow(folder) {
             this.clearSelected();
 
-            this.folders.find(f=>{return folder.id === f.id}).set('selected', true);
+            this.folders.find(f=>{return folder.id === f.id;}).set('selected', true);
             this.set('moveTo', folder);
             this.get('folders').arrayContentDidChange();
         },
