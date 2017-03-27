@@ -35,7 +35,7 @@ export default Ember.Component.extend({
 
     console.log("Number of models = " + component.get('numberOfModels'));
 
-    if (models.get('length') == 0) return;
+    if (models.get('length') === 0) return;
 
     component.set('totalPages', totalPages);
 

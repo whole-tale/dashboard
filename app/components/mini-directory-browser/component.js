@@ -163,9 +163,6 @@ export default Ember.Component.extend({
                 console.log("Can't move a file move into a collection!");
             }
             else {
-                console.log("Moving ");
-                console.log(this.fileToMove);
-                console.log(this.moveTo);
                 this.sendAction('onClick', this.fileToMove, this.moveTo);
             }
             this.clearSelected();
