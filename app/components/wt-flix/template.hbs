@@ -2,14 +2,23 @@
     .ui[class*="top attached"].label, .ui.attached.label {
         padding: 5px!important;
     }
+
+    img {
+        display: block;
+        max-width:140px;
+        max-height:140px;
+        width: auto;
+        height: auto;
+    }
+
 </style>
 <div class="ui inverted grey segment">
     <div class="ui six doubling cards" style="padding: 5px 20px 5px 20px">
 
       {{#each modelsInView as |model|}}
             <div class="card">
-                <div class="image">
-                    <img src="{{model.icon}}" style="height:140px;" height="140px">
+                <div class="image" style="height: 140px">
+                    <img src="{{model.icon}}">
                 </div>
                 <div class="content" style="color: #515151">
                   {{#ui-popup html=model.name}}
