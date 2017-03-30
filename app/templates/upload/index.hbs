@@ -1,19 +1,12 @@
-<div class="ui large breadcrumb">
-  {{#each fileBreadCrumbs as |bc|}}
-      <a class="section" {{action "breadcrumbClicked" bc}}>{{bc.name}}</a>
-      <i class="right chevron icon divider"></i>
-  {{/each}}
+{{bread-crumbs currentNavTitle=currentNavTitle currentBreadCrumb=currentBreadCrumb fileBreadCrumbs=fileBreadCrumbs isMain=true action="breadcrumbClicked"}}
 
-    <div class="active section">{{currentBreadCrumb.name}}</div>
-</div>
-
-<div class="ui collapsable grid" >
-    <div class="three wide column" style="padding-right: 10px;">
+<div class="ui stackable grid" >
+    <div class="two wide column" style="padding-right: 10px;">
         <div class="ui collapsable grid">
-            {{collection-browser list=fileData.collections selectedCollectionID=collectionID action="collectionClicked"}}
+            {{folder-navigator currentNavCommand=currentNavCommand action="navClicked"}}
         </div>
     </div>
-    <div class="thirteen wide column">
+    <div class="fourteen wide column">
         <div class="ui collapsable grid" >
           <div class="eight wide column">
               {{#unless currentBreadCrumb.isCollection}}

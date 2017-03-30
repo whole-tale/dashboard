@@ -41,8 +41,8 @@ export default Ember.Service.extend({
     return this.get('store').find('user', userID);
   },
 
-  resetCurrentUser() {
-    localStorage.currentUserID = null;
+  getCurrentUserID() {
+    return localStorage.currentUserID;
   },
 
   logoutCurrentUser() {

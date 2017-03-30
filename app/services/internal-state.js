@@ -6,20 +6,12 @@ import Ember from 'ember';
 export default Ember.Service.extend({
   isAuthenticated: true,
 
-  setCurrentCollectionID: function(val) {
-    localStorage.currentCollectionID = val;
+  setCurrentNavCommand: function(val) {
+    localStorage.currentNavCommand = val;
   },
 
-  getCurrentCollectionID: function() {
-    return localStorage.currentCollectionID;
-  },
-
-  setCurrentCollectionName: function(val) {
-    localStorage.currentCollectionName = val;
-  },
-
-  getCurrentCollectionName: function() {
-    return localStorage.currentCollectionName;
+  getCurrentNavCommand: function() {
+    return localStorage.currentNavCommand;
   },
 
   setCurrentFolderID: function(val) {
@@ -28,6 +20,22 @@ export default Ember.Service.extend({
 
   getCurrentFolderID: function() {
     return localStorage.currentFolderID;
+  },
+
+  setCurrentFolderName: function(val) {
+    localStorage.currentFolderName = val;
+  },
+
+  getCurrentFolderName: function() {
+    return localStorage.currentFolderName;
+  },
+
+  setCurrentParentType: function(val) {
+    localStorage.currentParentType = val;
+  },
+
+  getCurrentParentType: function() {
+    return localStorage.currentParentType;
   },
 
   setCurrentFileBreadcrumbs: function(val) {
@@ -49,26 +57,13 @@ export default Ember.Service.extend({
   },
 
   getCurrentParentId: function() {
-    if(localStorage.currentFolderID === "null") {
-        return localStorage.currentCollectionID;
-    }
-    else {
         return localStorage.currentFolderID;
-    }
-  },
-
-  getCurrentParentType: function() {
-      if(localStorage.currentFolderID === "null") {
-          return "collection";
-      }
-      return "folder";
   },
 
   toString: function () {
-      return "Collection ID: " + localStorage.currentCollectionID +
-        ", Collection Name: " + localStorage.currentCollectionName +
-        ", Current Folder ID: " + localStorage.currentFolderID +
-        ", CurrentFileBreadcrumbs: " + localStorage.currentFileBreadcrumbs +
+      return         "CurrentFileBreadcrumbs: " + localStorage.currentFileBreadcrumbs +
+        + ", Current Parent Type: " + localStorage.currentParentType +
+        + ", Current Folder ID: " + localStorage.currentFolderID +
         ", CurrentBreadCrumb: " + localStorage.currentBreadCrumb;
   }
 

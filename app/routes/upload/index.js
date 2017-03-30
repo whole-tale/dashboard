@@ -8,33 +8,37 @@ import AuthenticateRoute from 'wholetale/routes/authenticate';
 
 export default AuthenticateRoute.extend({
   internalState: inject.service(),
+  userAuth: inject.service(),
   model: function() {
     this._super();
     var state = this.get('internalState');
 
-    var collectionID= state.getCurrentCollectionID();
+    var thisUserID = this.get('userAuth').getCurrentUserID();
+
+    console.log("The user id is = " + thisUserID);
+
+    console.log(thisUserID);
+
     var folderID = state.getCurrentFolderID();
 
     console.log("loading the route for the index again");
-    console.log("Collection ID: " + collectionID);
     console.log("Folder ID: " + folderID);
 
     var folderContents=null;
     var itemContents=null;
 
+
     if (folderID === null || folderID === "null" ) {
-      folderContents = this.store.query('folder', { parentId: collectionID, parentType: "collection"});
+      folderContents = this.get('store').query('folder', {parentId: thisUserID, parentType : "user" });
+      state.setCurrentParentType("user");
     } else {
       console.log("Folder != null, so loading folder and items");
-      folderContents = this.get('store').query('folder', { parentId: folderID, parentType: "folder"});
+      folderContents = this.get('store').query('folder', { parentId: folderID, parentType: state.getCurrentParentType()});
       itemContents= this.get('store').query('item', { folderId: folderID});
       console.log("Folder != null, leaving");
     }
 
-
-    var collections = this.get('store').findAll('collection');
-
-    return { 'folderContents' : folderContents, 'collections' : collections, 'itemContents' : itemContents};
+    return { 'folderContents' : folderContents, 'itemContents' : itemContents};
   },
 
   setupController: function(controller, model) {

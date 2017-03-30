@@ -21,7 +21,7 @@
                       </div>
                   {{else}}
                       <a href="#" {{action "clickedFolder" item}}>
-                          <i class="large folder outline icon"></i> {{item.name}}
+                          <i class="large folder outline icon"></i> {{truncate-name item.name}}
                       </a>
                   {{/if}}
               </td>
@@ -49,7 +49,7 @@
                       </div>
                   {{else}}
                       <a href="#" {{action "clickedFile" item}}>
-                        {{{file-icon-for item.name}}} {{item.name}}
+                        {{{file-icon-for item.name}}} {{truncate-name item.name}}
                       </a>
                   {{/if}}
               </td>

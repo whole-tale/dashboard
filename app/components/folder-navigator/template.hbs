@@ -1,0 +1,17 @@
+<div class="ui vertical mini labeled icon menu" style="margin:0;">
+  {{#each navs as |nav|}}
+    {{#if (eq currentNavCommand nav.command)}}
+    <a class="active item" {{action "navClicked" nav}}>
+        <i class="{{nav.icon}} icon"></i>
+      {{nav.name}}
+    </a>
+    {{/if}}
+    {{#unless (eq currentNavCommand nav.command)}}
+        <a class="item" {{action "navClicked" nav}}>
+            <i class="{{nav.icon}} icon"></i>
+          {{nav.name}}
+        </a>
+    {{/unless}}
+  {{/each}}
+</div>
+

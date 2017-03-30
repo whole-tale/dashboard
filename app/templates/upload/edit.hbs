@@ -4,12 +4,8 @@
     </div>
     <div class="fifteen wide column" style="padding: 0 0 0 0; margin: 0px 0 0 0;">
         <div class="ui large breadcrumb">
-          {{#each fileBreadCrumbs as |bc|}}
-              <a class="section" {{action "breadcrumbClicked" bc.name target=view.index}}>{{bc.name}}</a>
-              <i class="right chevron icon divider"></i>
-          {{/each}}
-
-            <div class="active section">{{currentBreadCrumb.name}}</div>
+            Back To
+            <div class="active section">{{truncate-name currentBreadCrumb.name}}</div>
         </div>
     </div>
 </div>
