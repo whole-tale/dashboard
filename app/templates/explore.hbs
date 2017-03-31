@@ -1,14 +1,41 @@
 
-<div class="ui large header">Images</div>
+<div class="ui labeled icon menu">
+    <a class="item {{registeredActive}}" {{action "registered"}} >
+        Imported Data
+        <i class="disk outline icon"></i>
+    </a>
 
-  {{wt-flix models=model.images paginateOn=9 modelView="image.view"}}
+    <a class="item {{imagesActive}}" {{action "images"}} >
+        Images
+        <i class="dashboard icon"></i>
+    </a>
+
+    <a class="item {{talesActive}}" {{action "tales"}} >
+        Published Tales
+        <i class="small criss cross icon"></i>
+    </a>
+</div>
+
+{{#if showRegistered}}
+  <div class="ui segment" >
+    {{wt-flix models=model.dataRegistered paginateOn=18 cardsPerRow="six" modelView="folder.view"}}
+  </div>
+{{/if}}
+
+{{#if showImages}}
+  <div class="ui segment" >
+    {{wt-flix models=model.images paginateOn=18 cardsPerRow="six" modelView="image.view"}}
+  </div>
+{{/if}}
 
 
-<div class="ui large header">Registered Data Sets</div>
+{{#if showTales}}
+  <div class="ui segment">
+    {{wt-flix models=model.tales paginateOn=18 cardsPerRow="six" modelView="tale.view"}}
+  </div>
+{{/if}}
 
-{{wt-flix models=model.dataRegistered paginateOn=10 modelView="folder.view"}}
 
 
-<div class="ui large header">Published Tales</div>
 
-{{wt-flix models=model.tales paginateOn=5 modelView="tale.view"}}
+
