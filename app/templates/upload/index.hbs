@@ -1,7 +1,7 @@
 {{bread-crumbs currentNavTitle=currentNavTitle currentBreadCrumb=currentBreadCrumb fileBreadCrumbs=fileBreadCrumbs isMain=true action="breadcrumbClicked"}}
 
 <div class="ui stackable grid" >
-    <div class="two wide column" style="padding-right: 10px;">
+    <div class="two wide column">
         <div class="ui collapsable grid">
             {{folder-navigator currentNavCommand=currentNavCommand action="navClicked"}}
         </div>
@@ -9,33 +9,37 @@
     <div class="fourteen wide column">
         <div class="ui collapsable grid" >
           <div class="eight wide column">
-              {{#unless currentBreadCrumb.isCollection}}
-                  {{input type="file" value=file class="nice upload hidden"}}
-                  <button class="ui blue basic button" {{action "selectUpload"}}>
-                      <i class="cloud upload icon"></i>
-                      <span>Upload</span>
-                  </button>
-              {{/unless}}
-              <button class="ui blue basic button" {{action "openModal" "newfolder" on="click"}}>
-                  <i class="cloud upload icon"></i>
-                  <span>New Folder</span>
-              </button>
+              <div style="margin-left: 10px">
+                {{#unless currentBreadCrumb.isCollection}}
+                    {{input type="file" value=file class="nice upload hidden"}}
+                    <button class="ui blue basic button" {{action "selectUpload"}}>
+                        <i class="cloud upload icon"></i>
+                        <span>Upload</span>
+                    </button>
+                {{/unless}}
+                <button class="ui blue basic button" {{action "openModal" "newfolder" on="click"}}>
+                    <i class="cloud upload icon"></i>
+                    <span>New Folder</span>
+                </button>
+              </div>
           </div>
           <div class="eight wide column">
-              <div class="two ui buttons" {{action 'openModal' "harvester" on='click'}}>
-                  <button class="ui blue basic button" style="padding: 8px; margin:0">
-                      <div style="float: left; position: relative;"><i class="dataone icon"></i></div>
-                      <div style="padding-left:5px; color: #303f54; margin-top: 5px">Connect DataONE</div>
-                  </button>
-                  <button class="ui globusblue button" style="padding: 8px; margin:0">
-                      <div style="float: left; position: relative;"><i class="globus icon"></i></div>
-                      <div style="padding-left:15px; color: white; margin-top: 2px"> Connect Globus</div>
-                  </button>
+              <div style="margin: 0 0 0  10px">
+                <div class="two ui stackable buttons" {{action 'openModal' "harvester" on='click'}}>
+                    <button class="ui blue basic button" style="padding: 8px; margin:0">
+                        <div style="float: left; position: relative;"><i class="dataone icon"></i></div>
+                        <div style="padding-left:5px; color: #303f54; margin-top: 5px">Connect DataONE</div>
+                    </button>
+                    <button class="ui globusblue button" style="padding: 8px; margin:0">
+                        <div style="float: left; position: relative;"><i class="globus icon"></i></div>
+                        <div style="padding-left:15px; color: white; margin-top: 2px"> Connect Globus</div>
+                    </button>
+                </div>
               </div>
           </div>
         </div>
-        <div class="ui collapsable grid" >
-            <div class="sixteen wide column">
+        <div class="ui collapsable grid" style="margin-left: 10px">
+            <div class="sixteen wide right aligned column">
                 {{directory-browser folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
             </div>
             <div class="sixteen wide column overlay">
