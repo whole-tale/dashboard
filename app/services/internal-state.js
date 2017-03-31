@@ -60,6 +60,17 @@ export default Ember.Service.extend({
         return localStorage.currentFolderID;
   },
 
+  setStaticMenu: function(val) {
+    if (val)
+      localStorage.staticMenu = 1;
+    else
+      localStorage.staticMenu = 0;
+  },
+
+  getIsStaticMenu: function() {
+    return (localStorage.staticMenu==1);
+  },
+
   toString: function () {
       return         "CurrentFileBreadcrumbs: " + localStorage.currentFileBreadcrumbs +
         + ", Current Parent Type: " + localStorage.currentParentType +

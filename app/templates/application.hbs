@@ -1,14 +1,29 @@
 <div class="ui pushable segment component context">
-    {{partial "common/menu"}}
-    <div class="wholetale view pusher">
 
-      {{partial "common/header"}}
+  {{#if staticMenu}}
 
+    {{partial "common/header-static"}}
 
-        <div class="main page">
+      <div style="float: left; margin-top:46px; width: 160px;">
+        {{partial "common/menu-static"}}
+      </div>
+      <div class="main page" style="overflow:hidden;">
           {{outlet}}
         </div>
-    </div>
+
+  {{else}}
+    {{partial "common/menu"}}
+      <div class="wholetale view pusher">
+
+        {{partial "common/header"}}
+
+
+          <div class="main page">
+            {{outlet}}
+          </div>
+      </div>
+  {{/if}}
+
 </div>
 
 {{registration-modal}}

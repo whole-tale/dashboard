@@ -8,6 +8,7 @@ const {
 export default Ember.Controller.extend({
   // requires the sessions controller
   userAuth: Ember.inject.service('user-auth'),
+  internalState: Ember.inject.service('internal-state'),
 
   user : {fullName :"John Winter"},
   gravatarUrl : "/images/avatar.png",
@@ -15,9 +16,10 @@ export default Ember.Controller.extend({
   currentIcon : "browser",
   routing: Ember.inject.service('-routing'),
   loggedIn : false,
-
+  staticMenu : true,
   init() {
     this._super();
+    this.set('staticMenu', this.get('internalState').getIsStaticMenu());
   },
   checkMyRouteName: Ember.computed(function() {
     return this.get('routing.currentRouteName');
@@ -35,6 +37,14 @@ export default Ember.Controller.extend({
 
       this.get('userAuth').logoutCurrentUser();
       this.transitionToRoute('login');
+    },
+    staticMenu: function() {
+      this.set('staticMenu', true);
+      this.get('internalState').setStaticMenu(true);
+    },
+    dynamicMenu: function() {
+      this.set('staticMenu', false);
+      this.get('internalState').setStaticMenu(false);
     },
     closeMenu : function(pageTitle, icon) {
       this.set('currentPage', pageTitle);

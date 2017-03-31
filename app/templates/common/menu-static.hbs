@@ -1,4 +1,4 @@
-{{#ui-sidebar class="ui left vertical inverted thin blue menu" context=".component.context" id="sub-sidebar"}}
+<div class="ui left vertical inverted compact blue menu" style="height: 100%">
 
   {{#if loggedIn}}
       {{#link-to 'index' class="item" invokeAction=(action 'closeMenu' 'Dashboard' 'home')}}
@@ -36,9 +36,9 @@
           Collaborate
       {{/link-to}}
 
-      <a class="item" {{action 'staticMenu'}}>
-          <i class="external icon"></i>
-          Fixed Menu
+      <a class="item" {{action 'dynamicMenu'}}>
+          <i class="content icon"></i>
+          Floating Menu
       </a>
 
       <a class="item" {{action 'closeMenu' 'logout'}}>
@@ -55,4 +55,5 @@
         {{/link-to}}
       {{/unless}}
 
-{{/ui-sidebar}}
+    <div class="item" style="min-height: 840px;"></div>
+</div>
