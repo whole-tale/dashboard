@@ -6,7 +6,8 @@ export default Ember.Component.extend({
   totalPages:1,
   leftButtonState: "disabled",
   rightButtonState: "disabled",
-
+  lastAnimationTime : 0,
+  animationRefreshTime : 500, // min ms time between animation refreshes
   init() {
     this._super(...arguments);
     console.log("Attributes updated");
@@ -24,6 +25,16 @@ export default Ember.Component.extend({
     $('.selectable.cards .image').dimmer({
       on: 'hover'
     });
+  },
+  didUpdate() {
+    var milliseconds = (new Date).getTime();
+
+    if (milliseconds-this.get('lastAnimationTime') > this.get('animationRefreshTime')) {
+      $('.selectable.cards .image img')
+        .transition('bounce')
+      ;
+      this.set('lastAnimationTime', milliseconds);
+    }
   },
 
   paginate(component, models) {
