@@ -30,6 +30,7 @@ export default AuthenticateRoute.extend({
 
     if (folderID === null || folderID === "null" ) {
       folderContents = this.get('store').query('folder', {parentId: thisUserID, parentType : "user" });
+      state.setCurrentParentId(thisUserID);
       state.setCurrentParentType("user");
     } else {
       console.log("Folder != null, so loading folder and items");

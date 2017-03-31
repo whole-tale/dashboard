@@ -56,8 +56,12 @@ export default Ember.Service.extend({
     return JSON.parse(localStorage.currentBreadCrumb);
   },
 
+  setCurrentParentId: function(id) {
+      localStorage.currentParentId = id;
+  },
+
   getCurrentParentId: function() {
-        return localStorage.currentFolderID;
+        return localStorage.currentParentId;
   },
 
   setStaticMenu: function(val) {
