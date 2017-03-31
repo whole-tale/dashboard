@@ -98,8 +98,13 @@ export default Ember.Controller.extend({
         folderContents = this.store.query('folder', { "parentId": nav.parentId, "parentType": nav.parentType});
       } else if (nav.command === "registered") {
         folderContents = this.get('store').query('folder', nav.options)
-      } else {
-        alert("Not implemented yet ...");
+      } else if (nav.command === "recent") {
+        var recentFolders = state.getRecentFolders();
+        var payload = JSON.stringify({"folder": recentFolders});
+        console.log(payload);
+        folderContents = this.store.query('resource', {"resources" : payload});
+        console.log(folderContents);
+        // alert("Not implemented yet ...");
       }
 
       var newModel =  { 'folderContents' : folderContents, 'itemContents' : null};
@@ -123,6 +128,10 @@ export default Ember.Controller.extend({
 
       if (isFolder==="true") {
         console.log("Item ID is " + itemID);
+
+        // add to history (recent folders visited)
+        state.addFolderToRecentFolders(itemID);
+
         state.setCurrentFolderID(itemID);
         state.setCurrentFolderName(itemName);
 

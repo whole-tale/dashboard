@@ -71,6 +71,26 @@ export default Ember.Service.extend({
     return (localStorage.staticMenu==1);
   },
 
+
+  addFolderToRecentFolders: function(folderId) {
+    var recentFolders = this.getRecentFolders();
+
+    if (recentFolders.length>15) {
+      recentFolders.splice(0, 1); // remove first element (last one in)
+    }
+
+    recentFolders.push(folderId);
+
+    localStorage.recentFolders = JSON.stringify(recentFolders);
+  },
+
+  getRecentFolders: function() {
+    var bcs = localStorage.recentFolders;
+    if (!bcs) return [];
+    return JSON.parse(bcs);
+  },
+
+
   toString: function () {
       return         "CurrentFileBreadcrumbs: " + localStorage.currentFileBreadcrumbs +
         + ", Current Parent Type: " + localStorage.currentParentType +
