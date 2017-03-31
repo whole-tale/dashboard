@@ -1,17 +1,38 @@
-<div class="ui vertical mini labeled icon menu" style="margin:0;">
-  {{#each navs as |nav|}}
-    {{#if (eq currentNavCommand nav.command)}}
-    <a class="active item" {{action "navClicked" nav}}>
-        <i class="{{nav.icon}} icon"></i>
-      {{nav.name}}
-    </a>
-    {{/if}}
-    {{#unless (eq currentNavCommand nav.command)}}
-        <a class="item" {{action "navClicked" nav}}>
-            <i class="{{nav.icon}} icon"></i>
-          {{nav.name}}
-        </a>
-    {{/unless}}
-  {{/each}}
+<div class="ui grid">
+    <div class="sixteen wide tablet computer only column">
+        <div class="ui vertical mini labeled icon menu" style="margin:0;">
+          {{#each navs as |nav|}}
+            {{#if (eq currentNavCommand nav.command)}}
+                <a class="active item" {{action "navClicked" nav}}>
+                    <i class="{{nav.icon}} icon"></i>
+                  {{nav.name}}
+                </a>
+            {{/if}}
+            {{#unless (eq currentNavCommand nav.command)}}
+                <a class="item" {{action "navClicked" nav}}>
+                    <i class="{{nav.icon}} icon"></i>
+                  {{nav.name}}
+                </a>
+            {{/unless}}
+          {{/each}}
+        </div>
+    </div>
+    <div class="sixteen wide mobile only column">
+        <div class="ui large labeled icon menu">
+          {{#each navs as |nav|}}
+            {{#if (eq currentNavCommand nav.command)}}
+                <a class="active item" {{action "navClicked" nav}}>
+                    <i class="{{nav.icon}} icon"></i>
+                  {{nav.name}}
+                </a>
+            {{/if}}
+            {{#unless (eq currentNavCommand nav.command)}}
+                <a class="item" {{action "navClicked" nav}}>
+                    <i class="{{nav.icon}} icon"></i>
+                  {{nav.name}}
+                </a>
+            {{/unless}}
+          {{/each}}
+        </div>
+    </div>
 </div>
-
