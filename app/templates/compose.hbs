@@ -1,125 +1,83 @@
-<div class="ui larger header">Compose</div>
 
-<img class="logo" src="/images/construction.jpg">
 
-{{#if false}}
-<div class="ui grid">
-    <div class="eight wide column">
-        <div class="ui large header">Publish Research</div>
-    </div>
-    <div class="eight wide right aligned column">
-        <div class="ui green labeled icon button" {{action 'details'}}>
-            <i class="edit icon"></i> Edit Research Details
-        </div>
-    </div>
+<div class="ui large header">
+    Create Tale
 </div>
 
-
-{{#if researchdetails}}
-    <div class="ui inverted segment">
-      {{partial "forms/research-details"}}
-
-      <div class="ui green labeled icon button" {{action 'updatedetails'}}>
-          <i class="check icon"></i> Update
-      </div>
+<div class="ui segment">
+  <div class="ui fluid stackable steps">
+      <a class="{{stepsActive.[0]}} step" {{action "gotoStep" 0 }}>
+          <div class="content">
+              <div class="title">Tale Info</div>
+              <div class="description">Tale metadata Information</div>
+          </div>
+      </a>
+      <a class="{{stepsActive.[1]}} step" {{action "gotoStep" 1 }}>
+          <div class="content">
+              <div class="title">Frontend Image</div>
+              <div class="description">Tale frontend image</div>
+          </div>
+      </a>
+      <a class="{{stepsActive.[2]}} step" {{action "gotoStep" 2 }}>
+          <div class="content">
+              <div class="title">Data</div>
+              <div class="description">Folder with your data</div>
+          </div>
+      </a>
+      <a class="{{stepsActive.[3]}} step" {{action "gotoStep" 3 }}>
+          <div class="content">
+              <div class="title">Create</div>
+              <div class="description">Confirm</div>
+          </div>
+      </a>
   </div>
-{{/if}}
 
-<div class="ui icon message">
-    <i class="blue info icon"></i>
-    <div class="content">
-        <div class="header">
-            A Frontend, Docker and Drive ...
-        </div>
-        <p>Research comprises of a Frontend GUI (e.g. Jupyter), a docker container to host everything and  a data drive containing your data.</p>
-        <div class="ui blue header">Progress {{progressOne}}%</div>
-      {{#ui-progress percent=progressOne class="teal indicating"}}
-          <div class="bar"></div>
-      {{/ui-progress}}
-
-    </div>
-</div>
-
-<div class="ui grid">
-
-    <div class="one wide column">
-    </div>
-    <div class="four wide column">
-        <div class="ui huge header" style="text-align: center">Frontend</div>
-      {{#if frontend}}
-          <div class="ui segment">
-              <div class="ui large blue header">Selected</div>
-              <div class="ui large fluid blue label">
-                {{frontend}}
-              </div>
-          </div>
-      {{/if}}
-
-      {{shape-3d action="setfrontend" data=model.frontends}}
-    </div>
-    <div class="one wide column">
+    <div style="display: {{showStep.[0]}}">
+      {{partial "forms/tale-details"}}
     </div>
 
-    <div class="four wide column">
-        <div class="ui huge header" style="text-align: center">Dockerfile</div>
-      {{#if dockerfile}}
-        <div class="ui segment">
-          <div class="ui large blue header">Selected</div>
-          <div class="ui large fluid blue label">
-            {{dockerfile}}
-          </div>
-        </div>
-      {{/if}}
-        <br>
-        <br>
+    <div style="display: {{showStep.[1]}}">
+      {{wt-flix models=model.images paginateOn=6 cardsPerRow="six" modelView="image.view"}}
+    </div>
 
-        <div class="ui segment">
-            <div class="ui icon message">
-                <i class="info icon"></i>
-                <div class="content">
-                    <div class="header">
-                        Upload the Dockerfile for this research
-                    </div>
-                </div>
+    <div style="display: {{showStep.[2]}}">
+      {{mini-directory-browser
+        id="mini-browser"
+        class=""
+        fileToMove=fileToMove
+        onClose=(action "closedMiniBrowser")
+        onClick=(action "selectedFile")
+      }}
+    </div>
+
+    <div style="display: {{showStep.[3]}}">
+        <div class="ui header">Confirm Details</div>
+    </div>
+
+
+    <div class="ui secondary menu" >
+        <a class="item" style="padding-left: 0;">
+            <div class="large ui blue labeled icon button" {{action "moveLeft"}}>
+                <i class="caret left icon"></i> Previous
             </div>
-
-            <div class="ui basic segment">
-                <div class="field">
-                {{#if dockerfile}}
-                <div class="ui basic fluid large black label">
-                  {{dockerfile}}
-                </div>
-                {{/if}}
-                    <div class="ui fluid action input">
-                        <label for="attachmentName" class="ui large blue fluid labeled icon button">
-                            Upload Docker File <i class="cloud upload icon"></i>
-                          {{docker-file-uploader action="setdockerfile" url="/upload" id="attachmentName" name="attachmentName"}}
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="one wide column">
-    </div>
-
-    <div class="four wide column">
-        <div class="ui huge header" style="text-align: center">Data Drive</div>
-      {{#if drive}}
-          <div class="ui segment">
-              <div class="ui large blue header">Selected</div>
-              <div class="ui large fluid blue label">
-                {{drive}}
+        </a>
+      <div class="right menu">
+          <a class="item">
+              <div class="large ui blue right labeled icon button" {{action "moveRight"}}>
+                  Next
+                <i class="caret right icon"></i>
               </div>
-          </div>
-      {{/if}}
-
-      {{list-drives action="setdrive" drives=model.drives}}
-    </div>
-    <div class="one wide column">
+          </a>
+      </div>
     </div>
 
 </div>
 
 
-{{/if}}
+
+
+
+
+
+
+

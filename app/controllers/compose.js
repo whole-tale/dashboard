@@ -5,29 +5,57 @@ export default Ember.Controller.extend({
   init() {
     this._super(...arguments);
   },
-  progressOne :10,
+
+  showStep : ["inline", "none", "none", "none"],
+  stepsActive : ["active", "", "", ""],
+  currentStep : 0,
   actions: {
-    setdockerfile : function(dockerfilename) {
-      this.set('dockerfile', dockerfilename);
-      this.set('progressOne', this.get('progressOne') +30);
+
+    closedMiniBrowser : function () {
+
     },
-    setfrontend : function(frontend) {
-      this.set('frontend', frontend);
-      this.set('progressOne', this.get('progressOne') +30);
-    },
-    setdrive : function(drive) {
-      this.set('drive', drive);
-      this.set('progressOne', this.get('progressOne') +30);
-    },
-    authoradd : function() {
-      alert("Add author!");
+    selectedFile: function () {
+
     },
 
-    details: function(name) {
-      this.set('researchdetails', true);
+    gotoStep : function (stepNo) {
+      console.log("Going to step no " + stepNo);
+      var stepsActive = this.get("stepsActive");
+      for (var i=0;  i< stepsActive.length; ++i) {
+        Ember.set(stepsActive, i.toString(), "");
+      }
+
+      Ember.set(stepsActive, stepNo.toString(), "active");
+
+      var showStep = this.get("showStep");
+      for (i=0;  i< showStep.length; ++i) {
+        Ember.set(showStep, i.toString(), "none");
+      }
+
+      Ember.set(showStep, stepNo.toString(), "inline");
+
+      //this.set("stepsActive", stepsActive);
+      //this.set("showStep", showStep);
+
+      console.log(this.get("showStep"));
+      console.log(this.get("stepsActive"));
+
+      this.set("currentStep", stepNo);
+
     },
 
-    updatedetails: function(name) {
+    moveLeft: function () {
+      var step = this.get("currentStep");
+      if (step !=0)
+        this.send("gotoStep", step-1);
+    },
+    moveRight: function () {
+      var step = this.get("currentStep");
+      if (step !=3)
+        this.send("gotoStep", step+1);
+    },
+
+      updatedetails: function(name) {
       this.set('researchdetails', false);
     },
 
