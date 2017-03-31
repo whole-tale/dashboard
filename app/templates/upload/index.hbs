@@ -10,17 +10,17 @@
         <div class="ui collapsable grid" >
           <div class="eight wide column">
               <div style="margin-left: 10px">
-                {{#unless currentBreadCrumb.isCollection}}
+                {{#if currentFolderId}}
                     {{input type="file" value=file class="nice upload hidden"}}
                     <button class="ui blue basic button" {{action "selectUpload"}}>
                         <i class="cloud upload icon"></i>
                         <span>Upload</span>
                     </button>
-                {{/unless}}
-                <button class="ui blue basic button" {{action "openModal" "newfolder" on="click"}}>
-                    <i class="cloud upload icon"></i>
-                    <span>New Folder</span>
-                </button>
+                    <button class="ui blue basic button" {{action "openModal" "newfolder" on="click"}}>
+                        <i class="cloud upload icon"></i>
+                        <span>New Folder</span>
+                    </button>
+                {{/if}}
               </div>
           </div>
           <div class="eight wide column">
@@ -44,7 +44,7 @@
             </div>
             <div class="sixteen wide column overlay">
                 {{#unless currentBreadCrumb.isCollection}}
-                    {{nice-dropzone folderId=currentBreadCrumb.id refresh=(action 'refresh')}}
+                    {{nice-dropzone folderId=currentFolderId refresh=(action 'refresh')}}
                 {{/unless}}
             </div>
         </div>

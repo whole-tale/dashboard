@@ -97,7 +97,7 @@ export default Ember.Controller.extend({
       if (nav.command === "home") {
         folderContents = this.store.query('folder', { "parentId": nav.parentId, "parentType": nav.parentType});
       } else if (nav.command === "registered") {
-        folderContents = this.get('store').query('folder', nav.options)
+        folderContents = this.get('store').query('folder', nav.options);
       } else if (nav.command === "recent") {
         var recentFolders = state.getRecentFolders();
         var payload = JSON.stringify({"folder": recentFolders});
@@ -115,6 +115,7 @@ export default Ember.Controller.extend({
       state.setCurrentFolderID(null);
       state.setCurrentFolderName("");
 
+      this.set("currentFolderId", null);
       this.set("currentBreadCrumb", null);
       this.set("fileBreadCrumbs", null);
 
@@ -134,6 +135,8 @@ export default Ember.Controller.extend({
 
         state.setCurrentFolderID(itemID);
         state.setCurrentFolderName(itemName);
+
+        this.set("currentFolderId", itemID);
 
         var previousBreadCrumb = state.getCurrentBreadCrumb();
 
@@ -157,6 +160,7 @@ export default Ember.Controller.extend({
 
           myController.set("parentId", folder.get('parentId'));
 
+          state.setCurrentParentId(folder.get('parentId'));
           state.setCurrentParentType(folder.get('parentCollection'));
 
           var folderContents = myController.store.query('folder', { parentId: itemID, parentType: "folder"});
@@ -200,6 +204,8 @@ export default Ember.Controller.extend({
       state.setCurrentFolderID(item._id);
       state.setCurrentFolderName(item.name);
       state.setCurrentBreadCrumb(previousItem); // need to set this because itemClicked is expecting the previous breadcrumb.
+
+      this.set('currentFolderId', item._id);
 
       this.send('itemClicked', Ember.Object.create(item), "true");
     },
