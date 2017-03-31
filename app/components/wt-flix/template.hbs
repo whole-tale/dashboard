@@ -13,13 +13,37 @@
 
 </style>
 <div class="ui inverted grey segment">
-    <div class="ui {{cardsPerRow}} doubling cards" style="padding: 5px 20px 5px 20px">
+
+    {{#if showSearch}}
+      <div class="ui secondary  menu">
+          <div class="right menu">
+              <div class="ui search" >
+                {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
+
+
+              <div class="results">
+
+              </div>
+              </div>
+          </div>
+       </div>
+      {{/if}}
+
+    <div class="ui {{cardsPerRow}} doubling selectable cards" style="padding: 5px 20px 5px 20px">
 
       {{#each modelsInView as |model|}}
             <div class="card">
-                <div class="image" style="height: 140px">
+                <div class="blurring dimmable image" style="min-height: 140px;">
+                    <div class="ui dimmer">
+                        <div class="content">
+                            <div class="center">
+                                <div class="ui inverted button" {{action 'select' model}}>Add</div>
+                            </div>
+                        </div>
+                    </div>
                     <img src="{{model.icon}}">
                 </div>
+
                 <div class="content" style="color: #515151">
                   {{#ui-popup html=model.name}}
                       {{model.tagName}}

@@ -18,7 +18,14 @@ export default Ember.Component.extend({
     modelsPromised.then(function(models) {
       component.paginate(component, models);
     });
+
   },
+  didRender() {
+    $('.selectable.cards .image').dimmer({
+      on: 'hover'
+    });
+  },
+
   paginate(component, models) {
 
     var paginateSize = component.get('paginateOn');
@@ -30,17 +37,17 @@ export default Ember.Component.extend({
     if (numberToShow>0)
       ++totalPages;
 
-    console.log(models);
+  //  console.log(models);
     component.set('numberOfModels', arraySize);
 
-    console.log("Number of models = " + component.get('numberOfModels'));
+    //console.log("Number of models = " + component.get('numberOfModels'));
 
     if (models.get('length') === 0) return;
 
     component.set('totalPages', totalPages);
 
-    console.log("Paginating on = " + paginateSize);
-    console.log("NumberToShow = " + numberToShow);
+    //console.log("Paginating on = " + paginateSize);
+    //console.log("NumberToShow = " + numberToShow);
 
     var modelsInView = [];
     var paginateArray = [];
@@ -70,11 +77,11 @@ export default Ember.Component.extend({
 
     models.forEach(function(model){
       if ((iterateNumber>=startingPosition) && (iterateNumber<endingPosition)) {
-        console.log("Icon field is--" + model.get("icon") + "--");
+    //    console.log("Icon field is--" + model.get("icon") + "--");
         if (typeof model.get("icon") === "undefined" ) {
           if (typeof model.get("meta") !== "undefined") {
             var meta = model.get("meta");
-            console.log("Checking meta fields: " + meta);
+      //      console.log("Checking meta fields: " + meta);
             if (meta['provider'] !== "DataONE")
               model['icon'] = "/icons/globus-logo-large.png";
             else
@@ -99,7 +106,7 @@ export default Ember.Component.extend({
 
     component.set("modelsInView", modelsInView);
 
-    console.log(this.get("modelsInView"));
+    //console.log(this.get("modelsInView"));
 
 
   },
@@ -118,6 +125,32 @@ export default Ember.Component.extend({
       // alert("Clicked " + tabNumber)
       this.set('pageNumber', tabNumber);
       this.paginate(this, this.get('models'));
+    },
+    searchFilter : function () {
+      var searchStr = this.get('searchStr');
+     // console.log(searchStr);
+
+      var modelsPromised = this.get("models");
+
+
+      var component = this;
+
+      modelsPromised.then(function(models) {
+        var searchView = [];
+
+        models.forEach(function(model) {
+          var name = model.get('name');
+
+          if (name.indexOf(searchStr) !== -1)
+              searchView.push(model);
+        });
+
+        component.paginate(component, searchView);
+      });
+
+    },
+    select : function (model) {
+        console.log(model.get('name') + " has been selected")
     }
 
   }
