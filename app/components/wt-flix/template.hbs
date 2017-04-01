@@ -38,7 +38,10 @@
                     <div class="ui dimmer">
                         <div class="content">
                             <div class="center">
-                                <div class="ui inverted button" {{action 'select' model}}>Add</div>
+                              {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
+                              {{#if showSelect}}
+                                  <div class="ui inverted button" {{action 'select' model}}>Add</div>
+                              {{/if}}
                             </div>
                         </div>
                     </div>
@@ -49,7 +52,6 @@
                   {{#ui-popup html=model.name}}
                       {{model.tagName}}
                   {{/ui-popup}}
-                  {{#link-to modelView model class="ui tiny bottom right attached grey label"}}<i class="timy external icon" style="margin: 0;"></i>{{/link-to}}
                 </div>
             </div>
       {{/each}}
