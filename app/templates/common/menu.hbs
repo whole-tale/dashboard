@@ -11,10 +11,12 @@
           Explore
       {{/link-to}}
 
+<!--
       {{#link-to 'search' class="item" invokeAction=(action 'closeMenu' 'Search' 'search')}}
           <i class="search icon"></i>
           Search
       {{/link-to}}
+-->
 
       {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'add circle')}}
           <i class="add circle icon"></i>
@@ -26,15 +28,19 @@
           Data
       {{/link-to}}
 
+<!--
       {{#link-to 'status' class="item" invokeAction=(action 'closeMenu' 'Status' 'line chart')}}
           <i class="line chart icon"></i>
           Status
       {{/link-to}}
+-->
 
+<!--
       {{#link-to 'collaborators' class="item" invokeAction=(action 'closeMenu' 'Collaborators' 'users')}}
           <i class="users icon"></i>
           Collaborate
       {{/link-to}}
+-->
 
       <a class="item" {{action 'staticMenu'}}>
           <i class="external icon"></i>

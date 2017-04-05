@@ -16,7 +16,13 @@
 <div class="ui inverted grey segment">
 
     {{#if showSearch}}
-      <div class="ui secondary  menu">
+      <div class="ui secondary menu">
+        {{#if item}}
+            <div class="header item" style="font-size: 120%">
+                <span class="ui huge blue label" style="margin-right: 10px;">Currently Selected</span> {{item.name}}
+            </div>
+        {{/if}}
+
           <div class="right menu">
               <div class="ui search" >
                 {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
@@ -38,7 +44,9 @@
                     <div class="ui dimmer">
                         <div class="content">
                             <div class="center">
-                              {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
+                              {{#if showLink}}
+                                  {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
+                              {{/if}}
                               {{#if showSelect}}
                                   <div class="ui inverted button" {{action 'select' model}}>Select</div>
                               {{/if}}

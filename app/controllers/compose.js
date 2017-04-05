@@ -6,18 +6,26 @@ export default Ember.Controller.extend({
     this._super(...arguments);
   },
 
+  // just checking the toggle works ...
+  publicCheckedObserver: Ember.observer('public_checked', function() {
+    console.log("Checked = " + this.get('public_checked'));
+  }),
+
   showStep : ["inline", "none", "none", "none"],
   stepsActive : ["active", "", "", ""],
   currentStep : 0,
   public_checked : false,
+  frontend : null,
+  folder : null,
+  nextName : "Next",
   actions: {
 
-    closedMiniBrowser : function () {
-
+    // this is called when someone selected the front end image
+    itemSelected: function (model) {
+      console.log(model.get('name') + " frontend image has been selected in compose.js...");
+      this.set("frontend", model);
     },
-    selectedFile: function () {
 
-    },
 
     gotoStep : function (stepNo) {
       console.log("Going to step no " + stepNo);
@@ -52,16 +60,18 @@ export default Ember.Controller.extend({
     },
     moveRight: function () {
       var step = this.get("currentStep");
-      if (step !=3)
-        this.send("gotoStep", step+1);
-    },
+      if (step !=3) {
+        this.send("gotoStep", step + 1);
 
-    checked: function() {
-      console.log("Checked = " +  this.get("public_checked"))
-    },
+        if (step == 2)
+          this.set('nextName', "Submit");
+        else
+          this.set('nextName', "Next");
+      } else {
+        // submit
+        alert("Creating tale: TODO")
+      }
 
-    updatedetails: function(name) {
-      this.set('researchdetails', false);
     },
 
   }

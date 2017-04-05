@@ -18,20 +18,20 @@
 
 {{#if showRegistered}}
   <div class="ui segment" >
-    {{wt-flix models=model.dataRegistered paginateOn=18 cardsPerRow="six" modelView="folder.view" showSearch=true}}
+    {{wt-flix models=model.dataRegistered paginateOn=18 cardsPerRow="six" modelView="folder.view" showSearch=true showLink=true}}
   </div>
 {{/if}}
 
 {{#if showImages}}
   <div class="ui segment" >
-    {{wt-flix models=model.images paginateOn=18 cardsPerRow="six" modelView="image.view" showSearch=true}}
+    {{wt-flix models=model.images paginateOn=18 cardsPerRow="six" modelView="image.view" showSearch=true showLink=true}}
   </div>
 {{/if}}
 
 
 {{#if showTales}}
   <div class="ui segment">
-    {{wt-flix models=model.tales paginateOn=18 cardsPerRow="six" modelView="tale.view" showSearch=true}}
+    {{wt-flix models=model.tales paginateOn=18 cardsPerRow="six" modelView="tale.view" showSearch=true showLink=true}}
   </div>
 {{/if}}
 

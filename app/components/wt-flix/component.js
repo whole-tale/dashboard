@@ -8,6 +8,7 @@ export default Ember.Component.extend({
   rightButtonState: "disabled",
   lastAnimationTime : 0,
   animationRefreshTime : 500, // min ms time between animation refreshes
+  item : null,
   init() {
     this._super(...arguments);
     console.log("Attributes updated");
@@ -33,7 +34,7 @@ export default Ember.Component.extend({
       $('.selectable.cards .image img')
         .transition('jiggle')
       ;
-      this.set('lastAnimationTime', );
+      this.set('lastAnimationTime', milliseconds);
     }
   },
 
@@ -161,7 +162,8 @@ export default Ember.Component.extend({
 
     },
     select : function (model) {
-        console.log(model.get('name') + " has been selected")
+      this.set('item', model);
+      this.sendAction('action', model); // sends to compose.js controller, action itemSelected, based on template spec.
     }
 
   }

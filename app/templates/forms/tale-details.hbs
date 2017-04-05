@@ -1,26 +1,40 @@
 
 
 <div class="ui form">
+    <div class="ui field">
+        <label>Frontend</label>
+        {{#if frontend.name}}
+          {{input readonly=true value=frontend.name type="text" placeholder="Frontend Not Chosen"}}
+        {{else}}
+            <div class="ui red message">Frontend Not Chosen</div>
+        {{/if}}
+    </div>
+    <div class="ui field">
+        <label>Folder</label>
+      {{#if folder.name}}
+        {{input readonly=true value=folder.name type="text" placeholder="Folder Not Chosen"}}
+      {{else}}
+          <div class="ui red message">Folder Not Chosen</div>
+      {{/if}}
+    </div>
     <div class="two fields">
         <div class="field">
-            <div class="field">
                 <label>Name</label>
-                {{input value=name type="text" placeholder="Tale Name"}}
-            </div>
-            <div class="field">
-                <label>Description</label>
-              {{textarea value=description cols="80" rows="6"}}
-            </div>
+                {{input readonly=true value=name type="text" placeholder="Tale Name"}}
         </div>
         <div class="field">
-            <div class="field">
                 <label>Public</label>
-              {{ui-checkbox class="toggle" label="Public" checked=public_checked onChange=(action 'checked')}}
-            </div>
-            <div class="field">
+              {{ui-checkbox readonly=true class="toggle"  label="Public?" checked=public_checked onChange=(action (mut public_checked))}}
+        </div>
+    </div>
+    <div class="two fields">
+        <div class="field">
+                <label>Description</label>
+              {{textarea readonly=true value=description cols="80" rows="6"}}
+        </div>
+        <div class="field">
                 <label>Configuration Information</label>
-              {{textarea value=configuration cols="80" rows="6"}}
-            </div>
+              {{textarea readonly=true value=configuration cols="80" rows="6"}}
         </div>
     </div>
 </div>
