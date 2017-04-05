@@ -5,9 +5,10 @@
         <button class="ui mini right floated button" {{action 'cancelUploads'}}>Cancel</button>
     {{/unless}}
     <div class="ui header" style="color:whitesmoke; margin-bottom: 10px">File Uploads</div>
+    <ul style="list-style-type:square">
     {{#each files as |file|}}
         {{#if (eq file.status "error")}}
-            <div><i class="red warning icon"></i>
+            <li style="margin-bottom: 5px;"><i class="red warning icon"></i>
                   {{file.name}}
                     {{#if file.error}}
                       <div class="ui red label">
@@ -18,20 +19,21 @@
                             Not uploaded, error: Not available
                         </div>
                     {{/if}}
-            </div>
+            </li>
         {{else if (eq file.status "success")}}
-            <div><i class="green check icon"></i>{{file.name}}</div>
+            <li style="margin-bottom: 5px;"><i class="green check icon"></i>{{file.name}}</li>
         {{else if (eq file.status "canceled")}}
-            <div><i class="red remove icon"></i><div class="ui red label">{{file.name}} -  Cancelled</div></div>
+            <li style="margin-bottom: 5px;"><i class="red remove icon"></i><div class="ui red label">{{file.name}} -  Cancelled</div></li>
         {{else}}
-            <div>
+            <li style="margin-bottom: 5px;">
                 {{#ui-progress class="small teal" value=file.progress progress=file.progress total=100}}
                     <div label="large label">{{file.name}}</div>
                     <div class="bar"></div>
                 {{/ui-progress}}
-            </div>
+            </li>
         {{/if}}
     {{/each}}
+    </ul>
 </div>
 
 {{drop-zone class="hidden" autoProcessQueue=false}}
