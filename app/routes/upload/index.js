@@ -34,7 +34,7 @@ export default AuthenticateRoute.extend({
       state.setCurrentParentType("user");
     } else {
       console.log("Folder != null, so loading folder and items");
-      folderContents = this.get('store').query('folder', { parentId: folderID, parentType: state.getCurrentParentType()});
+      folderContents = this.get('store').query('folder', { parentId: folderID, parentType: "folder"});
       itemContents= this.get('store').query('item', { folderId: folderID});
       console.log("Folder != null, leaving");
     }

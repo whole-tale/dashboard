@@ -1,24 +1,35 @@
-<div id="upload-progress" class="ui black progress upload hidden floating message">
+<div id="upload-progress" class="ui black progress upload hidden floating message" xmlns="http://www.w3.org/1999/html">
     {{#unless processingQueue}}
         <i class="close icon" {{action 'closeMessage' on='click'}}></i>
     {{else}}
         <button class="ui mini right floated button" {{action 'cancelUploads'}}>Cancel</button>
     {{/unless}}
-    <div class="header">File Uploads</div>
+    <div class="ui header" style="color:whitesmoke; margin-bottom: 10px">File Uploads</div>
     {{#each files as |file|}}
         {{#if (eq file.status "error")}}
-            <p><i class="red remove icon"></i>{{file.name}} - {{file.error}}</p>
+            <div><i class="red warning icon"></i>
+                  {{file.name}}
+                    {{#if file.error}}
+                      <div class="ui red label">
+                          Not uploaded, error: {{file.error}}
+                      </div>
+                    {{else}}
+                        <div class="ui red label">
+                            Not uploaded, error: Not available
+                        </div>
+                    {{/if}}
+            </div>
         {{else if (eq file.status "success")}}
-            <p><i class="green check icon"></i>{{file.name}}</p>
+            <div><i class="green check icon"></i>{{file.name}}</div>
         {{else if (eq file.status "canceled")}}
-            <p><i class="red remove icon"></i>{{file.name}} -  Cancelled</p>
+            <div><i class="red remove icon"></i><div class="ui red label">{{file.name}} -  Cancelled</div></div>
         {{else}}
-            <p>
+            <div>
                 {{#ui-progress class="small teal" value=file.progress progress=file.progress total=100}}
                     <div label="large label">{{file.name}}</div>
                     <div class="bar"></div>
                 {{/ui-progress}}
-            </p>
+            </div>
         {{/if}}
     {{/each}}
 </div>

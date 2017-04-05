@@ -9,6 +9,7 @@ export default Ember.Controller.extend({
   showStep : ["inline", "none", "none", "none"],
   stepsActive : ["active", "", "", ""],
   currentStep : 0,
+  public_checked : false,
   actions: {
 
     closedMiniBrowser : function () {
@@ -55,7 +56,11 @@ export default Ember.Controller.extend({
         this.send("gotoStep", step+1);
     },
 
-      updatedetails: function(name) {
+    checked: function() {
+      console.log("Checked = " +  this.get("public_checked"))
+    },
+
+    updatedetails: function(name) {
       this.set('researchdetails', false);
     },
 

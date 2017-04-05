@@ -31,9 +31,9 @@ export default Ember.Component.extend({
 
     if (milliseconds-this.get('lastAnimationTime') > this.get('animationRefreshTime')) {
       $('.selectable.cards .image img')
-        .transition('bounce')
+        .transition('jiggle')
       ;
-      this.set('lastAnimationTime', milliseconds);
+      this.set('lastAnimationTime', );
     }
   },
 

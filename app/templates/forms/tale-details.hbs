@@ -4,40 +4,22 @@
     <div class="two fields">
         <div class="field">
             <div class="field">
-                <label>Research Title</label>
-                <input type="text" placeholder="First Name">
+                <label>Name</label>
+                {{input value=name type="text" placeholder="Tale Name"}}
             </div>
             <div class="field">
                 <label>Description</label>
-                <textarea rows="3"></textarea>
+              {{textarea value=description cols="80" rows="6"}}
             </div>
         </div>
         <div class="field">
             <div class="field">
-                <div class="ui header">Authors</div>
+                <label>Public</label>
+              {{ui-checkbox class="toggle" label="Public" checked=public_checked onChange=(action 'checked')}}
             </div>
-            <div class="two fields">
-              <div class="field">
-                  <label>First Name</label>
-                  <input type="text" placeholder="First Name">
-              </div>
-                <div class="field">
-                    <label>Last Name</label>
-                    <input type="text" placeholder="First Name">
-                </div>
-            </div>
-            <div class="two fields">
-                <div class="field">
-                    <label>Username</label>
-                    <input type="text" placeholder="First Name">
-                </div>
-                <div class="field">
-                    <label>More ...</label>
-                    <div class="ui red button" {{action 'authoradd'}}>
-                        <i class="plus icon"></i>
-                        Add Author
-                    </div>
-                </div>
+            <div class="field">
+                <label>Configuration Information</label>
+              {{textarea value=configuration cols="80" rows="6"}}
             </div>
         </div>
     </div>

@@ -41,13 +41,7 @@
     </div>
 
     <div style="display: {{showStep.[2]}}">
-      {{mini-directory-browser
-        id="mini-browser"
-        class=""
-        fileToMove=fileToMove
-        onClose=(action "closedMiniBrowser")
-        onClick=(action "selectedFile")
-      }}
+      {{wt-flix models=model.allData paginateOn=6 cardsPerRow="six" modelView="image.view" showSelect=true showSearch=true}}
     </div>
 
     <div style="display: {{showStep.[3]}}">

@@ -40,11 +40,7 @@ Router.map(function() {
     this.route('edit', { path: '/edit/:collection_id' });
     this.route('new');
   });
-
-  this.route('data', function() {
-    this.route('list', { path: '/:collection_id' });
-  });
-
+  
 
   this.route('image', function(){
     this.route('view', { path: '/view/:image_id' });

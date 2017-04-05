@@ -1,6 +1,11 @@
 import Ember from 'ember';
+import ResetScroll from 'wholetale/mixins/reset-scroll';
 
-export default Ember.Route.extend({
+export default Ember.Route.extend(ResetScroll, {
+  activate: function() {
+    // this mixin moves the page up to the top - removes the current scroll
+    this._super.apply(this, arguments);
+  },
     init() {
       console.log("In the route for the view in tale");
     },
