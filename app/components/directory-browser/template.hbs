@@ -79,9 +79,10 @@
       onClick=(action "clickedContextMenuItem")
   }}
 
-  {{mini-directory-browser
+  {{folder-chooser
        id="mini-browser"
        class="hidden"
+       contextMenu=true
        fileToMove=fileToMove
        onClose=(action "closedMiniBrowser")
        onClick=(action "moveFile")

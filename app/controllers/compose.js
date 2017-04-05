@@ -26,6 +26,10 @@ export default Ember.Controller.extend({
       this.set("frontend", model);
     },
 
+    selectedFolder: function(model) {
+        console.log(model.get('name'));
+        this.set('folder', model);
+    },
 
     gotoStep : function (stepNo) {
       console.log("Going to step no " + stepNo);
@@ -51,6 +55,10 @@ export default Ember.Controller.extend({
 
       this.set("currentStep", stepNo);
 
+      if(stepNo === 2) {
+          this.set('startChooserFromFolder', "registered");
+      }
+
     },
 
     moveLeft: function () {
@@ -63,8 +71,10 @@ export default Ember.Controller.extend({
       if (step !=3) {
         this.send("gotoStep", step + 1);
 
-        if (step == 2)
+        if (step == 2) {
           this.set('nextName', "Submit");
+          this.set('startChooserFromFolder', "registered");
+        }
         else
           this.set('nextName', "Next");
       } else {

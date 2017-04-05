@@ -41,7 +41,11 @@
     </div>
 
     <div style="display: {{showStep.[2]}}">
-
+        {{folder-chooser
+             id="mini-browser"
+             getRoot=startChooserFromFolder
+             onSelectedFolder=(action "selectedFolder")
+         }}
     </div>
 
     <div style="display: {{showStep.[3]}}">
@@ -68,12 +72,3 @@
     </div>
 
 </div>
-
-
-
-
-
-
-
-
-
