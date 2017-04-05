@@ -37,7 +37,16 @@
     </div>
 </div>
 {{else}}
-  <div class="">
+    {{#if selectedFolder}}
+        <div class="ui form">
+            <div class="ui fluid inline field">
+                <label>Selected Folder</label>
+                <input type="text" style="width:100% !important;" readonly=true value={{selectedFolder.name}}>
+            </div>
+        </div>
+        <div class="ui divider"></div>
+    {{/if}}
+    <div class="">
     {{#unless loading}}
         <table class="ui very basic single line table" style="margin:0;">
             <thead>
