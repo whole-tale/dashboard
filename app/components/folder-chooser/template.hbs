@@ -39,12 +39,13 @@
 {{else}}
     {{#if selectedFolder}}
         <div class="header item" style="font-size: 120%">
-            <span class="ui huge blue label" style="margin-right: 10px;">Currently Selected</span> {{selectedFolder.name}}
+            <span class="ui large blue label" style="margin-right: 10px;">Currently Selected</span> {{selectedFolder.name}}
         </div>
         <div class="ui divider"></div>
     {{/if}}
     <div class="">
     {{#unless loading}}
+      <div style="max-height: 500px; overflow-y: scroll">
         <table class="ui very basic single line table" style="margin:0;">
             <thead>
                 <tr>
@@ -112,6 +113,7 @@
                 {{/if}}
             </tbody>
        </table>
+      </div>
     {{else}}
        {{#ui-progress class="ui top attached progress" value=990 progress=990 total=1000}}
            <div class="bar"></div>
