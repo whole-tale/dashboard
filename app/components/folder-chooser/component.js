@@ -217,7 +217,8 @@ export default Ember.Component.extend({
             //Grab the selected row from the event object so we can
             //highlight it to show it's been selected.
             let selectedRow = event.path.find(offset => {
-                return /selectable/.test(offset.classList.value);
+                if(offset.classList)
+                     return /selectable/.test(offset.classList.value);
             });
             this.set("selectedRow", Ember.$(selectedRow));
             this.selectedRow.css({background: "lightsteelblue"});
