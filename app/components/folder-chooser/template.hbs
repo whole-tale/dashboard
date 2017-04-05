@@ -38,11 +38,8 @@
 </div>
 {{else}}
     {{#if selectedFolder}}
-        <div class="ui form">
-            <div class="ui fluid inline field">
-                <label>Selected Folder</label>
-                <input type="text" style="width:100% !important;" readonly=true value={{selectedFolder.name}}>
-            </div>
+        <div class="header item" style="font-size: 120%">
+            <span class="ui huge blue label" style="margin-right: 10px;">Currently Selected</span> {{selectedFolder.name}}
         </div>
         <div class="ui divider"></div>
     {{/if}}
