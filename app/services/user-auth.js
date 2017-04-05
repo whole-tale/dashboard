@@ -32,6 +32,10 @@ export default Ember.Service.extend({
         });
   },
 
+  resetCurrentUser() {
+      localStorage.currentUserID = null;
+  },
+
   getCurrentUser() {
     var userID = localStorage.currentUserID;
     if ((userID === "null") || (userID == null) || (userID === "") || (userID === "undefined")) {
