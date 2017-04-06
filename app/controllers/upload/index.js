@@ -37,7 +37,7 @@ export default Ember.Controller.extend({
   }),
   init() {
     var state = this.get('internalState');
-
+    this.set("currentFolderId", state.getCurrentFolderID());
     console.log("Heading into browse upload controller" );
 
     var currentNav = this.get("folderNavs").getCurrentFolderNavAndSetOn(this);
