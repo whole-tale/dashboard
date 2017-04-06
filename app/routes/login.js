@@ -8,7 +8,7 @@ export default Ember.Route.extend({
     var slashes = http.concat("//");
     var ishttp = (location.port === '') || (location.port === 80) || (location.port === 443);
     var host = slashes.concat(window.location.hostname) + (ishttp? "": ':'+location.port);
-    let url = config.apiUrl + '/oauth/provider?redirect=' + host + "&token={girderToken}";
+    let url = config.apiUrl + '/oauth/provider?redirect=' + host + "%3Ftoken%3D%7BgirderToken%7D";
     return Ember.$.getJSON(url);
   }
 });
