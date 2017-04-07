@@ -77,29 +77,40 @@ export default Ember.Service.extend({
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/tale/';
     var queryPars = "";
-    if (imageId != null) {
-      queryPars += "imageId="+ encodeURIComponent(imageId);
+    if (imageId == null) {
+      fail("You must provide an image");
+      return;
     }
-    if (folderId != null) {
-      queryPars += "folderId="+ encodeURIComponent(folderId);
+    if (folderId == null) {
+      fail("You must provide a folder");
+      return;
     }
+
+
+    queryPars += "imageId="+ encodeURIComponent(imageId);
+    queryPars += "&";
+    queryPars += "folderId="+ encodeURIComponent(folderId);
+
     if (instanceId != null) {
+      queryPars += "&";
       queryPars += "instanceId="+ encodeURIComponent(instanceId);
     }
     if (name != null) {
+      queryPars += "&";
       queryPars += "name="+ encodeURIComponent(name);
     }
     if (description !=null) {
-      if (queryPars !== "")
-        queryPars += "&";
+      queryPars += "&";
       queryPars += "description="+ encodeURIComponent(description);
     }
 
     if (isPublic != null) {
+      queryPars += "&";
       queryPars += "public="+ encodeURIComponent(isPublic);
     }
 
     if (configuration != null) {
+      queryPars += "&";
       queryPars += "config="+ encodeURIComponent(configuration);
     }
 
