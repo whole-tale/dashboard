@@ -149,12 +149,17 @@ export default Ember.Component.extend({
         copy(file) {
             let self = this;
             let store = this.get('store');
-            let copy = store.createRecord('item', {});
+
+            let fileType = file.get('_modelType');
+
+            let copy = store.createRecord(fileType, {});
             copy.save({ adapterOptions: { copy: file.id } })
                 .then(copy => {
-                    copy = [copy];
-                    if(self.fileList) {
-                        self.set('fileList', copy.pushObjects(self.fileList.toArray()).sortBy('name'));
+                    if(fileType === "item") {
+                        self.set('fileList', [copy].pushObjects(self.fileList.toArray()).sortBy('name'));
+                    }
+                    else if(fileType === "folder") {
+                        self.set('folderList', [copy].pushObjects(self.folderList.toArray()).sortBy('name'));
                     }
                 });
         },
