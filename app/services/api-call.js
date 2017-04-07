@@ -60,4 +60,62 @@ export default Ember.Service.extend({
   },
 
 
+  /**
+   * Posts a Tale, using the query parameters specified in the API ...
+   *
+   * @param imageId
+   * @param folderId
+   * @param instanceId
+   * @param name
+   * @param description
+   * @param isPublic
+   * @param config
+   * @param success
+   * @param fail
+   */
+  postTale: function (imageId, folderId, instanceId, name, description, isPublic, configuration, success, fail) {
+    var token = this.get('tokenHandler').getWholeTaleAuthToken();
+    var url = config.apiUrl + '/tale/';
+    var queryPars = "";
+    if (imageId != null) {
+      queryPars += "imageId="+ encodeURIComponent(imageId);
+    }
+    if (folderId != null) {
+      queryPars += "folderId="+ encodeURIComponent(folderId);
+    }
+    if (instanceId != null) {
+      queryPars += "instanceId="+ encodeURIComponent(instanceId);
+    }
+    if (name != null) {
+      queryPars += "name="+ encodeURIComponent(name);
+    }
+    if (description !=null) {
+      if (queryPars !== "")
+        queryPars += "&";
+      queryPars += "description="+ encodeURIComponent(description);
+    }
+
+    if (isPublic != null) {
+      queryPars += "public="+ encodeURIComponent(isPublic);
+    }
+
+    if (configuration != null) {
+      queryPars += "config="+ encodeURIComponent(configuration);
+    }
+
+    if (queryPars !== "") {
+      url += "?" + queryPars;
+    }
+    var client = new XMLHttpRequest();
+    client.open('POST', url);
+    client.setRequestHeader("Girder-Token", token);
+    client.addEventListener("load", function() {
+      success(client.responseText);
+    });
+
+    client.addEventListener("error", fail);
+
+    client.send();
+  },
+
   });

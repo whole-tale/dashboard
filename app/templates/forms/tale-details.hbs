@@ -39,4 +39,32 @@
     </div>
 </div>
 
+{{#if tale_creating}}
+    <div class="ui segment" style="height:100px">
+        <div class="ui active inverted dimmer">
+            <div class="ui text loader">Saving The Whole Tale...</div>
+        </div>
+    </div>
+{{/if}}
 
+{{#if tale_created}}
+    <div class="ui green icon message">
+        <i class="checkmark icon"></i>
+        <div class="content">
+            <div class="header">
+                The Tale has been saved !
+            </div>
+        </div>
+    </div>
+{{/if}}
+
+{{#if tale_not_created}}
+    <div class="ui red icon message">
+        <i class="remove circle icon"></i>
+        <div class="content">
+            <div class="header">
+                The Tale could not be saved !
+            </div>
+        </div>
+    </div>
+{{/if}}

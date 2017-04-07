@@ -2,6 +2,8 @@ import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
 
 export default Ember.Controller.extend({
+  apiCall : Ember.inject.service('api-call'),
+
   init() {
     this._super(...arguments);
   },
@@ -18,6 +20,8 @@ export default Ember.Controller.extend({
   frontend : null,
   folder : null,
   nextName : "Next",
+  tale_creating: false,
+  tale_created: false,
   actions: {
 
     // this is called when someone selected the front end image
@@ -78,8 +82,46 @@ export default Ember.Controller.extend({
         else
           this.set('nextName', "Next");
       } else {
-        // submit
-        alert("Creating tale: TODO")
+
+        var component = this;
+
+        component.set("tale_creating", true);
+
+        var onSuccess = function(item) {
+          component.set("tale_creating", false);
+          component.set("tale_created", true);
+
+          Ember.run.later((function() {
+            component.set("tale_created", false);
+            // component.transitionToRoute('upload.view', item);
+          }), 5000);
+        };
+
+        var onFail = function(item) {
+          // deal with the failure here
+          component.set("tale_creating", false);
+          component.set("tale_not_created", true);
+          console.log(item);
+
+          Ember.run.later((function() {
+            component.set("tale_not_created", false);
+          }), 5000);
+
+        };
+
+        // submit: API
+        // imageId, folderId, instanceId, name, description, isPublic, config
+
+        this.get("apiCall").postTale(
+          this.get("frontend").get('_id'),
+          this.get('folder').get('_id'),
+          null,
+          this.get('name'),
+          this.get('description'),
+          this.get('public_checked'),
+          this.get('configuration'),
+          onSuccess,
+          onFail);
       }
 
     },

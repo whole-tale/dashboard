@@ -59,7 +59,6 @@ actions: {
 
 
       this.get("apiCall").putItemDetails(item.get('_id'), name, description, onSuccess, onFail);
-
     },
   textUpdated : function (text) {
       // do something with
