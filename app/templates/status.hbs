@@ -1,9 +1,57 @@
 
-<div class="ui large header">Status</div>
+<div class="ui large header">Running Tales</div>
 
 
-<div class="ui raised segment">
-{{medium-content-editable value=body options=mediumEditorOptions onFinishedTyping=(action "textUpdated")}}
+<div class="ui icon message">
+    <i class="blue play icon"></i>
+    <div class="content">
+        <div class="ui grid">
+            <div class="eight wide column">
+                <p>There are {{model.length}} Tales Currently Running</p>
+            </div>
+        </div>
+
+    </div>
 </div>
 
-<img class="logo" src="/images/construction.jpg">
+
+<table class="ui celled padded table">
+    <thead>
+    <tr>
+
+        <th>Name</th>
+        <th>Image Name</th>
+        <th>Folder Name</th>
+        <th>Created</th>
+        <th>Last Activity</th>
+        <th>Status</th>
+        <th>Launch</th>
+    </tr></thead>
+    <tbody>
+    {{#each model as |instance|}}
+        <tr class="center aligned">
+            <td>
+                <div class="ui center aligned header">{{instance.name}}</div>
+            </td>
+            <td>
+                {{instance.image.name}}
+            </td>
+            <td>
+                {{instance.folder.name}}
+            </td>
+            <td>
+              {{from-now instance.created}}
+            </td>
+            <td>
+              {{from-now instance.lastActivity}}
+            </td>
+            <td>
+              {{instance.status}}
+            </td>
+            <td>
+              <a href="{{instance.fullUrl}}" target="_blank"><div class="ui blur button">Launch</div></a>
+            </td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
