@@ -147,7 +147,16 @@ export default Ember.Component.extend({
         },
 
         copy(file) {
-            console.log("copy "+file.get('name'));
+            let self = this;
+            let store = this.get('store');
+            let copy = store.createRecord('item', {});
+            copy.save({ adapterOptions: { copy: file.id } })
+                .then(copy => {
+                    copy = [copy];
+                    if(self.fileList) {
+                        self.set('fileList', copy.pushObjects(self.fileList.toArray()).sortBy('name'));
+                    }
+                });
         },
 
         download(file) {
