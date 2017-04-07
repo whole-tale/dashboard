@@ -13,4 +13,3 @@ export default AuthenticateRoute.extend({
       };
   }
 });
-
