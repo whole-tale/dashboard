@@ -51,7 +51,11 @@ export default Ember.Service.extend({
     client.open('PUT', url);
     client.setRequestHeader("Girder-Token", token);
     client.addEventListener("load", function() {
-      success(client.responseText);
+      if (client.status === 200) {
+        success(client.responseText);
+      } else {
+        fail(client);
+      }
     });
 
     client.addEventListener("error", fail);
@@ -62,41 +66,46 @@ export default Ember.Service.extend({
 
   /**
    * Posts a Tale, using the query parameters specified in the API ...
-   *
+   * @param httpCommand
+   * @param taleID
    * @param imageId
    * @param folderId
    * @param instanceId
    * @param name
    * @param description
    * @param isPublic
-   * @param config
+   * @param configuration
    * @param success
    * @param fail
    */
-  postTale: function (imageId, folderId, instanceId, name, description, isPublic, configuration, success, fail) {
+  postTale: function (httpCommand, taleID, imageId, folderId, instanceId, name, description, isPublic, configuration, success, fail) {
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/tale/';
     var queryPars = "";
-    if (imageId == null) {
-      fail("You must provide an image");
-      return;
+    if (httpCommand === "post") {
+      if (imageId == null) {
+        fail("You must provide an image");
+        return;
+      }
+      if (folderId == null) {
+        fail("You must provide a folder");
+        return;
+      }
+      queryPars += "imageId="+ encodeURIComponent(imageId);
+      queryPars += "&";
+      queryPars += "folderId="+ encodeURIComponent(folderId);
+    } else {
+      url += taleID + "/";
     }
-    if (folderId == null) {
-      fail("You must provide a folder");
-      return;
-    }
-
-
-    queryPars += "imageId="+ encodeURIComponent(imageId);
-    queryPars += "&";
-    queryPars += "folderId="+ encodeURIComponent(folderId);
 
     if (instanceId != null) {
-      queryPars += "&";
+      if (queryPars !== "")
+        queryPars += "&";
       queryPars += "instanceId="+ encodeURIComponent(instanceId);
     }
     if (name != null) {
-      queryPars += "&";
+      if (queryPars !== "")
+        queryPars += "&";
       queryPars += "name="+ encodeURIComponent(name);
     }
     if (description !=null) {
@@ -118,10 +127,50 @@ export default Ember.Service.extend({
       url += "?" + queryPars;
     }
     var client = new XMLHttpRequest();
-    client.open('POST', url);
+    client.open(httpCommand, url);
     client.setRequestHeader("Girder-Token", token);
     client.addEventListener("load", function() {
-      success(client.responseText);
+      if (client.status === 200) {
+        success(client.responseText);
+      } else {
+        fail(client.responseText);
+      }
+    });
+
+    client.addEventListener("error", fail);
+
+    client.send();
+  },
+
+  postInstance: function (taleId, name, success, fail) {
+    var token = this.get('tokenHandler').getWholeTaleAuthToken();
+    var url = config.apiUrl + '/instance/';
+    var queryPars = "";
+    if (taleId == null) {
+      fail("You must provide a tale");
+      return;
+    }
+
+    queryPars += "taleId="+ encodeURIComponent(taleId);
+
+    if (name != null) {
+      queryPars += "&";
+      queryPars += "name="+ encodeURIComponent(name);
+    }
+
+
+    if (queryPars !== "") {
+      url += "?" + queryPars;
+    }
+    var client = new XMLHttpRequest();
+    client.open("post", url);
+    client.setRequestHeader("Girder-Token", token);
+    client.addEventListener("load", function() {
+      if (client.status === 200) {
+        success(client.responseText);
+      } else {
+        fail(client.responseText);
+      }
     });
 
     client.addEventListener("error", fail);

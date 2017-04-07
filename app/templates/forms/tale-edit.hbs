@@ -1,0 +1,65 @@
+
+
+<div class="ui form">
+    <div class="two fields">
+        <div class="field">
+            <div class="field">
+                <label>Name</label>
+                {{input value=model.name type="text" placeholder="Tale Name"}}
+            </div>
+        </div>
+        <div class="field">
+            <div class="field">
+                <label>Public</label>
+              {{ui-checkbox class="toggle" label="Public?" checked=model.public onChange=(action (mut model.public))}}
+            </div>
+        </div>
+    </div>
+    <div class="two fields">
+        <div class="field">
+            <div class="field">
+                <label>Description</label>
+              {{textarea value=model.description cols="80" rows="6"}}
+            </div>
+        </div>
+        <div class="field">
+            <div class="field">
+                <label>Configuration Information</label>
+              {{textarea value=model.config cols="80" rows="6"}}
+            </div>
+        </div>
+    </div>
+</div>
+
+{{#if tale_creating}}
+    <div class="ui segment" style="height:100px">
+        <div class="ui active inverted dimmer">
+            <div class="ui text loader">Saving The Whole Tale...</div>
+        </div>
+    </div>
+{{/if}}
+
+{{#if tale_created}}
+    <div class="ui green icon message">
+        <i class="checkmark icon"></i>
+        <div class="content">
+            <div class="header">
+                The Tale has been saved !
+            </div>
+        </div>
+    </div>
+{{/if}}
+
+{{#if tale_not_created}}
+    <div class="ui red icon message">
+        <i class="remove circle icon"></i>
+        <div class="content">
+            <div class="header">
+                The Tale could not be saved !<br>
+                {{error_msg}}
+            </div>
+        </div>
+    </div>
+{{/if}}
+
+

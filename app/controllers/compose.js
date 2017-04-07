@@ -22,6 +22,7 @@ export default Ember.Controller.extend({
   nextName : "Next",
   tale_creating: false,
   tale_created: false,
+  configuration : {},
   actions: {
 
     // this is called when someone selected the front end image
@@ -110,9 +111,11 @@ export default Ember.Controller.extend({
         };
 
         // submit: API
-        // imageId, folderId, instanceId, name, description, isPublic, config
+        // httpCommand, imageId, folderId, instanceId, name, description, isPublic, config
 
         this.get("apiCall").postTale(
+          "post",
+          "null",  // tale ID
           this.get("frontend").get('_id'),
           this.get('folder').get('_id'),
           null,

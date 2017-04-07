@@ -3,45 +3,108 @@ import EmberUploader from 'ember-uploader';
 var inject = Ember.inject;
 
 export default Ember.Controller.extend({
+  apiCall : Ember.inject.service('api-call'),
+  taleInstanceName : "",
   init() {
   },
+  modelObserver : Ember.observer("model", function (sender, key, value) {
+    console.log("Controller model hook is called from nested tale 'view'");
+    var model = this.get('model');
+    // convert config json to a string for editing.
+    model.set('config', JSON.stringify(model.get('config')));
+    console.log(model.get('config'));
+  }),
+  actions: {
+  updateTale: function () {
 
-actions: {
-    // updateDetails: function () {
-    //   var component = this;
-    //   component.set("details_updating", false);
-    //
-    //   console.log("Updating the File details!!");
-    //   var item = this.get('model');
-    //   console.log(item.changedAttributes());
-    //
-    //   var description = this.get('model').get('description');
-    //   var name = this.get('model').get('name');
-    //   var onSuccess = function(item) {
-    //     component.set("details_updated", true);
-    //
-    //     Ember.run.later((function() {
-    //       component.set("details_updated", false);
-    //       component.transitionToRoute('image.view', item);
-    //     }), 1000);
-    //   };
-    //
-    //   var onFail = function(item) {
-    //     // deal with the failure here
-    //     component.set("details_not_updated", true);
-    //     console.log(item);
-    //
-    //     Ember.run.later((function() {
-    //       component.set("details_not_updated", false);
-    //     }), 5000);
-    //
-    //   };
-    //
-    //
-    //   this.get("apiCall").putItemDetails(item.get('_id'), name, description, onSuccess, onFail);
-    //
-    // },
-    textUpdated : function (text) {
+      var component = this;
+
+      component.set("tale_creating", true);
+
+      var onSuccess = function(item) {
+        component.set("tale_creating", false);
+        component.set("tale_created", true);
+
+        Ember.run.later((function() {
+          component.set("tale_created", false);
+          // component.transitionToRoute('upload.view', item);
+        }), 10000);
+      };
+
+      var onFail = function(item) {
+        // deal with the failure here
+        component.set("tale_creating", false);
+        component.set("tale_not_created", true);
+        item = JSON.parse(item);
+        component.set("error_msg", item.message);
+        console.log(item);
+
+        Ember.run.later((function() {
+          component.set("tale_not_created", false);
+        }), 10000);
+
+      };
+
+      // submit: API
+      // httpCommand, taleid, imageId, folderId, instanceId, name, description, isPublic, config
+
+    var tale = this.get("model");
+
+      this.get("apiCall").postTale(
+        "put",
+        tale.get("_id"),
+        null,
+        null,
+        null,
+        tale.get('name'),
+        tale.get('description'),
+        tale.get('public'),
+        tale.get('config'),
+        onSuccess,
+        onFail);
+
+  },
+    launchTale: function () {
+      var component = this;
+
+      component.set("tale_instantiating", true);
+
+      var onSuccess = function(item) {
+        component.set("tale_instantiating", false);
+        component.set("tale_instantiated", true);
+
+        Ember.run.later((function() {
+          component.set("tale_instantiated", false);
+          // component.transitionToRoute('upload.view', item);
+        }), 10000);
+      };
+
+      var onFail = function(item) {
+        // deal with the failure here
+        component.set("tale_instantiating", false);
+        component.set("tale_not_instantiated", true);
+        item = JSON.parse(item);
+        console.log(item);
+        component.set("error_msg", item.message);
+
+        Ember.run.later((function() {
+          component.set("tale_not_instantiated", false);
+        }), 10000);
+
+      };
+
+      // submit: API
+      // httpCommand, taleid, imageId, folderId, instanceId, name, description, isPublic, config
+
+      var tale = this.get("model");
+
+      this.get("apiCall").postInstance(
+        tale.get("_id"),
+        this.get('taleInstanceName'),
+        onSuccess,
+        onFail);
+  },
+      textUpdated : function (text) {
       // do something with
 
       console.log(this.get('model').get('description'));

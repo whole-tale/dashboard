@@ -4,7 +4,7 @@ export default DS.Model.extend({
   "_accessLevel": DS.attr('number'),
   "_id": DS.attr('string'),
   "_modelType": DS.attr('string'),
-  "config": DS.attr('string'),
+  "config": DS.attr(),
   "created": DS.attr('date'),
   "creatorId": DS.attr('string'),
   "description": DS.attr('string'),
