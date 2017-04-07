@@ -34,9 +34,12 @@ export default DS.RESTAdapter.extend({
     urlForCreateRecord(modelName, snapshot) {
         let url = this._super(modelName, snapshot);
         let queryParams = snapshot.adapterOptions.queryParams;
+        if(snapshot.adapterOptions.copy) {
+            url += "/"+snapshot.adapterOptions.copy+"/copy";
+        }
         if(queryParams) {
             let q = this.buildQueryParams(queryParams);
-            return url+"?"+q;
+            url += "?"+q;
         }
         return url;
     },
