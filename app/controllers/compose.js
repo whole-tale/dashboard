@@ -22,7 +22,7 @@ export default Ember.Controller.extend({
   nextName : "Next",
   tale_creating: false,
   tale_created: false,
-  configuration : {},
+  configuration : JSON.stringify({}),
   actions: {
 
     // this is called when someone selected the front end image
