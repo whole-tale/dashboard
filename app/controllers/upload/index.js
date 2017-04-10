@@ -99,7 +99,18 @@ export default Ember.Controller.extend({
       } else if (nav.command === "registered") {
         folderContents = this.get('store').query('folder', nav.options);
       } else if (nav.command === "recent") {
-        var recentFolders = state.getRecentFolders();
+        var uniqueSetOfRecentFolders = [];
+        var recentFolders = state.getRecentFolders().filter(folder => {
+            let index = uniqueSetOfRecentFolders.findIndex(added => {
+                return added === folder;
+            });
+            let isAdded = index < 0 ? false : true;
+            if(!isAdded) {
+                uniqueSetOfRecentFolders.push(folder);
+                return true;
+            }
+            return false;
+        });
         var payload = JSON.stringify({"folder": recentFolders});
         console.log(payload);
         folderContents = this.store.query('resource', {"resources" : payload});
