@@ -32,5 +32,16 @@ export default Ember.Controller.extend({
           });
         });
     });
-  })
+  }),
+  actions: {
+    deleteInstance: function (model) {
+      console.log("Delete instance " + model.name);
+        model.destroyRecord(
+          function (success) {
+              console.log(success);
+        }, function (failure) {
+            console.log(failure);
+        });
+    },
+  }
 });

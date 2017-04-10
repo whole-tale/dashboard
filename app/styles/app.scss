@@ -255,7 +255,12 @@ p, .description, .item {
 }
 
 
-.ui.vertical.menu .item {
+.ui.vertical.thin.menu .item {
+  font-size: 1.1rem;
+  margin: 3px 0 3px 0;
+}
+
+.ui.vertical.compact.menu .item {
   font-size: 1.1rem;
   margin: 3px 0 3px 0;
 }
