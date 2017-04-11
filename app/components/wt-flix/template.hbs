@@ -13,6 +13,7 @@
     }
 
 </style>
+
 <div class="ui inverted grey segment">
 
     {{#if showSearch}}
@@ -50,6 +51,32 @@
                               {{#if showSelect}}
                                   <div class="ui inverted button" {{action 'select' model}}>Select</div>
                               {{/if}}
+                              {{#if showDelete}}
+                                  <div class="ui {{model._id}} modal" style="display: none">
+                                      <i class="close icon"></i>
+                                      <div class="header">
+                                          Really Delete Tale?
+                                      </div>
+                                      <div class="image content">
+                                          <div class="description">
+                                              <p>This will permanently delete the '{{model.name}}' Tale. We cannot sew it back on. Continue?</p>
+                                          </div>
+                                      </div>
+                                      <div class="actions">
+                                          <div class="ui black deny button" {{action 'denyDelete'}}>
+                                              No
+                                          </div>
+                                          <div class="ui positive right labeled icon button" {{action 'approveDelete' model}}>
+                                              Yes
+                                              <i class="checkmark icon"></i>
+                                          </div>
+                                      </div>
+                                  </div>
+
+                                <a class="ui tiny bottom right attached label" {{action 'openDeleteModal' model._id}}>
+                                    <i class="red remove icon"></i>
+                                </a>
+                              {{/if}}
                             </div>
                         </div>
                     </div>
@@ -83,3 +110,4 @@
         </div>
     </div>
 </div>
+

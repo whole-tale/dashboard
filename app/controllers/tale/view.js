@@ -111,6 +111,15 @@ export default Ember.Controller.extend({
     },
     back : function () {
       history.back();
+    },
+    delete: function (model) {
+      console.log("Deleting model " + model.name);
+      model.destroyRecord(
+        function (success) {
+          console.log(success);
+        }, function (failure) {
+          console.log(failure);
+        });
     }
   },
 

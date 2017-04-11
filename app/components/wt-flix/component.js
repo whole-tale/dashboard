@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  store: Ember.inject.service(),
   numberOfModels: 0,
   pageNumber: 1,
   totalPages:1,
@@ -36,6 +37,7 @@ export default Ember.Component.extend({
       ;
       this.set('lastAnimationTime', milliseconds);
     }
+
   },
 
   paginate(component, models) {
@@ -164,7 +166,33 @@ export default Ember.Component.extend({
     select : function (model) {
       this.set('item', model);
       this.sendAction('action', model); // sends to compose.js controller, action itemSelected, based on template spec.
+    },
+    openDeleteModal: function(id) {
+      var selector = '.ui.' + id + '.modal';
+      console.log("Selector: " +  selector);
+      $(selector).modal('show');
+    },
+
+    approveDelete: function(model) {
+      console.log("Deleting model " + model.name);
+      model.deleteRecord();
+      model.save();
+
+      var component = this;
+
+      // refresh
+      this.get('store').findAll('tale', { reload: true }).then(function(tales) {
+          component.paginate(component, tales);
+      });
+
+
+      return false;
+    },
+
+    denyDelete: function() {
+      return true;
     }
+
 
   }
 });
