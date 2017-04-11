@@ -50,13 +50,17 @@ export default Ember.Component.extend({
         dz.options.url = config.apiUrl + '/file/chunk';
         dz.options.paramName = "chunk";
         dz.options.headers = {'Girder-Token':this.get('tokenHandler').getWholeTaleAuthToken()};
+        dz.options.autoProcessQueue = false;
+        dz.options.parallelUploads = 1;
         dz.on("addedfile", this.debounceAddedFile.bind(this));
         dz.on("sending", this.sending.bind(this));
         dz.on("uploadprogress", this.uploadProgress.bind(this));
         dz.on("success", this.uploadProgress.bind(this));
         dz.on("queuecomplete", this.queueComplete.bind(this));
         dz.on("error", this.error.bind(this));
-        dz.on("canceled", this.uploadProgress.bind(this));
+        dz.on("canceled", this.canceled.bind(this));
+        dz.on("removedfile", this.removedFile.bind(this));
+        dz.on("complete", this.completeFile.bind(this));
     },
 
     resizeDropzone() {
@@ -90,6 +94,7 @@ export default Ember.Component.extend({
                 console.log(e);
             })
             .finally(() => {
+                dz.options.autoProcessQueue = false;
                 self.set('processingQueue', false);
                 self.cleanUpDropzone();
                 self.sendAction('refresh');
@@ -141,7 +146,21 @@ export default Ember.Component.extend({
         this.files.arrayContentDidChange(idx);
     },
 
-    queueComplete() {
+    canceled(file) {
+        this.uploadProgress(file);
+    },
+
+    removedFile(file) {
+        if(file.status === "queued") file.status = "canceled";
+        this.uploadProgress(file);
+    },
+
+    completeFile(file) {
+        let dz = window.Dropzone.forElement(".dropzone");
+        dz.options.autoProcessQueue = true;
+    },
+
+    queueComplete(params) {
         this.deferredQueueComplete.resolve(true);
     },
 
@@ -179,9 +198,10 @@ export default Ember.Component.extend({
             this.files.arrayContentDidChange();
         },
 
-        cancelUploads(file) {
+        cancelUploads() {
             let dz = window.Dropzone.forElement(".dropzone");
             dz.removeAllFiles(true);
+            this.deferredQueueComplete.resolve(true);
         },
     }
 });
