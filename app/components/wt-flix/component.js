@@ -175,16 +175,15 @@ export default Ember.Component.extend({
 
     approveDelete: function(model) {
       console.log("Deleting model " + model.name);
-      model.deleteRecord();
-      model.save();
-
       var component = this;
 
-      // refresh
-      this.get('store').findAll('tale', { reload: true }).then(function(tales) {
+      model.deleteRecord();
+      model.save( function () {
+        // refresh
+        this.get('store').findAll('tale', { reload: true }).then(function(tales) {
           component.paginate(component, tales);
+        });
       });
-
 
       return false;
     },
