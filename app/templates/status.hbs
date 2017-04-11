@@ -51,10 +51,31 @@
             <td>
                 <div class="ui compact buttons">
                   <a href="{{instance.fullUrl}}" target="_blank"><div class="ui green button"><i class="play icon"></i> </div></a>
-                  <div class="ui red button" {{action 'deleteInstance'instance}}><i class="remove icon"></i></div>
+                  <div class="ui red button" {{action 'openDeleteModal' instance._id}}><i class="remove icon"></i></div>
                 </div>
             </td>
         </tr>
+
+        <div class="ui {{instance._id}} modal" style="display: none">
+            <i class="close icon"></i>
+            <div class="header">
+                Really Delete Instance?
+            </div>
+            <div class="image content">
+                <div class="description">
+                    <p>This will permanently delete the '{{instance.name}}' instance. Continue?</p>
+                </div>
+            </div>
+            <div class="actions">
+                <div class="ui black deny button" {{action 'denyDelete'}}>
+                    No
+                </div>
+                <div class="ui positive right labeled icon button" {{action 'approveDelete' instance}}>
+                    Yes
+                    <i class="checkmark icon"></i>
+                </div>
+            </div>
+        </div>
     {{/each}}
     </tbody>
 </table>
