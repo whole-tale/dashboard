@@ -34,14 +34,23 @@ export default Ember.Controller.extend({
     });
   }),
   actions: {
-    deleteInstance: function (model) {
-      console.log("Delete instance " + model.name);
-        model.destroyRecord(
-          function (success) {
-              console.log(success);
-        }, function (failure) {
-            console.log(failure);
-        });
+
+    openDeleteModal: function(id) {
+      var selector = '.ui.' + id + '.modal';
+      console.log("Selector: " +  selector);
+      $(selector).modal('show');
     },
+
+    approveDelete: function(model) {
+      console.log("Deleting model " + model.name);
+      model.deleteRecord();
+      model.save();
+
+      return false;
+    },
+
+    denyDelete: function() {
+      return true;
+    }
   }
 });
