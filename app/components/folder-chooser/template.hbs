@@ -95,24 +95,19 @@
                         </td>
                     </tr>
                 {{/each}}
-                {{#if (eq directory.type "user")}}
-                    <tr class="left aligned" id="registered">
-                        <td>
-                            <i class="large folder outline icon"></i> Registered
-                        </td>
-                        <td>
-                        </td>
-                        <td>
-                        </td>
-                        <td>
-                        </td>
-                        <td>
-                            <i class="large level down icon clickable" style="" {{action "clickedLevelDown" registered on="click"}}></i>
-                        </td>
-                    </tr>
-                {{/if}}
             </tbody>
-       </table>
+        </table>
+            {{#if (eq directory.type "user")}}
+                <div class="ui center aligned basic segment">
+                    <div class="ui horizontal divider">
+                        Or
+                    </div>
+                    <div class="ui teal labeled icon button" {{action "clickedLevelDown" registered}}>
+                        Select From Registered Datasets
+                        <i class="level down icon"></i>
+                    </div>
+                </div>
+            {{/if}}
       </div>
     {{else}}
        {{#ui-progress class="ui top attached progress" value=990 progress=990 total=1000}}
