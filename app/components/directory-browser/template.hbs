@@ -20,8 +20,9 @@
                           </div>
                       </div>
                   {{else}}
+                      <i class="large folder outline icon"> </i>
                       <a href="#" {{action "clickedFolder" item}}>
-                          <i class="large folder outline icon"></i> {{truncate-name item.name}}
+                          {{truncate-name item.name}}
                       </a>
                   {{/if}}
               </td>

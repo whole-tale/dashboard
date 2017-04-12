@@ -41,12 +41,19 @@ export default Ember.Component.extend({
                 timer = window.setTimeout(cancelRenaming, 200);
             });
         }
+
     },
 
     actions: {
         clickedFolder : function(item) {
+
+          if (window.event.ctrlKey) {
+            this.send('openedContextMenu', item);
+          } else {
             console.log("clicked "+item.id);
             this.sendAction('action', item,  "true");
+          }
+
         },
 
         clickedFile: function(item) {
@@ -62,7 +69,8 @@ export default Ember.Component.extend({
             ctxt.css({
                 top: event.layerY+"px",
                 left: event.layerX+"px",
-                position: "absolute"
+                position: "absolute",
+                "z-index" : "1000"
             });
             ctxt.removeClass("hidden");
 
