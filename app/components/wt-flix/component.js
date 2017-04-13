@@ -20,9 +20,14 @@ export default Ember.Component.extend({
     var component = this;
 
     modelsPromised.then(function(models) {
+      if (component.get('addButtonName') != null){
+        var paginateSize = Number(component.get('paginateOn'));
+        component.set('paginateOn', --paginateSize); // remove one to fit the plus.
+      }
       component.paginate(component, models);
     });
 
+    this.set('addButtonLogo', '/icons/plus-sign.png');
   },
   didRender() {
     $('.selectable.cards .image').dimmer({
@@ -46,10 +51,10 @@ export default Ember.Component.extend({
     var lastMSTime = Number(this.get('lastAnimationTime'));
 
 
-    console.log("MS: " + milliseconds );
-    console.log("Last MS: " + lastMSTime);
-    console.log("Diff: " + (milliseconds-lastMSTime));
-    console.log("GUID: " + guid);
+ //   console.log("MS: " + milliseconds );
+   // console.log("Last MS: " + lastMSTime);
+  //  console.log("Diff: " + (milliseconds-lastMSTime));
+    //console.log("GUID: " + guid);
 
     if (milliseconds-lastMSTime > Number(this.get('animationRefreshTime'))) {
       $('.selectable.cards.' + guid + ' .image img')

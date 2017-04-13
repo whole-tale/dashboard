@@ -1,9 +1,10 @@
 import Ember from 'ember';
 import ResetScroll from 'wholetale/mixins/reset-scroll';
 
-export default Ember.Route.extend(ResetScroll, {
+export default Ember.Route.extend({
   activate: function() {
     // this mixin moves the page up to the top - removes the current scroll
+    // but doesn't work sometimes ... argh ...
     this._super.apply(this, arguments);
   },
     init() {

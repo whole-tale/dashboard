@@ -2,10 +2,15 @@ import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
 var inject = Ember.inject;
 
+
 export default Ember.Controller.extend({
+
   apiCall : Ember.inject.service('api-call'),
   taleInstanceName : "",
   init() {
+  },
+  didInsertElement() {
+    console.log("Controller didUpdate hook is called from nested tale 'view'");
   },
   modelObserver : Ember.observer("model", function (sender, key, value) {
     console.log("Controller model hook is called from nested tale 'view'");

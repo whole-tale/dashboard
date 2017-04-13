@@ -110,18 +110,20 @@
                 </div>
             </div>
       {{/each}}
-      <div class="text-block card">
+{{#if addButtonName}}
+      <div class="card">
           <div class="blurring dimmable fluid image" style="min-height: 140px; background: rgba(0, 0, 0, 0.3);">
               <div class="ui dimmer">
                   <div class="content">
                       <div class="center">
                         {{#if showLink}}
-                            <div class="ui inverted button" {{action "addNew" on="click"}}>Add</div>
+                            <div class="ui inverted icon button" {{action "addNew" on="click"}}>
+                                <i class="plus icon"></i>
+                            </div>
                         {{/if}}
                       </div>
                   </div>
               </div>
-              <h2><i class="huge plus icon"></i></h2>
               <img src={{addButtonLogo}} />
           </div>
 
@@ -131,6 +133,7 @@
             {{/ui-popup}}
           </div>
       </div>
+{{/if}}
     </div>
 
     <div class="ui grid">

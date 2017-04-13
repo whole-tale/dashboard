@@ -23,8 +23,8 @@
     </div>
     <div class="fourteen wide column">
       {{wt-flix models=model.images paginateOn=6 cardsPerRow="six" modelView="image.view" showLink=true
-          addButtonName="Add a new research environment and customize computational tools and data sets."
-          addButtonTagName="Add New Research Environment"
+                addButtonName=null
+          addButtonTagName=null
           addButtonLogo=""
           onAddNew=(action "clickedAddNewResearchEnvironment")
       }}
@@ -32,6 +32,11 @@
 
 </div>
 
+<!--
+                addButtonName="Add a new research environment and customize computational tools and data sets."
+          addButtonTagName="Add New Research Environment"
+          addButtonLogo=""
+-->
 <div class="ui stackable grid" style="padding-top: 20px">
 
     <div class="two wide column">

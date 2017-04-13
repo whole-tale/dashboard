@@ -36,5 +36,17 @@ export default Ember.Controller.extend({
       this.set("showImages",false);
       this.set("showTales", true);
     },
+    gotoPublish : function(name) {
+      this.transitionToRoute("compose");
+    },
+    clickedAddNewResearchEnvironment() {
+
+    },
+    clickedRegisterNewDataset() {
+      let modal = Ember.$('.ui.harvester.modal');
+      modal.parent().prependTo(Ember.$(document.body));
+      modal.modal('show');
+    }
   }
+
 });
