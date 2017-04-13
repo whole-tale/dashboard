@@ -58,7 +58,6 @@ export default Ember.Service.extend({
   },
 
   releaseWholeTaleCookie: function () {
-    console.log("did i reach here?");
     return this.deleteCookie('girderToken');
   }
 });

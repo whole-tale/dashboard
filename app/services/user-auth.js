@@ -22,7 +22,7 @@ export default Ember.Service.extend({
                 let userRec = self.get('store').createRecord('user', userJS);   //BUG: this call returns an empty object
                 // console.log("User not is null in api call");
                 localStorage.currentUserID = userJS._id; // store logged in user locally
-
+                
                 return userRec;
             }
         })
@@ -62,8 +62,9 @@ export default Ember.Service.extend({
             self.get('tokenHandler').releaseWholeTaleCookie();
             localStorage.currentUserID = null;
         })
-        .catch(() => {
-            //alert("Could not log out!");
+        .catch(e => {
+            console.log("ERROR LOGGING OUT");
+            console.log(e);
         });
   }
 

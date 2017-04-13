@@ -21,7 +21,7 @@ export default Ember.Route.extend({
       router.transitionTo('login');
     }
 
-    this.get('userAuth').getCurrentUserFromServer()
+    return this.get('userAuth').getCurrentUserFromServer()
       .then(user => {
         if (user == null) {
           //   console.log("User is null");
