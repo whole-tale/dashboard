@@ -33,11 +33,12 @@ export default Ember.Controller.extend({
       ;
     },
     logout : function() {
-      // alert("logout");
 
-      this.get('userAuth').logoutCurrentUser();
+        this.get('userAuth').logoutCurrentUser();
+        this.set('loggedIn', false);
 //      var location = this.get('router.url');
   //    window.location.href = location.split('?')[0];
+
         this.transitionToRoute('login');
     },
     staticMenu: function() {
