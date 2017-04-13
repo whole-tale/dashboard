@@ -23,9 +23,6 @@ export default Ember.Service.extend({
     if(matchInfo) {
         token = matchInfo[1] || null;
         if(token) this.setCookie('girderToken', token);
-//        var location = this.get('router.url');
-  //      window.location.href = location.split('?')[0];
-
         return token;
     }
 
@@ -45,10 +42,14 @@ export default Ember.Service.extend({
 
   deleteCookie : function ( name, path, domain ) {
     if( this.getCookie( name ) ) {
-      document.cookie = name + "=" +
-        ((path) ? ";path="+path:"")+
-        ((domain)?";domain="+domain:"") +
-        ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      // Modified according to http://stackoverflow.com/questions/2144386/javascript-delete-cookie
+      // Read Tasos_K's comment about the old method (commented out here) and how it no longer works.
+      // It isn't explained why the old method should fail, but new method seems to work okay.
+      //   document.cookie = name + "=" +
+      //     ((path) ? ";path="+path:"")+
+      //     ((domain)?";domain="+domain:"") +
+      //     ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      this.setCookie(name, "", path, domain, -1);
     }
   },
 
@@ -57,6 +58,7 @@ export default Ember.Service.extend({
   },
 
   releaseWholeTaleCookie: function () {
+    console.log("did i reach here?");
     return this.deleteCookie('girderToken');
   }
 });
