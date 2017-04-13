@@ -10,6 +10,7 @@ export default Ember.Component.extend({
   lastAnimationTime : 0,
   animationRefreshTime : 500, // min ms time between animation refreshes
   item : null,
+  guid : null,
   init() {
     this._super(...arguments);
     console.log("Attributes updated");
@@ -29,10 +30,29 @@ export default Ember.Component.extend({
     });
   },
   didUpdate() {
-    var milliseconds = (new Date).getTime();
 
-    if (milliseconds-this.get('lastAnimationTime') > this.get('animationRefreshTime')) {
-      $('.selectable.cards .image img')
+    var guid = this.get('guid');
+
+    if (guid ==null) {
+      guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+      this.set('guid', guid);
+    }
+
+    var d = new Date();
+    var milliseconds = d.getTime();
+    var lastMSTime = Number(this.get('lastAnimationTime'));
+
+
+    console.log("MS: " + milliseconds );
+    console.log("Last MS: " + lastMSTime);
+    console.log("Diff: " + (milliseconds-lastMSTime));
+    console.log("GUID: " + guid);
+
+    if (milliseconds-lastMSTime > Number(this.get('animationRefreshTime'))) {
+      $('.selectable.cards.' + guid + ' .image img')
         .transition('jiggle')
       ;
       this.set('lastAnimationTime', milliseconds);
