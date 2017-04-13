@@ -80,7 +80,7 @@ export default Ember.Controller.extend({
         component.set("tale_instantiating", false);
         component.set("tale_instantiated", true);
 
-        var instance = component.get("store").createRecord('instance', JSON.parse(item));
+        var instance = Ember.Object.create(JSON.parse(item));
 
         instance.set("fullUrl", "http://wttmpnb.hub.yt/" + instance.get('url'));
         component.set("instance", instance);

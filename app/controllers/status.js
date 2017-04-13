@@ -3,9 +3,7 @@ var inject = Ember.inject;
 
 
 export default Ember.Controller.extend({
-  modelObserver : Ember.observer("model", function (sender, key, value) {
-    console.log("Controller model hook is called from status 'view'");
-    var model = this.get('model');
+  grabData : function (model) {
     // convert config json to a string for editing.
 
     console.log(model);
@@ -19,19 +17,25 @@ export default Ember.Controller.extend({
 
       controller.get('store').findRecord('tale', item.get('taleId')).
       then(tale => {
-          console.log("Image ID = " + tale.get('imageId'));
-          console.log("Folder ID = " + tale.get('folderId'));
-          controller.get('store').findRecord('image', tale.get('imageId')).
-          then(image => {
-            console.log(image);
-            item.set('image', image);
-            controller.get('store').findRecord('folder', tale.get('folderId')).
-            then(folder => {
-              item.set('folder', folder);
-            });
+        console.log("Image ID = " + tale.get('imageId'));
+        console.log("Folder ID = " + tale.get('folderId'));
+        controller.get('store').findRecord('image', tale.get('imageId')).
+        then(image => {
+          console.log(image);
+          item.set('image', image);
+          controller.get('store').findRecord('folder', tale.get('folderId')).
+          then(folder => {
+            item.set('folder', folder);
           });
         });
+      });
     });
+  },
+  modelObserver : Ember.observer("model", function (sender, key, value) {
+    console.log("Controller model hook is called from status 'view'");
+    var model = this.get('model');
+
+    this.grabData(model);
   }),
   actions: {
 
