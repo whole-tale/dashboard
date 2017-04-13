@@ -1,5 +1,31 @@
 <div class="ui tool segment">
   <div class="ui small blue button" {{action 'back'}}><i class="caret left icon"></i> Back </div>
+
+    <div class="ui small red icon button" {{action 'openDeleteModal' model._id}} style="float: right">
+      <i class="remove icon"></i>
+        Delete Tale
+    </div>
+</div>
+
+<div class="ui {{model._id}} modal" style="display: none">
+    <i class="close icon"></i>
+    <div class="header">
+        Really Delete Tale?
+    </div>
+    <div class="image content">
+        <div class="description">
+            <p>This will permanently delete the '{{model.name}}' Tale. Continue?</p>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button" {{action 'denyDelete'}}>
+            No
+        </div>
+        <div class="ui positive right labeled icon button" {{action 'approveDelete' model}}>
+            Yes
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
 </div>
 
 {{#ui-accordion class="fluid styled"}}

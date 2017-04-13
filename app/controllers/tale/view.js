@@ -112,14 +112,25 @@ export default Ember.Controller.extend({
     back : function () {
       history.back();
     },
-    delete: function (model) {
+    openDeleteModal: function(id) {
+      var selector = '.ui.' + id + '.modal';
+      console.log("Selector: " +  selector);
+      $(selector).modal('show');
+    },
+
+    approveDelete: function(model) {
       console.log("Deleting model " + model.name);
-      model.destroyRecord(
-        function (success) {
-          console.log(success);
-        }, function (failure) {
-          console.log(failure);
-        });
+      var component = this;
+
+      model.destroyRecord({ reload: true }).then( function () {
+        component.transitionToRoute('index');
+      });
+
+      return false;
+    },
+
+    denyDelete: function() {
+      return true;
     }
   },
 
