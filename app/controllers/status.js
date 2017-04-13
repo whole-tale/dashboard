@@ -13,7 +13,7 @@ export default Ember.Controller.extend({
       console.log(item);
       console.log("Tale ID is " + item.get('taleId'));
 
-      item.set("fullUrl", "http://wttmpnb.hub.yt/" + item.get('url'));
+      item.set("fullUrl", "https://wttmpnb.hub.yt/" + item.get('url'));
 
       controller.get('store').findRecord('tale', item.get('taleId')).
       then(tale => {

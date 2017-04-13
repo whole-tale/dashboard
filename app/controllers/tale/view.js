@@ -82,7 +82,7 @@ export default Ember.Controller.extend({
 
         var instance = Ember.Object.create(JSON.parse(item));
 
-        instance.set("fullUrl", "http://wttmpnb.hub.yt/" + instance.get('url'));
+        instance.set("fullUrl", "https://wttmpnb.hub.yt/" + instance.get('url'));
         component.set("instance", instance);
 
         // Ember.run.later((function() {
