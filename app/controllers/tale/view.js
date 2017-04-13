@@ -4,10 +4,11 @@ var inject = Ember.inject;
 
 
 export default Ember.Controller.extend({
-
+  store: Ember.inject.service(),
   apiCall : Ember.inject.service('api-call'),
   taleInstanceName : "",
   init() {
+    this.set("tale_instantiated", false);
   },
   didInsertElement() {
     console.log("Controller didUpdate hook is called from nested tale 'view'");
@@ -75,13 +76,18 @@ export default Ember.Controller.extend({
       component.set("tale_instantiating", true);
 
       var onSuccess = function(item) {
+        console.log(item);
         component.set("tale_instantiating", false);
         component.set("tale_instantiated", true);
 
-        Ember.run.later((function() {
-          component.set("tale_instantiated", false);
-          // component.transitionToRoute('upload.view', item);
-        }), 10000);
+        var instance = component.get("store").createRecord('instance', JSON.parse(item));
+
+        instance.set("fullUrl", "http://wttmpnb.hub.yt/" + instance.get('url'));
+        component.set("instance", instance);
+
+        // Ember.run.later((function() {
+        //   component.set("tale_instantiated", false);
+        // }), 10000);
       };
 
       var onFail = function(item) {
@@ -89,6 +95,7 @@ export default Ember.Controller.extend({
         component.set("tale_instantiating", false);
         component.set("tale_not_instantiated", true);
         item = JSON.parse(item);
+
         console.log(item);
         component.set("error_msg", item.message);
 

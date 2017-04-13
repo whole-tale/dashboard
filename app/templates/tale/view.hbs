@@ -96,7 +96,20 @@
         <i class="checkmark icon"></i>
         <div class="content">
             <div class="header">
-                The Tale '{{model.name}}' has been launched !
+                <p>The Tale '{{model.name}}' has been launched !</p>
+
+              <div class="ui buttons">
+                <a href="{{instance.fullUrl}}" target="_blank">
+                    <div class="ui green icon button" style="margin-right: 10px">
+                        <i class="play icon"></i>
+                        Start FrontEnd
+                    </div></a>
+              {{#link-to 'status' class="ui blue icon button"}}
+                  <i class="line chart icon"></i>
+                  Check Status
+              {{/link-to}}
+              </div>
+
             </div>
         </div>
     </div>
