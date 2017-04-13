@@ -23,6 +23,9 @@ export default Ember.Service.extend({
     if(matchInfo) {
         token = matchInfo[1] || null;
         if(token) this.setCookie('girderToken', token);
+//        var location = this.get('router.url');
+  //      window.location.href = location.split('?')[0];
+
         return token;
     }
 

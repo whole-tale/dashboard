@@ -36,7 +36,9 @@ export default Ember.Controller.extend({
       // alert("logout");
 
       this.get('userAuth').logoutCurrentUser();
-      this.transitionToRoute('login');
+//      var location = this.get('router.url');
+  //    window.location.href = location.split('?')[0];
+        this.transitionToRoute('login');
     },
     staticMenu: function() {
       this.set('staticMenu', true);

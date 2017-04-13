@@ -25,10 +25,13 @@ export default Ember.Route.extend({
       .then(user => {
         if (user == null) {
           //   console.log("User is null");
+          this.get("tokenHandler").releaseWholeTaleCookie();
+          this.get("userAuth").resetCurrentUser();
+          router.set('currentUser', null);
           router.transitionTo('login');
           return null;
         } else {
-          //   console.log("User is not null!!!");
+          console.log("User is not null!!!");
           var userRec = router.get('store').createRecord('apiKey', {
             accessToken: token,
             user : user,
