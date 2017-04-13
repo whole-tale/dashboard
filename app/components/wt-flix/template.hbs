@@ -12,6 +12,26 @@
         margin: auto;
     }
 
+    .text-block.card h2 {
+        position: absolute;
+        width: 100%;
+        height: 140px;
+        margin-top: 0%;
+        background: rgba(40, 59, 73, 0.5);
+    }
+
+    .text-block.card h2 i {
+        padding-left: 32%;
+        padding-top: 20%;
+        position: absolute;
+        font-size: 3em;
+        font-weight: 100;
+    }
+
+    .text-block.card img {
+        opacity: .4;
+    }
+
 </style>
 
 <div class="ui inverted grey segment">
@@ -90,6 +110,30 @@
                 </div>
             </div>
       {{/each}}
+      <div class="text-block card">
+          <div class="blurring dimmable fluid image" style="min-height: 140px; background: rgba(0, 0, 0, 0.3);">
+              <div class="ui dimmer">
+                  <div class="content">
+                      <div class="center">
+                        {{#if showLink}}
+                            <div class="ui inverted button" {{action "onAddNew" on="click"}}>Add</div>
+                        {{/if}}
+                      </div>
+                  </div>
+              </div>
+              <h2><i class="huge plus icon"></i></h2>
+              <!-- <div class="text-block image1"> -->
+                   <!-- <img src={{addButtonLogo}} /> -->
+                   <img src="https://github.com/whole-tale/jupyter-yt/raw/dc91dea/yt_logo.png" />
+              <!-- </div> -->
+          </div>
+
+          <div class="content" style="color: #515151">
+            {{#ui-popup html=addButtonName}}
+                {{addButtonTagName}}
+            {{/ui-popup}}
+          </div>
+      </div>
     </div>
 
     <div class="ui grid">
@@ -110,4 +154,3 @@
         </div>
     </div>
 </div>
-
