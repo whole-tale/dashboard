@@ -209,8 +209,11 @@ export default Ember.Component.extend({
 
     denyDelete: function() {
       return true;
-    }
+    },
 
+    addNew: function() {
+        this.sendAction("onAddNew");
+    }
 
   }
 });
