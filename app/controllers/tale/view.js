@@ -85,9 +85,9 @@ export default Ember.Controller.extend({
         instance.set("fullUrl", "https://wttmpnb.hub.yt/" + instance.get('url'));
         component.set("instance", instance);
 
-        // Ember.run.later((function() {
-        //   component.set("tale_instantiated", false);
-        // }), 10000);
+        Ember.run.later((function() {
+           component.set("tale_instantiated", false);
+         }), 30000);
       };
 
       var onFail = function(item) {
