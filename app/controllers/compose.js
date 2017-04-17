@@ -78,7 +78,6 @@ export default Ember.Controller.extend({
 
         if (step == 2) {
           this.set('nextName', "Submit");
-          this.set('startChooserFromFolder', "registered");
         }
         else
           this.set('nextName', "Next");

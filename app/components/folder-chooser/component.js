@@ -17,10 +17,28 @@ export default Ember.Component.extend({
     moveTo: null,
     fileToMove: null,
 
-    getRoot: null,
     selectedRow: null,
 
     registered: {name: "Registered", id: "registered", type: "registered"},
+
+    init() {
+        this._super(...arguments);
+
+        this.set('loading', true);
+
+        let self = this;
+        let store = this.get('store');
+        let userID = this.get('userAuth').getCurrentUserID();
+
+        store.query('folder', { "parentId": userID, "parentType": "user"})
+          .then(folderContents => {
+              self.set('directory', {id: userID, type: "user", })
+              self.set('folders', folderContents);
+          })
+          .finally(_ => {
+              self.set('loading', false);
+          });
+    },
 
     //HACK: Initialize the mini browser. Find the file's parent folder. And then
     //      populate the 'folders' array.
@@ -47,34 +65,6 @@ export default Ember.Component.extend({
             .finally(_ => {
                 self.set('loading', false);
             });
-    }),
-
-    getRootChanged: Ember.observer('getRoot', function() {
-        this.set('loading', true);
-        let self = this;
-        let store = this.get('store');
-        let getRoot = this.get('getRoot');
-
-        if(getRoot === "registered") {
-            store.query('folder', {adapterOptions:{registered: true}})
-              .then(folderContents => {
-                  self.set('directory', self.get('registered'));
-                  self.set('folders', folderContents);
-              })
-              .finally(_ => {
-                  self.set('loading', false);
-              });
-        }
-        else {
-            store.query('folder', { "parentId": getRoot.id, "parentType": getRoot.type})
-              .then(folderContents => {
-                  self.set('directory', {id: getRoot.id, type: getRoot.type, })
-                  self.set('folders', folderContents);
-              })
-              .finally(_ => {
-                  self.set('loading', false);
-              });
-        }
     }),
 
     clearSelected() {
