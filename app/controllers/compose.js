@@ -23,6 +23,19 @@ export default Ember.Controller.extend({
   tale_creating: false,
   tale_created: false,
   configuration : JSON.stringify({}),
+
+  clearWizard() {
+      this.set('stepsActive', ["active", "", "", ""]);
+      this.set('currentStep', 0);
+      this.set('public_checked', false);
+      this.set('frontend', null);
+      this.set('folder', null);
+      this.set('nextName', "Next");
+      this.set('tale_creating', false);
+      this.set('tale_created', false);
+      this.set('configuration', JSON.stringify({}));
+  },
+
   actions: {
 
     // this is called when someone selected the front end image
@@ -93,6 +106,7 @@ export default Ember.Controller.extend({
 
           Ember.run.later((function() {
             component.set("tale_created", false);
+            component.clearWizard();
             // component.transitionToRoute('upload.view', item);
           }), 5000);
         };

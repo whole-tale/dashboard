@@ -201,7 +201,8 @@ export default Ember.Component.extend({
         clickedRow(folder) {
             this.clearSelected();
 
-            this.folders.find(f=>{return folder.id === f.id;}).set('selected', true);
+            let onClickedRow = this.folders.find(f=>{return folder.id === f.id;})
+            if(onClickedRow) onClickedRow.set('selected', true);
             this.get('folders').arrayContentDidChange();
 
             //Grab the selected row from the event object so we can
