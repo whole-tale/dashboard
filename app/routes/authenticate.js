@@ -7,15 +7,15 @@ export default Ember.Route.extend({
   token : null,
 
   model: function(params) {
-    console.log("In Authenticate Route");
+    // console.log("In Authenticate Route");
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
 
-    console.log("Token is " + token);
+    // console.log("Token is " + token);
 
     var router =this;
 
     if (( token == null) || (token === "")) {
-      console.log("No token!!!");
+    //   console.log("No token!!!");
       this.get("userAuth").resetCurrentUser();
       router.set('currentUser', null);
       router.transitionTo('login');
@@ -24,14 +24,14 @@ export default Ember.Route.extend({
     return this.get('userAuth').getCurrentUserFromServer()
       .then(user => {
         if (user == null) {
-          //   console.log("User is null");
+            // console.log("User is null");
           this.get("tokenHandler").releaseWholeTaleCookie();
           this.get("userAuth").resetCurrentUser();
           router.set('currentUser', null);
           router.transitionTo('login');
           return null;
         } else {
-          console.log("User is not null!!!");
+        //   console.log("User is not null!!!");
           var userRec = router.get('store').createRecord('apiKey', {
             accessToken: token,
             user : user,

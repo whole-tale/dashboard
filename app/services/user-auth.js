@@ -22,7 +22,6 @@ export default Ember.Service.extend({
                 let userRec = self.get('store').createRecord('user', userJS);   //BUG: this call returns an empty object
                 // console.log("User not is null in api call");
                 localStorage.currentUserID = userJS._id; // store logged in user locally
-                
                 return userRec;
             }
         })

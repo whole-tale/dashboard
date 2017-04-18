@@ -55,6 +55,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'test') {
+    ENV['ember-cli-mirage'] = { enabled: true };
     // Testem prefers this...
     ENV.locationType = 'none';
 
@@ -63,9 +64,9 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
-    ENV.apiHost = 'https://girder.wholetale.org';
-    ENV.apiPath = '/api/v1';
-    ENV.apiUrl = 'https://girder.wholetale.org/api/v1';
+    ENV.apiHost = '';
+    ENV.apiPath = '/api';
+    ENV.apiUrl = '';
   }
 
   if (environment === 'production') {
