@@ -1,14 +1,23 @@
-/*jshint node:true*/
+
 /* global require, module */
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
+
+const isTesting = process.env.EMBER_ENV === 'test';
 
 module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
     // Add options here
+    hinting: !isTesting,
     mediumEditorOptions: {
       theme: 'tim'
     },
-    
+    'ember-cli-mocha': {
+      useLintTree: false
+    },
+    'ember-cli-qunit': {
+     useLintTree: false
+    },
+
     emberCliDropzonejs: {
       includeDropzoneCss: false
     }
