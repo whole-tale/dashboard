@@ -6,7 +6,7 @@ import Ember from 'ember';
 export default Ember.Test.registerAsyncHelper('loginUser', function(app) {
     const server = window.server;
 
-    server.create('user', {id:1});
+    let user = server.create('user', {id:1});
     server.createList('image', 3);
     server.createList('tale', 3);
     server.createList('folder', 3);
@@ -20,5 +20,5 @@ export default Ember.Test.registerAsyncHelper('loginUser', function(app) {
         ";expires=" + expires;
 
     visit('/');
-    return wait();
+    return wait().then(_=>user.attrs);
 });

@@ -5,27 +5,27 @@ export default function() {
 
     this.get('api/image', (schema, request) => {
         let fakeImages = schema.image.all();
-        return fakeImages.models;
+        return (fakeImages) ? fakeImages.models : [];
     });
 
     this.get('api/folder/registered', (schema, request) => {
         let fakeRegistered = schema.folder.all();
-        return fakeRegistered.models;
+        return (fakeRegistered) ? fakeRegistered.models : [];
     });
 
     this.get('api/tale', (schema, request) => {
         let fakeTale = schema.tale.all();
-        return fakeTale.models;
+        return (fakeTale) ? fakeTale.models : [];
     });
 
     this.get('user/me', (schema, request) => {
         let user = schema.user.find(1);
-        return user.attrs;
+        return (user) ? user.attrs : null;
     });
 
     this.get('api/user/:id', (schema, request) => {
         let user = schema.user.find(1);
-        return user.attrs;
+        return (user) ? user.attrs : null;
     });
 
     this.get('oauth/provider', (schema, request) => {

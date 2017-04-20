@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import loginUser from './login-user';
+import logoutUser from './logout-user';
 import Application from '../../app';
 import config from '../../config/environment';
 
