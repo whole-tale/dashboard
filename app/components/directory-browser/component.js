@@ -8,16 +8,6 @@ export default Ember.Component.extend({
     store: Ember.inject.service(),
     showEditor : false,
 
-    menuItems: [
-        {name:"move", label:"Move To...", icon:"folder"},
-        {name:"rename", label:"Rename...", icon:"write square"},
-        {separator:true},
-        {name:"copy", label:"Copy", icon:"clone"},
-        {name:"download", label:"Download", icon:"download"},
-        {separator:true},
-        {name:"remove", label:"Remove", icon:"trash"}
-    ],
-
     selectedItem: null,
     renaming: false,
     confirmDisabled: "disabled",
@@ -46,60 +36,20 @@ export default Ember.Component.extend({
 
     actions: {
         clickedFolder : function(item) {
-
           if (window.event.ctrlKey) {
             this.send('openedContextMenu', item);
           } else {
-            console.log("clicked "+item.id);
             this.sendAction('action', item,  "true");
           }
-
         },
 
         clickedFile: function(item) {
             this.sendAction('action', item, "false");
         },
 
-        openedContextMenu(item) {
-            this.send("closedPrompt", ".prompt");
-
-            //unhide the context menu and position it close to where the user
-            //right-clicked
-            let ctxt = Ember.$('#directory-context-menu');
-            ctxt.css({
-                top: event.layerY+"px",
-                left: event.layerX+"px",
-                position: "absolute",
-                "z-index" : "1000"
-            });
-            ctxt.removeClass("hidden");
-
-            //Grab the selected row from the event object so we can
-            //highlight it to show it's been selected.
-            let selectedRow = event.path.find(offset => {
-                return /contextmenu/.test(offset.classList.value);
-            });
-            this.set("selectedRow", Ember.$(selectedRow));
-            this.selectedRow.css({background: "lightsteelblue"});
-
-            //Save the item for when the user clicks on a menu action
-            this.set("selectedItem", item);
-        },
-
-        closedContextMenu: function() {
-            let ctxt = Ember.$('#directory-context-menu');
-            ctxt.addClass('hidden');
-            if(this.selectedRow) this.selectedRow.css({background: ""});
-        },
-
         closedMiniBrowser: function() {
              let mini = Ember.$('#mini-browser');
              mini.addClass('hidden');
-        },
-
-        clickedContextMenuItem: function(menuItem) {
-            let file = this.selectedItem;
-            this.actions[menuItem].call(this, file);
         },
 
         updateModel(file) {
