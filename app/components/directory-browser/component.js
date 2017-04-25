@@ -22,7 +22,7 @@ export default Ember.Component.extend({
                 self.selectedItem.rollbackAttributes();
             };
 
-            let input = this.selectedRow.find("input");
+            let input = Ember.$('#txt-renaming');
 
             input.focus();
 
@@ -102,6 +102,7 @@ export default Ember.Component.extend({
 
         rename(file) {
             this.set('renaming', file.id);
+            this.set('selectedItem', file);
         },
 
         copy(file) {
