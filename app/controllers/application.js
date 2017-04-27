@@ -9,6 +9,7 @@ export default Ember.Controller.extend({
   // requires the sessions controller
   userAuth: Ember.inject.service('user-auth'),
   internalState: Ember.inject.service('internal-state'),
+  notificationHandler: Ember.inject.service('notification-handler'),
 
   user : {fullName :"John Winter"},
   gravatarUrl : "/images/avatar.png",
@@ -42,8 +43,11 @@ export default Ember.Controller.extend({
         this.transitionToRoute('login');
     },
     staticMenu: function() {
+        console.log("HERHER");
       this.set('staticMenu', true);
       this.get('internalState').setStaticMenu(true);
+      this.get('notificationHandler').pushNotification({message:"Static Menu set to true!"});
+      this.get('notificationHandler').notify();
     },
     dynamicMenu: function() {
       this.set('staticMenu', false);
