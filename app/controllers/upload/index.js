@@ -26,14 +26,16 @@ export default Ember.Controller.extend({
   currentNavCommand : "home",
   currentNavTitle : "Home",
   parentId : null,
-  file: '',
+  file: "",
   fileChosen: Ember.observer('file', function() {
       if(this.get('file') === "") return;
-      let files = Ember.$('.nice.upload.hidden')[0].files;
+      let uploader = Ember.$('.nice.upload.hidden');
+      let files = uploader[0].files;
       let dz = window.Dropzone.forElement(".dropzone");
       for(let i = 0; i < files.length; i++) {
           dz.addFile(files[i]);
       }
+      this.set('file', "");
   }),
   init() {
     var state = this.get('internalState');
