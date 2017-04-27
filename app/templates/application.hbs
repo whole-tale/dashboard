@@ -3,13 +3,16 @@
   {{#if staticMenu}}
 
     {{partial "common/header-static"}}
-
-      <div style="float: left; margin-top:-2px; width: 160px;">
+  <div style="overflow: hidden; height: 100%">
+      <div style="float: left; margin-top:-2px; width: 160px;  padding-bottom: 500em;
+  margin-bottom: -500em;">
         {{partial "common/menu-static"}}
       </div>
-      <div class="main page" style="overflow:hidden;">
+      <div class="main page" style="overflow:hidden;  padding-bottom: 500em;
+  margin-bottom: -500em;">
           {{outlet}}
         </div>
+  </div>
 
   {{else}}
     {{partial "common/menu"}}
@@ -20,6 +23,8 @@
           </div>
       </div>
   {{/if}}
+
+  {{partial "common/footer"}}
 
 </div>
 
