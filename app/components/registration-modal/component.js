@@ -10,6 +10,7 @@ export default Ember.Component.extend({
     authRequest: Ember.inject.service(),
     internalState: Ember.inject.service(),
     tokenHandler: Ember.inject.service(),
+    notificationHandler: Ember.inject.service(),
 
     datasources: Ember.A(),
 
@@ -79,7 +80,12 @@ export default Ember.Component.extend({
 
         source.addEventListener('message', function(evt) {
           let payload = JSON.parse(evt.data);
-          console.log(payload); //TODO: Make a nice gui for the notifications
+          let notifier = this.get('notificationHandler');
+          notifier.pushNotification({
+              message: payload.message,
+              header: payload.title
+          });
+          notifier.notify();
         });
 
         source.stream();
