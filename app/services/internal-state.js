@@ -88,6 +88,14 @@ export default Ember.Service.extend({
     localStorage.recentFolders = JSON.stringify(recentFolders);
   },
 
+  removeFolderFromRecentFolders: function(folderId) {
+      var recentFolders = this.getRecentFolders();
+
+      recentFolders = recentFolders.reject(id => { return folderId === id; });
+
+      localStorage.recentFolders = JSON.stringify(recentFolders);
+  },
+
   getRecentFolders: function() {
     var bcs = localStorage.recentFolders;
     if (!bcs) return [];
