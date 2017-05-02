@@ -78,14 +78,14 @@ export default Ember.Component.extend({
         let token = this.get('tokenHandler').getWholeTaleAuthToken();
         let source = new EventStream.SSE(config.apiUrl+"/notification/stream?timeout=15000", {headers: {'Girder-Token': token}});
 
+        let self = this;
         source.addEventListener('message', function(evt) {
-          let payload = JSON.parse(evt.data);
-          let notifier = this.get('notificationHandler');
-          notifier.pushNotification({
-              message: payload.message,
-              header: payload.title
-          });
-          notifier.notify();
+            let payload = JSON.parse(evt.data);
+            let notifier = self.get('notificationHandler');
+            notifier.pushNotification({
+                message: payload.data.message,
+                header: payload.data.title
+            });
         });
 
         source.stream();

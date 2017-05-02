@@ -43,11 +43,8 @@ export default Ember.Controller.extend({
         this.transitionToRoute('login');
     },
     staticMenu: function() {
-        console.log("HERHER");
       this.set('staticMenu', true);
       this.get('internalState').setStaticMenu(true);
-      this.get('notificationHandler').pushNotification({message:"Static Menu set to true!"});
-      this.get('notificationHandler').notify();
     },
     dynamicMenu: function() {
       this.set('staticMenu', false);

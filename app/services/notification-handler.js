@@ -3,11 +3,16 @@ import Ember from 'ember';
 
 export default Ember.Service.extend({
     notification: {message:"", header:"Notification"},
+    notifyInterval: null,
 
     pushNotification(notif) {
         let notifs = this.getNotifications();
         notifs.push(notif);
         this.setNotifications(notifs);
+        if(this.notifyInterval === null) {
+            this.notify();
+            this.set('notifyInterval', setInterval(this.notify.bind(this), 6000));
+        }
     },
     getNotifications() {
         let notifs = localStorage.getItem('notifications');
@@ -23,9 +28,9 @@ export default Ember.Service.extend({
     },
     notify() {
         let notifs = this.getNotifications();
-        let next = notifs.shift();
 
         let eventNotifier = Ember.$('#event-notifier');
+        let next = notifs.shift();
 
         if(next) {
             try {
@@ -34,7 +39,13 @@ export default Ember.Service.extend({
                 eventNotifier.click();
                 this.setNotifications(notifs);
             }
-            catch(e) {}
+            catch(e) {
+
+            }
+        }
+        else {
+            window.clearInterval(this.notifyInterval);
+            this.set('notifyInterval', null);
         }
     },
     getNotification() {
