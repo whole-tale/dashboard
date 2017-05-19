@@ -37,6 +37,7 @@ export default Ember.Controller.extend({
       this.set("showTales", true);
     },
     gotoPublish : function(name) {
+      scroll(0,0);
       this.transitionToRoute("compose");
     },
     clickedAddNewResearchEnvironment() {

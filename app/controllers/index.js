@@ -18,6 +18,7 @@ export default Ember.Controller.extend({
       this.transitionToRoute("upload");
     },
     gotoPublish : function(name) {
+        scroll(0,0);
         this.transitionToRoute("compose");
     },
     clickedAddNewResearchEnvironment() {
