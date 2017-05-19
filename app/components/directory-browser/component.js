@@ -6,6 +6,8 @@ export default Ember.Component.extend({
     layout,
 
     store: Ember.inject.service(),
+    internalState: Ember.inject.service(),
+
     showEditor : false,
 
     selectedItem: null,
@@ -143,6 +145,8 @@ export default Ember.Component.extend({
 
         confirmedRemove() {
             Ember.$("#confirm-remove").addClass("hidden");
+            let state = this.get('internalState');
+            state.removeFolderFromRecentFolders(this.fileToRemove.id);
             this.fileToRemove.destroyRecord();
         },
 

@@ -9,6 +9,7 @@ export default Ember.Controller.extend({
   // requires the sessions controller
   userAuth: Ember.inject.service('user-auth'),
   internalState: Ember.inject.service('internal-state'),
+  notificationHandler: Ember.inject.service('notification-handler'),
 
   user : {fullName :"John Winter"},
   gravatarUrl : "/images/avatar.png",

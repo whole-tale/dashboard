@@ -40,11 +40,11 @@ export default Ember.Controller.extend({
   init() {
     var state = this.get('internalState');
     this.set("currentFolderId", state.getCurrentFolderID());
-    console.log("Heading into browse upload controller" );
+    // console.log("Heading into browse upload controller" );
 
     var currentNav = this.get("folderNavs").getCurrentFolderNavAndSetOn(this);
 
-    console.log(currentNav);
+    // console.log(currentNav);
 
     if (currentNav != null) {
       this.set("currentNavCommand", currentNav.command);
@@ -53,7 +53,7 @@ export default Ember.Controller.extend({
 
     var bc = wrapFolder(state.getCurrentFolderID(), state.getCurrentFolderName());
 
-    console.log(bc);
+    // console.log(bc);
 
     var fileBreadCrumbs  = state.getCurrentFileBreadcrumbs();
     if (fileBreadCrumbs == null) {
@@ -68,7 +68,7 @@ export default Ember.Controller.extend({
   },
   actions: {
     refresh() {
-        console.log("refreshed");
+        // console.log("refreshed");
         var state = this.get('internalState');
         var myController = this;
         let itemID = state.getCurrentFolderID();
@@ -81,13 +81,13 @@ export default Ember.Controller.extend({
 
         //   alert("Folder clicked and delving into " + itemName);
 
-        console.log(newModel);
-        console.log(state.toString());
+        // console.log(newModel);
+        // console.log(state.toString());
 
         myController.set("fileData", newModel);
     },
     navClicked : function(nav) {
-      console.log("Folder Nav clicked " + nav.command);
+    //   console.log("Folder Nav clicked " + nav.command);
       var state = this.get('internalState');
 
       var folderContents = null;
@@ -114,9 +114,9 @@ export default Ember.Controller.extend({
             return false;
         });
         var payload = JSON.stringify({"folder": recentFolders});
-        console.log(payload);
+        // console.log(payload);
         folderContents = this.store.query('resource', {"resources" : payload});
-        console.log(folderContents);
+        // console.log(folderContents);
         // alert("Not implemented yet ...");
       }
 
@@ -167,7 +167,7 @@ export default Ember.Controller.extend({
 
 
         this.store.find('folder', itemID).then( function (folder) {
-           console.log(JSON.stringify(folder));
+           // console.log(JSON.stringify(folder));
 
         //   console.log(folder.get('parentId').toString());
 
@@ -183,7 +183,7 @@ export default Ember.Controller.extend({
 
           myController.set("fileData", newModel);
 
-          console.log("State toString " + state.toString());
+          // console.log("State toString " + state.toString());
 
         });
 

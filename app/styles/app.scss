@@ -13,6 +13,14 @@ body {
   font-family: 'Open Sans', 'Helvetica Neue', sans-serif !important;
 }
 
+.ui.notifier {
+    top: 0px;
+    right: 0px;
+    position: fixed;
+    margin-top: 1em !important;
+    margin-right: 1em;
+}
+
 .main.page {
   min-height:800px;
   padding: 5px 5px 5px 5px;

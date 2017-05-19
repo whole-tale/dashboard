@@ -57,13 +57,13 @@ export default Ember.Service.extend({
     };
 
     this.get('authRequest').send(url, options)
-        .then(() => {
-            self.get('tokenHandler').releaseWholeTaleCookie();
-            localStorage.currentUserID = null;
-        })
         .catch(e => {
             console.log("ERROR LOGGING OUT");
             console.log(e);
+        })
+        .finally(() => {
+            self.get('tokenHandler').releaseWholeTaleCookie();
+            localStorage.currentUserID = null;
         });
   }
 
