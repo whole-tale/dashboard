@@ -9,6 +9,7 @@ export default Ember.Controller.extend({
   taleInstanceName : "",
   init() {
     this.set("tale_instantiated", false);
+    scroll(0,0);
   },
   didInsertElement() {
     console.log("Controller didUpdate hook is called from nested tale 'view'");

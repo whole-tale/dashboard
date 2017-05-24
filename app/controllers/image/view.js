@@ -4,6 +4,7 @@ var inject = Ember.inject;
 
 export default Ember.Controller.extend({
   init() {
+    scroll(0,0);
   },
 
 actions: {
