@@ -8,22 +8,23 @@
           <th>Size</th>
       </tr></thead>
       <tbody>
+
       {{#each folderList as |item|}}
           <tr class="left aligned contextmenu" id={{item.id}}>
               <td>
                   {{#if (eq renaming item.id)}}
                       <div class="ui form">
                           <div class="inline field">
-                              <i class="large folder outline icon"></i>
+                              <i class="large folder icon"></i>
                               {{input type="text" value=item.name}}
                               <button class="ui button" {{action "updateModel" item}}>Rename</button>
                           </div>
                       </div>
                   {{else}}
-                      <i class="large folder outline icon"> </i>
+                      <i class="large grey folder icon"> </i>
                           {{#ui-dropdown}}
-                              <a href="#" {{action "clickedFolder" item}}>
-                                  {{truncate-name item.name}}
+                              <a href="#" {{action "clickedFolder" item}} style="font-weight: 900">
+                                   {{truncate-name item.name}}
                               </a>
                               <i class="dropdown icon"></i>
                               <div class="menu">
