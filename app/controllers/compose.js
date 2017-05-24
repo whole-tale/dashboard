@@ -25,6 +25,7 @@ export default Ember.Controller.extend({
   configuration : JSON.stringify({}),
 
   clearWizard() {
+      this.set("showStep", ["inline", "none", "none", "none"]);
       this.set('stepsActive', ["active", "", "", ""]);
       this.set('currentStep', 0);
       this.set('public_checked', false);
