@@ -38,8 +38,8 @@ export default Ember.Service.extend({
         return new RSVP.Promise((resolve, reject) => {
             options.url = url;
             let deferred = self.authenticatedAJAX(options);
-            deferred.done((rep) => resolve(rep));
-            deferred.fail((_, __, error) => reject(error));
+            deferred.done(rep => resolve(rep));
+            deferred.fail(error => reject(error));
         });
     }
 });

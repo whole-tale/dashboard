@@ -122,15 +122,19 @@ export default Ember.Component.extend({
                 }
             };
 
-            let source = this.getEventStream();
-
+            let source = {close:function(){}};
+            let self = this;
             console.log("sending request to harvest...");
             this.get('authRequest').send(url, options)
                 .then(rep => {
-                    console.log(rep);
+                    source = self.getEventStream();
                 })
                 .catch(e => {
-                    console.log(e);
+                    let notifier = self.get('notificationHandler');
+                    notifier.pushNotification({
+                        header: "Error Registering Dataset",
+                        message: "To see a stack trace of what went wrong click (WIP)"
+                    });
                 })
                 .finally(_ => {
                     source.close();
