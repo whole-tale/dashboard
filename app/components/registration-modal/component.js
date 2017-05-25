@@ -122,12 +122,11 @@ export default Ember.Component.extend({
                 }
             };
 
-            let source = {close:function(){}};
+            let source = this.getEventStream();
             let self = this;
-            console.log("sending request to harvest...");
+
             this.get('authRequest').send(url, options)
                 .then(rep => {
-                    source = self.getEventStream();
                 })
                 .catch(e => {
                     let notifier = self.get('notificationHandler');
