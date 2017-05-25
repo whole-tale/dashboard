@@ -46,7 +46,7 @@ export default Ember.Component.extend({
     },
 
     clearModal() {
-        Ember.$('.ui.dropdown').dropdown('clear');
+        Ember.$('#harvester-dropdown').dropdown('clear');
         Ember.$('#results').addClass('hidden');
         Ember.$('#searchbox').val('');
 
@@ -63,7 +63,7 @@ export default Ember.Component.extend({
 
     didRender() {
         let self = this;
-        Ember.$('.ui.dropdown').dropdown({
+        Ember.$('#harvester-dropdown').dropdown({
             onChange: function(dataId) {
                 if(!dataId || dataId === "") {
                     self.disableRegister();
@@ -124,12 +124,12 @@ export default Ember.Component.extend({
 
             let source = this.getEventStream();
 
+            console.log("sending request to harvest...");
             this.get('authRequest').send(url, options)
                 .then(rep => {
-                    // alert("Primitive notification to tell you that your dataset registration has completed!");
+                    console.log(rep);
                 })
                 .catch(e => {
-                    // alert("[Error] Primitive notification to tell you that your dataset registration has failed!");
                     console.log(e);
                 })
                 .finally(_ => {
@@ -166,13 +166,17 @@ export default Ember.Component.extend({
                     self.datasources.pushObjects(rep);
 
                     if(rep.length === 1) {
-                        Ember.$('.ui.dropdown').dropdown('set text', self.datasources[0].name);
-                        Ember.$('.ui.dropdown').dropdown('set value', self.datasources[0].dataId);
+                        let name = self.datasources[0].name;
+                        let dataId = self.datasources[0].dataId;
+                        Ember.run.later(self, function() {
+                            Ember.$('#harvester-dropdown').dropdown('set text', name);
+                            Ember.$('#harvester-dropdown').dropdown('set value', dataId);
+                        }, 250);
                     }
                     else {
-                        Ember.$('.ui.dropdown').dropdown('set visible');
-                        Ember.$('.ui.dropdown').dropdown('set active');
-                        let menu = Ember.$('.ui.dropdown .menu');
+                        Ember.$('#harvester-dropdown').dropdown('set visible');
+                        Ember.$('#harvester-dropdown').dropdown('set active');
+                        let menu = Ember.$('#harvester-dropdown .menu');
                         menu.removeClass('hidden');
                         menu.addClass('transition visible');
                     }

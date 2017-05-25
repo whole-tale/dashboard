@@ -14,7 +14,7 @@
                         {{#unless dataId}}
                             <b>Select one of the datasets found</b>
                         {{/unless}}
-                        {{#ui-dropdown class="fluid selection" selected=data onChange=(action (mut data))}}
+                        {{#ui-dropdown id="harvester-dropdown" class="fluid selection" selected=data onChange=(action (mut data))}}
                         <i class="dropdown icon"></i>
                         <div class="default text">Select Data Sources</div>
                         <div class="menu">
