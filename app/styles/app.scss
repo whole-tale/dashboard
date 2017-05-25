@@ -13,6 +13,10 @@ body {
   font-family: 'Open Sans', 'Helvetica Neue', sans-serif !important;
 }
 
+.selectable:hover {
+    cursor: pointer;
+}
+
 .ui.notifier {
     top: 0px;
     right: 0px;
