@@ -64,6 +64,7 @@ export default Ember.Service.extend({
         .finally(() => {
             self.get('tokenHandler').releaseWholeTaleCookie();
             localStorage.currentUserID = null;
+            localStorage.clear();
         });
   }
 
