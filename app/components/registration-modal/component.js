@@ -8,6 +8,7 @@ import config from '../../config/environment';
 export default Ember.Component.extend({
     layout,
     authRequest: Ember.inject.service(),
+    userAuth: Ember.inject.service(),
     internalState: Ember.inject.service(),
     tokenHandler: Ember.inject.service(),
     notificationHandler: Ember.inject.service(),
@@ -98,9 +99,15 @@ export default Ember.Component.extend({
             this.set('error', false);
 
             let state = this.get('internalState');
+            let userAuth = this.get('userAuth');
 
             let parentId = state.getCurrentParentId();
             let parentType = state.getCurrentParentType();
+
+            if(!!parentId || parentId === "undefined" || parentId === undefined) {
+                parentId = userAuth.getCurrentUserID();
+                parentType = "user";
+            }
 
             let queryParams = "?"+[
                 "parentType="+parentType,
@@ -132,7 +139,7 @@ export default Ember.Component.extend({
                     let notifier = self.get('notificationHandler');
                     notifier.pushNotification({
                         header: "Error Registering Dataset",
-                        message: "To see a stack trace of what went wrong click (WIP)"
+                        message: "To see a stack trace of what went wrong click <button onclick=\"alert(1);\">here</button>"
                     });
                 })
                 .finally(_ => {
