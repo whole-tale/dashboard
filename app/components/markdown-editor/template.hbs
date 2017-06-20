@@ -1,0 +1,16 @@
+<div class="ui top attached tabular menu">
+    <a class="item active" data-tab="edit">
+        <i class="icon code"></i>
+        Edit
+    </a>
+    <a class="item" data-tab="preview">
+        <i class="icon unhide"></i>
+        Preview
+    </a>
+</div>
+<div class="ui bottom attached tab segment active" data-tab="edit">
+    {{textarea value=markdownValue}}
+</div>
+<div class="ui bottom attached tab segment" data-tab="preview">
+    {{convert-markdown markdownValue}}
+</div>

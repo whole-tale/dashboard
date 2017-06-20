@@ -61,6 +61,7 @@
   },
   "dependencies": {
     "ember-cli-medium-editor": "1.2.4",
-    "ember-oauth2": "^2.0.2-beta"
+    "ember-oauth2": "^2.0.2-beta",
+    "marked": "^0.3.6"
   }
 }

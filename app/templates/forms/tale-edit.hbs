@@ -15,19 +15,20 @@
             </div>
         </div>
     </div>
-    <div class="two fields">
+    <div class="one field">
         <div class="field">
             <div class="field">
                 <label>Description</label>
-              {{textarea value=model.description cols="80" rows="6"}}
+                <!-- {{textarea value=model.description cols="80" rows="6"}} -->
+                {{markdown-editor markdownValue=model.description}}
             </div>
         </div>
-        <div class="field">
+        <!-- <div class="field">
             <div class="field">
                 <label>Configuration Information</label>
               {{textarea value=model.config cols="80" rows="6"}}
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 
@@ -61,5 +62,3 @@
         </div>
     </div>
 {{/if}}
-
-

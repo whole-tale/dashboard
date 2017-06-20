@@ -365,7 +365,15 @@ p, .description, .item {
 /* Put your CSS here */
 
 pre {
-  height: 420px;
+    padding: 10px 20px;
+    overflow: auto;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f6f8fa;
+    border-radius: 3px;
+    word-wrap: normal;
+    margin-top: 0;
+    margin-bottom: 16px;
 }
 
 #editor {
@@ -379,18 +387,18 @@ pre {
     border-radius: 0;
 }
 
-blockquote {
-  display: block;
-  padding-left: 20px;
-  border-left: 6px solid #283b49;
-  margin-left: -15px;
-  font-style: italic;
-  color: #555;
-  -webkit-margin-before: 1em;
-  -webkit-margin-after: 1em;
-  -webkit-margin-start: 40px;
-  -webkit-margin-end: 40px;
-}
+// blockquote {
+//   display: block;
+//   padding-left: 20px;
+//   border-left: 6px solid #283b49;
+//   margin-left: -15px;
+//   font-style: italic;
+//   color: #555;
+//   -webkit-margin-before: 1em;
+//   -webkit-margin-after: 1em;
+//   -webkit-margin-start: 40px;
+//   -webkit-margin-end: 40px;
+// }
 
 .ui.tool.segment {
   margin-top: 8px;
