@@ -1,4 +1,4 @@
-FROM risingstack/alpine:3.4-v4.6.1-4.1.0
+FROM risingstack/alpine:3.4-v7.9.0-4.5.0
 
 RUN unset NODE_ENV && \
   git clone https://github.com/whole-tale/dashboard && \
@@ -8,7 +8,7 @@ RUN unset NODE_ENV && \
   npm -s install bower && \
   npm -s install && \
   ./node_modules/.bin/bower install --allow-root && \
-  ./node_modules/.bin/ember build --environment=production && \
+  ./node_modules/.bin/ember build --environment=development && \
   cp -r dist/* ../ && \
   cd .. && rm -rf /tmp/* /root/.[a-z]* dashboard
 
