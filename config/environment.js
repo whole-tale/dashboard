@@ -50,7 +50,7 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
     ENV.apiHost = 'https://girder.dev.wholetale.org';
-    ENV.apiPath = '/api/v1';
+    ENV.apiPath = 'api/v1';
     ENV.apiUrl = 'https://girder.dev.wholetale.org/api/v1';
   }
 
