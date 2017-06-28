@@ -43,17 +43,6 @@ module.exports = function(environment) {
     enabled: false
   };
 
-  if (environment === 'development') {
-    // ENV.APP.LOG_RESOLVER = true;
-    // ENV.APP.LOG_ACTIVE_GENERATION = true;
-    // ENV.APP.LOG_TRANSITIONS = true;
-    // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
-    // ENV.APP.LOG_VIEW_LOOKUPS = true;
-    ENV.apiHost = 'https://girder.dev.wholetale.org';
-    ENV.apiPath = 'api/v1';
-    ENV.apiUrl = 'https://girder.dev.wholetale.org/api/v1';
-  }
-
   if (environment === 'test') {
     ENV['ember-cli-mirage'] = { enabled: true };
     // Testem prefers this...
@@ -67,6 +56,23 @@ module.exports = function(environment) {
     ENV.apiHost = '';
     ENV.apiPath = '/api';
     ENV.apiUrl = '';
+  }
+
+  if (environment === 'test-dev') {
+      ENV.apiHost = 'https://girdertest.wholetale.org';
+      ENV.apiPath = 'api/v1';
+      ENV.apiUrl = 'https://girdertest.wholetale.org/api/v1';
+  }
+
+  if (environment === 'development') {
+    // ENV.APP.LOG_RESOLVER = true;
+    // ENV.APP.LOG_ACTIVE_GENERATION = true;
+    // ENV.APP.LOG_TRANSITIONS = true;
+    // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
+    // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV.apiHost = 'https://girder.dev.wholetale.org';
+    ENV.apiPath = 'api/v1';
+    ENV.apiUrl = 'https://girder.dev.wholetale.org/api/v1';
   }
 
   if (environment === 'production') {

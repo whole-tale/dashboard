@@ -19,7 +19,8 @@
         <div class="field">
             <div class="field">
                 <label>Description</label>
-              {{textarea value=description cols="80" rows="6"}}
+              <!-- {{textarea value=description cols="80" rows="6"}} -->
+              {{markdown-editor markdownValue=model.description}}
             </div>
         </div>
         <div class="field">
@@ -30,5 +31,3 @@
         </div>
     </div>
 </div>
-
-
