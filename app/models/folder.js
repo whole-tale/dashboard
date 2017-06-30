@@ -20,7 +20,7 @@ export default DS.Model.extend(FolderItemMixin, {
   // parentId: Ember.computed('parentCollection', function() {
   //     return (this.get('parentCollection') === "collection")? DS.belongsTo('collection') : DS.belongsTo('folder');
   // }),
-  creatorId: DS.belongsTo('user'),
+  creatorId: DS.attr('string'),
   public: DS.attr('boolean'),
   meta : DS.attr(), // this contains a creator object that contains a list of creators..
   parentId: DS.attr('string'),

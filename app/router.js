@@ -24,6 +24,8 @@ Router.map(function() {
     this.route('preview', { path: '/preview/:file_id' });
   });
 
+  this.route('catalog');
+
   this.route('collaborators', function(){
     this.route('list', { path: '/' });
     this.route('view', { path: '/view/:user_id' });
@@ -40,7 +42,7 @@ Router.map(function() {
     this.route('edit', { path: '/edit/:collection_id' });
     this.route('new');
   });
-  
+
 
   this.route('image', function(){
     this.route('view', { path: '/view/:image_id' });

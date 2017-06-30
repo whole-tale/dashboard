@@ -1,6 +1,4 @@
 import Ember from 'ember';
-import RSVP from 'rsvp';
-import config from '../../config/environment';
 var inject = Ember.inject;
 
 function wrapFolder (folderID, folderName) {

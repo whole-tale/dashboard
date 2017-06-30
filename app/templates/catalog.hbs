@@ -1,0 +1,109 @@
+<div class="ui fluid top attached tabular menu">
+    <a class="active item" data-tab="all">All Registered</a>
+    <a class="item" data-tab="mine">Registered By Me</a>
+    <a class="item" data-tab="used">Home Folder</a>
+
+    <style type="text/css">
+        .ui.search, .ui.search>div {
+            width: 100% !important;
+        }
+
+        .tab.segment {
+            max-height: 600px;
+            overflow-y: scroll;
+        }
+    </style>
+
+    <div class="ui search">
+        <div class="ui icon input">
+            <input class="prompt" type="text" placeholder="Search Catalog...">
+            <i class="search icon"></i>
+        </div>
+        <div class="results"></div>
+    </div>
+    <div class="ui blue basic mini labeled icon button" style="width:20%">
+        <i class="plus icon"></i>
+        Register New
+    </div>
+    <!-- <div class="ui fluid basic blue labeled icon button" style="margin-left:8px">
+        <i class="plus icon"></i>
+        Register New
+    </div> -->
+</div>
+
+
+<div class="ui bottom attached active tab segment" data-tab="all">
+    <div class="ui list">
+        {{#each catalogItems.all as |global_item|}}
+        <div class="item">
+            <div class="ui two column grid">
+                <div class="one wide column">
+                    {{provider-icon-for global_item.meta.provider 'mini'}}
+                </div>
+                <div class="eleven wide column">
+                    <div class="content">
+                        <a class="header">{{global_item.name}}</a>
+                        <div class="description">{{global_item.meta.identifier}}</div>
+                    </div>
+                </div>
+                <div class="four wide column">
+                    <div class="ui left attached basic mini blue labeled icon button">
+                        <i class="copy icon"></i>
+                        Copy To Home
+                    </div>
+                    <div class="ui right attached basic mini blue labeled icon button">
+                        <i class="unhide icon"></i>
+                        View Metadata
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+<div class="ui bottom attached tab segment" data-tab="mine">
+    <div class="ui list">
+        {{#each catalogItems.mine as |local_item|}}
+        <div class="item">
+            <div class="ui two column grid">
+                <div class="one wide column">
+                    {{provider-icon-for local_item.meta.provider 'mini'}}
+                </div>
+                <div class="eleven wide column">
+                    <div class="content">
+                        <a class="header">{{local_item.name}}</a>
+                        <div class="description">{{local_item.meta.identifier}}</div>
+                    </div>
+                </div>
+                <div class="four wide column">
+                    <div class="ui left attached basic mini blue labeled icon button">
+                        <i class="copy icon"></i>
+                        Copy To Home
+                    </div>
+                    <div class="ui right attached basic mini blue labeled icon button">
+                        <i class="unhide icon"></i>
+                        View Metadata
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+<div class="ui bottom attached tab segment" data-tab="used">
+    <div class="ui list">
+        {{#each catalogItems.used as |used_item|}}
+        <div class="item">
+            {{provider-icon-for used_item.meta.provider 'mini'}}
+            <div class="content">
+                <a class="header">{{used_item.name}}</a>
+                <div class="description">{{used_item.meta.identifier}}</div>
+            </div>
+            <div class="ui basic mini blue labeled icon button">
+                <i class="unhide icon"></i>
+                View Metadata
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>

@@ -15,7 +15,6 @@ App = Ember.Application.extend({
   Resolver
 });
 
-
 loadInitializers(App, config.modulePrefix);
 
 console.log("The app is running in " + config.environment + " mode");

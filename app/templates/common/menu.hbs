@@ -18,6 +18,11 @@
       {{/link-to}}
 -->
 
+      {{#link-to 'catalog' class="item" invokeAction=(action 'closeMenu' 'Catalog' 'archive')}}
+          <i class="archive icon"></i>
+          Catalog
+      {{/link-to}}
+
       {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'add circle')}}
           <i class="add circle icon"></i>
           Compose
