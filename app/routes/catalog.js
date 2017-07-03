@@ -36,10 +36,10 @@ export default AuthenticateRoute.extend({
             $('.menu .item')
                 .tab()
             ;
-            $('.list.item')
-                .dimmer({
-                    on: 'hover'
-                })
+            $('.item .blurring')
+              .dimmer({
+                on: 'hover'
+              })
             ;
         });
     }

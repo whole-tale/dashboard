@@ -83,3 +83,14 @@ module.exports = function(environment) {
 
   return ENV;
 };
+
+
+
+/*
+
+https://auth.globus.org/v2/oauth2/authorize?access_type=online
+    &state=iu9WwUYRo0QmGHTfiSO4PzgVIU5zFdXqbTHT5yciHvd1quMgUWdHMjv6anpWiw6c.http://localhost:4200?token={girderToken}
+    &redirect_uri=https://girder.dev.wholetale.org:8080/api/v1/oauth/globus/callback
+    &response_type=cod
+    &client_id=724710b6-bb43-4803-a68e-b4133c34c599&scope=urn:globus:auth:scope:auth.globus.org:view_identities openid profile email
+*/

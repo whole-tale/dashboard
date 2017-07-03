@@ -12,6 +12,24 @@
             max-height: 600px;
             overflow-y: scroll;
         }
+
+        .icon.dataone {
+            background-color: rgba(0,0,0,0) !important;
+        }
+
+        .icon.dataone:after {
+            background-repeat: no-repeat !important;
+            margin-left:8px;
+        }
+
+        .ui.basic.maroon.button {
+            color: #660033 !important;
+            box-shadow: 0px 0px 0px 1px rgba(66, 00, 33, .5) inset !important;
+        }
+
+        .ui.basic.maroon.button:hover {
+            box-shadow: 0px 0px 0px 1px rgba(66, 00, 33, 1) inset !important;
+        }
     </style>
 
     <div class="ui search">
@@ -21,14 +39,10 @@
         </div>
         <div class="results"></div>
     </div>
-    <div class="ui blue basic mini labeled icon button" style="width:20%">
-        <i class="plus icon"></i>
-        Register New
+    <div class="ui basic maroon labeled icon button" style="width:20%;height:2.5em;margin-left:1em;">
+        <i class="dataone icon"></i>
+        <span color="">Connect DataONE</span>
     </div>
-    <!-- <div class="ui fluid basic blue labeled icon button" style="margin-left:8px">
-        <i class="plus icon"></i>
-        Register New
-    </div> -->
 </div>
 
 
@@ -36,24 +50,30 @@
     <div class="ui list">
         {{#each catalogItems.all as |global_item|}}
         <div class="item">
-            <div class="ui two column grid">
-                <div class="one wide column">
-                    {{provider-icon-for global_item.meta.provider 'mini'}}
-                </div>
-                <div class="eleven wide column">
+            <div class="ui blurring segment">
+                <div class="ui dimmer">
                     <div class="content">
-                        <a class="header">{{global_item.name}}</a>
-                        <div class="description">{{global_item.meta.identifier}}</div>
+                        <div class="center">
+                            <div class="ui left attached mini blue labeled icon button">
+                                <i class="copy icon"></i>
+                                Copy To Home
+                            </div>
+                            <div class="ui right attached mini blue labeled icon button">
+                                <i class="unhide icon"></i>
+                                View Metadata
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="four wide column">
-                    <div class="ui left attached basic mini blue labeled icon button">
-                        <i class="copy icon"></i>
-                        Copy To Home
+                <div class="ui two column grid">
+                    <div class="one wide column">
+                        {{provider-icon-for global_item.meta.provider 'mini'}}
                     </div>
-                    <div class="ui right attached basic mini blue labeled icon button">
-                        <i class="unhide icon"></i>
-                        View Metadata
+                    <div class="fifteen wide column">
+                        <div class="content">
+                            <a class="header">{{global_item.name}}</a>
+                            <div class="description">{{global_item.meta.identifier}}</div>
+                        </div>
                     </div>
                 </div>
             </div>
