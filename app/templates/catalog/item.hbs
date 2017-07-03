@@ -1,0 +1,36 @@
+<style type="text/css">
+    .ui.vertical.segment {
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+</style>
+
+<div class="item">
+    <div class="ui blurring vertical segment">
+        <div class="ui inverted dimmer">
+            <div class="content">
+                <div class="center">
+                    <div class="ui left attached blue labeled icon button">
+                        <i class="copy icon"></i>
+                        Copy To Home
+                    </div>
+                    <div class="ui right attached blue labeled icon button">
+                        <i class="unhide icon"></i>
+                        View Metadata
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui two column grid">
+            <div class="one wide column">
+                {{provider-icon-for item.meta.provider 'mini'}}
+            </div>
+            <div class="fifteen wide column">
+                <div class="content">
+                    <a class="header">{{item.name}}</a>
+                    <div class="description">{{item.meta.identifier}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

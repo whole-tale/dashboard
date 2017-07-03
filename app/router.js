@@ -24,7 +24,9 @@ Router.map(function() {
     this.route('preview', { path: '/preview/:file_id' });
   });
 
-  this.route('catalog');
+  this.route('catalog', function() {
+
+  });
 
   this.route('collaborators', function(){
     this.route('list', { path: '/' });

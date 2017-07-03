@@ -1,0 +1,47 @@
+<style type="text/css">
+    .ui.selection.active.dropdown, .ui.selection.active.dropdown:hover {
+        box-shadow: 0 0 0 0 rgba(0,0,0,0) !important;
+    }
+
+    .ui.selection.dropdown {
+        border: 0px;
+    }
+</style>
+
+{{#ui-dropdown class="selection"}}
+<input type="hidden" name="sorts">
+<i class="sort icon"></i>
+<div class="default text">Sort By</div>
+<div class="menu">
+    <div class="header">
+        Attribute
+    </div>
+    <div class="scrolling menu">
+        <div class="item" data-value="Name">
+            Name
+        </div>
+        <div class="item" data-value="Date">
+            Date Registered
+        </div>
+        <div class="item" data-value="IDK">
+            I don't know
+        </div>
+    </div>
+</div>
+{{/ui-dropdown}}
+
+{{#ui-dropdown class="selection"}}
+<input type="hidden" name="orders">
+<i class="sort icon"></i>
+<div class="default text">Order By</div>
+<div class="menu">
+    <div class="scrolling menu">
+        <div class="item" data-value="ASC">
+            Ascending
+        </div>
+        <div class="item" data-value="DES">
+            Descending
+        </div>
+    </div>
+</div>
+{{/ui-dropdown}}

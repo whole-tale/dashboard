@@ -1,0 +1,73 @@
+<style type="text/css">
+    .ui.search, .ui.search>div {
+        width: 100% !important;
+    }
+
+    .tab.segment {
+        max-height: 800px;
+        overflow-y: scroll;
+    }
+
+    .icon.dataone {
+        background-color: rgba(0,0,0,0) !important;
+    }
+
+    .icon.dataone:after {
+        background-repeat: no-repeat !important;
+        margin-left:8px;
+    }
+
+    .ui.basic.maroon.button {
+        color: #660033 !important;
+        box-shadow: 0px 0px 0px 1px rgba(66, 00, 33, .5) inset !important;
+    }
+
+    .ui.basic.maroon.button:hover {
+        box-shadow: 0px 0px 0px 1px rgba(66, 00, 33, 1) inset !important;
+    }
+</style>
+
+<div class="ui fluid top attached tabular menu">
+    <a class="active item" data-tab="all">All Registered</a>
+    <a class="item" data-tab="mine">Registered By Me</a>
+    <a class="item" data-tab="used">Home Folder</a>
+
+    <div class="ui search">
+        <div class="ui icon input">
+            <input class="prompt" type="text" placeholder="Search Catalog...">
+            <i class="search icon"></i>
+        </div>
+        <div class="results"></div>
+    </div>
+    <div class="ui basic maroon labeled icon button" style="width:20%;height:2.5em;margin-left:1em;" {{action 'openModal' "harvester" on='click'}}>
+        <i class="dataone icon"></i>
+        <span color="">Connect DataONE</span>
+    </div>
+</div>
+
+{{partial "catalog/sort"}}
+
+<div class="ui bottom attached active tab segment" data-tab="all">
+    <div class="ui divided list">
+        {{#each catalogItems.all as |item|}}
+            {{partial "catalog/item"}}
+        {{/each}}
+    </div>
+    {{partial "catalog/pagination-menu"}}
+</div>
+<div class="ui bottom attached tab segment" data-tab="mine">
+    <div class="ui divided list">
+        {{#each catalogItems.mine as |item|}}
+            {{partial "catalog/item"}}
+        {{/each}}
+    </div>
+    {{partial "catalog/pagination-menu"}}
+</div>
+<div class="ui bottom attached tab segment" data-tab="used">
+    <div class="ui divided list">
+        {{#each catalogItems.used as |item|}}
+            {{partial "catalog/item"}}
+        {{/each}}
+    </div>
+    {{partial "catalog/pagination-menu"}}
+</div>
