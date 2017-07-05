@@ -10,7 +10,18 @@
       </div>
       <div class="main page" style="overflow:hidden;  padding-bottom: 500em;
   margin-bottom: -500em;">
-          {{outlet}}
+
+    {{#if loggedIn}}
+
+            <div class="page border">
+              {{outlet}}
+            </div>
+    {{/if}}
+
+    {{#if loggedIn}}
+        {{outlet}}
+    {{/if}}
+
         </div>
   </div>
 

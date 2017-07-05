@@ -1,6 +1,6 @@
-<div class="ui left vertical inverted compact blue menu" style="height: 100%">
+{{#if loggedIn}}
+    <div class="ui left vertical inverted compact blue menu" style="height: 100%">
 
-  {{#if loggedIn}}
       {{#link-to 'index' class="item" invokeAction=(action 'closeMenu' 'Dashboard' 'home')}}
           <i class="home icon"></i>
           Home
@@ -55,14 +55,7 @@
               Logout
         </a>
 
-      {{/if}}
-
-      {{#unless loggedIn}}
-        {{#link-to 'login' class="item" invokeAction=(action 'closeMenu' 'Please Login')}}
-            <i class="sign in icon"></i>
-            Login
-        {{/link-to}}
-      {{/unless}}
 
     <div class="fluid item" style="min-height: 100vh;"></div>
 </div>
+{{/if}}

@@ -1,74 +1,84 @@
-
-<div class="ui three cards" style="margin: 20px 10% 20px 10%">
-    <div class="card">
-        <div class="content">
-            <div class="header">Compute</div>
-            <div class="description">
-                Analyze your data, run a notebook
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="content">
-            <div class="header">Collaborate</div>
-            <div class="description">
-                Share and collaborate on notebooks
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="content">
-            <div class="header">Reproduce</div>
-            <div class="description">
-                Explore and interact with published research
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="login area">
-            <div class="ui huge header">LOGIN</div>
 
-    <div class="ui raised segment">
-        <div class="ui stackable grid">
-            <div class="ten wide column">
-                <br>
-                <br>
-                <br>
-              {{#each-in model as |provider url|}}
-                {{#if (eq provider "Globus")}}
-                      <a class="ui large blue button" {{action "login" url}}>
-                    Access WholeTale
-                      </a>
-                {{/if}}
-              {{/each-in}}
-                <br>
-                <br>
+    <div class="ui huge white header" style="color: white">Reproducibility Simplified</div>
+
+    <br>
+
+    <div class="ui header" style="color: white">Tell the Whole Tale about your research through powerful computing tools<br>
+        like Jupyter and RStudio, or craft your own.</div>
+
+    <br>
+    <br>
+    <br>
+  {{#each-in model as |provider url|}}
+    {{#if (eq provider "Globus")}}
+        <a class="ui large blue button" {{action "login" url}}>
+            <div style="font-weight: 700; font-size: 150%; margin: 10px 10px 0 0; float:left">Access</div>
+            <img src="/images/whole_tale_logo_text_long_light_large.png" width="200px" style="width:200px">
+        </a>
+    {{/if}}
+  {{/each-in}}
+    <br>
+    <br>
+    <br>
+    <br>
+
+  <div class="login icon backdrop">
+    <div class="ui grid">
+
+        <div class="center aligned four wide column">
+
+            <br>
+            <i class="huge disk outline icon"></i>
+            <div class="ui large header">
+                Registered<br>Data
             </div>
-            <div class="six wide right aligned column">
-                <div class="ui small image">
-                    <img class="logo backdrop" src="/images/whole_tale_logo.png">
-                </div>
+            <br>
+        </div>
+
+        <div class="two wide column">
+        </div>
+        <div class="center aligned four wide column">
+
+            <br>
+            <i class="huge dashboard icon"></i>
+            <div class="ui large header">
+                Analyze/<br>Compute
             </div>
+            <br>
+
+        </div>
+        <div class="two wide column">
+        </div>
+        <div class="center aligned four wide column">
+
+            <br>
+            <i class="criss cross icon"></i>
+            <div class="ui large header">
+                Published<br>Results
+            </div>
+
+            <br>
         </div>
     </div>
+  </div>
+
+    <br>
+    <br>
+ <div style="text-align: left">
+  {{#ui-accordion as |execute|}}
+      <div class="title">
+          <i class="dropdown icon"></i>
+          <a class="ui header" style="color: white">Login questions?</a>
+      </div>
+      <div class="content">
+          <div class="ui raised segment">
+              <div class="ui header header">
+                  In order to use the Wholetale app, you need to be able to sign in using Globus. Click below to find out more.
+              </div>
+              <a class="ui button" target="_blank" href="https://docs.globus.org/how-to/get-started/">Globus Howto</a>
+          </div>
+      </div>
+  {{/ui-accordion}}
+ </div>
 </div>
-
-<div class="ui horizontal divider"></div>
-
-{{#ui-accordion as |execute|}}
-    <div class="title">
-        <i class="dropdown icon"></i>
-        <a class="ui blue header">Login questions?</a>
-    </div>
-    <div class="content">
-        <div class="ui raised segment">
-            <div class="ui header header">
-                In order to use the Wholetale app, you need to be able to sign in using Globus. Click below to find out more.
-            </div>
-            <a class="ui button" target="_blank" href="https://docs.globus.org/how-to/get-started/">Globus Howto</a>
-        </div>
-    </div>
-{{/ui-accordion}}
-
-

@@ -27,9 +27,15 @@ body {
 
 .main.page {
   min-height:800px;
+  padding: 0 0;
+  margin: 0 0;
+}
+
+.page.border {
   padding: 5px 5px 5px 5px;
   margin: 0 10px 0 10px;
 }
+
 
 
 i.icon.dataone:after {
@@ -116,10 +122,10 @@ div.upload.progress {
 }
 
 .ui.blue.button {
-  box-shadow: 0px 0em 0px 0px rgba(34, 36, 38, 0.15) inset;
+  box-shadow: 5px 5em 5px 5px rgba(0, 139, 221, 0.15) inset;
 }
 .ui.blue.buttons .button, .ui.blue.button {
-  background-color: #283b49;
+  background-color: #0075d8;
   color: #FFFFFF;
   text-shadow: none;
   background-image: none;
@@ -128,19 +134,19 @@ div.upload.progress {
 
 .ui.blue.buttons .button:hover,
 .ui.blue.button:hover {
-  background-color: #527b91;
+  background-color: #0062bb;
   color: #FFFFFF;
   text-shadow: none;
 }
 .ui.blue.buttons .button:focus,
 .ui.blue.button:focus {
-  background-color: #527b91;
+  background-color: #0062bb;
   color: #FFFFFF;
   text-shadow: none;
 }
 .ui.blue.buttons .button:active,
 .ui.blue.button:active {
-  background-color: #527b91;
+  background-color: #0062bb;
   color: #FFFFFF;
   text-shadow: none;
 }
@@ -148,15 +154,15 @@ div.upload.progress {
 .ui.blue.buttons .active.button:active,
 .ui.blue.active.button,
 .ui.blue.button .active.button:active {
-  background-color: #527b91;
+  background-color: #0062bb;
   color: #FFFFFF;
   text-shadow: none;
 }
 /* Basic */
 .ui.basic.blue.buttons .button,
 .ui.basic.blue.button {
-  box-shadow: 0px 0px 0px 1px #527b91 inset !important;
-  color: #527b91 !important;
+  box-shadow: 0px 0px 0px 1px #0062bb inset !important;
+  color: #0062bb !important;
 }
 
 /* Blue */
@@ -346,9 +352,20 @@ p, .description, .item {
 }
 
 .login.area {
-  padding: 50px 0 0 0;
-  width: 650px;
+  background-image: url("../images/login-backdrop.png");
+  background-size:     cover;                      /* <------ */
+  background-repeat:   no-repeat;
+  background-position: center center;              /* optional, center the image */
+  padding: 100px 0 100px 0;
   margin: auto;
+  text-align: center;
+  color: white;
+}
+
+.login.icon.backdrop {
+  margin: 0 20% 0 20%;
+  background-color: #dcd9de;
+  color: black;
 }
 
 .skinny {

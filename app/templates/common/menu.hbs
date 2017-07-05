@@ -1,6 +1,6 @@
-{{#ui-sidebar class="ui left vertical inverted thin blue menu" context=".component.context" id="sub-sidebar"}}
+{{#if loggedIn}}
+  {{#ui-sidebar class="ui left vertical inverted thin blue menu" context=".component.context" id="sub-sidebar"}}
 
-  {{#if loggedIn}}
       {{#link-to 'index' class="item" invokeAction=(action 'closeMenu' 'Dashboard' 'home')}}
           <i class="home icon"></i>
           Home
@@ -55,13 +55,6 @@
               Logout
         </a>
 
-      {{/if}}
-
-      {{#unless loggedIn}}
-        {{#link-to 'login' class="item" invokeAction=(action 'closeMenu' 'Please Login')}}
-            <i class="sign in icon"></i>
-            Login
-        {{/link-to}}
-      {{/unless}}
 
 {{/ui-sidebar}}
+{{/if}}
