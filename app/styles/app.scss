@@ -81,6 +81,26 @@ i.icon.small.criss.cross {
 }
 
 
+i.icon.white.criss.cross {
+  background-size: 60px 60px;
+  background-image: url(/icons/white-criss-cross.png);
+  display: inline-block;
+  content:"";
+  width: 60px;
+  height: 60px;
+  margin:auto;
+}
+
+i.icon.small.white.criss.cross {
+  background-size: 15px 20px;
+  background-image: url(/icons/white-criss-cross.png);
+  display: inline-block;
+  content:"";
+  width: 15px;
+  height: 20px;
+  margin:auto;
+}
+
 i.icon.clickable:before {
     font-size: 1em;
     color: grey;

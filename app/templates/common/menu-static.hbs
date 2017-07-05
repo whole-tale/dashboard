@@ -6,12 +6,17 @@
           Home
       {{/link-to}}
 
+      {{#link-to 'tale' class="item" invokeAction=(action 'closeMenu' 'Tale' 'small white criss cross')}}
+          <i class="small white criss cross icon" ></i>
+          Tales
+      {{/link-to}}
+
+        <!--
       {{#link-to 'explore' class="item" invokeAction=(action 'closeMenu' 'Explore' 'play')}}
           <i class="video play icon"></i>
           Explore
       {{/link-to}}
 
-<!--
       {{#link-to 'search' class="item" invokeAction=(action 'closeMenu' 'Search' 'search')}}
           <i class="search icon"></i>
           Search
@@ -23,14 +28,14 @@
           Catalog
       {{/link-to}}
 
+      {{#link-to 'upload' class="item" invokeAction=(action 'closeMenu' 'Data' 'upload')}}
+          <i class="upload icon"></i>
+          My Data
+      {{/link-to}}
+
       {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'add circle')}}
           <i class="add circle icon"></i>
           Compose
-      {{/link-to}}
-
-      {{#link-to 'upload' class="item" invokeAction=(action 'closeMenu' 'Data' 'upload')}}
-          <i class="upload icon"></i>
-          Data
       {{/link-to}}
 
       {{#link-to 'status' class="item" invokeAction=(action 'closeMenu' 'Status' 'line chart')}}

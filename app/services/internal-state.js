@@ -72,7 +72,7 @@ export default Ember.Service.extend({
   },
 
   getIsStaticMenu: function() {
-    return (localStorage.staticMenu==1);
+    return (localStorage.staticMenu!=0);
   },
 
 

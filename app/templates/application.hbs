@@ -1,7 +1,6 @@
 <div class="ui pushable segment component context">
 
   {{#if staticMenu}}
-
     {{partial "common/header-static"}}
   <div style="overflow: hidden; height: 100%">
       <div style="float: left; margin-top:-2px; width: 160px;  padding-bottom: 500em;
@@ -18,9 +17,9 @@
             </div>
     {{/if}}
 
-    {{#if loggedIn}}
+    {{#unless loggedIn}}
         {{outlet}}
-    {{/if}}
+    {{/unless}}
 
         </div>
   </div>
@@ -30,7 +29,16 @@
       <div class="wholetale view pusher">
         {{partial "common/header"}}
           <div class="main page">
-            {{outlet}}
+            {{#if loggedIn}}
+
+                <div class="page border">
+                  {{outlet}}
+                </div>
+            {{/if}}
+
+            {{#unless loggedIn}}
+              {{outlet}}
+            {{/unless}}
           </div>
       </div>
   {{/if}}
