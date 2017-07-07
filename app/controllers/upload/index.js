@@ -98,6 +98,8 @@ export default Ember.Controller.extend({
         folderContents = this.store.query('folder', { "parentId": nav.parentId, "parentType": nav.parentType});
       } else if (nav.command === "registered") {
         folderContents = this.get('store').query('folder', nav.options);
+      } else if (nav.command === "workspace") {
+        //TODO: I don't know what the workspace is exactly. Whether this will be a folder in the home directory or something else...
       } else if (nav.command === "recent") {
         var uniqueSetOfRecentFolders = [];
         var recentFolders = state.getRecentFolders().filter(folder => {
