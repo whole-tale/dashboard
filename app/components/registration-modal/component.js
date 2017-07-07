@@ -26,6 +26,18 @@ export default Ember.Component.extend({
     repository: '',
     size: '',
 
+    didInsertElement() {
+        this._super(...arguments);
+
+        $(".info.circle.grey.icon").hover(function() {
+                $("#info-data-content").removeClass("hidden");
+            },
+            function() {
+                $("#info-data-content").addClass("hidden");
+            }
+        );
+    },
+
     disableRegister() {
         Ember.$('.icon.register').removeClass('checkmark');
         Ember.$('.ui.positive.register.button').addClass('disabled');

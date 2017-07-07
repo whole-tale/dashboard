@@ -4,7 +4,11 @@
         <div class="ui basic segment">
             <form class="ui form">
                 <div class="inline field">
-                    <label>DOI/DataId</label>
+                    <label>
+                        Reference URI
+                        <i class="info circle grey icon"></i>
+                        <div class="floating ui basic blue label hidden" style="left:1em !important; top: -2em !important; padding:8px;" id="info-data-content">The HTTP URL, DOI, or dataId</div>
+                    </label>
                     {{input type="text" id="searchbox" value=searchDataId}}
                     <div class="ui inline button" {{action 'search' on='click'}}>Search</div>
                 </div>

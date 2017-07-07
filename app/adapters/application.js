@@ -46,10 +46,19 @@ export default DS.RESTAdapter.extend({
 
     urlForQuery(query, modelName) {
         let url = this._super(query, modelName);
+
         if(query.adapterOptions) {
-            let registered = query.adapterOptions.registered;
-            if(registered) url += "/registered";
+            if(query.adapterOptions.registered) url += "/registered";
+            else if(query.adapterOptions.icon) {
+                let queryParams = snapshot.adapterOptions.queryParams;
+                url += "/icon";
+                if(queryParams) {
+                    let q = this.buildQueryParams(queryParams);
+                    url += "?"+q;
+                }
+            }
         }
+
         return url;
     },
 
@@ -62,6 +71,7 @@ export default DS.RESTAdapter.extend({
     },
 
     methodForRequest(params) {
+        console.log(params);
         if (params.requestType === 'createRecord') { return 'PUT'; }
         return this._super(params);
     },
