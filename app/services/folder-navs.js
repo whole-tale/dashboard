@@ -19,7 +19,7 @@ export default Ember.Service.extend({
         isFolder :  false
       },
       {
-        name : "Registered",
+        name : "Data",
         command : "registered",
         parentId : null,
         parentType : null,
