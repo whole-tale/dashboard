@@ -36,6 +36,10 @@ export default Ember.Controller.extend({
         // --------------------------------------------------------------------
         tabClicked() {
 
-        }
+        },
+        // --------------------------------------------------------------------
+        viewMetadata(item) {
+            this.transitionToRoute("folder.view", item);
+        },
     }
 });
