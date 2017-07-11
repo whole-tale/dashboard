@@ -5,6 +5,7 @@ import config from '../config/environment';
 
 export default DS.RESTAdapter.extend({
     tokenHandler: Ember.inject.service("token-handler"),
+    authRequest: Ember.inject.service(),
 
     host: config.apiHost,
     namespace: config.apiPath,
@@ -23,7 +24,10 @@ export default DS.RESTAdapter.extend({
     // where queryParams is a hash object.
     urlForUpdateRecord(id, modelName, snapshot) {
         let url = this._super(id, modelName, snapshot);
-        let queryParams = snapshot.adapterOptions.queryParams;
+        let queryParams = snapshot.adapterOptions.queryParams; 
+        if(snapshot.adapterOptions.copy) {
+            url += "/copy";
+        }
         if(queryParams) {
             let q = this.buildQueryParams(queryParams);
             return url+"?"+q;
@@ -34,9 +38,6 @@ export default DS.RESTAdapter.extend({
     urlForCreateRecord(modelName, snapshot) {
         let url = this._super(modelName, snapshot);
         let queryParams = snapshot.adapterOptions.queryParams;
-        if(snapshot.adapterOptions.copy) {
-            url += "/"+snapshot.adapterOptions.copy+"/copy";
-        }
         if(queryParams) {
             let q = this.buildQueryParams(queryParams);
             url += "?"+q;
@@ -70,8 +71,22 @@ export default DS.RESTAdapter.extend({
         return null;
     },
 
+    updateRecord(store, type, snapshot) {
+        if(snapshot.adapterOptions.copy) {
+            let data = {};
+            let serializer = store.serializerFor(type.modelName);
+
+            serializer.serializeIntoHash(data, type, snapshot);
+
+            let id = snapshot.id;
+            let url = this.buildURL(type.modelName, id, snapshot, 'updateRecord');
+
+            return this.get('authRequest').send(url, {method: "POST", data: data});
+        }
+        return this._super(...arguments);
+    },
+
     methodForRequest(params) {
-        console.log(params);
         if (params.requestType === 'createRecord') { return 'PUT'; }
         return this._super(params);
     },
