@@ -133,7 +133,7 @@ export default Ember.Component.extend({
                 repository: this.repository
             }]);
 
-            let url = config.apiUrl + '/folder/register' + queryParams;
+            let url = config.apiUrl + '/dataset/register' + queryParams;
             let options = {
                 method: 'POST',
                 data: {
