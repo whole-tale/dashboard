@@ -21,6 +21,7 @@ export default Ember.Controller.extend({
   init() {
     this._super();
     this.set('staticMenu', this.get('internalState').getIsStaticMenu());
+
   },
   checkMyRouteName: Ember.computed(function() {
     return this.get('routing.currentRouteName');

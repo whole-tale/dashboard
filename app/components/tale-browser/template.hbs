@@ -1,0 +1,190 @@
+<style>
+    .ui[class*="top attached"].label, .ui.attached.label {
+        padding: 5px!important;
+    }
+
+    img {
+        display: block;
+        width: auto;
+        height: auto;
+        margin: auto;
+    }
+
+    .text-block.card h2 {
+        position: absolute;
+        width: 100%;
+        height: 140px;
+        margin-top: 0%;
+        background: rgba(40, 59, 73, 0.5);
+    }
+
+    .text-block.card h2 i {
+        padding-left: 32%;
+        padding-top: 20%;
+        position: absolute;
+        font-size: 3em;
+        font-weight: 100;
+    }
+
+    .text-block.card img {
+        opacity: .4;
+    }
+
+    .pic{
+        object-fit: cover;
+    }
+
+    span.zoom-icon {
+        position:absolute;
+        right:0;
+        top:0;
+        filter:alpha(opacity=50);
+        -moz-opacity:0.8;
+        -khtml-opacity: 0.8;
+        opacity: 0.8;
+        width: 80px;
+    }
+
+
+</style>
+
+<div class="ui inverted grey segment">
+
+    {{#if showSearch}}
+      <div class="ui secondary menu">
+        {{#if item}}
+            <div class="header item" style="font-size: 120%">
+                <span class="ui huge blue label" style="margin-right: 10px;">Currently Selected</span> {{item.name}}
+            </div>
+        {{/if}}
+
+          <div class="right menu">
+              <div class="ui search" >
+                {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
+
+
+              <div class="results">
+
+              </div>
+              </div>
+          </div>
+       </div>
+      {{/if}}
+
+    <div class="ui {{cardsPerRow}} doubling selectable cards {{guid}}" style="padding: 5px 20px 5px 20px">
+
+      {{#each modelsInView as |model|}}
+            <div class="card">
+                <div class="blurring dimmable fluid image" style="min-height: 140px;">
+                    <div class="ui dimmer">
+                        <div class="content">
+                            <div class="center">
+                              {{#if showLink}}
+                                  {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
+                              {{/if}}
+                              {{#if showSelect}}
+                                  <div class="ui inverted button" {{action 'select' model}}>Select</div>
+                              {{/if}}
+                              {{#if showDelete}}
+                                  <div class="ui {{model._id}} modal" style="display: none">
+                                      <i class="close icon"></i>
+                                      <div class="header">
+                                          Really Delete Tale?
+                                      </div>
+                                      <div class="image content">
+                                          <div class="description">
+                                              <p>This will permanently delete the '{{model.name}}' Tale. Continue?</p>
+                                          </div>
+                                      </div>
+                                      <div class="actions">
+                                          <div class="ui black deny button" {{action 'denyDelete'}}>
+                                              No
+                                          </div>
+                                          <div class="ui positive right labeled icon button" {{action 'approveDelete' model}}>
+                                              Yes
+                                              <i class="checkmark icon"></i>
+                                          </div>
+                                      </div>
+                                  </div>
+
+                                <a class="ui tiny bottom right attached label" {{action 'openDeleteModal' model._id}}>
+                                    <i class="red remove icon"></i>
+                                </a>
+                              {{/if}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <img src="/images/demo-graph2.jpg" alt="Research Image" class="pic" />
+                    <span class="zoom-icon">
+                      <img src="{{model.icon}}" width="80" style="width: 80px;" alt="Compute Icon">
+                    </span>
+
+                </div>
+
+                <div class="content" style="color: #515151">
+                    <div style="text-transform: uppercase; color: #ba975e;font-weight: 700;">{{model.category}}</div>
+
+                  {{#ui-popup html=model.title}}
+                      <div style="font-weight: 700; font-size: 120%"> {{model.tagName}} </div>
+                  {{/ui-popup}}
+                    <div style="padding: 4px"></div>
+                    <div style="color: #67c096">{{model.authors}}
+                    </div>
+                    <div style="padding: 8px"></div>
+                    <div class="ui center aligned grid" style="padding: 0">
+                      <div class="center aligned row" style="padding: 0">
+                          <div class="ui center aligned green labeled icon button" {{action 'launch' model}}>
+                              <i class="play icon"></i>
+                              Launch
+                          </div>
+                      </div>
+                    </div>
+
+                </div>
+            </div>
+      {{/each}}
+{{#if addButtonName}}
+      <div class="card">
+          <div class="blurring dimmable fluid image" style="min-height: 140px; background: rgba(0, 0, 0, 0.3);">
+              <div class="ui dimmer">
+                  <div class="content">
+                      <div class="center">
+                        {{#if showLink}}
+                            <div class="ui inverted icon button" {{action "addNew" on="click"}}>
+                                <i class="plus icon"></i>
+                            </div>
+                        {{/if}}
+                      </div>
+                  </div>
+              </div>
+              <img src={{addButtonLogo}} />
+          </div>
+
+          <div class="content" style="color: #515151">
+            {{#ui-popup html=addButtonName}}
+                {{addButtonTagName}}
+            {{/ui-popup}}
+          </div>
+      </div>
+{{/if}}
+    </div>
+
+    <div class="ui grid">
+        <div class="center aligned sixteen wide column">
+            <div class="ui pagination menu">
+                <a class="{{leftButtonState}} item" {{action "leftButtonClicked"}}>
+                    <i class="caret left icon"></i>
+                </a>
+              {{#each paginateArray as |paginateItem|}}
+                  <a class="{{paginateItem.state}} item" {{action "tabClicked" paginateItem.number}}>
+                    {{paginateItem.number}}
+                  </a>
+              {{/each}}
+                <a class="{{rightButtonState}} item" {{action "rightButtonClicked"}}>
+                    <i class="caret right icon"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

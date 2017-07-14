@@ -26,6 +26,14 @@ You will need the following things properly installed on your computer.
 * `ember serve`
 * Visit your app at [http://localhost:4200](http://localhost:4200).
 
+Running using the test Dev Environment:
+
+*  ember s --environment=test-dev
+
+Running using the production Environment:
+*  ember s --environment=production
+
+
 ### Authentication
 
 Girder does not issue cookies for localhost. To authenticate on localhost, you will need to first log into https://girder.wholetale.org/ and then copy the cookie locally.
