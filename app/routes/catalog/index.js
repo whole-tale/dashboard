@@ -13,8 +13,7 @@ export default AuthenticateRoute.extend({
             all:  Ember.A()
         };
 
-        let q = {adapterOptions:{registered: true}};
-        return this.get('store').query('folder', q)
+        return this.get('store').query('dataset', {})
             .then(registered => {
                 catalogItems.all = registered;
                 catalogItems.mine = registered.filter(each=>each.get('creatorId')===currentUserId);

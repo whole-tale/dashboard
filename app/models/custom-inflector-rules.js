@@ -11,6 +11,7 @@ inflector.uncountable('registered');
 inflector.uncountable('tale');
 inflector.uncountable('resource');
 inflector.uncountable('instance');
+inflector.uncountable('dataset');
 
 // Meet Ember Inspector's expectation of an export
 export default {};

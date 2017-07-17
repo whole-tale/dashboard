@@ -49,7 +49,9 @@ export default DS.RESTAdapter.extend({
         let url = this._super(query, modelName);
 
         if(query.adapterOptions) {
-            if(query.adapterOptions.registered) url += "/registered";
+            if(query.adapterOptions.registered) {
+                url += "/registered";
+            }
             else if(query.adapterOptions.icon) {
                 let queryParams = snapshot.adapterOptions.queryParams;
                 url += "/icon";
