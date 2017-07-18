@@ -1,104 +1,35 @@
 
-<div class="ui stackable grid" style="padding-top: 20px">
 
-    <div class="two wide column">
+<div class="ui segment">
+  {{tale-browser models=model.tales paginateOn=3 cardsPerRow="three" modelView="tale.view" showSearch=true showLink=true showDelete=true
+                 addButtonName="Compose and publish a new tale."
+                 addButtonTagName="Compose New Tale"
+                 addButtonLogo=""
+                 onAddNew=(action "gotoPublish")
+  }}
+</div>
 
-    </div>
-    <div class="fourteen wide column">
-        <div class="ui huge header">Research Environments</div>
 
-        <p style="padding-bottom: 5px">Launch an existing research environment, or customize a new one to choose particular computational tools and data sets.  Any new research environments that
-            you create will be listed here.  Return whenever you need to analyze and compute using these environments.
-        </p>
-    </div>
+<div class="ui stackable grid">
 
-    <div class="center aligned two wide column">
-
-        <br>
+    <div class="four wide column">
         <i class="huge dashboard icon"></i>
-        <div class="ui large header">
-            Analyze/<br>Compute
-        </div>
+        Compute
 
-    </div>
-    <div class="fourteen wide column">
-      {{wt-flix models=model.images paginateOn=6 cardsPerRow="six" modelView="image.view" showLink=true
-          addButtonName=null
-          addButtonTagName=null
-          addButtonLogo=""
-          onAddNew=(action "clickedAddNewResearchEnvironment")
+      {{wt-flix models=model.images paginateOn=3 cardsPerRow="one" modelView="image.view" showLink=true
+                addButtonName=null
+                addButtonTagName=null
+                addButtonLogo=""
+                onAddNew=(action "clickedAddNewResearchEnvironment")
+                model_is_image=true
       }}
-    </div>
-
-</div>
-
-<!--
-                addButtonName="Add a new research environment and customize computational tools and data sets."
-          addButtonTagName="Add New Research Environment"
-          addButtonLogo=""
--->
-<div class="ui stackable grid" style="padding-top: 20px">
-
-    <div class="two wide column">
 
     </div>
-    <div class="fourteen wide column">
-        <div class="ui huge header">Imported Data</div>
-
-        <p style="padding-bottom: 5px">Register data with Whole Tale to be used in your Research Environments.  Data sets can be registered from data repositories like DataONE and Globus, and
-            from other web locations. Once registered, each data set can be attached multiple research environments for analysis.
-        </p>
-    </div>
-
-    <div class="center aligned two wide column">
-
-        <br>
-        <i class="huge disk outline icon"></i>
-        <div class="ui large header">
-            Registered<br>Data
-        </div>
+    <div class="twelve wide column">
+        <i class="huge computer icon"></i>
+        Catalog
 
     </div>
-    <div class="fourteen wide column">
-      {{wt-flix models=model.dataRegistered paginateOn=6 cardsPerRow="six" modelView="folder.view" showLink=true
-          addButtonName="Search for and register a new dataset from either Globus or DataOne."
-          addButtonTagName="Register New Dataset"
-          addButtonLogo=""
-          onAddNew=(action "clickedRegisterNewDataset")
-      }}
-    </div>
 
-</div>
-
-<div class="ui stackable grid" style="padding-top: 20px">
-
-    <div class="two wide column">
-
-    </div>
-    <div class="fourteen wide column">
-        <div class="ui huge header">Tales</div>
-
-        <p style="padding-bottom: 5px">Publish results by describing the whole tale associated with your research, including research environment in which work was conducted, the source data
-            used in analyses and models, and the resulting derived data and visualizations.
-        </p>
-    </div>
-
-    <div class="center aligned two wide column">
-
-        <br>
-        <i class="criss cross icon"></i>
-        <div class="ui large header">
-            Published<br>Results
-        </div>
-
-    </div>
-    <div class="fourteen wide column">
-      {{wt-flix models=model.tales paginateOn=6 cardsPerRow="six" modelView="tale.view" showLink=true showDelete=true
-          addButtonName="Compose and publish a new tale."
-          addButtonTagName="Compose New Tale"
-          addButtonLogo=""
-          onAddNew=(action "gotoPublish")
-      }}
-    </div>
 
 </div>

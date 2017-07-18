@@ -2,6 +2,8 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   store: Ember.inject.service(),
+  apiCall : Ember.inject.service('api-call'),
+  taleInstanceName : "",
   numberOfModels: 0,
   pageNumber: 1,
   totalPages:1,
@@ -221,7 +223,52 @@ export default Ember.Component.extend({
 
     addNew: function() {
         this.sendAction("onAddNew");
-    }
+    },
 
+    launchTale: function (tale) {
+      var component = this;
+
+      component.set("tale_instantiating", true);
+
+      var onSuccess = function(item) {
+        console.log(item);
+        component.set("tale_instantiating", false);
+        component.set("tale_instantiated", true);
+
+        var instance = Ember.Object.create(JSON.parse(item));
+
+        component.set("instance", instance);
+
+        Ember.run.later((function() {
+          component.set("tale_instantiated", false);
+        }), 30000);
+      };
+
+      var onFail = function(item) {
+        // deal with the failure here
+        component.set("tale_instantiating", false);
+        component.set("tale_not_instantiated", true);
+        item = JSON.parse(item);
+
+        console.log(item);
+        component.set("error_msg", item.message);
+
+        Ember.run.later((function() {
+          component.set("tale_not_instantiated", false);
+        }), 10000);
+
+      };
+
+      // submit: API
+      // httpCommand, taleid, imageId, folderId, instanceId, name, description, isPublic, config
+
+
+      this.get("apiCall").postInstance(
+        tale.get("_id"),
+        null,
+        null,
+        onSuccess,
+        onFail);
+    },
   }
 });

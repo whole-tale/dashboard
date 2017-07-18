@@ -142,17 +142,20 @@ export default Ember.Service.extend({
     client.send();
   },
 
-  postInstance: function (taleId, name, success, fail) {
+  postInstance: function (taleId, imageId, name, success, fail) {
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/instance/';
     var queryPars = "";
-    if (taleId == null) {
-      fail("You must provide a tale");
+    if ((taleId == null) && (imageId == null)) {
+      fail("You must provide a tale or an image ID");
       return;
     }
 
-    queryPars += "taleId="+ encodeURIComponent(taleId);
-
+    if (taleId == null) {
+      queryPars += "taleId=" + encodeURIComponent(taleId);
+    } else {
+      queryPars += "imageId=" + encodeURIComponent(imageId);
+    }
     if (name != null) {
       queryPars += "&";
       queryPars += "name="+ encodeURIComponent(name);

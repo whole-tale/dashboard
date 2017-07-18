@@ -218,7 +218,53 @@ export default Ember.Component.extend({
 
     addNew: function() {
         this.sendAction("onAddNew");
-    }
+    },
 
+    launch: function (image) {
+      var component = this;
+
+      component.set("model_instantiating", true);
+
+      var onSuccess = function(item) {
+        console.log(item);
+        component.set("model_instantiating", false);
+        component.set("model_instantiated", true);
+
+        var instance = Ember.Object.create(JSON.parse(item));
+
+        component.set("instance", instance);
+
+        Ember.run.later((function() {
+          component.set("model_instantiated", false);
+        }), 30000);
+      };
+
+      var onFail = function(item) {
+        // deal with the failure here
+        component.set("model_instantiating", false);
+        component.set("model_not_instantiated", true);
+        item = JSON.parse(item);
+
+        console.log(item);
+        component.set("error_msg", item.message);
+
+        Ember.run.later((function() {
+          component.set("model_not_instantiated", false);
+        }), 10000);
+
+      };
+
+      // submit: API
+      // httpCommand, taleid, imageId, name
+
+
+      this.get("apiCall").postInstance(
+        null,
+        image.get('_id'),
+        null,
+        onSuccess,
+        onFail);
+    },
   }
+
 });

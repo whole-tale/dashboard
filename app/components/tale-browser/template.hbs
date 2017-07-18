@@ -52,11 +52,12 @@
 
     {{#if showSearch}}
       <div class="ui secondary menu">
-        {{#if item}}
-            <div class="header item" style="font-size: 120%">
-                <span class="ui huge blue label" style="margin-right: 10px;">Currently Selected</span> {{item.name}}
+
+            <div class="header item" style="font-size: 140%; padding: 0">
+                <i class="criss cross icon"></i> Tales
             </div>
-        {{/if}}
+
+
 
           <div class="right menu">
               <div class="ui search" >
@@ -125,22 +126,66 @@
                 <div class="content" style="color: #515151">
                     <div style="text-transform: uppercase; color: #ba975e;font-weight: 700;">{{model.category}}</div>
 
-                  {{#ui-popup html=model.title}}
-                      <div style="font-weight: 700; font-size: 120%"> {{model.tagName}} </div>
-                  {{/ui-popup}}
+                  <div style="height:120px">
+                    {{#ui-popup html=model.title}}
+                        <div style="font-weight: 700; font-size: 120%"> {{model.tagName}} </div>
+                    {{/ui-popup}}
+                  </div>
                     <div style="padding: 4px"></div>
                     <div style="color: #67c096">{{model.authors}}
                     </div>
                     <div style="padding: 8px"></div>
                     <div class="ui center aligned grid" style="padding: 0">
                       <div class="center aligned row" style="padding: 0">
-                          <div class="ui center aligned green labeled icon button" {{action 'launch' model}}>
+                          <div class="ui center aligned green labeled icon button" {{action 'launchTale' model}}>
                               <i class="play icon"></i>
                               Launch
                           </div>
                       </div>
                     </div>
+                  {{#if tale_instantiating}}
+                      <div class="ui segment" style="height:100px">
+                          <div class="ui active inverted dimmer">
+                              <div class="ui text loader">Launching Tale {{model.name}}</div>
+                          </div>
+                      </div>
+                  {{/if}}
 
+                  {{#if tale_instantiated}}
+                      <div class="ui green icon message">
+                          <i class="checkmark icon"></i>
+                          <div class="content">
+                              <div class="header">
+                                  <p>The Tale '{{model.name}}' has been launched !</p>
+
+                                  <div class="ui buttons">
+                                      <a href="{{instance.url}}" target="_blank">
+                                          <div class="ui green icon button" style="margin-right: 10px">
+                                              <i class="play icon"></i>
+                                              Start FrontEnd
+                                          </div></a>
+                                    {{#link-to 'status' class="ui blue icon button"}}
+                                        <i class="line chart icon"></i>
+                                        Check Status
+                                    {{/link-to}}
+                                  </div>
+
+                              </div>
+                          </div>
+                      </div>
+                  {{/if}}
+
+                  {{#if tale_not_instantiated}}
+                      <div class="ui red icon message">
+                          <i class="remove circle icon"></i>
+                          <div class="content">
+                              <div class="header">
+                                  The Tale '{{model.name}}' could not be launched !<br>
+                                {{error_msg}}
+                              </div>
+                          </div>
+                      </div>
+                  {{/if}}
                 </div>
             </div>
       {{/each}}

@@ -103,11 +103,65 @@
                     <img src="{{model.icon}}">
                 </div>
 
-                <div class="content" style="color: #515151">
+                <div class="content" style="color: #515151; max-height: 60px">
                   {{#ui-popup html=model.name}}
                       {{model.tagName}}
                   {{/ui-popup}}
                 </div>
+            {{#if model_is_image}}
+                   <div class="ui center aligned grid" style="padding: 0">
+                      <div class="center aligned row" style="padding: 0">
+                          <div class="ui center aligned small green labeled icon button" {{action 'launch' model}}>
+                              <i class="play icon"></i>
+                              Launch
+                          </div>
+                      </div>
+                  </div>
+                {{#if model_instantiating}}
+                    <div class="ui segment" style="height:100px">
+                        <div class="ui active inverted dimmer">
+                            <div class="ui text loader">Launching Compute Environment {{model.name}}</div>
+                        </div>
+                    </div>
+                {{/if}}
+
+                {{#if model_instantiated}}
+                    <div class="ui green icon message">
+                        <i class="checkmark icon"></i>
+                        <div class="content">
+                            <div class="header">
+                                <p> {{model.name}} compute environment has been launched !</p>
+
+                                <div class="ui buttons">
+                                    <a href="{{instance.url}}" target="_blank">
+                                        <div class="ui green icon button" style="margin-right: 10px">
+                                            <i class="play icon"></i>
+                                            Start FrontEnd
+                                        </div></a>
+                                  {{#link-to 'status' class="ui blue icon button"}}
+                                      <i class="line chart icon"></i>
+                                      Check Status
+                                  {{/link-to}}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                {{/if}}
+
+                {{#if model_not_instantiated}}
+                    <div class="ui red icon message">
+                        <i class="remove circle icon"></i>
+                        <div class="content">
+                            <div class="header">
+                                 {{model.name}} compute environment could not be launched !<br>
+                              {{error_msg}}
+                            </div>
+                        </div>
+                    </div>
+                {{/if}}
+            {{/if}}
+
             </div>
       {{/each}}
 {{#if addButtonName}}

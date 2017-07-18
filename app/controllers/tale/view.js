@@ -112,6 +112,7 @@ export default Ember.Controller.extend({
 
       this.get("apiCall").postInstance(
         tale.get("_id"),
+        null,
         this.get('taleInstanceName'),
         onSuccess,
         onFail);
