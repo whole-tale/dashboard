@@ -12,10 +12,10 @@ export default Ember.Controller.extend({
         this.transitionToRoute("nextcloud");
     },
     gotoSearch : function(name) {
-      this.transitionToRoute("search");
+        this.transitionToRoute("search");
     },
     gotoDrives : function(name) {
-      this.transitionToRoute("upload");
+        this.transitionToRoute("upload");
     },
     gotoPublish : function(name) {
         this.transitionToRoute("compose");
@@ -24,9 +24,9 @@ export default Ember.Controller.extend({
 
     },
     clickedRegisterNewDataset() {
-      let modal = Ember.$('.ui.harvester.modal');
-      modal.parent().prependTo(Ember.$(document.body));
-      modal.modal('show');
+        let modal = Ember.$('.ui.harvester.modal');
+        modal.parent().prependTo(Ember.$(document.body));
+        modal.modal('show');
     }
   },
 });

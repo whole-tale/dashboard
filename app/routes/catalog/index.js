@@ -30,16 +30,5 @@ export default AuthenticateRoute.extend({
         this._super(controller, model);
 
         controller.set('catalogItems', model);
-
-        Ember.run.schedule("afterRender", controller, function() {
-            $('.menu .item')
-                .tab()
-            ;
-            $('.item .blurring')
-              .dimmer({
-                on: 'hover'
-              })
-            ;
-        });
     }
 });

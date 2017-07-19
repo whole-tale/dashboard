@@ -132,7 +132,7 @@ export default Ember.Component.extend({
           }
         }
         var title = model.get('title');
-
+        console.log("TITLE: "+title);
         if (title.length > 1000)
           model.set('tagName', title.substring(0,100) + "..");
         else
