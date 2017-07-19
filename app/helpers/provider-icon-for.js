@@ -4,7 +4,9 @@ export default Ember.Helper.helper(function(params) {
     let [provider, image_size] = params;
     if(provider === 'DataONE') {
         return new Ember.String.htmlSafe('<img class="ui ' + image_size + ' image" src="/icons/d1-logo-large.png">');
-    } else {
+    } else if(provider === 'Globus') {
         return new Ember.String.htmlSafe('<img class="ui ' + image_size + ' image globusblue" src="/icons/globus-logo-large.png">');
+    } else {
+        return new Ember.String.htmlSafe('<img class="ui ' + image_size + ' image globusblue" src="/images/wholetale_logo_small.png">');
     }
 });
