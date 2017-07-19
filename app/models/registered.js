@@ -13,7 +13,7 @@ export default DS.Model.extend({
   "name": DS.attr('string'),
   "parentCollection": DS.attr('string'),
   "parentId": DS.attr('string'),
-  "public": DS.attr('bolean'),
+  "public": DS.attr('boolean'),
   "size": DS.attr('number'),
   "updated": DS.attr('date')
 });
