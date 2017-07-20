@@ -17,12 +17,12 @@ export default Ember.Service.extend({
         }
         else {
             let token = this.get('tokenHandler').getWholeTaleAuthToken();
-            options = Ember.merge(options, {
-                headers: {
-                    'Girder-Token': token
-                }
+
+            options.headers = Ember.merge(options.headers, {
+                'Girder-Token': token
             });
         }
+
         return Ember.$.ajax(options);
     },
 
@@ -30,7 +30,6 @@ export default Ember.Service.extend({
     send: function(url, options) {
         let self = this;
         options = options || {};
-
         let headers = {};
 
         options.headers = _.merge(options.headers || {}, headers);

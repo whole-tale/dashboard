@@ -60,14 +60,11 @@ export default Ember.Component.extend({
             let folderNavs = this.get('folderNavs');
             let homeNav = folderNavs.getFolderNavFor("home");
 
-            let q = {
-                parentType: homeNav.parentType,
-                parentId: homeNav.parentId
-            };
+            let data = item.toJSON();
 
             let notification, notifier = this.get('notificationHandler');
 
-            item.save({adapterOptions: {copy: true, queryParams: q}})
+            item.save({adapterOptions: {copy: true, data: data}})
                 .then(_ => notification={message:"Finished Copying Data", header: "Success"})
                 .catch(e => {
                     let message = e.message || e.responseText;
