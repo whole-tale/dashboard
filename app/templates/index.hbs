@@ -12,9 +12,9 @@
 
 <div class="ui stackable grid">
 
-    <div class="four wide column">
-        <i class="huge dashboard icon"></i>
-        Compute
+    <div class="four wide center aligned column">
+        <i class="huge dashboard icon"></i><
+        <div class="ui large header" style="padding: 0; margin: 0;">Compute</div>
 
       {{wt-flix models=model.images paginateOn=3 cardsPerRow="one" modelView="image.view" showLink=true
                 addButtonName=null
@@ -25,9 +25,9 @@
       }}
 
     </div>
-    <div class="twelve wide column">
-        <i class="huge computer icon"></i>
-        Catalog
+    <div class="twelve wide center aligned column">
+        <i class="huge disk outline icon"></i>
+        <div class="ui large header" style="padding: 0; margin: 0;">Catalog</div>
         <div class="ui inverted grey segment">
             {{catalog-browser catalogItems=model.catalogItems}}
         </div>

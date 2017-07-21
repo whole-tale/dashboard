@@ -30,26 +30,31 @@
 </style>
 
 <div class="ui fluid top attached tabular menu">
-    <a class="active item" data-tab="all">All Registered</a>
-    <a class="item" data-tab="mine">Registered By Me</a>
-    <a class="item" data-tab="used">Home Folder</a>
+    <a class="active item" data-tab="all">All</a>
+    <a class="item" data-tab="mine">Mine</a>
+    <a class="item" data-tab="used">Home</a>
 
-    <div class="ui search">
-        <div class="ui icon input">
-            <input class="prompt" type="text" placeholder="Search Catalog...">
+    <div class="right menu">
+        <div class="item">
+            <div class="ui rounded icon input">
+            <input class="prompt" type="text" placeholder="Search Catalog ...">
             <i class="search icon"></i>
+            </div>
+            <div class="results"></div>
         </div>
-        <div class="results"></div>
-    </div>
-    <div class="ui basic maroon labeled icon button" style="width:50%;height:2.5em;margin-left:1em;" {{action 'openModal' "harvester" on='click'}}>
-        <i class="dataone icon"></i>
-        <span color="">Connect DataONE</span>
+        <div class="item">
+            <div class="ui mini green labeled icon button" {{action 'openModal' "harvester" on='click'}}>
+                <i class="plus icon"></i>
+                Add Data
+            </div>
+        </div>
     </div>
 </div>
 
-{{partial "catalog/sort"}}
 
-<div class="ui bottom attached active tab segment" data-tab="all">
+  {{partial "catalog/sort"}}
+
+<div class="ui bottom attached active tab segment" data-tab="all" style="min-height: 400px;">
     <div class="ui divided list">
         {{#each catalogItems.all as |item|}}
             {{partial "catalog/item"}}
@@ -57,7 +62,7 @@
     </div>
     {{partial "catalog/pagination-menu"}}
 </div>
-<div class="ui bottom attached tab segment" data-tab="mine">
+<div class="ui bottom attached tab segment" data-tab="mine" style="min-height: 400px;">
     <div class="ui divided list">
         {{#each catalogItems.mine as |item|}}
             {{partial "catalog/item"}}
@@ -65,7 +70,7 @@
     </div>
     {{partial "catalog/pagination-menu"}}
 </div>
-<div class="ui bottom attached tab segment" data-tab="used">
+<div class="ui bottom attached tab segment" data-tab="used" style="min-height: 400px;">
     <div class="ui divided list">
         {{#each catalogItems.used as |item|}}
             {{partial "catalog/item"}}
