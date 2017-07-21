@@ -13,6 +13,10 @@ export default Ember.Controller.extend({
     console.log("Checked = " + this.get('public_checked'));
   }),
 
+  publicDescriptionObserver: Ember.observer('description', function() {
+    console.log("Description = " + this.get('description'));
+  }),
+
   showStep : ["inline", "none", "none", "none"],
   stepsActive : ["active", "", "", ""],
   currentStep : 0,
