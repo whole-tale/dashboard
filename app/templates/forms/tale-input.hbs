@@ -2,32 +2,29 @@
 
 <div class="ui form">
     <div class="two fields">
-        <div class="field">
+        <div class="fourteen wide field">
             <div class="field">
-                <label>Name</label>
-                {{input value=name type="text" placeholder="Tale Name"}}
+                <label>Title</label>
+                {{input value=title type="text" placeholder="Tale Title"}}
             </div>
         </div>
-        <div class="field">
+        <div class="two wide field">
             <div class="field">
                 <label>Public</label>
               {{ui-checkbox class="toggle" label="Public?" checked=public_checked onChange=(action (mut public_checked))}}
             </div>
         </div>
     </div>
-    <div class="two fields">
-        <div class="field">
-            <div class="field">
-                <label>Description</label>
-              <!-- {{textarea value=description cols="80" rows="6"}} -->
-              {{markdown-editor markdownValue=model.description}}
-            </div>
-        </div>
-        <div class="field">
-            <div class="field">
-                <label>Configuration Information</label>
-              {{textarea value=configuration cols="80" rows="6"}}
-            </div>
-        </div>
+    <div class="field">
+        <label>Description</label>
+        <!-- {{textarea value=description cols="80" rows="8"}} -->
+      {{markdown-editor markdownValue=model.description}}
     </div>
+
+      <div class="field">
+          <div class="field">
+              <label>Configuration Information</label>
+            {{textarea value=configuration cols="80" rows="5"}}
+          </div>
+      </div>
 </div>

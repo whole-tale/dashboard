@@ -133,7 +133,7 @@ export default Ember.Controller.extend({
           this.get("frontend").get('_id'),
           this.get('folder').get('_id'),
           null,
-          this.get('name'),
+          this.get('title'),
           this.get('description'),
           this.get('public_checked'),
           this.get('configuration'),

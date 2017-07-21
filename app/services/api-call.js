@@ -71,14 +71,14 @@ export default Ember.Service.extend({
    * @param imageId
    * @param folderId
    * @param instanceId
-   * @param name
+   * @param title
    * @param description
    * @param isPublic
    * @param configuration
    * @param success
    * @param fail
    */
-  postTale: function (httpCommand, taleID, imageId, folderId, instanceId, name, description, isPublic, configuration, success, fail) {
+  postTale: function (httpCommand, taleID, imageId, folderId, instanceId, title, description, isPublic, configuration, success, fail) {
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/tale/';
     var queryPars = "";
@@ -103,10 +103,10 @@ export default Ember.Service.extend({
         queryPars += "&";
       queryPars += "instanceId="+ encodeURIComponent(instanceId);
     }
-    if (name != null) {
+    if (title != null) {
       if (queryPars !== "")
         queryPars += "&";
-      queryPars += "name="+ encodeURIComponent(name);
+      queryPars += "title="+ encodeURIComponent(title);
     }
     if (description !=null) {
       queryPars += "&";
