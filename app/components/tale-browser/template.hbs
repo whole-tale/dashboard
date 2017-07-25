@@ -71,7 +71,7 @@
 
       {{#each modelsInView as |model|}}
             <div class="card">
-                <div class="blurring dimmable fluid image" style="min-height: 140px;">
+                <div class="blurring dimmable fluid image" style="min-height: 250px;">
                     <div class="ui dimmer">
                         <div class="content">
                             <div class="center">
@@ -111,7 +111,7 @@
                         </div>
                     </div>
 
-                    <img src="/images/demo-graph2.jpg" alt="Research Image" class="pic" />
+                    <img src="{{model.illustration}}" height="400" style="height: 400px;" alt="Research Image" class="pic" />
                     <span class="zoom-icon">
                       <img src="{{model.icon}}" width="80" style="width: 80px;" alt="Compute Icon">
                     </span>
