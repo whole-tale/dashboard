@@ -5,13 +5,13 @@
             {{#if (eq currentNavCommand nav.command)}}
                 <a class="active item" {{action "navClicked" nav}}>
                     <i class="{{nav.icon}} icon"></i>
-                  {{nav.name}}
+                  /user/{{user.login}}/{{nav.name}}
                 </a>
             {{/if}}
             {{#unless (eq currentNavCommand nav.command)}}
                 <a class="item" {{action "navClicked" nav}}>
                     <i class="{{nav.icon}} icon"></i>
-                  {{nav.name}}
+                  /user/{{user.login}}/{{nav.name}}
                 </a>
             {{/unless}}
           {{/each}}
@@ -23,7 +23,7 @@
             {{#if (eq currentNavCommand nav.command)}}
                 <a class="active item" {{action "navClicked" nav}}>
                     <i class="{{nav.icon}} icon"></i>
-                  {{nav.name}}
+                  /user/{{user.login}}/{{nav.name}}
                 </a>
             {{/if}}
             {{#unless (eq currentNavCommand nav.command)}}
