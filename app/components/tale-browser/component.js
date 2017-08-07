@@ -169,20 +169,18 @@ export default Ember.Component.extend({
     },
     searchFilter : function () {
       var searchStr = this.get('searchStr');
-     // console.log(searchStr);
+    //  console.log(searchStr);
 
       var modelsPromised = this.get("models");
-
 
       var component = this;
 
       modelsPromised.then(function(models) {
         var searchView = [];
-
         models.forEach(function(model) {
-          var name = model.get('name');
+          var title = model.get('title');
 
-          if (name.indexOf(searchStr) !== -1)
+          if (new RegExp(searchStr, "i").test(title))
               searchView.push(model);
         });
 
