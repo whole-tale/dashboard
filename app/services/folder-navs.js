@@ -16,7 +16,7 @@ export default Ember.Service.extend({
         parentId: thisUserID,
         parentType : "user",
         icon : "home",
-        isFolder :  false
+        isFolder :  true
       },
       {
         name : "Data",

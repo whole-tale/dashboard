@@ -95,7 +95,14 @@ export default Ember.Controller.extend({
       this.set("currentNavTitle", nav.name);
 
       if (nav.command === "home") {
-        folderContents = this.store.query('folder', { "parentId": nav.parentId, "parentType": nav.parentType});
+        folderContents = this.store.query('folder', { "parentId": nav.parentId, "parentType": nav.parentType, "name": nav.name})
+            .then(folders => {
+                if(folders.length) {
+                    return this.store.query('folder', { "parentId": folders.content[0].id, "parentType": "folder"});
+                }
+                throw new Error("Home folder not found.");
+            })
+            .catch(e => { console.log(["Failed to fetch contents of home folder", e]); });
       } else if (nav.command === "registered") {
         folderContents = this.get('store').query('folder', nav.options);
       } else if (nav.command === "workspace") {
