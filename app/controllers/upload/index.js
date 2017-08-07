@@ -89,6 +89,7 @@ export default Ember.Controller.extend({
       var state = this.get('internalState');
 
       var folderContents = null;
+      var itemContents = null;
 
       state.setCurrentNavCommand(nav.command);
       this.set("currentNavCommand", nav.command);
@@ -99,6 +100,7 @@ export default Ember.Controller.extend({
             .then(folders => {
                 if(folders.length) {
                     return this.store.query('folder', { "parentId": folders.content[0].id, "parentType": "folder"});
+                    // let home_file_contents = this.store.query('file', { "parentId": folders.content[0].id, "parentType": "folder"});
                 }
                 throw new Error("Home folder not found.");
             })
@@ -127,7 +129,7 @@ export default Ember.Controller.extend({
         // alert("Not implemented yet ...");
       }
 
-      var newModel =  { 'folderContents' : folderContents, 'itemContents' : null};
+      var newModel =  { 'folderContents' : folderContents, 'itemContents' : itemContents};
       this.set("fileData", newModel);
 
       state.setCurrentBreadCrumb(null);

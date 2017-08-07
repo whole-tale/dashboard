@@ -78,6 +78,14 @@
                 <label>Tale Updated</label>
                 <input type="text" name="last-updated" placeholder="Last Updated" value="{{from-now model.updated}}" disabled>
             </div>
+
+            <div class="field">
+                <style type="text/css">.edit.icon:hover{cursor:pointer;}</style>
+                <label style="margin-right:.5em; display:inline-block;">Tale Icon</label>
+                <i class="inline edit icon" {{action 'enableEditIcon' on="click"}}></i>
+                <input type="text" id="tale-icon" placeholder="Tale Icon" value="{{model.icon}}" disabled> 
+
+            </div>
         </div>
     </div>
 {{/ui-accordion}}
