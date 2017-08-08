@@ -5,7 +5,6 @@
 
     img {
         display: block;
-        width: auto;
         height: auto;
         margin: auto;
     }
@@ -57,12 +56,22 @@
                 <i class="criss cross icon"></i> Tales
             </div>
           <div class="right menu">
-              <div class="ui search" >
-                {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
-             <div class="results">
 
+              <div class="item">
+                  <div class="ui large rounded icon search input">
+                    {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
+                      <i class="search icon"></i>
+                  </div>
+                  <div class="results"></div>
               </div>
-              </div>
+            {{#if addButtonName}}
+                    <div class="item">
+                        <div class="ui mini green labeled icon button" {{action 'addNew' on='click'}}>
+                            <i class="plus icon"></i>
+                            New Tale
+                        </div>
+                    </div>
+            {{/if}}
           </div>
        </div>
       {{/if}}
@@ -184,30 +193,7 @@
                 </div>
             </div>
       {{/each}}
-{{#if addButtonName}}
-      <div class="card">
-          <div class="blurring dimmable fluid image" style="min-height: 140px; background: rgba(0, 0, 0, 0.3);">
-              <div class="ui dimmer">
-                  <div class="content">
-                      <div class="center">
-                        {{#if showLink}}
-                            <div class="ui inverted icon button" {{action "addNew" on="click"}}>
-                                <i class="plus icon"></i>
-                            </div>
-                        {{/if}}
-                      </div>
-                  </div>
-              </div>
-              <img src={{addButtonLogo}} />
-          </div>
 
-          <div class="content" style="color: #515151">
-            {{#ui-popup html=addButtonName}}
-                {{addButtonTagName}}
-            {{/ui-popup}}
-          </div>
-      </div>
-{{/if}}
     </div>
 
     <div class="ui grid">
