@@ -150,6 +150,15 @@ export default Ember.Controller.extend({
             let icon_uri_txt = Ember.$('#tale-icon');
             icon_uri_txt.prop("disabled", false);
             icon_uri_txt.focus();
+        },
+
+        generateIcon(model) {
+            this.get('store').query('sils', { text: encodeURI(model.title) })
+                .then(sils => {
+                    sils.forEach(result => {
+                        model.set('illustration', result.get('icon'));
+                    })
+                });
         }
     },
 

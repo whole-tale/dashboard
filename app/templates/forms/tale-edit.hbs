@@ -32,19 +32,18 @@
     </div>
     <div class="one field">
         <div class="field">
-            <label>Tale Icon</label>
+            <label>Illustration</label>
             <div class="ui action input">
-                <input type="text" id="tale-icon" placeholder="Tale Icon" value="{{model.icon}}">
+                <input type="text" id="tale-icon" placeholder="Tale Icon" value="{{model.illustration}}">
                     <div class="ui buttons">
                         <style type="text/css">
                             .or:before {
-                                color: rgba(0, 0, 0,1) !important;
+                                color: rgba(0, 0, 0, 0.7) !important;
                                 font-size: 1.5em;
                             }
                         </style>
                         <div class="or"></div>
-                        <button class="ui positive blue button">Generate Icon
-                        </button>
+                        <button class="ui positive blue button" {{action "generateIcon" model}}>Generate Illustration</button>
                     </div>
             </div>
         </div>
