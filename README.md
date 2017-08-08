@@ -33,6 +33,10 @@ Running using the test Dev Environment:
 Running using the production Environment:
 *  ember s --environment=production
 
+Run using development (default):
+
+*  ember s
+
 
 ### Authentication
 

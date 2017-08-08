@@ -3,7 +3,7 @@
         padding: 5px!important;
     }
 
-    img {
+    .wt-flix > img {
         display: block;
         max-width:140px;
         max-height:140px;
@@ -61,7 +61,7 @@
 
       {{#each modelsInView as |model|}}
             <div class="card">
-                <div class="blurring dimmable fluid image" style="min-height: 140px;">
+                <div class="blurring dimmable fluid image wt-flix" style="min-height: 140px;">
                     <div class="ui dimmer">
                         <div class="content">
                             <div class="center">
@@ -166,7 +166,7 @@
       {{/each}}
 {{#if addButtonName}}
       <div class="card">
-          <div class="blurring dimmable fluid image" style="min-height: 140px; background: rgba(0, 0, 0, 0.3);">
+          <div class="blurring dimmable fluid image wt-flix" style="min-height: 140px; background: rgba(0, 0, 0, 0.3);">
               <div class="ui dimmer">
                   <div class="content">
                       <div class="center">
