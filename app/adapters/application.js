@@ -2,8 +2,9 @@ import Ember from 'ember';
 import DS from 'ember-data';
 
 import config from '../config/environment';
+import buildQueryParamsMixin from 'wholetale/mixins/build-query-params';
 
-export default DS.RESTAdapter.extend({
+export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
     tokenHandler: Ember.inject.service("token-handler"),
     authRequest: Ember.inject.service(),
 
@@ -14,7 +15,7 @@ export default DS.RESTAdapter.extend({
     headers: Ember.computed(function() {
         return {
             'Girder-Token': this.get('tokenHandler').getWholeTaleAuthToken()
-            //      'Girder-Token': Ember.get(document.cookie.match(/girderToken\=([^;]*)/), '1'),  };
+                //      'Girder-Token': Ember.get(document.cookie.match(/girderToken\=([^;]*)/), '1'),  };
         };
     }),
 
@@ -24,13 +25,13 @@ export default DS.RESTAdapter.extend({
     // where queryParams is a hash object.
     urlForUpdateRecord(id, modelName, snapshot) {
         let url = this._super(id, modelName, snapshot);
-        let queryParams = snapshot.adapterOptions.queryParams; 
-        if(snapshot.adapterOptions.copy) {
+        let queryParams = snapshot.adapterOptions.queryParams;
+        if (snapshot.adapterOptions.copy) {
             url += "/copy";
         }
-        if(queryParams) {
+        if (queryParams) {
             let q = this.buildQueryParams(queryParams);
-            return url+"?"+q;
+            return url + "?" + q;
         }
         return url;
     },
@@ -38,9 +39,9 @@ export default DS.RESTAdapter.extend({
     urlForCreateRecord(modelName, snapshot) {
         let url = this._super(modelName, snapshot);
         let queryParams = snapshot.adapterOptions.queryParams;
-        if(queryParams) {
+        if (queryParams) {
             let q = this.buildQueryParams(queryParams);
-            url += "?"+q;
+            url += "?" + q;
         }
         return url;
     },
@@ -48,16 +49,15 @@ export default DS.RESTAdapter.extend({
     urlForQuery(query, modelName) {
         let url = this._super(query, modelName);
 
-        if(query.adapterOptions) {
-            if(query.adapterOptions.registered) {
+        if (query.adapterOptions) {
+            if (query.adapterOptions.registered) {
                 url += "/registered";
-            }
-            else if(query.adapterOptions.icon) {
+            } else if (query.adapterOptions.icon) {
                 let queryParams = snapshot.adapterOptions.queryParams;
                 url += "/icon";
-                if(queryParams) {
+                if (queryParams) {
                     let q = this.buildQueryParams(queryParams);
-                    url += "?"+q;
+                    url += "?" + q;
                 }
             }
         }
@@ -74,7 +74,7 @@ export default DS.RESTAdapter.extend({
     },
 
     updateRecord(store, type, snapshot) {
-        if(snapshot.adapterOptions.copy) {
+        if (snapshot.adapterOptions.copy) {
             let data = {};
             let serializer = store.serializerFor(type.modelName);
 
@@ -83,7 +83,7 @@ export default DS.RESTAdapter.extend({
             let id = snapshot.id;
             let url = this.buildURL(type.modelName, id, snapshot, 'updateRecord');
 
-            return this.get('authRequest').send(url, {method: "POST", data: data});
+            return this.get('authRequest').send(url, { method: "POST", data: data });
         }
         return this._super(...arguments);
     },
@@ -92,15 +92,6 @@ export default DS.RESTAdapter.extend({
         if (params.requestType === 'createRecord') { return 'PUT'; }
         return this._super(params);
     },
-
-    buildQueryParams(queryParams) {
-        let keys = Object.keys(queryParams);
-        let q = keys.reduce((_q, key) => {
-            _q.push(key+"="+queryParams[key]);
-            return _q;
-        }, []);
-        return q.join('&');
-    }
 });
 
 //.volatile()
