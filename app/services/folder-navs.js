@@ -20,14 +20,11 @@ export default Ember.Service.extend({
       },
       {
         name : "Data",
-        command : "registered",
-        parentId : null,
-        parentType : null,
+        command : "user_data",
+        parentId : thisUserID,
+        parentType : "user",
         icon : "file",
-        options : {
-          adapterOptions:{registered: true}
-        },
-        isFolder :  false
+        isFolder :  true
       },
       {
         name : "Workspace",
