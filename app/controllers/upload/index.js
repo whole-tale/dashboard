@@ -96,7 +96,7 @@ export default Ember.Controller.extend({
             this.set("currentNavCommand", nav.command);
             this.set("currentNavTitle", nav.name);
 
-            if (nav.command === "home" || nav.command === "user_data") {
+            if (nav.command === "home" || nav.command === "user_data" || nav.command === "workspace") {
                 folderContents = this.store.query('folder', { "parentId": nav.parentId, "parentType": nav.parentType, "name": nav.name })
                     .then(folders => {
                         if (folders.length) {
@@ -106,7 +106,7 @@ export default Ember.Controller.extend({
                         throw new Error("Home folder not found.");
                     })
                     .catch(e => { console.log(["Failed to fetch contents of home folder", e]); });
-            } else if (nav.command === "workspace") {
+            // } else if (nav.command === "workspace") {
                 //TODO: I don't know what the workspace is exactly. Whether this will be a folder in the home directory or something else...
             } else if (nav.command === "recent") {
                 var uniqueSetOfRecentFolders = [];

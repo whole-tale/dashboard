@@ -29,10 +29,10 @@ export default Ember.Service.extend({
       {
         name : "Workspace",
         command : "workspace",
-        parentId : null,          //TODO: Find out what the parent is
-        parentType : null,
+        parentId : thisUserID,          //TODO: Find out what the parent is
+        parentType : "user",
         icon : "folder",
-        isFolder :  false         //TODO: Find out whether this is an actual folder
+        isFolder :  true                //TODO: Find out whether this is an actual folder
       },
       {
         name : "Recent",
