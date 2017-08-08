@@ -8,7 +8,7 @@
     </div>
     <div class="fourteen wide column">
         <div class="ui collapsable grid" >
-          <div class="eight wide column">
+          <div class="twelve wide column">
               <div style="margin-left: 10px">
                 {{#if currentFolderId}}
                     {{input type="file" value=file class="nice upload hidden"}}
@@ -23,19 +23,11 @@
                 {{/if}}
               </div>
           </div>
-          <div class="eight wide column">
-              <div style="margin: 0 0 0  10px">
-                <div class="two ui stackable buttons" {{action 'openModal' "harvester" on='click'}}>
-                    <button class="ui blue basic button" style="padding: 8px; margin:0">
-                        <div style="float: left; position: relative;"><i class="dataone icon"></i></div>
-                        <div style="padding-left:5px; color: #303f54; margin-top: 5px">Connect DataONE</div>
-                    </button>
-                    <button class="ui globusblue button" style="padding: 8px; margin:0">
-                        <div style="float: left; position: relative;"><i class="globus icon"></i></div>
-                        <div style="padding-left:15px; color: white; margin-top: 2px"> Connect Globus</div>
-                    </button>
+          <div class="two wide column">
+                <div class="ui fluid green labeled icon button" {{action 'openModal' "harvester" on='click'}}>
+                    <i class="plus icon"></i>
+                    Add Data
                 </div>
-              </div>
           </div>
         </div>
         <div class="ui collapsable grid" style="margin-left: 10px">

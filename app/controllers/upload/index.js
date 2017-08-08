@@ -100,14 +100,17 @@ export default Ember.Controller.extend({
                 folderContents = this.store.query('folder', { "parentId": nav.parentId, "parentType": nav.parentType, "name": nav.name })
                     .then(folders => {
                         if (folders.length) {
-                            itemContents = controller.store.query('item', { "folderId": folders.content[0].id });
-                            return controller.store.query('folder', { "parentId": folders.content[0].id, "parentType": "folder" });
+                            let folder_id = folders.content[0].id;
+
+                            state.setCurrentFolderID(folder_id);
+                            controller.set("currentFolderId", folder_id);
+
+                            itemContents = controller.store.query('item', { "folderId": folder_id });
+                            return controller.store.query('folder', { "parentId": folder_id, "parentType": "folder" });
                         }
-                        throw new Error("Home folder not found.");
+                        throw new Error(nav.name+" folder not found.");
                     })
-                    .catch(e => { console.log(["Failed to fetch contents of home folder", e]); });
-            // } else if (nav.command === "workspace") {
-                //TODO: I don't know what the workspace is exactly. Whether this will be a folder in the home directory or something else...
+                    .catch(e => { console.log(["Failed to fetch contents of folder", e]); });
             } else if (nav.command === "recent") {
                 var uniqueSetOfRecentFolders = [];
                 var recentFolders = state.getRecentFolders().filter(folder => {
@@ -143,10 +146,7 @@ export default Ember.Controller.extend({
 
             state.setCurrentBreadCrumb(null);
             state.setCurrentFileBreadcrumbs([]); // new nav folder, reset crumbs
-            state.setCurrentFolderID(null);
             state.setCurrentFolderName("");
-
-            this.set("currentFolderId", null);
             this.set("currentBreadCrumb", null);
             this.set("fileBreadCrumbs", null);
 
