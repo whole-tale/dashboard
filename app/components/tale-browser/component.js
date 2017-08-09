@@ -82,7 +82,6 @@ export default Ember.Component.extend({
     component.set('numberOfModels', arraySize);
 
     //console.log("Number of models = " + component.get('numberOfModels'));
-
     if (models.get('length') === 0) return;
 
     component.set('totalPages', totalPages);
@@ -192,9 +191,7 @@ export default Ember.Component.extend({
       this.set('item', model);
       this.sendAction('action', model); // sends to compose.js controller, action itemSelected, based on template spec.
     },
-    launch : function (model) {
-      alert("Run !");
-    },
+
     openDeleteModal: function(id) {
       var selector = '.ui.' + id + '.modal';
       console.log("Selector: " +  selector);
@@ -226,7 +223,7 @@ export default Ember.Component.extend({
     launchTale: function (tale) {
       var component = this;
 
-      component.set("tale_instantiating", true);
+      component.set("tale_instantiating", tale.id);
 
       var onSuccess = function(item) {
         console.log(item);
@@ -260,10 +257,9 @@ export default Ember.Component.extend({
       // submit: API
       // httpCommand, taleid, imageId, folderId, instanceId, name, description, isPublic, config
 
-
       this.get("apiCall").postInstance(
         tale.get("_id"),
-        null,
+        tale.get("imageId"),
         null,
         onSuccess,
         onFail);

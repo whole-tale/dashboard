@@ -147,7 +147,7 @@
                           </div>
                       </div>
                     </div>
-                  {{#if tale_instantiating}}
+                  {{#if (eq tale_instantiating model.id)}}
                       <div class="ui segment" style="height:100px">
                           <div class="ui active inverted dimmer">
                               <div class="ui text loader">Launching Tale {{model.name}}</div>
