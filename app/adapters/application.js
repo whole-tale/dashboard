@@ -26,8 +26,8 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
     // where queryParams is a hash object.
     urlForUpdateRecord(id, modelName, snapshot) {
         let url = this._super(id, modelName, snapshot);
-        let queryParams = snapshot.adapterOptions.queryParams;
-        if (snapshot.adapterOptions.copy) {
+        let queryParams = _.get(snapshot, "adapterOptions.queryParams");
+        if (_.get(snapshot, "adapterOptions.copy")) {
             url += "/copy";
         }
         if (queryParams) {
@@ -85,7 +85,7 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
     },
 
     updateRecord(store, type, snapshot) {
-        if (snapshot.adapterOptions.copy) {
+        if(_.get(snapshot, "adapterOptions.copy")) {
             let data = {};
             let serializer = store.serializerFor(type.modelName);
 

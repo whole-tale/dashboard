@@ -18,7 +18,7 @@ export default Ember.Controller.extend({
         console.log("Controller model hook is called from nested tale 'view'");
         var model = this.get('model');
         // convert config json to a string for editing.
-        model.set('config', JSON.stringify(model.get('config')));
+        // model.set('config', JSON.stringify(model.get('config')));
         console.log(model.get('config'));
     }),
     actions: {
@@ -38,13 +38,13 @@ export default Ember.Controller.extend({
                 }), 10000);
             };
 
-            var onFail = function(item) {
+            var onFail = function(e) {
                 // deal with the failure here
                 component.set("tale_creating", false);
                 component.set("tale_not_created", true);
                 item = JSON.parse(item);
-                component.set("error_msg", item.message);
-                console.log(item);
+                component.set("error_msg", e.message);
+                console.log(e);
 
                 Ember.run.later((function() {
                     component.set("tale_not_created", false);
@@ -52,24 +52,8 @@ export default Ember.Controller.extend({
 
             };
 
-            // submit: API
-            // httpCommand, taleid, imageId, folderId, instanceId, name, description, isPublic, config
-
             var tale = this.get("model");
-
-            this.get("apiCall").postTale(
-                "put",
-                tale.get("_id"),
-                null,
-                null,
-                null,
-                tale.get('name'),
-                tale.get('description'),
-                tale.get('public'),
-                tale.get('config'),
-                onSuccess,
-                onFail);
-
+            tale.save().then(onSuccess).catch(onFail);
         },
         launchTale: function() {
             var component = this;
