@@ -73,9 +73,10 @@ export default Ember.Component.extend({
             let mini = Ember.$('#mini-browser');
 
             mini.css({
-                top: event.layerY+"px",
-                left: event.layerX+"px",
-                position: "absolute"
+                // top: event.layerY+"px",
+                // left: event.layerX+"px",
+                // position: "absolute"
+                margin: "auto"
             });
             mini.removeClass('hidden');
         },
@@ -136,9 +137,11 @@ export default Ember.Component.extend({
 
             let prompt = Ember.$('#confirm-remove');
             prompt.css({
-                position:"absolute",
-                top:event.layerY+"px",
-                left:event.layerX+"px"
+                // position:"absolute",
+                // top:event.layerY+"px",
+                // left:event.layerX+"px"
+                margin: 'auto',
+                maxWidth: '400px'
             });
             prompt.removeClass("hidden");
         },
