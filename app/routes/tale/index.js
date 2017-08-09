@@ -5,7 +5,7 @@ export default AuthenticateRoute.extend({
   model() {
 
     return {
-      tales: this.get('store').findAll('tale', {reload: true})
+      tales: this.get('store').findAll('tale', {reload: true, adapterOptions: { queryParams:{sort: "created", sortdir: "-1"}}})
     };
   }
 });

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import DS from 'ember-data';
+import _ from 'lodash/lodash';
 
 import config from '../config/environment';
 import buildQueryParamsMixin from 'wholetale/mixins/build-query-params';
@@ -30,6 +31,16 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
             url += "/copy";
         }
         if (queryParams) {
+            let q = this.buildQueryParams(queryParams);
+            return url + "?" + q;
+        }
+        return url;
+    },
+
+    urlForFindAll(modelName, snapshot) {
+        let url = this._super(...arguments);
+        let queryParams = _.get(snapshot, 'adapterOptions.queryParams');
+        if(queryParams) {
             let q = this.buildQueryParams(queryParams);
             return url + "?" + q;
         }
