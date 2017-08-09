@@ -116,11 +116,11 @@ export default Ember.Controller.extend({
           }), 5000);
         };
 
-        var onFail = function(item) {
+        var onFail = function(e) {
           // deal with the failure here
           component.set("tale_creating", false);
           component.set("tale_not_created", true);
-          console.log(item);
+          console.log(e);
 
           Ember.run.later((function() {
             component.set("tale_not_created", false);
@@ -128,21 +128,16 @@ export default Ember.Controller.extend({
 
         };
 
-        // submit: API
-        // httpCommand, imageId, folderId, instanceId, name, description, isPublic, config
+        let new_tale = this.get('store').createRecord('tale', {
+          "config": {},   //TODO: Implement configuration editor
+          "description": this.get('description'),
+          "folderId":    this.get('folder').get('_id'),
+          "imageId":     this.get('frontend').get('_id'),
+          "public":      this.get('public_checked'),
+          "title":       this.get('title'),
+        });
 
-        this.get("apiCall").postTale(
-          "post",
-          "null",  // tale ID
-          this.get("frontend").get('_id'),
-          this.get('folder').get('_id'),
-          null,
-          this.get('title'),
-          this.get('description'),
-          this.get('public_checked'),
-          this.get('configuration'),
-          onSuccess,
-          onFail);
+        new_tale.save().then(onSuccess).catch(onFail);
       }
 
     },

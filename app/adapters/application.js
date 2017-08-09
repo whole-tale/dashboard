@@ -27,7 +27,7 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
     urlForUpdateRecord(id, modelName, snapshot) {
         let url = this._super(id, modelName, snapshot);
         let queryParams = _.get(snapshot, "adapterOptions.queryParams");
-        if (_.get(snapshot, "adapterOptions.copy")) {
+        if (_.get(snapshot, "adapterOptions.copy"))  {
             url += "/copy";
         }
         if (queryParams) {
@@ -49,7 +49,7 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
 
     urlForCreateRecord(modelName, snapshot) {
         let url = this._super(modelName, snapshot);
-        let queryParams = snapshot.adapterOptions.queryParams;
+        let queryParams = _.get(snapshot, 'adapterOptions.queryParams');
         if (queryParams) {
             let q = this.buildQueryParams(queryParams);
             url += "?" + q;
@@ -97,6 +97,22 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
             return this.get('authRequest').send(url, { method: "POST", data: data });
         }
         return this._super(...arguments);
+    },
+
+    createRecord(store, type, snapshot) {
+        let data = {};
+        let serializer = store.serializerFor(type.modelName);
+        let url = this.buildURL(type.modelName, null, snapshot, 'createRecord');
+
+        serializer.serializeIntoHash(data, type, snapshot, { includeId: true });
+
+        //Prune all nulls from the object
+        data = Object.keys(data).reduce((acc, key) => {
+            if(data[key] !== null) acc[key] = data[key];
+            return acc;
+        }, {});
+
+        return this.get('authRequest').send(url, { method: "POST", data: JSON.stringify(data), headers: { 'content-type': 'application/json' } });
     },
 
     methodForRequest(params) {
