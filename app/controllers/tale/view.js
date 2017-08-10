@@ -42,7 +42,6 @@ export default Ember.Controller.extend({
                 // deal with the failure here
                 component.set("tale_creating", false);
                 component.set("tale_not_created", true);
-                item = JSON.parse(item);
                 component.set("error_msg", e.message);
                 console.log(e);
 

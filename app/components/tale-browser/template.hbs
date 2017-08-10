@@ -130,11 +130,11 @@
                 <div class="content" style="color: #515151">
                     <div style="text-transform: uppercase; color: #ba975e;font-weight: 700;">{{model.category}}</div>
 
-                  <div style="height:120px">
-                    {{#ui-popup html=model.title}}
-                        <div style="font-weight: 700; font-size: 120%"> {{truncate-name model.tagName}} </div>
-                    {{/ui-popup}}
-                  </div>
+                    <div style="font-weight: 700; font-size: 120%; padding-bottom: 10px"> {{truncate-name model.title}} </div>
+
+                    <div style="height:120px; overflow: scroll;">
+                      {{convert-markdown model.description}}
+                    </div>
                     <div style="padding: 4px"></div>
                     <div style="color: #67c096">{{model.authors}}
                     </div>

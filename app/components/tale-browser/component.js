@@ -132,10 +132,16 @@ export default Ember.Component.extend({
         }
         var title = model.get('title');
 
-        if (title.length > 1000)
-          model.set('tagName', title.substring(0,100) + "..");
-        else
-          model.set('tagName', title);
+        var description = model.get('description');
+
+        if ((description == null) ) {
+          model.set('tagName', "No Description ...");
+        } else {
+          if (description.length > 200)
+            model.set('tagName', description.substring(0,200) + "..");
+          else
+            model.set('tagName', description);
+        }
 
         modelsInView.push(model);
       }
