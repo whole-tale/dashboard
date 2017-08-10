@@ -79,3 +79,16 @@
     {{/each}}
     </tbody>
 </table>
+
+{{#if error }}
+
+  <div class="ui red message">
+      <div class="ui header">
+          Errors
+      </div>
+      <ul>
+        {{{error}}}
+      </ul>
+  </div>
+
+{{/if}}

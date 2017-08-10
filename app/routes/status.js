@@ -15,7 +15,9 @@ export default AuthenticateRoute.extend({
     console.log("In status router set controller method");
 
     controller.set('model', model);
-    controller.grabData(model);
+
+    // this is called from the controller anyway - removing it I.T.
+    //controller.grabData(model);
   }
 
 

@@ -7,8 +7,9 @@ export default Ember.Controller.extend({
     // convert config json to a string for editing.
 
     console.log(model);
-
     var controller =this;
+    controller.set("error","");
+
     model.forEach(function(item){
       console.log(item);
       console.log("Tale ID is " + item.get('taleId'));
@@ -24,8 +25,16 @@ export default Ember.Controller.extend({
           controller.get('store').findRecord('folder', tale.get('folderId')).
           then(folder => {
             item.set('folder', folder);
-          });
-        });
+          }).catch(error => {
+              var err = controller.get("error") + "<li>Folder with ID " + tale.get('folderId') + " was not found for tale " + tale.get('title') + "!</li>";
+              controller.set("error", err);
+            }
+          );
+        }).catch(error => {
+          var err = controller.get("error") + "<li>Image with ID " + tale.get('imageId') + " was not found for tale " + tale.get('title') + "! </li>";
+          controller.set("error", err);
+          }
+        );
       });
     });
   },
