@@ -152,9 +152,11 @@ export default Ember.Service.extend({
     }
 
     if (taleId == null) {
-      queryPars += "taleId=" + encodeURIComponent(taleId);
+      queryPars += "imageId=" + encodeURIComponent(imageId);
     } else {
       queryPars += "imageId=" + encodeURIComponent(imageId);
+      queryPars += "&";
+      queryPars += "taleId=" + encodeURIComponent(taleId);
     }
     if (name != null) {
       queryPars += "&";

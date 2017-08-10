@@ -9,8 +9,10 @@ export default Ember.Component.extend({
   rightButtonState: "disabled",
   lastAnimationTime : 0,
   animationRefreshTime : 500, // min ms time between animation refreshes
+  apiCall : Ember.inject.service('api-call'),
   item : null,
   guid : null,
+  imageName : null,
   init() {
     this._super(...arguments);
     console.log("Attributes updated");
@@ -222,6 +224,8 @@ export default Ember.Component.extend({
 
     launch: function (image) {
       var component = this;
+
+      component.set("imageName", image.get('name'));
 
       component.set("model_instantiating", true);
 

@@ -57,6 +57,52 @@
        </div>
       {{/if}}
 
+  {{#if model_is_image}}
+    {{#if model_instantiating}}
+        <div class="ui segment" style="height:100px">
+            <div class="ui active inverted dimmer">
+                <div class="ui text loader">Launching {{imageName}}, please wait ...</div>
+            </div>
+        </div>
+    {{/if}}
+
+    {{#if model_instantiated}}
+        <div class="ui green icon message">
+            <i class="checkmark icon"></i>
+            <div class="content">
+                <div class="header">
+                    <p> {{imageName}} has been launched !</p>
+
+                    <div class="ui vertical buttons">
+                        <a href="{{instance.url}}" target="_blank">
+                            <div class="ui mini green icon button" style="margin-right: 10px">
+                                <i class="play icon"></i>
+                                Start FrontEnd
+                            </div></a>
+                      {{#link-to 'status' class="ui mini blue icon button"}}
+                          <i class="line chart icon"></i>
+                          Check Status
+                      {{/link-to}}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    {{/if}}
+
+    {{#if model_not_instantiated}}
+        <div class="ui red icon message">
+            <i class="remove circle icon"></i>
+            <div class="content">
+                <div class="header">
+                  {{model.name}} compute environment could not be launched !<br>
+                  {{error_msg}}
+                </div>
+            </div>
+        </div>
+    {{/if}}
+  {{/if}}
+
     <div class="ui {{cardsPerRow}} doubling selectable cards {{guid}}" style="padding: 5px 20px 5px 20px">
 
       {{#each modelsInView as |model|}}
@@ -117,49 +163,6 @@
                           </div>
                       </div>
                   </div>
-                {{#if model_instantiating}}
-                    <div class="ui segment" style="height:100px">
-                        <div class="ui active inverted dimmer">
-                            <div class="ui text loader">Launching Compute Environment {{model.name}}</div>
-                        </div>
-                    </div>
-                {{/if}}
-
-                {{#if model_instantiated}}
-                    <div class="ui green icon message">
-                        <i class="checkmark icon"></i>
-                        <div class="content">
-                            <div class="header">
-                                <p> {{model.name}} compute environment has been launched !</p>
-
-                                <div class="ui buttons">
-                                    <a href="{{instance.url}}" target="_blank">
-                                        <div class="ui green icon button" style="margin-right: 10px">
-                                            <i class="play icon"></i>
-                                            Start FrontEnd
-                                        </div></a>
-                                  {{#link-to 'status' class="ui blue icon button"}}
-                                      <i class="line chart icon"></i>
-                                      Check Status
-                                  {{/link-to}}
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                {{/if}}
-
-                {{#if model_not_instantiated}}
-                    <div class="ui red icon message">
-                        <i class="remove circle icon"></i>
-                        <div class="content">
-                            <div class="header">
-                                 {{model.name}} compute environment could not be launched !<br>
-                              {{error_msg}}
-                            </div>
-                        </div>
-                    </div>
-                {{/if}}
             {{/if}}
 
             </div>

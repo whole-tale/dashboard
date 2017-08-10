@@ -131,7 +131,7 @@ export default Ember.Component.extend({
           }
         }
         var title = model.get('title');
-        
+
         if (title.length > 1000)
           model.set('tagName', title.substring(0,100) + "..");
         else
@@ -223,7 +223,8 @@ export default Ember.Component.extend({
     launchTale: function (tale) {
       var component = this;
 
-      component.set("tale_instantiating", tale.id);
+      component.set("tale_instantiating_id", tale.id);
+      component.set("tale_instantiating", true);
 
       var onSuccess = function(item) {
         console.log(item);
