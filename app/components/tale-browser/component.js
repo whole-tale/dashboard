@@ -24,7 +24,7 @@ export default Ember.Component.extend({
     modelsPromised.then(function(models) {
       if (component.get('addButtonName') != null){
         var paginateSize = Number(component.get('paginateOn'));
-        component.set('paginateOn', --paginateSize); // remove one to fit the plus.
+        component.set('paginateOn', paginateSize);
       }
       component.paginate(component, models);
     });
