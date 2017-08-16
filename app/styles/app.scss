@@ -456,3 +456,64 @@ pre {
   -o-text-overflow: ellipsis;    /* Opera < 11*/
   text-overflow:    ellipsis;    /* IE, Safari (WebKit), Opera >= 11, FF > 6 */
 }
+
+/*------------------
+  Catalog CSS
+--------------------*/
+
+.catalog .ui.vertical.segment {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 16px;
+}
+
+.catalog .ui.search, .ui.search>div {
+  width: 100% !important;
+}
+
+.catalog .tab.segment {
+  max-height: 800px;
+  overflow-y: scroll;
+  border-top: 0px !important;
+  padding: 0 !important;
+}
+
+.catalog .icon.dataone {
+  background-color: rgba(0,0,0,0) !important;
+}
+
+.catalog .icon.dataone:after {
+  background-repeat: no-repeat !important;
+  margin-left:8px;
+}
+
+.catalog .ui.basic.maroon.button {
+  color: #660033 !important;
+  box-shadow: 0px 0px 0px 1px rgba(66, 00, 33, .5) inset !important;
+}
+
+.catalog .ui.basic.maroon.button:hover {
+  box-shadow: 0px 0px 0px 1px rgba(66, 00, 33, 1) inset !important;
+}
+.catalog .middle.text {
+  color: #666666; text-wrap: normal; text-align: justify
+}
+
+/*--------------
+  Blurring
+---------------*/
+
+.catalog .blurring.dimmable > :not(.dimmer) {
+  -webkit-filter: blur(0px) grayscale(0);
+          filter: blur(0px) grayscale(0);
+  -webkit-transition: 100ms filter ease;
+  transition: 100ms filter ease;
+}
+.catalog .blurring.dimmed.dimmable > :not(.dimmer) {
+  -webkit-filter: blur(0.7px) grayscale(0.7);
+      filter: blur(0.7px) grayscale(0.7);
+}
+
+.catalog .blurring.dimmable > .dimmer {
+  background-color: rgba(100, 100, 100, 0.2);
+}

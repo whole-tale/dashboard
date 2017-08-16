@@ -1,95 +1,62 @@
-<style type="text/css">
-    .ui.search, .ui.search>div {
-        width: 100% !important;
-    }
+<div class="catalog">
+    <div class="ui fluid top attached tabular menu">
+        <a class="active item" data-tab="all">All</a>
+        <a class="item" data-tab="mine">Mine</a>
+        <a class="item" data-tab="used">Home</a>
 
-    .tab.segment {
-        max-height: 800px;
-        overflow-y: scroll;
-        border-top: 0px !important;
-        padding: 0 !important;
-    }
+        <div class="item">
+    {{#ui-popup content="Attach data from external repositories to multiple research environments for analysis. Data can be attached from DataONE and Globus, and other web locations."}}
+        <div class="ui blue icon button">
+            <i class="info icon"></i>
+        </div>
+    {{/ui-popup}}
+        </div>
 
-    .icon.dataone {
-        background-color: rgba(0,0,0,0) !important;
-    }
+    <!--
+        <div class="middle text">
+        </div>
+    -->
 
-    .icon.dataone:after {
-        background-repeat: no-repeat !important;
-        margin-left:8px;
-    }
-
-    .ui.basic.maroon.button {
-        color: #660033 !important;
-        box-shadow: 0px 0px 0px 1px rgba(66, 00, 33, .5) inset !important;
-    }
-
-    .ui.basic.maroon.button:hover {
-        box-shadow: 0px 0px 0px 1px rgba(66, 00, 33, 1) inset !important;
-    }
-    .middle.text {
-        color: #666666; text-wrap: normal; text-align: justify
-    }
-
-</style>
-
-<div class="ui fluid top attached tabular menu">
-    <a class="active item" data-tab="all">All</a>
-    <a class="item" data-tab="mine">Mine</a>
-    <a class="item" data-tab="used">Home</a>
-
-    <div class="item">
-  {{#ui-popup content="Attach data from external repositories to multiple research environments for analysis. Data can be attached from DataONE and Globus, and other web locations."}}
-      <div class="ui blue icon button">
-          <i class="info icon"></i>
-      </div>
-  {{/ui-popup}}
-    </div>
-
-<!--
-    <div class="middle text">
-    </div>
--->
-
-    <div class="right item">
-            <div class="ui large rounded icon search input">
-            <input class="prompt" type="text" placeholder="Search Catalog ...">
-            <i class="search icon"></i>
+        <div class="right item">
+                <div class="ui large rounded icon search input">
+                <input class="prompt" type="text" placeholder="Search Catalog ...">
+                <i class="search icon"></i>
+                </div>
+                <div class="results"></div>
+        </div>
+        <div class="item">
+            <div class="ui mini green labeled icon button" {{action 'openModal' "harvester" on='click'}}>
+                <i class="plus icon"></i>
+                Add Data
             </div>
-            <div class="results"></div>
+        </div>
     </div>
-    <div class="item">
-          <div class="ui mini green labeled icon button" {{action 'openModal' "harvester" on='click'}}>
-              <i class="plus icon"></i>
-              Add Data
-          </div>
-    </div>
-</div>
 
 
-  {{partial "catalog/sort"}}
+    {{partial "catalog/sort"}}
 
-<div class="ui bottom attached active tab segment" data-tab="all" style="min-height: 400px;">
-    <div class="ui divided list">
-        {{#each catalogItems.all as |item|}}
-            {{partial "catalog/item"}}
-        {{/each}}
+    <div class="ui bottom attached active tab segment" data-tab="all" style="min-height: 400px;">
+        <div class="ui divided list">
+            {{#each catalogItems.all as |item|}}
+                {{partial "catalog/item"}}
+            {{/each}}
+        </div>
+        {{partial "catalog/pagination-menu"}}
     </div>
-    {{partial "catalog/pagination-menu"}}
-</div>
-<div class="ui bottom attached tab segment" data-tab="mine" style="min-height: 400px;">
-    <div class="ui divided list">
-        {{#each catalogItems.mine as |item|}}
-            {{partial "catalog/item"}}
-        {{/each}}
+    <div class="ui bottom attached tab segment" data-tab="mine" style="min-height: 400px;">
+        <div class="ui divided list">
+            {{#each catalogItems.mine as |item|}}
+                {{partial "catalog/item"}}
+            {{/each}}
+        </div>
+        {{partial "catalog/pagination-menu"}}
     </div>
-    {{partial "catalog/pagination-menu"}}
-</div>
-<div class="ui bottom attached tab segment" data-tab="used" style="min-height: 400px;">
-    <div class="ui divided list">
-        {{#each catalogItems.used as |item|}}
-            {{partial "catalog/item"}}
-        {{/each}}
+    <div class="ui bottom attached tab segment" data-tab="used" style="min-height: 400px;">
+        <div class="ui divided list">
+            {{#each catalogItems.used as |item|}}
+                {{partial "catalog/item"}}
+            {{/each}}
+        </div>
+        {{partial "catalog/pagination-menu"}}
     </div>
-    {{partial "catalog/pagination-menu"}}
 </div>
