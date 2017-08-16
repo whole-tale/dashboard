@@ -24,9 +24,13 @@ export default AuthenticateRoute.extend({
               var creatorId = model.get('creatorId');
               var userName = "System";
               if (creatorId !=null) {
-                var user = route.get('store').findRecord("user", creatorId);
-                if (user != null)
-                  userName = user.fullName;
+                return route.get('store').findRecord("user", creatorId)
+                    .then(user => {
+                      if (user != null) {
+                        userName = [user.get('firstName'), user.get('lastName')].join(" ");
+                      }
+                      model.set("creator", userName);          
+                    });
               }
 
               model.set("creator", userName);
