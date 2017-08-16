@@ -18,6 +18,9 @@
   },
   "author": "",
   "license": "MIT",
+  "peerDependencies": {
+    "ember-inflector": "^2.0.0"
+  },
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.5",
     "ember-ace": "0.1.0",
@@ -49,6 +52,7 @@
     "ember-moment": "6.1.0",
     "ember-oauth2": "2.0.2-beta",
     "ember-resolver": "^2.0.3",
+    "ember-route-action-helper": "2.0.5",
     "ember-token-auth": "^3.0.0-beta",
     "ember-truth-helpers": "1.2.0",
     "ember-uploader": "1.1.0",

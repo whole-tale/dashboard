@@ -15,7 +15,7 @@
                         <i class="copy icon"></i>
                         Copy To Home
                     </div>
-                    <div class="ui right attached mini blue labeled icon button" {{action 'viewMetadata' item on='click'}}>
+                    <div class="ui right attached mini blue labeled icon button" {{action (route-action 'toRoute' 'folder.view' item) on='click'}}>
                         <i class="unhide icon"></i>
                         View Metadata
                     </div>

@@ -22,5 +22,11 @@ export default AuthenticateRoute.extend({
       controller.set('user', model);
       controller.set('gravatarUrl', config.apiUrl + "/user/" + model.get('_id') + "/gravatar?size=64")
     }
+  },
+  actions: {
+    toRoute() {
+      this.transitionTo.call(this, ...arguments);
+      return true;
+    }
   }
-  });
+});

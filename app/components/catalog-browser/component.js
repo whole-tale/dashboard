@@ -3,6 +3,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
     notificationHandler: Ember.inject.service(),
     folderNavs: Ember.inject.service(),
+    router: Ember.inject.service(),
 
     catalogItems: {
         all:  Ember.A(),
@@ -53,9 +54,6 @@ export default Ember.Component.extend({
 
         },
         // --------------------------------------------------------------------
-        viewMetadata(item) {
-            this.transitionToRoute("folder.view", item);
-        },
         copyToHome(item) {
             let folderNavs = this.get('folderNavs');
             let homeNav = folderNavs.getFolderNavFor("home");
