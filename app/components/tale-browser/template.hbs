@@ -44,26 +44,40 @@
         width: 80px;
     }
 
+    .middle.text {
+        color: #666666; text-wrap: normal; text-align: justify
+    }
 
 </style>
 
 <div class="ui inverted grey segment">
 
     {{#if showSearch}}
-      <div class="ui secondary menu">
+      <div class="ui secondary stackable menu" style="margin: 10px;">
 
             <div class="header item" style="font-size: 140%; padding: 0">
                 <i class="criss cross icon"></i> Tales
             </div>
-          <div class="right menu">
+          <div class="item">
+            {{#ui-popup content="Tales capture the whole story associated with your research, including the research environment in which work was conducted, the source data
+                used in analyses and models, and the resulting derived data and visualizations.  Launch a Tale to work with it in its associated Research Environment."}}
+                <div class="ui blue icon button">
+                    <i class="info icon"></i>
+                </div>
+            {{/ui-popup}}
+          </div>
 
-              <div class="item">
+<!--
+            <div class="middle text">
+            </div>
+-->
+          <div class="right item">
                   <div class="ui large rounded icon search input">
                     {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
                       <i class="search icon"></i>
                   </div>
                   <div class="results"></div>
-              </div>
+          </div>
             {{#if addButtonName}}
                     <div class="item">
                         <div class="ui mini green labeled icon button" {{action 'addNew' on='click'}}>
@@ -72,7 +86,6 @@
                         </div>
                     </div>
             {{/if}}
-          </div>
        </div>
       {{/if}}
 

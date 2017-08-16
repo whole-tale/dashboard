@@ -7,7 +7,7 @@
 </style>
 
 <div class="item">
-    <div class="ui blurring vertical segment">
+    <div class="ui blurring vertical segment" style="padding: 0; margin: 0;">
         <div class="ui inverted dimmer">
             <div class="content">
                 <div class="center">
@@ -24,10 +24,10 @@
         </div>
         <div class="ui two column grid">
             <div class="one wide column">
-                {{provider-icon-for item.provider 'mini'}}
+                {{provider-icon-for item.provider 'small'}}
             </div>
-            <div class="fifteen wide column">
-                <div class="content">
+            <div class="fifteen wide left aligned column">
+                <div class="content" style="padding: 8px;">
                     <a class="header">{{item.name}}</a>
                     <div class="description">{{item.identifier}}</div>
                 </div>

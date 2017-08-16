@@ -32,6 +32,11 @@
         opacity: .4;
     }
 
+    .middle.text {
+        color: #666666; text-wrap: normal; text-align: justify
+    }
+
+
 </style>
 
 <div class="ui inverted grey segment">
@@ -58,6 +63,13 @@
       {{/if}}
 
   {{#if model_is_image}}
+
+    {{#ui-popup content="Launch a research environment to start computing a new Tale."}}
+        <div class="ui blue icon button">
+            <i class="info icon"></i>
+        </div>
+    {{/ui-popup}}
+
     {{#if model_instantiating}}
         <div class="ui segment" style="height:100px">
             <div class="ui active inverted dimmer">

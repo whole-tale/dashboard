@@ -27,6 +27,10 @@
     .ui.basic.maroon.button:hover {
         box-shadow: 0px 0px 0px 1px rgba(66, 00, 33, 1) inset !important;
     }
+    .middle.text {
+        color: #666666; text-wrap: normal; text-align: justify
+    }
+
 </style>
 
 <div class="ui fluid top attached tabular menu">
@@ -34,20 +38,31 @@
     <a class="item" data-tab="mine">Mine</a>
     <a class="item" data-tab="used">Home</a>
 
-    <div class="right menu">
-        <div class="item">
+    <div class="item">
+  {{#ui-popup content="Attach data from external repositories to multiple research environments for analysis. Data can be attached from DataONE and Globus, and other web locations."}}
+      <div class="ui blue icon button">
+          <i class="info icon"></i>
+      </div>
+  {{/ui-popup}}
+    </div>
+
+<!--
+    <div class="middle text">
+    </div>
+-->
+
+    <div class="right item">
             <div class="ui large rounded icon search input">
             <input class="prompt" type="text" placeholder="Search Catalog ...">
             <i class="search icon"></i>
             </div>
             <div class="results"></div>
-        </div>
-        <div class="item">
-            <div class="ui mini green labeled icon button" {{action 'openModal' "harvester" on='click'}}>
-                <i class="plus icon"></i>
-                Add Data
-            </div>
-        </div>
+    </div>
+    <div class="item">
+          <div class="ui mini green labeled icon button" {{action 'openModal' "harvester" on='click'}}>
+              <i class="plus icon"></i>
+              Add Data
+          </div>
     </div>
 </div>
 
