@@ -23,13 +23,14 @@
             </div>
         </div>
         <div class="ui two column grid">
-            <div class="one wide column">
+            <div class="one wide column" style="padding: 2px;">
                 {{provider-icon-for item.provider 'small'}}
             </div>
             <div class="fifteen wide left aligned column">
-                <div class="content" style="padding: 8px;">
-                    <a class="header">{{item.name}}</a>
-                    <div class="description">{{item.identifier}}</div>
+                <div class="content" style="padding:10px; font-size: 120%; line-height: 120%;">
+                  {{item.creator}} Created {{from-now item.created}} [{{bytes-to-mbytes item.size}} MB]
+                    <span style="font-weight: 600">{{truncate-dataname item.name}}</span>
+                    <span style="color: #a7a4a9">{{item.identifier}}</span>
                 </div>
             </div>
         </div>
