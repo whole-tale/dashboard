@@ -131,19 +131,22 @@ export default Ember.Component.extend({
         },
 
         remove(file) {
-            this.set('fileToRemove', file);
-            this.set("confirmValue", "");
-            this.set("confirmDisabled", "disabled");
+            this.get('internalState').removeFolderFromRecentFolders(file.id);
+            file.destroyRecord();
 
-            let prompt = Ember.$('#confirm-remove');
-            prompt.css({
-                // position:"absolute",
-                // top:event.layerY+"px",
-                // left:event.layerX+"px"
-                margin: 'auto',
-                maxWidth: '400px'
-            });
-            prompt.removeClass("hidden");
+            // this.set('fileToRemove', file);
+            // this.set("confirmValue", "");
+            // this.set("confirmDisabled", "disabled");
+
+            // let prompt = Ember.$('#confirm-remove');
+            // prompt.css({
+            //     // position:"absolute",
+            //     // top:event.layerY+"px",
+            //     // left:event.layerX+"px"
+            //     margin: 'auto',
+            //     maxWidth: '400px'
+            // });
+            // prompt.removeClass("hidden");
         },
 
         confirmedRemove() {

@@ -15,6 +15,10 @@ function wrapFolder(folderID, folderName) {
     };
 }
 
+Ember.TextField.reopen({
+    attributeBindings: ['multiple']
+});
+
 export default Ember.Controller.extend({
     internalState: inject.service(),
     store: inject.service(),
@@ -26,6 +30,7 @@ export default Ember.Controller.extend({
     parentId: null,
     file: "",
     fileChosen: Ember.observer('file', function() {
+        console.log(this.get('file'));
         if (this.get('file') === "") return;
         let uploader = Ember.$('.nice.upload.hidden');
         let files = uploader[0].files;
