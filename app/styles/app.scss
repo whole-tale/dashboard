@@ -517,3 +517,11 @@ pre {
 .catalog .blurring.dimmable > .dimmer {
   background-color: rgba(14, 27, 68, 0.1);
 }
+
+.card .blurring.dimmable > :not(.dimmer) {
+  -webkit-transition: 0ms filter !important;
+  transition: 0ms filter !important;
+}
+.card .blurring.dimmable > .dimmer {
+  animation-duration: 100ms !important;
+}
