@@ -109,6 +109,20 @@
             </div>
 
             <div class="field">
+                <style type="text/css">.unhide.icon:hover{cursor:pointer;}</style>
+                <label style="margin-right:.5em; display:inline-block;">Folder</label>
+                <i class="inline unhide icon" {{action 'gotoFolderView' on='click'}} data-content="View folder details"></i>
+                <input type="text" name="folder" placeholder="Folder" value="{{folder.name}}" disabled>
+            </div>
+
+            <div class="field">
+                <style type="text/css">.unhide.icon:hover{cursor:pointer;}</style>
+                <label style="margin-right:.5em; display:inline-block;">Image</label>
+                <i class="inline unhide icon" {{action 'gotoImageView' on='click'}} data-content="View image details"></i>
+                <input type="text" name="image" placeholder="Image Name" value="{{image.name}}" disabled>
+            </div>
+
+            <div class="field">
                 <style type="text/css">.edit.icon:hover{cursor:pointer;}</style>
                 <label style="margin-right:.5em; display:inline-block;">Tale Illustration</label>
                 <i class="inline edit icon" {{action 'enableEditIcon' on="click"}}></i>

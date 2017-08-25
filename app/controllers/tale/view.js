@@ -142,6 +142,12 @@ export default Ember.Controller.extend({
                         model.set('illustration', result.get('icon'));
                     })
                 });
+        },
+        gotoFolderView() {
+            this.transitionToRoute("folder.view", this.folder);
+        },
+        gotoImageView() {
+            this.transitionToRoute("image.view", this.image);
         }
     },
 

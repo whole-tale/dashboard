@@ -29,6 +29,23 @@ export default Ember.Route.extend({
 
       console.log(taleObj);
       return taleObj;
+    },
+
+    setupController(controller, model) {
+      this._super(...arguments);
+
+      let imageId = model.get('imageId');
+      let folderId = model.get('folderId');
+
+      this.get('store').find('folder', folderId)
+          .then(folder => {
+              controller.set('folder', folder);
+          });
+          
+      this.get('store').find('image', imageId)
+          .then(image => {
+              controller.set('image', image);
+          });
     }
 
 });
