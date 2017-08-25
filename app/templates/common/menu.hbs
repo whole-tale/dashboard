@@ -1,5 +1,6 @@
 {{#if loggedIn}}
-  {{#ui-sidebar class="ui left vertical inverted thin blue menu" context=".component.context" id="sub-sidebar"}}
+  {{#ui-sidebar class="ui left vertical inverted thin blue menu" context=".component.context" id="sub-sidebar"
+    style="border-top-left-radius: 0rem !important; border-top-right-radius: 0rem !important;"}}
 
       {{#link-to 'index' class="item" invokeAction=(action 'closeMenu' 'Dashboard' 'home')}}
           <i class="home icon"></i>

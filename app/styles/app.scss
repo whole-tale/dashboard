@@ -510,10 +510,10 @@ pre {
   transition: 100ms filter ease;
 }
 .catalog .blurring.dimmed.dimmable > :not(.dimmer) {
-  -webkit-filter: blur(0.7px) grayscale(0.7);
-      filter: blur(0.7px) grayscale(0.7);
+  -webkit-filter: blur(0.5px) grayscale(0.7);
+      filter: blur(0.5px) grayscale(0.7);
 }
 
 .catalog .blurring.dimmable > .dimmer {
-  background-color: rgba(100, 100, 100, 0.2);
+  background-color: rgba(14, 27, 68, 0.1);
 }
