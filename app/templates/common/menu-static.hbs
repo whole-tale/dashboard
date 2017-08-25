@@ -1,5 +1,5 @@
 {{#if loggedIn}}
-    <div class="ui left vertical inverted compact blue menu" style="height: 100%; border-top-left-radius: 0rem !important; border-top-right-radius: 0rem !important;">
+    <div class="ui left vertical inverted blue menu" style="height: 100%; width: 160px; border-top-left-radius: 0rem !important; border-top-right-radius: 0rem !important;">
 
       {{#link-to 'index' class="item" invokeAction=(action 'closeMenu' 'Dashboard' 'home')}}
           <i class="home icon"></i>
@@ -50,10 +50,10 @@
       {{/link-to}}
 -->
 
-      <a class="item" {{action 'dynamicMenu'}}>
+      {{!-- <a class="item" {{action 'dynamicMenu'}}>
           <i class="content icon"></i>
           Floating Menu
-      </a>
+      </a> --}}
 
       <a class="item" {{action 'closeMenu' 'logout'}}>
               <i class="sign out icon"></i>

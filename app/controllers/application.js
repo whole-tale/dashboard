@@ -20,7 +20,8 @@ export default Ember.Controller.extend({
   staticMenu : true,
   init() {
     this._super();
-    this.set('staticMenu', this.get('internalState').getIsStaticMenu());
+    // this.set('staticMenu', this.get('internalState').getIsStaticMenu());
+    this.set('staticMenu', true);
 
   },
   checkMyRouteName: Ember.computed(function() {
