@@ -112,8 +112,8 @@ export default Ember.Controller.extend({
           Ember.run.later((function() {
             component.set("tale_created", false);
             component.clearWizard();
-            // component.transitionToRoute('upload.view', item);
-          }), 5000);
+            component.transitionToRoute('tale.view', item);
+          }), 3000);
         };
 
         var onFail = function(e) {
@@ -124,7 +124,7 @@ export default Ember.Controller.extend({
 
           Ember.run.later((function() {
             component.set("tale_not_created", false);
-          }), 5000);
+          }), 3000);
 
         };
 
