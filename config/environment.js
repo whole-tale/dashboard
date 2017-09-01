@@ -77,9 +77,9 @@ module.exports = function(environment) {
     }
 
     if (environment === 'production') {
-        ENV.apiHost = 'https://girder.wholetale.org';
+        ENV.apiHost = '%apiHOST%';
         ENV.apiPath = '/api/v1';
-        ENV.apiUrl = 'https://girder.wholetale.org/api/v1';
+        ENV.apiUrl = ENV.apiHost + ENV.apiPath;
     }
 
     return ENV;

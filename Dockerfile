@@ -5,10 +5,12 @@ RUN unset NODE_ENV && \
   cd dashboard && \
   sed -i app/templates/common/footer.hbs \
       -e "s/{commit}/$(git log --pretty=format:'%h' -n 1)/" && \
+  sed -i config/environment.js \
+      -e 's|%apiHOST%|https://girder.dev.wholetale.org|' && \
   npm -s install bower && \
   npm -s install && \
   ./node_modules/.bin/bower install --allow-root && \
-  ./node_modules/.bin/ember build --environment=development && \
+  ./node_modules/.bin/ember build --environment=production && \
   cp -r dist/* ../ && \
   cd .. && rm -rf /tmp/* /root/.[a-z]* dashboard
 
