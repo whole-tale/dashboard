@@ -6,7 +6,7 @@ RUN unset NODE_ENV && \
   sed -i app/templates/common/footer.hbs \
       -e "s/{commit}/$(git log --pretty=format:'%h' -n 1)/" && \
   sed -i config/environment.js \
-      -e 's|%apiHOST%|https://girder.dev.wholetale.org|' && \
+      -e 's|%apiHOST%|https://girder.prod.wholetale.org|' && \
   npm -s install bower && \
   npm -s install && \
   ./node_modules/.bin/bower install --allow-root && \
