@@ -199,7 +199,11 @@ export default Ember.Component.extend({
         },
 
         clickedRow(folder) {
-            this.clearSelected();
+            if(folder.selected) {
+                return this.actions.clickedLevelDown.call(this, folder);
+            }
+
+            this.clearSelected(); 
 
             let onClickedRow = this.folders.find(f=>{return folder.id === f.id;})
             if(onClickedRow) onClickedRow.set('selected', true);
