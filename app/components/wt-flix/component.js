@@ -26,6 +26,7 @@ export default Ember.Component.extend({
         var paginateSize = Number(component.get('paginateOn'));
         component.set('paginateOn', --paginateSize); // remove one to fit the plus.
       }
+      component.set('searchView', models);
       component.paginate(component, models);
     });
 
@@ -155,17 +156,17 @@ export default Ember.Component.extend({
     leftButtonClicked : function() {
       if (this.get('leftButtonState') === "disabled") return;
       this.set('pageNumber', this.get('pageNumber') -1);
-      this.paginate(this, this.get('models'));
+      this.paginate(this, this.get('searchView'));
     },
     rightButtonClicked : function() {
       if (this.get('rightButtonState') === "disabled") return;
       this.set('pageNumber', this.get('pageNumber') +1);
-      this.paginate(this, this.get('models'));
+      this.paginate(this, this.get('searchView'));
     },
     tabClicked : function(tabNumber) {
       // alert("Clicked " + tabNumber)
       this.set('pageNumber', tabNumber);
-      this.paginate(this, this.get('models'));
+      this.paginate(this, this.get('searchView'));
     },
     searchFilter : function () {
       var searchStr = this.get('searchStr');
@@ -186,6 +187,7 @@ export default Ember.Component.extend({
               searchView.push(model);
         });
 
+        component.set('searchView', searchView);
         component.paginate(component, searchView);
       });
 

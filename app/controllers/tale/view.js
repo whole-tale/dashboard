@@ -2,6 +2,9 @@ import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
 var inject = Ember.inject;
 
+Ember.TextField.reopen({
+    attributes: ['data-content']
+});
 
 export default Ember.Controller.extend({
     store: Ember.inject.service(),
