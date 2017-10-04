@@ -15,6 +15,7 @@ Router.map(function() {
   this.route('explore');
   this.route('search');
   this.route('compose');
+  this.route('recipe-image');
   this.route('status');
   this.route('login');
 

@@ -1,0 +1,68 @@
+
+
+<div class="ui large header">
+    Import Recipe and Image
+</div>
+
+<div class="ui segment">
+  <div class="ui fluid stackable steps">
+      <a class="{{stepsActive.[0]}} step" {{action "gotoStep" 0 }}>
+          <div class="content">
+              <div class="title">Recipe</div>
+              <div class="description">Image Recipe Information</div>
+          </div>
+      </a>
+      <a class="{{stepsActive.[1]}} step" {{action "gotoStep" 1 }}>
+          <div class="content">
+              <div class="title">Image</div>
+              <div class="description">Docker Image Information</div>
+          </div>
+      </a>
+      <a class="{{stepsActive.[2]}} step" {{action "gotoStep" 3 }}>
+          <div class="content">
+              <div class="title">Create</div>
+              <div class="description">Confirm</div>
+          </div>
+      </a>
+  </div>
+
+    <div style="display: {{showStep.[0]}}">
+      {{partial "forms/recipe-edit"}}
+    </div>
+
+    <div style="display: {{showStep.[1]}}">
+      {{partial "forms/image-edit"}}
+    </div>
+
+
+    <div style="display: {{showStep.[2]}}">
+        <div class="ui large header">Confirm Details</div>
+
+      <div class="ui grid">
+          <div class="eight wide column" style="padding: 10px">
+            {{partial "forms/recipe-details"}}
+          </div>
+          <div class="eight wide column" style="padding: 10px">
+            {{partial "forms/image-details"}}
+          </div>
+      </div>
+    </div>
+
+
+    <div class="ui secondary menu" >
+        <a class="item" style="padding-left: 0;">
+            <div class="large ui blue labeled icon button" {{action "moveLeft"}}>
+                <i class="caret left icon"></i> Previous
+            </div>
+        </a>
+      <div class="right menu">
+          <a class="item">
+              <div class="large ui blue right labeled icon button" {{action "moveRight"}}>
+                  {{nextName}}
+                <i class="caret right icon"></i>
+              </div>
+          </a>
+      </div>
+    </div>
+
+</div>

@@ -34,9 +34,14 @@
           My Data
       {{/link-to}}
 
-      {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'add circle')}}
-          <i class="add circle icon"></i>
+      {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
+          <i class="plus icon"></i>
           Compose
+      {{/link-to}}
+
+      {{#link-to 'recipe-image' class="item" invokeAction=(action 'closeMenu' 'Recipe Image' 'cloud upload')}}
+          <i class="cloud upload icon"></i>
+          Recipe/Image
       {{/link-to}}
 
       {{#link-to 'status' class="item" invokeAction=(action 'closeMenu' 'Status' 'line chart')}}
