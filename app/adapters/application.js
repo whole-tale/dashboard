@@ -30,10 +30,14 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
         if (_.get(snapshot, "adapterOptions.copy"))  {
             url += "/copy";
         }
+        if (_.get(snapshot, "adapterOptions.appendPath")) {
+            url += "/"+snapshot.adapterOptions.appendPath;
+        }
         if (queryParams) {
             let q = this.buildQueryParams(queryParams);
             return url + "?" + q;
         }
+        console.log(url);
         return url;
     },
 
@@ -65,11 +69,18 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
                 url += "/registered";
             } else if (query.adapterOptions.icon) {
                 let queryParams = snapshot.adapterOptions.queryParams;
-                url += "/icon";
                 if (queryParams) {
                     let q = this.buildQueryParams(queryParams);
                     url += "?" + q;
                 }
+                url += "/icon";
+            } else if (query.adapterOptions.appendPath) {
+                let queryParams = snapshot.adapterOptions.queryParams;
+                if (queryParams) {
+                    let q = this.buildQueryParams(queryParams);
+                    url += "?" + q;
+                }
+                url += "/"+query.adapterOptions.appendPath;
             }
         }
 
@@ -96,7 +107,8 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
 
             return this.get('authRequest').send(url, { method: "POST", data: data });
         }
-        return this._super(...arguments);
+
+        // return this._super(...arguments);
     },
 
     createRecord(store, type, snapshot) {
