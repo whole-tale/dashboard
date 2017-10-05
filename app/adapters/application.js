@@ -37,7 +37,7 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
             let q = this.buildQueryParams(queryParams);
             return url + "?" + q;
         }
-        console.log(url);
+
         return url;
     },
 
@@ -108,7 +108,7 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
             return this.get('authRequest').send(url, { method: "POST", data: data });
         }
 
-        // return this._super(...arguments);
+        return this._super(...arguments);
     },
 
     createRecord(store, type, snapshot) {
