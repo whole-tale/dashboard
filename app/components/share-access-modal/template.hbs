@@ -1,41 +1,38 @@
 {{!-- app/components/share-access-modal/template.hbs --}}
 {{#ui-modal name="access-control" class="small acl-component" onApprove=(action 'submit') onDeny=(action 'cancel')}}
-    <div class="header">Share Access with Groups or Users</div>
+    <div class="header">Access Control</div>
     <div class="content">
         <div class="ui basic segment">
-            <form class="ui form">
-            {{!-- REPLACE BELOW AFTER SEARCH WIDGET COMPLETED --}}
-                <div class="inline field">
-                    <label>
-                        Share with another group or user
-                    </label>
-                    {{input type="text" id="searchbox" value=userOrGroup}}
-                    <div class="ui inline button" {{action 'addUserOrGroup' userOrGroup on='click'}}>Add</div>
-                </div>
-            {{!-- REPLACE ABOVE AFTER SEARCH WIDGET COMPLETED --}}
-            {{!-- REPLACE BELOW AFTER PERMISSIONS WIDGET COMPLETED --}}
+            <div class="ui form">
                 <div class="ui secondary segment" id="granted-list">
-                    {{#each granted.users as |listed|}}
-                        {{listed.name}}
-                    {{/each}}
-                    {{#each granted.groups as |listed|}}
-                        {{listed.name}}
-                    {{/each}}
+                    <div class="ui two column grid">
+                        <div class="column">
+                            <i class="icon {{object._modelType}}"></i>  {{object.name}}
+                        </div>
+                        <div class="right aligned column">
+                            {{ui-checkbox class="toggle" label="Public" checked=object.public onChange=(action (mut object.public))}}
+                        </div>
+                    </div>
                 </div>
-            {{!-- REPLACE ABOVE AFTER PERMISSIONS WIDGET COMPLETED --}}
-                <div class="ui tertiary segment">
-                    
+                <div class="field">
+                    {{user-access-control acl=granted}}
                 </div>
-            </form>
+                <div class="field">
+                    <label>
+                        Add a user or Group to share with ...
+                    </label>
+                    {{user-search-widget selectedUser=selectedUser}}
+                </div>
+                <div class="ui inline button" {{action 'addUserOrGroup' userOrGroup on='click'}}>Add Group or User</div>
+            </div>
         </div>
     </div>
     <div class="actions">
         <div class="ui deny button">
             Cancel
         </div>
-        <div class="ui positive register disabled right labeled icon button">
-            Submit & Share
-            <i class="icon register"></i>
+        <div class="ui positive register icon button">
+            Submit
         </div>
     </div>
 {{/ui-modal}}

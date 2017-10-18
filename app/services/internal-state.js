@@ -102,6 +102,17 @@ export default Ember.Service.extend({
     return JSON.parse(bcs);
   },
 
+  // Get the object that Access Control will be modifying perms for
+  getACLObject() {
+      let aclObj = localStorage.ACLObject;
+      if (!aclObj) return null;
+      return JSON.parse(aclObj)
+  },
+
+  // Sets the object that Access Control will be modifying permissions for
+  setACLObject(aclObj) {
+      localStorage.ACLObject = JSON.stringify(aclObj.toJSON());
+  },
 
   toString: function () {
       return         "CurrentFileBreadcrumbs: " + localStorage.currentFileBreadcrumbs +

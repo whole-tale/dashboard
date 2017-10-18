@@ -14,6 +14,7 @@ inflector.uncountable('instance');
 inflector.uncountable('dataset');
 inflector.uncountable('sils');
 inflector.uncountable('recipe');
+inflector.uncountable('group');
 
 // Meet Ember Inspector's expectation of an export
 export default {};

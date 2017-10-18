@@ -68,6 +68,12 @@ export default Ember.Component.extend({
             file.save({ adapterOptions: {queryParams: queryParams} });
         },
 
+        share(file) {
+            const state = this.get('internalState');
+            state.setACLObject(file);
+            Ember.$('.acl-component').modal('show');
+        },
+
         move(file) {
             this.set('fileToMove', file);
             let mini = Ember.$('#mini-browser');

@@ -41,6 +41,20 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
         return url;
     },
 
+    urlForFindRecord(id, modelName, snapshot) {
+        let url = this._super(...arguments);
+        let appendPath = _.get(snapshot, 'adapterOptions.appendPath');
+        if(appendPath) {
+            url += "/"+snapshot.adapterOptions.appendPath;
+        }
+        let queryParams = _.get(snapshot, 'adapterOptions.queryParams');
+        if(queryParams) {
+            let q = this.buildQueryParams(queryParams);
+            return url + "?" + q;
+        }
+        return url;
+    },
+
     urlForFindAll(modelName, snapshot) {
         let url = this._super(...arguments);
         let queryParams = _.get(snapshot, 'adapterOptions.queryParams');
@@ -61,26 +75,37 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
         return url;
     },
 
+    query(store, type, query) {
+        var url = this.buildURL(type.modelName, null, null, 'query', query);
+        delete query.adapterOptions;
+
+        if (this.sortQueryParams) {
+            query = this.sortQueryParams(query);
+        }
+
+        return this.get('authRequest').send(url, { method: 'GET', data: query });
+    },
+
     urlForQuery(query, modelName) {
         let url = this._super(query, modelName);
 
         if (query.adapterOptions) {
             if (query.adapterOptions.registered) {
-                url += "/registered";
+                url += "/registered";    
             } else if (query.adapterOptions.icon) {
-                let queryParams = snapshot.adapterOptions.queryParams;
+                let queryParams = query.adapterOptions.queryParams;
                 if (queryParams) {
                     let q = this.buildQueryParams(queryParams);
                     url += "?" + q;
                 }
                 url += "/icon";
             } else if (query.adapterOptions.appendPath) {
-                let queryParams = snapshot.adapterOptions.queryParams;
+                url += "/"+query.adapterOptions.appendPath;
+                let queryParams = query.adapterOptions.queryParams;
                 if (queryParams) {
                     let q = this.buildQueryParams(queryParams);
                     url += "?" + q;
                 }
-                url += "/"+query.adapterOptions.appendPath;
             }
         }
 

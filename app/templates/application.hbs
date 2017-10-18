@@ -9,7 +9,6 @@
       </div>
       <div class="main page" style="overflow:hidden;  padding-bottom: 500em;
   margin-bottom: -500em;">
-
     {{#if loggedIn}}
 
             <div class="page border">
@@ -30,7 +29,6 @@
         {{partial "common/header"}}
           <div class="main page">
             {{#if loggedIn}}
-
                 <div class="page border">
                   {{outlet}}
                 </div>
@@ -39,13 +37,13 @@
             {{#unless loggedIn}}
               {{outlet}}
             {{/unless}}
-          </div>
+          </div>    
       </div>
   {{/if}}
-
   {{partial "common/footer"}}
 
 </div>
 
+{{share-access-modal}}
 {{registration-modal}}
 {{event-notifier}}

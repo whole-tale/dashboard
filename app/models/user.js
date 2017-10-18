@@ -15,4 +15,5 @@ export default DS.Model.extend({
   public: DS.attr('boolean'),
   size : DS.attr('number'),
   status : DS.attr('string'),
+  name:    DS.attr('string')
 });
