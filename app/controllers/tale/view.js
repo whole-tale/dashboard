@@ -10,6 +10,8 @@ export default Ember.Controller.extend({
     store: Ember.inject.service(),
     apiCall: Ember.inject.service('api-call'),
     userAuth: Ember.inject.service(),
+    accessControl: Ember.inject.service(),
+    internalState: Ember.inject.service(),
     taleInstanceName: "",
     init() {
         this.set("tale_instantiated", false);
@@ -26,14 +28,31 @@ export default Ember.Controller.extend({
         // model.set('config', JSON.stringify(model.get('config')));
         console.log(model.get('config'));
     }),
-    canDelete: Ember.computed('model.creatorId', 'user_id', function(){
-        // TODO fetch ACL data instead of checking against creator ID
-        var creator_id = this.get("model").get("creatorId");
-        var user_id = this.get("user_id");
+    isOwner: Ember.computed('model.creatorId', 'user_id', function(){
+        
+        let user_id = this.get("user_id");
+        let creator_id = this.get("model").get("creatorId");
+        
+        // TODO: Uncomment below As soon as access control for tales are working
+        // const object = this.get('model').toJSON();
+        // return this.get('accessControl').fetch(object)
+        //     .then(acl => {
+        //         // if listed as owner or admin in access control for this tale ...
+        //         if (acl.users.find(u=>(u.id===user_id && u.level >= 1))) {
+        //             return true;
+        //         } 
+        //         return false;
+        //     })
+        // ;
 
         return creator_id === user_id;
     }),
     actions: {
+        shareTale(tale) {
+            const state = this.get('internalState');
+            state.setACLObject(tale);
+            Ember.$('.acl-component').modal('show');
+        },
         updateTale: function() {
 
             var component = this;

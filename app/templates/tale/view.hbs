@@ -1,10 +1,14 @@
 <div class="ui tool segment">
     <div class="ui small blue button" {{action 'back'}}><i class="caret left icon"></i> Back </div>
 
-    {{#if canDelete }}
+    {{#if isOwner }}
       <div class="ui small red icon button" {{action 'openDeleteModal' model._id}} style="float: right">
         <i class="remove icon"></i>
         Delete Tale
+      </div>
+      <div class="ui small blue icon button" {{action 'shareTale' model}} style="float: right;">
+          <i class="share alternate icon"></i>
+          Share Tale
       </div>
     {{/if}}
 

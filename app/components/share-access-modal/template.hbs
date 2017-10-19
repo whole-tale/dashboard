@@ -2,6 +2,14 @@
 {{#ui-modal name="access-control" class="small acl-component" onApprove=(action 'submit') onDeny=(action 'cancel')}}
     <div class="header">Access Control</div>
     <div class="content">
+        {{#if error}}
+            <div class="ui negative message">
+                <div class="header">
+                    Error fetching access control settings
+                </div>
+                <p>{{error}}</p>
+            </div>
+        {{/if}}
         <div class="ui basic segment">
             <div class="ui form">
                 <div class="ui secondary segment" id="granted-list">
