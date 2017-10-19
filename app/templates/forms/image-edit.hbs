@@ -2,24 +2,41 @@
 
 <div class="ui form">
     <div class="ui fifteen wide field">
-        <label style="display:inline;">Recipe</label> 
+        <label style="display:inline;">Using Recipe</label> 
         <i class="recipes grey circle help icon"></i>
         <div class="floating ui basic blue label hidden" style="left:1em !important; top: -2em !important; padding:8px;" id="recipe-info-data-content">Either create a new recipe in the previous step or search for existing ones.</div>
     </div>
     <div class="ui fifteen wide field">
-        <div class="ui action input {{if recipeName '' 'error'}}">
-            <input type="text" readonly=true placeholder="No Recipe Created Or Chosen" value={{recipeName}}>
-            {{#if recipeName}}
-                <button class="ui button">View Recipe</button>
-            {{else}}
-                <button class="ui button">Search Recipes</button>
-            {{/if}}
+        {{#ui-dropdown class="recipe selection" selected=recipeId onChange=(action (mut recipeId))}}
+            <div class="default text">No Recipe Chosen</div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+            {{#each model.recipes as |recipe|}}
+                <div class="item" data-value="{{recipe.id}}">
+                    {{recipe.name}}
+                </div>
+            {{/each}}
+            </div>
+        {{/ui-dropdown}}
+    </div>
+    <div class="ui fields">
+        <div class="ui fourteen wide field">
+            <label>Image Name</label>
+            {{input value=imageName type="text" placeholder="Name Displayed in Wholetale Dashboard"}}
         </div>
+         <div class="ui two wide field">
+                <label>Public</label>
+              {{ui-checkbox class="toggle"  label="" checked=public_checked onChange=(action (mut public_checked))}}
+        </div>
+    </div>
+    <div class="ui fifteen wide field">
+        <label>Icon URL</label>
+        {{input value=imageIconURL type="text" placeholder=""}}
     </div>
     <div class="ui divider"></div>
     <div class="two fields">
         <div class="ui twelve wide field">
-            <label>Image Name</label>
+            <label>Docker Image Name</label>
             Image name must be consistent with docker's standard naming rules:
             <ol class="ui list">
                 <li>An image name is made up of slash-separated name components in the format: <pre>fedora/httpd</pre>
@@ -33,11 +50,7 @@
                 <li>Name components may contain lowercase letters, digits, a period, one or two underscores, and one or more dashes</li>
             </ol>
 
-            {{input value=imageName type="text" placeholder="Type image name consistent with docker standards (example: myregistryhost:5000/fedora/httpd)"}}
-        </div>
-        <div class="ui two wide field">
-                <label>Public</label>
-              {{ui-checkbox class="toggle"  label="" checked=public_checked onChange=(action (mut public_checked))}}
+            {{input value=imageDockerName type="text" placeholder="Type image name consistent with docker standards (example: myregistryhost:5000/fedora/httpd)"}}
         </div>
     </div>
     <div class="ui divider"></div>

@@ -27,6 +27,10 @@ export default Ember.Controller.extend({
     console.log("Description = " + this.get('description'));
   }),
 
+  recipeIdObserver: Ember.observer('recipeId', function() {
+
+  }),  
+
   showStep : ["inline", "none", "none"],
   stepsActive : ["active", "", ""],
   currentStep : 0,
@@ -34,10 +38,13 @@ export default Ember.Controller.extend({
   frontend : null,
   folder : null,
   tags: Ember.A(),
+  recipeId: '',
   imageTags: Ember.A(),
   imageName: '',
+  imageDockerName: '',
+  imageIconURL: '',
   imageDescription: '',
-  nextName : "Next",
+  nextName : "Import Recipe",
   tale_creating: false,
   tale_created: false,
   configuration : JSON.stringify({}),
@@ -49,7 +56,7 @@ export default Ember.Controller.extend({
       this.set('public_checked', false);
       this.set('frontend', null);
       this.set('folder', null);
-      this.set('nextName', "Next");
+      this.set('nextName', "Import Recipe");
       this.set('tale_creating', false);
       this.set('tale_created', false);
       this.set('configuration', JSON.stringify({}));
@@ -98,21 +105,29 @@ export default Ember.Controller.extend({
 
     },
 
+    getButtonNextName(nextStep) {
+        if (nextStep <= 0) { 
+            this.set('nextName', "Import Recipe"); 
+        } else if (nextStep === 1) { 
+            this.set('nextName', "Create Image"); 
+        } else if (nextStep >= 2) {
+            this.set('nextName', "Build");
+        }
+    },
+
     moveLeft: function () {
       var step = this.get("currentStep");
       if (step !=0)
         this.send("gotoStep", step-1);
+        this.send('getButtonNextName', step-1)
     },
     moveRight: function () {
       var step = this.get("currentStep");
       if (step !=2) {
-        this.send("gotoStep", step + 1);
 
-        if (step == 1) {
-          this.set('nextName', "Submit");
-        }
-        else
-          this.set('nextName', "Next");
+        this.send("gotoStep", step + 1);
+        this.send('getButtonNextName', step+1);
+
       } else {
 
         var component = this;
