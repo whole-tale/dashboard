@@ -15,10 +15,9 @@
           <label>Description</label>
           {{markdown-editor markdownValue=description}}
       </div>
-      <div class="field">
-              <label>Tags Placeholder</label>
-            {{textarea value=tags cols="80" rows="6"}}
-      </div>
+      {{!-- <div class="field"> --}}
+        {{tags-widget tags=tags}}
+      {{!-- </div> --}}
 </div>
 
 {{#if creating}}

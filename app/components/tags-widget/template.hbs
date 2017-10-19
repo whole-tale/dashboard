@@ -1,0 +1,16 @@
+{{!-- app/components/tags-widget/template.hbs --}}
+
+<div class="ui grey segment">
+    <span class="ui grey top left attached label">
+        <i class="tags icon"></i> Recipe Tags
+    </span>
+    <div class="ui input">
+        {{input placeholder="Add a tag..." value=tagName enter="addTag"}}
+    </div>
+    {{#each tags as |tag|}}
+        <div class="ui gray tag label" style="padding-right:0px !important">
+            {{tag}} 
+            <i class="red remove icon" style="cursor:pointer;margin-left:1em;" {{action "removeTag" tag on="click"}}></i>
+        </div>
+    {{/each}}
+</div>

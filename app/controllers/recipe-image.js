@@ -23,6 +23,7 @@ export default Ember.Controller.extend({
   public_checked : false,
   frontend : null,
   folder : null,
+  tags: Ember.A(),
   nextName : "Next",
   tale_creating: false,
   tale_created: false,
