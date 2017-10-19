@@ -9,9 +9,11 @@ Ember.TextField.reopen({
 export default Ember.Controller.extend({
     store: Ember.inject.service(),
     apiCall: Ember.inject.service('api-call'),
+    userAuth: Ember.inject.service(),
     taleInstanceName: "",
     init() {
         this.set("tale_instantiated", false);
+        this.set('user_id', this.get('userAuth').getCurrentUserID());
         scroll(0, 0);
     },
     didInsertElement() {
@@ -23,6 +25,13 @@ export default Ember.Controller.extend({
         // convert config json to a string for editing.
         // model.set('config', JSON.stringify(model.get('config')));
         console.log(model.get('config'));
+    }),
+    canDelete: Ember.computed('model.creatorId', 'user_id', function(){
+        // TODO fetch ACL data instead of checking against creator ID
+        var creator_id = this.get("model").get("creatorId");
+        var user_id = this.get("user_id");
+
+        return creator_id === user_id;
     }),
     actions: {
         updateTale: function() {
