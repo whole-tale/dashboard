@@ -1,24 +1,51 @@
 
 
 <div class="ui form">
+    <div class="ui fifteen wide field">
+        <label style="display:inline;">Recipe</label> 
+        <i class="recipes grey circle help icon"></i>
+        <div class="floating ui basic blue label hidden" style="left:1em !important; top: -2em !important; padding:8px;" id="recipe-info-data-content">Either create a new recipe in the previous step or search for existing ones.</div>
+    </div>
+    <div class="ui fifteen wide field">
+        <div class="ui action input {{if recipeName '' 'error'}}">
+            <input type="text" readonly=true placeholder="No Recipe Created Or Chosen" value={{recipeName}}>
+            {{#if recipeName}}
+                <button class="ui button">View Recipe</button>
+            {{else}}
+                <button class="ui button">Search Recipes</button>
+            {{/if}}
+        </div>
+    </div>
+    <div class="ui divider"></div>
     <div class="two fields">
-        <div class="ui fourteen wide field">
+        <div class="ui twelve wide field">
             <label>Image Name</label>
-          {{input value=name type="text" placeholder="Recipe Not Chosen"}}
+            Image name must be consistent with docker's standard naming rules:
+            <ol class="ui list">
+                <li>An image name is made up of slash-separated name components in the format: <pre>fedora/httpd</pre>
+                    <ol>
+                        <li>Where <b>fedora</b> is the <b>hostname</b> and <b>httpd</b> is the <b>image name</b>.</li>
+                    </ol>
+                </li>
+                <li>If the hostname is excluded, the docker registry will be assumed as the host for the image.</li>
+                <li>The hostname must comply with standard DNS rules, but may not contain underscores.</li>
+                <li>If a hostname is present, it may optionally be followed by a port number in the format :8080</li>
+                <li>Name components may contain lowercase letters, digits, a period, one or two underscores, and one or more dashes</li>
+            </ol>
+
+            {{input value=imageName type="text" placeholder="Type image name consistent with docker standards (example: myregistryhost:5000/fedora/httpd)"}}
         </div>
         <div class="ui two wide field">
                 <label>Public</label>
               {{ui-checkbox class="toggle"  label="" checked=public_checked onChange=(action (mut public_checked))}}
         </div>
     </div>
+    <div class="ui divider"></div>
     <div class="field">
           <label>Description</label>
-          {{markdown-editor markdownValue=description}}
+          {{markdown-editor markdownValue=imageDescription}}
       </div>
-      <div class="field">
-              <label>Tags Placeholder</label>
-            {{textarea value=tags cols="80" rows="6"}}
-      </div>
+      {{tags-widget tags=imageTags}}
 </div>
 
 {{#if creating}}

@@ -6,6 +6,16 @@ export default Ember.Controller.extend({
 
   init() {
     this._super(...arguments);
+
+    Ember.run.schedule('afterRender', function() {
+        $(".recipes.grey.circle.help.icon").hover(function() {
+                $("#recipe-info-data-content").removeClass("hidden");
+            },
+            function() {
+                $("#recipe-info-data-content").addClass("hidden");
+            }
+        );
+    });
   },
 
   // just checking the toggle works ...
@@ -24,6 +34,9 @@ export default Ember.Controller.extend({
   frontend : null,
   folder : null,
   tags: Ember.A(),
+  imageTags: Ember.A(),
+  imageName: '',
+  imageDescription: '',
   nextName : "Next",
   tale_creating: false,
   tale_created: false,

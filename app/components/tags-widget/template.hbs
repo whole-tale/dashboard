@@ -1,9 +1,14 @@
 {{!-- app/components/tags-widget/template.hbs --}}
 
 <div class="ui grey segment">
-    <span class="ui grey top left attached label">
-        <i class="tags icon"></i> Recipe Tags
-    </span>
+    <h4>Tags</h4>
+    A tag must be consistent with docker's standard naming rules:
+    <ol class="ui list">
+        <li>A tag name must be valid ASCII.</li>
+        <li>May contain lowercase and uppercase letters, digits, underscores, periods and dashes.</li>
+        <li>Must not start with a period or a dash.</li>
+        <li>Can contain a maximum of 128 characters.</li>
+    </ol>
     <div class="ui input">
         {{input placeholder="Add a tag..." value=tagName enter="addTag"}}
     </div>
