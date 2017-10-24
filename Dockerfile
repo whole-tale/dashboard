@@ -22,8 +22,7 @@ RUN unset NODE_ENV && npm -s install
 RUN bower install --allow-root
 RUN ./node_modules/.bin/ember build --environment=production
 
-FROM python:3.6-alpine
+FROM nginx:latest
 WORKDIR /srv/dashboard
-COPY --from=builder /usr/src/node-app/dist .
-EXPOSE 4200
-CMD ["python3", "-m", "http.server", "4200"]
+COPY --from=builder /usr/src/node-app/dist /srv/dashboard/.
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
