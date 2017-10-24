@@ -2,16 +2,6 @@
 
 <div class="ui form">
     <div class="two fields">
-        <div class="ui fourteen wide field">
-            <label>Recipe Name</label>
-          {{input value=name type="text" placeholder="Name..."}}
-        </div>
-        <div class="ui two wide field">
-                <label>Public</label>
-              {{ui-checkbox class="toggle"  label="" checked=public_checked onChange=(action (mut public_checked))}}
-        </div>
-    </div>
-    <div class="two fields">
         <div class="ui eight wide field">
             <label>Repository URL</label>
             {{input value=recipe_url type="text" placeholder="https://"}}
@@ -21,11 +11,28 @@
             {{input value=commit_id type="text" placeholder="#"}}
         </div>
     </div>
+    <div class="two fields">
+        <div class="ui fourteen wide field">
+            <label>Recipe Name</label>
+          {{input value=name type="text" placeholder="Name..." required="true"}}
+        </div>
+        <div class="ui two wide field">
+                <label>Public</label>
+              {{ui-checkbox class="toggle"  label="" checked=public_checked onChange=(action (mut public_checked))}}
+        </div>
+    </div>
     <div class="field">
           <label>Description</label>
           {{markdown-editor markdownValue=description}}
     </div>
     {{tags-widget tags=tags}}
+    {{#if show_errors}}
+        <div class="ui red message">
+          <div class="content">
+            {{error_message}}
+          </div>
+        </div>
+    {{/if}}
 </div>
 
 {{#if creating}}

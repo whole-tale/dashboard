@@ -61,9 +61,71 @@ export default Ember.Controller.extend({
       this.set('tale_created', false);
       this.set('configuration', JSON.stringify({}));
   },
+  showError(message) {
+      this.set("creating", false);
+      this.set("not_created", true);
+
+      this.set("error_message", message);
+      this.set("show_errors", true);
+
+      var component = this;
+      Ember.run.later((function() {
+        component.set("not_created", false);
+      }), 3000);
+  },
+  saveRecipe() {
+    var recipe_url = this.get("recipe_url");
+    var commit_id = this.get("commit_id");
+    if(recipe_url || commit_id) {
+      var component = this;
+      if (!this.get("name")) {
+        component.showError("Recipe name cannot be left blank");
+        return;
+      }
+      component.set("creating", true);
+
+      var onSuccess = function(item) {
+        component.set("creating", false);
+        component.set("created", true);
+        Ember.run.later((function() {
+          component.set("created", false);
+          //clear form content on success
+          component.set("recipe_url", null);
+          component.set("commit_id", null);
+          component.set("name", null);
+          component.set("description", null);
+          component.set("public_checked", false);
+          component.set("tags", null);
+          component.set("show_errors", false);
+        }), 3000);
+        //Move to next step
+        component.send("gotoStep", 1);
+        component.send('getButtonNextName', 1);
+      };
+
+      var onFail = function(error) {
+        // deal with the failure here
+        component.showError(error.responseJSON.message)
+      };
+
+      let newRecipe = this.get("store").createRecord("recipe", {});
+      newRecipe.save({adapterOptions: { queryParams: {
+        url:         recipe_url,
+        commitId:    commit_id,
+        name:        this.get("name"),
+        description: this.get("description"),
+        public:      this.get("public_checked"),
+        tags:        this.get("tags"),
+      }}}).then(onSuccess).catch(onFail);
+    }
+    else {
+      //Move to next step
+      this.send("gotoStep", 1);
+      this.send('getButtonNextName', 1);
+    }
+  },
 
   actions: {
-
     // this is called when someone selected the front end image
     itemSelected: function (model) {
       console.log(model.get('name') + " frontend image has been selected in compose.js...");
@@ -73,42 +135,6 @@ export default Ember.Controller.extend({
     selectedFolder: function(model) {
         console.log(model.get('name'));
         this.set('folder', model);
-    },
-    saveRecipe: function() {
-        var recipeCreated = this.get("created");
-        if (!recipeCreated) {
-            var component = this;
-
-            component.set("creating", true);
-
-            var onSuccess = function(item) {
-              component.set("creating", false);
-              component.set("created", true);
-              Ember.run.later((function() {
-                component.set("created", false);
-              }), 3000);
-            };
-
-            var onFail = function(e) {
-              // deal with the failure here
-              component.set("creating", false);
-              component.set("not_created", true);
-              console.log(e);
-              Ember.run.later((function() {
-                component.set("not_created", false);
-              }), 3000);
-            };
-
-            let newRecipe = this.get("store").createRecord("recipe", {});
-            newRecipe.save({adapterOptions: { queryParams: {
-                url:         this.get("recipe_url"),
-                commitId:    this.get("commit_id"),
-                name:        this.get("name"),
-                description: this.get("description"),
-                public:      this.get("public_checked"),
-                tags:        this.get("tags"),
-            }}}).then(onSuccess).catch(onFail);
-        }
     },
 
     gotoStep : function (stepNo) {
@@ -160,12 +186,12 @@ export default Ember.Controller.extend({
     },
     moveRight: function () {
       var step = this.get("currentStep");
-      if (step !=2) {
-
-        if (step === 0) this.send("saveRecipe");
-        this.send("gotoStep", step + 1);
-        this.send('getButtonNextName', step+1);
-
+      if (step === 0) {
+          this.saveRecipe();
+      }
+      else if (step !=2) {
+          this.send("gotoStep", step + 1);
+          this.send('getButtonNextName', step+1);
       } else {
 
         var component = this;
