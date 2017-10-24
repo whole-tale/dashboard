@@ -42,7 +42,7 @@ export default AuthenticateRoute.extend({
 
               return {
                 images: this.get('store').findAll('image', {reload: true}),
-                tales: this.get('store').findAll('tale', {reload: true}),
+                tales: this.get('store').findAll('tale', {reload: true, adapterOptions: { queryParams:{sort: "created", sortdir: "1", limit: "2000"}}}),
                 dataRegistered: this.get('store').query('folder', {adapterOptions:{registered: true}}, {reload: true}),
                 catalogItems: catalogItems
               };
