@@ -29,7 +29,7 @@ export default Ember.Controller.extend({
 
   recipeIdObserver: Ember.observer('recipeId', function() {
 
-  }),  
+  }),
 
   showStep : ["inline", "none", "none"],
   stepsActive : ["active", "", ""],
@@ -74,6 +74,42 @@ export default Ember.Controller.extend({
         console.log(model.get('name'));
         this.set('folder', model);
     },
+    saveRecipe: function() {
+        var recipeCreated = this.get("created");
+        if (!recipeCreated) {
+            var component = this;
+
+            component.set("creating", true);
+
+            var onSuccess = function(item) {
+              component.set("creating", false);
+              component.set("created", true);
+              Ember.run.later((function() {
+                component.set("created", false);
+              }), 3000);
+            };
+
+            var onFail = function(e) {
+              // deal with the failure here
+              component.set("creating", false);
+              component.set("not_created", true);
+              console.log(e);
+              Ember.run.later((function() {
+                component.set("not_created", false);
+              }), 3000);
+            };
+
+            let newRecipe = this.get("store").createRecord("recipe", {});
+            newRecipe.save({adapterOptions: { queryParams: {
+                url:         this.get("recipe_url"),
+                commitId:    this.get("commit_id"),
+                name:        this.get("name"),
+                description: this.get("description"),
+                public:      this.get("public_checked"),
+                tags:        this.get("tags"),
+            }}}).then(onSuccess).catch(onFail);
+        }
+    },
 
     gotoStep : function (stepNo) {
       console.log("Going to step no " + stepNo);
@@ -106,10 +142,10 @@ export default Ember.Controller.extend({
     },
 
     getButtonNextName(nextStep) {
-        if (nextStep <= 0) { 
-            this.set('nextName', "Import Recipe"); 
-        } else if (nextStep === 1) { 
-            this.set('nextName', "Create Image"); 
+        if (nextStep <= 0) {
+            this.set('nextName', "Import Recipe");
+        } else if (nextStep === 1) {
+            this.set('nextName', "Create Image");
         } else if (nextStep >= 2) {
             this.set('nextName', "Build");
         }
@@ -117,14 +153,16 @@ export default Ember.Controller.extend({
 
     moveLeft: function () {
       var step = this.get("currentStep");
-      if (step !=0)
-        this.send("gotoStep", step-1);
-        this.send('getButtonNextName', step-1)
+      if (step !=0) {
+        this.send("gotoStep", step - 1);
+        this.send('getButtonNextName', step - 1);
+      }
     },
     moveRight: function () {
       var step = this.get("currentStep");
       if (step !=2) {
 
+        if (step === 0) this.send("saveRecipe");
         this.send("gotoStep", step + 1);
         this.send('getButtonNextName', step+1);
 

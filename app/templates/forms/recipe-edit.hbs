@@ -4,11 +4,21 @@
     <div class="two fields">
         <div class="ui fourteen wide field">
             <label>Recipe Name</label>
-          {{input value=name type="text" placeholder="Recipe Not Chosen"}}
+          {{input value=name type="text" placeholder="Name..."}}
         </div>
-            <div class="ui two wide field">
+        <div class="ui two wide field">
                 <label>Public</label>
               {{ui-checkbox class="toggle"  label="" checked=public_checked onChange=(action (mut public_checked))}}
+        </div>
+    </div>
+    <div class="two fields">
+        <div class="ui eight wide field">
+            <label>Repository URL</label>
+            {{input value=recipe_url type="text" placeholder="https://"}}
+        </div>
+        <div class="ui eight wide field">
+            <label>Commit ID</label>
+            {{input value=commit_id type="text" placeholder="#"}}
         </div>
     </div>
     <div class="field">
