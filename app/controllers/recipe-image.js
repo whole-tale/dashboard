@@ -45,6 +45,7 @@ export default Ember.Controller.extend({
   imageIconURL: '',
   imageDescription: '',
   nextName : "Import Recipe",
+  showSkipButton: true,
   tale_creating: false,
   tale_created: false,
   configuration : JSON.stringify({}),
@@ -61,7 +62,7 @@ export default Ember.Controller.extend({
       this.set('tale_created', false);
       this.set('configuration', JSON.stringify({}));
   },
-  showError(message) {
+  showRecipeError(message) {
       this.set("creating", false);
       this.set("not_created", true);
 
@@ -79,7 +80,7 @@ export default Ember.Controller.extend({
     if(recipe_url || commit_id) {
       var component = this;
       if (!this.get("name")) {
-        component.showError("Recipe name cannot be left blank");
+        component.showRecipeError("Recipe name cannot be left blank");
         return;
       }
       component.set("creating", true);
@@ -88,24 +89,24 @@ export default Ember.Controller.extend({
         component.set("creating", false);
         component.set("created", true);
         Ember.run.later((function() {
-          component.set("created", false);
-          //clear form content on success
-          component.set("recipe_url", null);
-          component.set("commit_id", null);
-          component.set("name", null);
-          component.set("description", null);
-          component.set("public_checked", false);
-          component.set("tags", null);
-          component.set("show_errors", false);
+            component.set("created", false);
+            //Reset the recipe form fields
+            component.set("recipe_url", null);
+            component.set("commit_id", null);
+            component.set("name", null);
+            component.set("description", null);
+            component.set("public_checked", false);
+            component.set("tags", null);
+            component.set("show_errors", false);
         }), 3000);
         //Move to next step
-        component.send("gotoStep", 1);
-        component.send('getButtonNextName', 1);
+        component.send("skipRecipe");
       };
 
       var onFail = function(error) {
+        // TODO display error message on relevant input elements
         // deal with the failure here
-        component.showError(error.responseJSON.message)
+        component.showRecipeError(error.responseJSON.message);
       };
 
       let newRecipe = this.get("store").createRecord("recipe", {});
@@ -119,9 +120,8 @@ export default Ember.Controller.extend({
       }}}).then(onSuccess).catch(onFail);
     }
     else {
-      //Move to next step
-      this.send("gotoStep", 1);
-      this.send('getButtonNextName', 1);
+      //Move to next step if form submitted with both the URL and commit ID empty
+      this.send("skipRecipe");
     }
   },
 
@@ -160,7 +160,11 @@ export default Ember.Controller.extend({
       console.log(this.get("stepsActive"));
 
       this.set("currentStep", stepNo);
+      this.set('showSkipButton', false);
 
+      if(stepNo <= 0) {
+          this.set('showSkipButton', true);
+      }
       if(stepNo === 2) {
           this.set('startChooserFromFolder', "registered");
       }
@@ -234,6 +238,10 @@ export default Ember.Controller.extend({
       }
 
     },
-
+    skipRecipe: function(){
+        var createImageStep = 1;
+        this.send("gotoStep", createImageStep);
+        this.send('getButtonNextName', createImageStep);
+    },
   }
 });
