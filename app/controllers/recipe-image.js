@@ -84,9 +84,6 @@ export default Ember.Controller.extend({
       }), 3000);
   },
   saveRecipe() {
-    var recipe_url = this.get("recipe_url");
-    var commit_id = this.get("commit_id");
-    if(recipe_url || commit_id) {
       var component = this;
       if (!this.get("name")) {
         component.showRecipeError("Recipe name cannot be left blank");
@@ -120,18 +117,13 @@ export default Ember.Controller.extend({
 
       let newRecipe = this.get("store").createRecord("recipe", {});
       newRecipe.save({adapterOptions: { queryParams: {
-        url:         recipe_url,
-        commitId:    commit_id,
+        url:         this.get("recipe_url"),
+        commitId:    this.get("commit_id"),
         name:        this.get("name"),
         description: this.get("description"),
         public:      this.get("public_checked"),
         tags:        this.get("tags"),
       }}}).then(onSuccess).catch(onFail);
-    }
-    else {
-      //Move to next step if form submitted with both the URL and commit ID empty
-      this.send("skipRecipe");
-    }
   },
 
   actions: {
