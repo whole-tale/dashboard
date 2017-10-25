@@ -58,17 +58,32 @@
       <div class="right menu">
         {{#if showSkipButton}}
           <a class="item">
-            <div class="large ui blue right labeled icon button" {{action "skipRecipe"}}>
+            <div class="large ui blue right labeled icon button" {{action "skip"}}>
               Skip
               <i class="caret right icon"></i>
             </div>
           </a>
         {{/if}}
           <a class="item">
-              <div class="large ui blue right labeled icon button {{if importButtonDisabled 'disabled'}}" {{action "moveRight"}}>
-                  {{nextName}}
+            {{#if (eq currentStep 0) }}
+              <div class="large ui blue right labeled icon button 
+                {{if importButtonDisabled 'disabled'}}" {{action "moveRight"}}>
+                Import Recipe
                 <i class="caret right icon"></i>
               </div>
+            {{else if (eq currentStep 1)}}
+              <div class="large ui blue right labeled icon button 
+                {{if (not (and recipeId imageDockerName)) 'disabled'}}" {{action "moveRight"}}>
+                Create Image
+                <i class="caret right icon"></i>
+              </div>
+            {{else}}
+              <div class="large ui blue right labeled icon button 
+                {{if (not imageCreated) 'disabled'}}" {{action "moveRight"}}>
+                Build
+                <i class="power icon"></i>
+              </div>
+            {{/if}}
           </a>
       </div>
     </div>

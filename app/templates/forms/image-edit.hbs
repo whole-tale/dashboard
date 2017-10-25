@@ -55,10 +55,37 @@
     </div>
     <div class="ui divider"></div>
     <div class="field">
+      <div class="ui sixteen wide field">
+        <label>Configuration</label>
+      </div>
+    </div>
+    <div class="three fields">
+      <div class="ui twelve wide field">
+        <label>Command</label>
+        {{input value=imageCommand type="text" placeholder="Command to run when the container starts..."}}
+      </div>
+      <div class="ui twelve wide field">
+        <label>User</label>
+        {{input value=imageUser type="text" placeholder="Username created inside container..."}}
+      </div>
+      <div class="ui twelve wide field">
+        <label>Mount Work Directory</label>
+        {{input value=imageWorkDirectory type="text" placeholder="Work directory..."}}
+      </div>
+    </div>
+    <div class="ui divider"></div>
+    <div class="field">
           <label>Description</label>
           {{markdown-editor markdownValue=imageDescription}}
       </div>
       {{tags-widget tags=imageTags}}
+      {{#if show_errors}}
+        <div class="ui red message">
+          <div class="content">
+            {{error_message}}
+          </div>
+        </div>
+      {{/if}}
 </div>
 
 {{#if creating}}

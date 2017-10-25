@@ -15,7 +15,9 @@
     {{#each tags as |tag|}}
         <div class="ui gray tag label" style="padding-right:0px !important">
             {{tag}} 
-            <i class="red remove icon" style="cursor:pointer;margin-left:1em;" {{action "removeTag" tag on="click"}}></i>
+            {{#if (not (eq tag 'latest'))}}
+              <i class="red remove icon" style="cursor:pointer;margin-left:1em;" {{action "removeTag" tag on="click"}}></i>
+            {{/if}}
         </div>
     {{/each}}
 </div>

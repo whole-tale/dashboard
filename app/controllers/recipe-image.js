@@ -27,30 +27,40 @@ export default Ember.Controller.extend({
     console.log("Description = " + this.get('description'));
   }),
 
-  recipeIdObserver: Ember.observer('recipeId', function() {
-
-  }),
   urlObserver: Ember.observer('recipe_url', function() {
-      let isEmpty = !this.get("recipe_url") && !this.get("commit_id");
-      this.set("importButtonDisabled", isEmpty);
-  }),
-  commitIdObserver: Ember.observer('commit_id', function() {
-      let isEmpty = !this.get("recipe_url") && !this.get("commit_id");
+      let isEmpty = !this.get("recipe_url") || !this.get("commit_id");
       this.set("importButtonDisabled", isEmpty);
   }),
 
-  showStep : ["inline", "none", "none"],
-  stepsActive : ["active", "", ""],
-  currentStep : 0,
+  commitIdObserver: Ember.observer('commit_id', function() {
+      let isEmpty = !this.get("recipe_url") || !this.get("commit_id");
+      this.set("importButtonDisabled", isEmpty);
+  }),
+
+  imageDockerNameObserver: Ember.observer('imageDockerName', function() {
+    let imageDockerName = this.get('imageDockerName');
+    let imageUser = imageDockerName.split('/').pop();
+    let imageWorkDirectory = `/home/${imageUser}/work`;
+    this.set('imageUser', imageUser);
+    this.set('imageWorkDirectory', imageWorkDirectory);
+  }),
+
+  showStep : ["none", "inline", "none"],
+  stepsActive : ["", "active", ""],
+  currentStep : 1,
   public_checked : false,
   frontend : null,
   folder : null,
   tags: Ember.A(),
   recipeId: '',
+  imagePublic: false,
   imageTags: Ember.A(),
   imageName: '',
   imageDockerName: '',
   imageIconURL: '',
+  imageWorkDirectory: '',
+  imageUser: '',
+  imageCommand: '',
   imageDescription: '',
   nextName : "Import Recipe",
   showSkipButton: true,
@@ -62,7 +72,7 @@ export default Ember.Controller.extend({
   clearWizard() {
       this.set("showStep", ["inline", "none", "none"]);
       this.set('stepsActive', ["active", "", "", ""]);
-      this.set('currentStep', 0);
+      this.set('currentStep', 1);
       this.set('public_checked', false);
       this.set('frontend', null);
       this.set('folder', null);
@@ -71,6 +81,7 @@ export default Ember.Controller.extend({
       this.set('tale_created', false);
       this.set('configuration', JSON.stringify({}));
   },
+
   showRecipeError(message) {
       this.set("creating", false);
       this.set("not_created", true);
@@ -83,6 +94,7 @@ export default Ember.Controller.extend({
         component.set("not_created", false);
       }), 3000);
   },
+
   saveRecipe() {
       var component = this;
       if (!this.get("name")) {
@@ -102,11 +114,11 @@ export default Ember.Controller.extend({
             component.set("name", null);
             component.set("description", null);
             component.set("public_checked", false);
-            component.set("tags", null);
+            component.set("tags", []);
             component.set("show_errors", false);
         }), 3000);
         //Move to next step
-        component.send("skipRecipe");
+        component.send("skip");
       };
 
       var onFail = function(error) {
@@ -124,6 +136,64 @@ export default Ember.Controller.extend({
         public:      this.get("public_checked"),
         tags:        this.get("tags"),
       }}}).then(onSuccess).catch(onFail);
+    },
+    
+    saveImage() {
+      const component = this;
+
+      if (!this.get('imageDockerName') || !this.get('recipeId')) {
+        component.showImageError('Image docker name and recipe must not be blank.');
+        return;
+      }
+
+      component.set("creating", true);
+
+      let query = {
+        recipeId:    this.get('recipeId'),
+        fullName:    this.get('imageDockerName'),
+        name:        this.get('imageName'),
+        description: this.get('imageDescription'),
+        public:      this.get('imagePublic'),
+        icon:        this.get('imageIconURL'),
+        tags:        this.get('imageTags'),
+        config:      JSON.stringify({
+          command: this.get('imageCommand'),
+          targetMount: this.get('imageWorkDirectory'),
+          user: this.get('imageUser')
+        })
+      };
+
+      let newImage = this.get('store').createRecord('image', {});
+      newImage.save({adapterOptions: { queryParams: query }})
+        .then(_image => {
+          component.set("created", true);
+          Ember.run.later((function() {
+            component.set("created", false);
+            //Reset the image form fields
+            component.set("recipeId", null);
+            component.set("imageDockerName", '');
+            component.set("imageName", '');
+            component.set("imageDescription", '');
+            component.set("imagePublic", false);
+            component.set("imageTags", []);
+            component.set("imageCommand", '');
+            component.set("imageIconURL", '');
+            component.set("imageWorkDirectory", '');
+            component.set("imageUser", '');
+            component.set("show_errors", false);
+          }), 3000);
+          component.send("skip");
+        })
+        .catch(e => {
+          component.showRecipeError(e.responseJSON.message);
+        })
+        .finally(() => {
+          component.set('creating', false);
+        });
+  },
+
+  buildImage() {
+
   },
 
   actions: {
@@ -164,7 +234,7 @@ export default Ember.Controller.extend({
       this.set('showSkipButton', false);
       this.set('importButtonDisabled', false);
 
-      if(stepNo <= 0) {
+      if(stepNo <= 1) {
           this.set('showSkipButton', true);
           this.set('importButtonDisabled', !this.get("recipe_url") && !this.get("commit_id"));
       }
@@ -175,31 +245,20 @@ export default Ember.Controller.extend({
 
     },
 
-    getButtonNextName(nextStep) {
-        if (nextStep <= 0) {
-            this.set('nextName', "Import Recipe");
-        } else if (nextStep === 1) {
-            this.set('nextName', "Create Image");
-        } else if (nextStep >= 2) {
-            this.set('nextName', "Build");
-        }
-    },
-
     moveLeft: function () {
       var step = this.get("currentStep");
       if (step !=0) {
         this.send("gotoStep", step - 1);
-        this.send('getButtonNextName', step - 1);
       }
     },
+
     moveRight: function () {
       var step = this.get("currentStep");
       if (step === 0) {
           this.saveRecipe();
       }
-      else if (step !=2) {
-          this.send("gotoStep", step + 1);
-          this.send('getButtonNextName', step+1);
+      else if (step === 1) {
+          this.saveImage();
       } else {
 
         var component = this;
@@ -242,10 +301,10 @@ export default Ember.Controller.extend({
       }
 
     },
-    skipRecipe: function(){
-        var createImageStep = 1;
-        this.send("gotoStep", createImageStep);
-        this.send('getButtonNextName', createImageStep);
+
+    skip: function(){
+        let nextStep = this.get('currentStep') + 1;
+        this.send("gotoStep", nextStep);
     },
   }
 });
