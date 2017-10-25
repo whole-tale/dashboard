@@ -12,6 +12,7 @@ export default AuthenticateRoute.extend({
 
     return {
       recipes: this.get('store').findAll('recipe'),
+      images: this.get('store').findAll('image')
     };
   }
 

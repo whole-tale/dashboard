@@ -3,6 +3,7 @@ import EmberUploader from 'ember-uploader';
 
 export default Ember.Controller.extend({
   apiCall : Ember.inject.service('api-call'),
+  store: Ember.inject.service(),
 
   init() {
     this._super(...arguments);
@@ -45,13 +46,33 @@ export default Ember.Controller.extend({
     this.set('imageWorkDirectory', imageWorkDirectory);
   }),
 
-  showStep : ["none", "inline", "none"],
-  stepsActive : ["", "active", ""],
-  currentStep : 1,
+  imageIdObserver: Ember.observer('imageId', function() {
+    const component = this;
+    const store = this.get('store');
+    store.findRecord('image', this.get('imageId'))
+      .then(_imageDetails => {
+        component.set('selectedImage', _imageDetails);
+        component.set('imageDetails', _imageDetails.toJSON());
+        return store.findRecord('recipe', _imageDetails.get('recipeId'));
+      })
+      .then(_recipeDetails => {
+        component.set('recipeDetails', _recipeDetails.toJSON());
+      })
+      .catch(e => {
+        console.log(e);
+      })
+    ;
+  }),
+
+  showStep : ["inline", "none", "none"],
+  stepsActive : ["active", "", ""],
+  currentStep : 0,
   public_checked : false,
   frontend : null,
   folder : null,
   tags: Ember.A(),
+  imageDetails: null,
+  recipeDetails: null,
   recipeId: '',
   imagePublic: false,
   imageTags: Ember.A(),
@@ -72,7 +93,7 @@ export default Ember.Controller.extend({
   clearWizard() {
       this.set("showStep", ["inline", "none", "none"]);
       this.set('stepsActive', ["active", "", "", ""]);
-      this.set('currentStep', 1);
+      this.set('currentStep', 0);
       this.set('public_checked', false);
       this.set('frontend', null);
       this.set('folder', null);
@@ -193,7 +214,29 @@ export default Ember.Controller.extend({
   },
 
   buildImage() {
-
+    if (this.get('creating')) { return; }
+    const component = this;
+    let image = this.get('selectedImage');
+    component.set('creating', true);
+    image.save({adapterOptions:{appendPath:'build'}})
+      .then(_image => {
+        component.set('created', true);
+        Ember.run.later((function() {
+          component.set("created", false);
+          //Reset the image form fields
+          component.set("recipeDetails", null);
+          component.set("imageDetails", null);
+          component.set("imageId", null);
+        }), 3000);
+      })
+      .catch(e => {
+        console.log(e);
+        component.showRecipeError(e.responseJSON.message);
+      })
+      .finally(() => {
+        component.set('creating', false);
+      })
+    ;
   },
 
   actions: {
@@ -256,50 +299,11 @@ export default Ember.Controller.extend({
       var step = this.get("currentStep");
       if (step === 0) {
           this.saveRecipe();
-      }
-      else if (step === 1) {
+      } else if (step === 1) {
           this.saveImage();
       } else {
-
-        var component = this;
-
-        component.set("tale_creating", true);
-
-        var onSuccess = function(item) {
-          component.set("tale_creating", false);
-          component.set("tale_created", true);
-
-          Ember.run.later((function() {
-            component.set("tale_created", false);
-            component.clearWizard();
-            component.transitionToRoute('tale.view', item);
-          }), 3000);
-        };
-
-        var onFail = function(e) {
-          // deal with the failure here
-          component.set("tale_creating", false);
-          component.set("tale_not_created", true);
-          console.log(e);
-
-          Ember.run.later((function() {
-            component.set("tale_not_created", false);
-          }), 3000);
-
-        };
-
-        let new_tale = this.get('store').createRecord('tale', {
-          "config": {},   //TODO: Implement configuration editor
-          "description": this.get('description'),
-          "folderId":    this.get('folder').get('_id'),
-          "imageId":     this.get('frontend').get('_id'),
-          "public":      this.get('public_checked'),
-          "title":       this.get('title'),
-        });
-
-        new_tale.save().then(onSuccess).catch(onFail);
+          this.buildImage();
       }
-
     },
 
     skip: function(){

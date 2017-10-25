@@ -18,7 +18,7 @@
               <div class="description">Docker Image Information</div>
           </div>
       </a>
-      <a class="{{stepsActive.[2]}} step" {{action "gotoStep" 3 }}>
+      <a class="{{stepsActive.[2]}} step" {{action "gotoStep" 2 }}>
           <div class="content">
               <div class="title">Build</div>
               <div class="description">Confirm</div>
@@ -36,16 +36,7 @@
 
 
     <div style="display: {{showStep.[2]}}">
-        <div class="ui large header">Confirm Details</div>
-
-      <div class="ui grid">
-          <div class="eight wide column" style="padding: 10px">
-            {{partial "forms/recipe-details"}}
-          </div>
-          <div class="eight wide column" style="padding: 10px">
-            {{partial "forms/image-details"}}
-          </div>
-      </div>
+      {{partial "forms/build-image"}}
     </div>
 
 
@@ -56,7 +47,7 @@
             </div>
         </a>
       <div class="right menu">
-        {{#if showSkipButton}}
+        {{#if (and showSkipButton (not (eq currentStep 2)))}}
           <a class="item">
             <div class="large ui blue right labeled icon button" {{action "skip"}}>
               Skip
@@ -67,19 +58,19 @@
           <a class="item">
             {{#if (eq currentStep 0) }}
               <div class="large ui blue right labeled icon button 
-                {{if importButtonDisabled 'disabled'}}" {{action "moveRight"}}>
+                {{if (or importButtonDisabled creating) 'disabled'}}" {{action "moveRight"}}>
                 Import Recipe
                 <i class="caret right icon"></i>
               </div>
             {{else if (eq currentStep 1)}}
               <div class="large ui blue right labeled icon button 
-                {{if (not (and recipeId imageDockerName)) 'disabled'}}" {{action "moveRight"}}>
+                {{if (or (not (and recipeId imageDockerName)) creating) 'disabled'}}" {{action "moveRight"}}>
                 Create Image
                 <i class="caret right icon"></i>
               </div>
             {{else}}
               <div class="large ui blue right labeled icon button 
-                {{if (not imageCreated) 'disabled'}}" {{action "moveRight"}}>
+                {{if (or (not imageId) creating) 'disabled'}}" {{action "moveRight"}}>
                 Build
                 <i class="power icon"></i>
               </div>
