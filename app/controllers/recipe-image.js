@@ -30,6 +30,14 @@ export default Ember.Controller.extend({
   recipeIdObserver: Ember.observer('recipeId', function() {
 
   }),
+  urlObserver: Ember.observer('recipe_url', function() {
+      let isEmpty = !this.get("recipe_url") && !this.get("commit_id");
+      this.set("importButtonDisabled", isEmpty);
+  }),
+  commitIdObserver: Ember.observer('commit_id', function() {
+      let isEmpty = !this.get("recipe_url") && !this.get("commit_id");
+      this.set("importButtonDisabled", isEmpty);
+  }),
 
   showStep : ["inline", "none", "none"],
   stepsActive : ["active", "", ""],
@@ -46,6 +54,7 @@ export default Ember.Controller.extend({
   imageDescription: '',
   nextName : "Import Recipe",
   showSkipButton: true,
+  importButtonDisabled: true,
   tale_creating: false,
   tale_created: false,
   configuration : JSON.stringify({}),
@@ -161,10 +170,13 @@ export default Ember.Controller.extend({
 
       this.set("currentStep", stepNo);
       this.set('showSkipButton', false);
+      this.set('importButtonDisabled', false);
 
       if(stepNo <= 0) {
           this.set('showSkipButton', true);
+          this.set('importButtonDisabled', !this.get("recipe_url") && !this.get("commit_id"));
       }
+
       if(stepNo === 2) {
           this.set('startChooserFromFolder', "registered");
       }

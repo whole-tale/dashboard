@@ -65,7 +65,7 @@
           </a>
         {{/if}}
           <a class="item">
-              <div class="large ui blue right labeled icon button" {{action "moveRight"}}>
+              <div class="large ui blue right labeled icon button {{if importButtonDisabled 'disabled'}}" {{action "moveRight"}}>
                   {{nextName}}
                 <i class="caret right icon"></i>
               </div>
