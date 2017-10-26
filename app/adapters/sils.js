@@ -1,3 +1,4 @@
+
 import Ember from 'ember';
 import RSVP from 'rsvp';
 import DS from 'ember-data';
@@ -18,7 +19,7 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
         let url = this.buildURL(type.modelName, null, null, 'query', query);
 
         console.log("sending request for sils ... ");
-        return new RSVP.Promise(resolve => resolve([{ _id: 1, _modelType: "sils", icon: "http://lorempixel.com/400/400/abstract/" }]));
+        return new RSVP.Promise(resolve => resolve([{ _id: 1, _modelType: "sils", icon: "https://lorempixel.com/400/400/abstract/" }]));
 
         //TODO: uncomment this after sils endpoint working
         // return this.get('authRequest').send(url, {headers:{'content-type':'application/json'}});
