@@ -77,7 +77,7 @@ module.exports = function(environment) {
     }
 
     if (environment === 'production') {
-        ENV.apiHost = '%apiHOST%';
+        ENV.apiHost = 'API_HOST';
         ENV.apiPath = 'api/v1';
         ENV.apiUrl = ENV.apiHost + '/' + ENV.apiPath;
     }

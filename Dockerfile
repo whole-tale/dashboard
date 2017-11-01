@@ -13,8 +13,6 @@ COPY bower.json .
 COPY ember-cli-build.js .
 COPY package.json .
 
-RUN sed -i config/environment.js \
-        -e 's|%apiHOST%|https://girder.dev.wholetale.org|'
 RUN sed -i app/templates/common/footer.hbs \
         -e "s/{commit}/$(git log --pretty=format:'%h' -n 1)/"
 
@@ -26,3 +24,9 @@ FROM nginx:latest
 WORKDIR /srv/dashboard
 COPY --from=builder /usr/src/node-app/dist /srv/dashboard/.
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
+ENV GIRDER_HOST https://girder.dev.wholetale.org
+
+COPY ./entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["dashboard"]
