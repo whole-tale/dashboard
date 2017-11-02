@@ -1,4 +1,7 @@
 import Ember from 'ember';
+import config from 'wholetale/config/environment';
+import EventStream from 'npm:sse.js';
+
 var inject = Ember.inject;
 
 const {
@@ -10,6 +13,7 @@ export default Ember.Controller.extend({
   userAuth: Ember.inject.service('user-auth'),
   internalState: Ember.inject.service('internal-state'),
   notificationHandler: Ember.inject.service('notification-handler'),
+  tokenHandler: Ember.inject.service(),
 
   user : {fullName :"John Winter"},
   gravatarUrl : "/images/avatar.png",
@@ -18,12 +22,30 @@ export default Ember.Controller.extend({
   routing: Ember.inject.service('-routing'),
   loggedIn : false,
   staticMenu : true,
+  isLoadingJobs: true,
+  
   init() {
     this._super();
     // this.set('staticMenu', this.get('internalState').getIsStaticMenu());
     this.set('staticMenu', true);
-
+    this.set('eventStream', this.getEventStream.call(this));
   },
+
+  getEventStream() {
+    let token = this.get('tokenHandler').getWholeTaleAuthToken();
+    let source = new EventStream.SSE(config.apiUrl+"/notification/stream?timeout=15000", {headers: {'Girder-Token': token}});
+
+    let self = this;
+    source.addEventListener('message', function(evt) {
+      let payload = JSON.parse(evt.data);
+      console.log(evt)
+    });
+
+    source.stream();
+
+    return source;
+  },
+
   checkMyRouteName: Ember.computed(function() {
     return this.get('routing.currentRouteName');
   }),

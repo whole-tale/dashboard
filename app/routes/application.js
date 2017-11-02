@@ -21,6 +21,12 @@ export default AuthenticateRoute.extend({
       controller.set('loggedIn', true);
       controller.set('user', model);
       controller.set('gravatarUrl', config.apiUrl + "/user/" + model.get('_id') + "/gravatar?size=64")
+      this.store.findAll('job')
+        .then(jobs => {
+          controller.set('jobs', jobs);
+          controller.set('isLoadingJobs', false);
+        })
+      ;
     }
   },
   actions: {

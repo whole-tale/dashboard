@@ -1,0 +1,103 @@
+<style type="text/css">
+  i.remove {
+    float: right;
+    cursor: pointer;
+  }
+
+  .job-watcher {
+    position: absolute !important;
+    top: 50px;
+    right: 10px;
+  }
+
+  .header span {
+    margin-right:1rem;
+  }
+
+  .bar {
+    margin-top:1.1rem;
+  }
+</style>
+
+<div class="ui black message job-watcher">
+  {{#ui-popup tagName="i" class="close icon" content="Close Watcher" }}{{/ui-popup}}
+  <div class="header">
+    <span>Current Jobs</span>
+    <div class="ui mini inverted basic button" {{action 'togglePastJobs' on='click'}}>
+      {{if showPastJobs 'Hide' 'Show'}} Past Jobs
+    </div>
+  </div>
+  {{#if isLoading}}
+  <span>
+    <div class="ui active dimmer">
+      <div class="ui indeterminate text loader">Fetching Jobs</div>
+    </div>
+  </span>
+  {{/if}}
+  {{#if watchedJobs}}
+  <table class="ui inverted table">
+    <thead>
+      <tr><th>Title</th><th>Job Type</th><th>Status</th><th>Progress</th><th>Updated</th><th></th></tr>
+    </thead>
+    <tbody>
+    {{#each watchedJobs as |job|}}
+    <tr>
+      <td>{{job.title}}</td>
+      <td>{{job.type}}</td>
+      <td>{{status-reader job.status}}</td>
+      <td>
+        {{#ui-progress percent=job.progress class="small inverted indicating"}}
+          <div class="bar"></div>
+        {{/ui-progress}}
+      </td>
+      <td>{{from-now job.updated}}</td>
+      <td>
+        <button class="ui mini inverted right labeled basic icon button" {{action 'cancelJob' job}}>
+          Cancel Job
+          <i class="inverted red ban icon"></i>
+        </button>
+      </td>
+    </tr>
+    {{/each}}
+    </tbody>
+  </table>
+  {{else}}
+  <div class="ui inverted center aligned segment">
+    There are currently no running jobs.
+  </div>
+  {{/if}}
+  {{#if showPastJobs}}
+  <div class="ui divider"></div>
+    {{#if pastJobs}}
+    <div class="ui mini inverted basic button" {{action 'clearAllPastJobs' on='click'}}>
+      Clear All
+    </div>
+    <table class="ui inverted table">
+      <thead>
+        <tr><th>Title</th><th>Job Type</th><th>Status</th><th>When</th><th></th></tr>
+      </thead>
+      <tbody>
+      {{#each pastJobs as |job|}}
+      <tr>
+        <td>{{job.title}}</td>
+        <td>{{job.type}}</td>
+        <td>{{status-reader job.status}}</td>
+        <td>{{from-now job.updated}}</td>
+        <td>
+          <button class="ui mini inverted right labeled basic icon button" {{action 'deleteJob' job}}>
+            Delete
+            <i class="inverted trash icon"></i>
+          </button>
+        </td>
+      </tr>
+      {{/each}}
+      </tbody>
+    </table>
+    {{else}}
+    <div class="ui inverted center aligned segment">
+      There is nothing in your job history.
+    </div>
+    {{/if}}
+  {{/if}}
+</div>
+
