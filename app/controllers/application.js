@@ -82,6 +82,9 @@ export default Ember.Controller.extend({
       if (pageTitle === "logout") {
         this.send("logout"); // call logout above.
       }
+    },
+    openJobWatcher() {
+      $('.message.job-watcher').removeClass('hidden');
     }
   }
 
