@@ -52,6 +52,8 @@
 
 <div class="ui inverted grey segment">
 
+
+
     {{#if showSearch}}
       <div class="ui secondary stackable menu" style="margin: 10px;">
 
@@ -65,6 +67,21 @@
                     <i class="info icon"></i>
                 </div>
             {{/ui-popup}}
+          </div>
+
+          <div class="header item">
+              <span style="padding-right:.5rem;">Filter Tales</span>
+              {{#ui-dropdown class="selection" selected=filter onChange=(action (mut filter))}}
+              <div class="default text">Apply Filter</div>
+              <i class="dropdown icon"></i>
+              <div class="menu">
+                {{#each filters as |_filter|}}
+                  <div class="item" data-value="{{_filter}}">
+                    {{_filter}}
+                  </div>
+                {{/each}}
+              </div>
+              {{/ui-dropdown}}  
           </div>
 
 <!--
@@ -88,6 +105,12 @@
             {{/if}}
        </div>
       {{/if}}
+
+    {{#unless modelsInView.length}}
+    <div class="ui center aligned segment">
+      There are no tales to display for applied filter {{filter}}
+    </div>
+    {{/unless}}
 
     <div class="ui {{cardsPerRow}} doubling selectable cards {{guid}}" style="padding: 5px 20px 5px 20px">
 

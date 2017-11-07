@@ -2,6 +2,7 @@ import Ember from 'ember';
 import ResetScroll from 'wholetale/mixins/reset-scroll';
 
 export default Ember.Route.extend({
+  internalState: Ember.inject.service(),
   activate: function() {
     // this mixin moves the page up to the top - removes the current scroll
     // but doesn't work sometimes ... argh ...
@@ -33,7 +34,7 @@ export default Ember.Route.extend({
 
     setupController(controller, model) {
       this._super(...arguments);
-
+      this.get('internalState').addRecentTale(model.get('id'));
       let imageId = model.get('imageId');
       let folderId = model.get('folderId');
 

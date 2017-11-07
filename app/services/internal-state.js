@@ -114,6 +114,30 @@ export default Ember.Service.extend({
       localStorage.ACLObject = JSON.stringify(aclObj.toJSON());
   },
 
+  getRecentTales() {
+    let recent = localStorage.recentTales;
+    if (!recent) { return Ember.A(); }
+    return JSON.parse(recent);
+  },
+
+  addRecentTale(taleId) {
+    let recent = this.getRecentTales();
+
+    if (recent.length>15) {
+      recent.splice(0, 1); // remove first element (last one in)
+    }
+
+    recent.push(taleId);
+
+    localStorage.recentTales = JSON.stringify(recent);
+  },
+
+  removeRecentTale: function(taleId) {
+    var recent = this.getRecentTales();
+    recent = recent.reject(id => { return taleId === id; });
+    localStorage.recent = JSON.stringify(recent);
+  },
+
   toString: function () {
       return         "CurrentFileBreadcrumbs: " + localStorage.currentFileBreadcrumbs +
         + ", Current Parent Type: " + localStorage.currentParentType +

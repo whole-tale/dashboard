@@ -2,8 +2,13 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   store: Ember.inject.service(),
+  userAuth: Ember.inject.service(),
   apiCall : Ember.inject.service('api-call'),
+  internalState: Ember.inject.service(),
   taleInstanceName : "",
+  filteredSet: Ember.A(),
+  filters: ['All', 'Mine', 'Published', 'Recent'],
+  filter: 'All', 
   numberOfModels: 0,
   pageNumber: 1,
   totalPages:1,
@@ -13,6 +18,11 @@ export default Ember.Component.extend({
   animationRefreshTime : 500, // min ms time between animation refreshes
   item : null,
   guid : null,
+
+  filterObserver: Ember.observer('filter', function() {
+    this.setFilter.call(this);
+  }),
+
   init() {
     this._super(...arguments);
     console.log("Attributes updated");
@@ -68,6 +78,31 @@ export default Ember.Component.extend({
 
   },
 
+  setFilter() {
+    // 4 tabs public (all), mine, published, recently viewed
+    const filter = this.get('filter');
+    const models = this.get('models');
+
+    if (filter === 'All') {
+      this.set('filteredSet', models);
+    } else if (filter === 'Mine') {
+      const userId = this.get('userAuth').getCurrentUserID();
+      this.set('filteredSet', models.filter(m=>m.get('creatorId')===userId));
+    } else if (filter === 'Published') {
+      this.set('filteredSet', models.filter(m=>{console.log(m.get('published')); return m.get('published')===true;}));
+      console.log(this.get('filteredSet'));
+    } else if (filter === 'Recent') {
+      const recentTales = this.get('internalState').getRecentTales();
+      this.set('filteredSet', models.filter(m => {
+        return (recentTales.indexOf(m.get('id')) > -1);
+      }));
+    } else {
+      this.set('filteredSet', Ember.A());
+    }
+
+    this.actions.searchFilter.call(this);
+  },
+
   paginate(component, models) {
 
     var paginateSize = component.get('paginateOn');
@@ -76,19 +111,27 @@ export default Ember.Component.extend({
 
     var numberToShow = arraySize % paginateSize;
     var totalPages = arraySize / paginateSize;
-    if (numberToShow>0)
+    if (numberToShow>0) {
       ++totalPages;
+    }
 
-  //  console.log(models);
+    // console.log(models);
     component.set('numberOfModels', arraySize);
 
-    //console.log("Number of models = " + component.get('numberOfModels'));
-    if (models.get('length') === 0) return;
+    // console.log("Number of models = " + component.get('numberOfModels'));
+    if (models.get('length') === 0) {
+      component.set("modelsInView", []);
+      component.set("paginateArray", []);
+      component.set('rightButtonState', "disabled");
+      component.set('lefttButtonState', "disabled");
+      component.set('totalPages', 0);
+      return;
+    }
 
     component.set('totalPages', totalPages);
 
-    //console.log("Paginating on = " + paginateSize);
-    //console.log("NumberToShow = " + numberToShow);
+    // console.log("Paginating on = " + paginateSize);
+    // console.log("NumberToShow = " + numberToShow);
 
     var modelsInView = [];
     var paginateArray = [];
@@ -154,9 +197,8 @@ export default Ember.Component.extend({
     component.set("modelsInView", modelsInView);
 
     //console.log(this.get("modelsInView"));
-
-
   },
+
   actions: {
     leftButtonClicked : function() {
       if (this.get('leftButtonState') === "disabled") return;
@@ -174,26 +216,22 @@ export default Ember.Component.extend({
       this.paginate(this, this.get('searchView'));
     },
     searchFilter : function () {
-      var searchStr = this.get('searchStr');
+      let searchStr = this.get('searchStr');
     //  console.log(searchStr);
 
-      var modelsPromised = this.get("models");
+      const filteredSet = this.get("filteredSet");
+      const component = this;
 
-      var component = this;
-
-      modelsPromised.then(function(models) {
-        var searchView = [];
-        models.forEach(function(model) {
-          var title = model.get('title');
-
-          if (new RegExp(searchStr, "i").test(title))
-              searchView.push(model);
-        });
-
-        component.set('searchView', searchView);
-        component.paginate(component, searchView);
+      let searchView = [];
+      filteredSet.forEach(model => {
+        let title = model.get('title');
+        if (new RegExp(searchStr, "i").test(title)) {
+          searchView.push(model);
+        }
       });
 
+      component.set('searchView', searchView);
+      component.paginate(component, searchView);
     },
     select : function (model) {
       this.set('item', model);
