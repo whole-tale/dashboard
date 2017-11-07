@@ -29,6 +29,11 @@ export default Ember.Component.extend({
         };
     },
 
+    init() {
+      this._super(...arguments);
+      window.Dropzone.autodiscover = false;
+    },  
+
     didRender() {
         let self = this;
 
@@ -42,7 +47,11 @@ export default Ember.Component.extend({
     },
 
     didInsertElement() {
-        this.initializeDropzone();
+        try {
+          this.initializeDropzone();
+        } catch(e) {
+          // Dropzone already initialized
+        }
     },
 
     initializeDropzone() {

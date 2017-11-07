@@ -1,7 +1,12 @@
-<div class="ui notifier message transition hidden">
-  <i id="event-notifier" class="close icon" {{action 'toggleNotification' on='click'}}></i>
-  <div class="header">
-      {{notificationHeader}}
+<i id="add-notify"  class="hidden"  {{action 'toggleNotification' on='click'}}></i>
+<div class="ui notifier">
+  {{#each notifications as |notification|}}
+  <div class="ui message transition {{notification.guid}}">
+    <i class="close icon"></i>
+    <div class="header">
+        {{notification.header}}
+    </div>
+    <p>{{notification.message}}</p>
   </div>
-  <p>{{notificationMessage}}</p>
+  {{/each}}
 </div>

@@ -78,6 +78,10 @@ export default Ember.Component.extend({
           component.set('watchedJobs', watchedJobs);
         })
       ;
+    },
+
+    refresh() {
+      this.sendAction('refreshJobs');
     }
   }
 });

@@ -1,6 +1,5 @@
 <style type="text/css">
-  i.remove {
-    float: right;
+  i.refresh {
     cursor: pointer;
   }
 
@@ -19,13 +18,14 @@
   }
 </style>
 
-<div class="ui black message job-watcher">
+<div class="ui black message hidden job-watcher">
   {{#ui-popup tagName="i" class="close icon" content="Close Watcher" }}{{/ui-popup}}
   <div class="header">
     <span>Current Jobs</span>
     <div class="ui mini inverted basic button" {{action 'togglePastJobs' on='click'}}>
       {{if showPastJobs 'Hide' 'Show'}} Past Jobs
     </div>
+    {{#ui-popup tagName="i" class="refresh icon" content="Refresh Jobs" click=(action 'refresh')}}{{/ui-popup}}
   </div>
   {{#if isLoading}}
   <span>

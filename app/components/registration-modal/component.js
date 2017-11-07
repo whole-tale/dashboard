@@ -95,6 +95,7 @@ export default Ember.Component.extend({
         source.addEventListener('message', function(evt) {
             let payload = JSON.parse(evt.data);
             let notifier = self.get('notificationHandler');
+            
             notifier.pushNotification({
                 message: payload.data.message,
                 header: payload.data.title
@@ -151,7 +152,7 @@ export default Ember.Component.extend({
                     let notifier = self.get('notificationHandler');
                     notifier.pushNotification({
                         header: "Error Registering Dataset",
-                        message: "To see a stack trace of what went wrong click <button onclick=\"alert(1);\">here</button>"
+                        message: e
                     });
                 })
                 .finally(_ => {
