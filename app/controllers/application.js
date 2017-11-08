@@ -28,23 +28,22 @@ export default Ember.Controller.extend({
     this._super();
     // this.set('staticMenu', this.get('internalState').getIsStaticMenu());
     this.set('staticMenu', true);
-    this.set('eventStream', this.getEventStream.call(this));
+    // this.set('eventStream', this.getEventStream.call(this));
   },
 
-  getEventStream() {
-    let token = this.get('tokenHandler').getWholeTaleAuthToken();
-    let source = new EventStream.SSE(config.apiUrl+"/notification/stream?timeout=15000", {headers: {'Girder-Token': token}});
+  // getEventStream() {
+  //   let token = this.get('tokenHandler').getWholeTaleAuthToken();
+  //   let source = new EventStream.SSE(config.apiUrl+"/notification/stream?timeout=15000", {headers: {'Girder-Token': token}});
 
-    let self = this;
-    source.addEventListener('message', function(evt) {
-      let payload = JSON.parse(evt.data);
-      console.log(evt)
-    });
+  //   let self = this;
+  //   source.addEventListener('message', function(evt) {
+  //     let payload = JSON.parse(evt.data);
+  //   });
 
-    source.stream();
+  //   source.stream();
 
-    return source;
-  },
+  //   return source;
+  // },
 
   checkMyRouteName: Ember.computed(function() {
     return this.get('routing.currentRouteName');
@@ -65,6 +64,16 @@ export default Ember.Controller.extend({
   //    window.location.href = location.split('?')[0];
 
         this.transitionToRoute('login');
+    },
+    refreshJobs: function() {
+      const controller = this;
+      controller.set('isLoadingJobs', true);
+      this.store.findAll('job')
+        .then(jobs => {
+          controller.set('jobs', jobs);
+          window.setTimeout(controller.set.bind(controller, 'isLoadingJobs', false), 2000);
+        })
+      ;
     },
     staticMenu: function() {
       this.set('staticMenu', true);

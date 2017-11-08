@@ -9,65 +9,51 @@ export default Ember.Component.extend({
 
     notificationHandler: Ember.inject.service('notification-handler'),
 
-    notificationHeader: 'Notification',
-    notificationMessage: '',
+    notifications: Ember.A([null,null,null,null,null]),
 
-    notificationTimeout: null,
+    slot: 0,
 
-    notifications: Ember.A(),
+    clearNotif(slot) {
+      const elem = Ember.$(`#notif_${slot}`);
+      elem.transition('fly down');
 
-    didInsertElement() {
-      $('.message .close')
-        .on('click', function() {
-          $(this)
-            .closest('.message')
-            .transition('fade')
-          ;
-        })
-      ;
+      const notifs = this.get('notifications').toArray();
+      notifs[slot] = null;
+      this.set('notifications', notifs);
     },
 
-    clearNotif() {
-      let notifs = this.get('notifications');
-      if (!notifs.length) { return; }
-
-      let oldNotif = notifs.shift();
-      
-      if (notifs.length) {
-        let t = window.setTimeout(this.clearNotif.bind(this), NOTIFICATION_DELAY);
-        this.set('notificationTimeout', t);
-      } else {
-        this.set('notificationTimeout', null);
-      }
-      
-      Ember.$(`.${oldNotif.guid}`).transition('fade');
-
+    addNotif(notif, slot) {
+      const notifs = this.get('notifications').toArray();
+      notifs[slot] = notif;
       this.set('notifications', notifs);
-      this.get('notifications').arrayContentDidChange();
 
+      const elem = Ember.$(`#notif_${slot}`);
+      elem.transition('fly up');
+    },
+
+    beginNotificationTimeout(slot) {
+      window.setTimeout(this.clearNotif.bind(this, slot), NOTIFICATION_DELAY);
     },
 
     actions: {
-      toggleNotification(notifMessage, notifHeader) {
+      toggleNotification() {
         let notification = this.get('notificationHandler').getNotification();
 
-        let notifs = this.get('notifications');
-        let oldNotif, newNotif = { header: notification.header, message: notification.message, guid: guid.create(), hidden: 'hidden' };
-        if (notifs.length > 5) {
-          oldNotif = notifs.shift();
-          Ember.$(`.${oldNotif.guid}`).transition('fade');
+        let notifs = this.get('notifications').toArray();
+        let nextSlot = this.get('slot');
+
+        if (notifs[nextSlot] !== null) {
+          this.clearNotif(nextSlot);
         }
 
-        notifs.push(newNotif);
-
-        this.set('notifications', notifs);
-        this.get('notifications').arrayContentDidChange();
+        let newNotif = { 
+          header: notification.header, 
+          message: notification.message, 
+        };
+        this.addNotif(newNotif, nextSlot);
         
-        let t = this.get('notificationTimeout');
-        if (!t) {
-          t = window.setTimeout(this.clearNotif.bind(this), NOTIFICATION_DELAY);
-          this.set('notificationTimeout', t);
-        }
+        this.beginNotificationTimeout(nextSlot);
+        this.set('slot', (nextSlot+1)%5);
       }
     }
 });
