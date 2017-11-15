@@ -8,7 +8,7 @@ export default Ember.Component.extend({
   taleInstanceName : "",
   filteredSet: Ember.A(),
   filters: ['All', 'Mine', 'Published', 'Recent'],
-  filter: 'All', 
+  filter: 'All',
   numberOfModels: 0,
   pageNumber: 1,
   totalPages:1,
@@ -48,7 +48,7 @@ export default Ember.Component.extend({
     });
   },
   didUpdate() {
-
+    //TODO schedule once to avoid race condition
     var guid = this.get('guid');
 
     if (guid ==null) {
@@ -62,12 +62,6 @@ export default Ember.Component.extend({
     var d = new Date();
     var milliseconds = d.getTime();
     var lastMSTime = Number(this.get('lastAnimationTime'));
-
-
- //   console.log("MS: " + milliseconds );
-   // console.log("Last MS: " + lastMSTime);
-  //  console.log("Diff: " + (milliseconds-lastMSTime));
-    //console.log("GUID: " + guid);
 
     if (milliseconds-lastMSTime > Number(this.get('animationRefreshTime'))) {
       $('.selectable.cards.' + guid + ' .image img')
@@ -109,16 +103,10 @@ export default Ember.Component.extend({
     var pageNumber = component.get('pageNumber');
     var arraySize = models.get('length');
 
-    var numberToShow = arraySize % paginateSize;
-    var totalPages = arraySize / paginateSize;
-    if (numberToShow>0) {
-      ++totalPages;
-    }
+    var totalPages = Math.ceil(arraySize / paginateSize);
 
-    // console.log(models);
     component.set('numberOfModels', arraySize);
 
-    // console.log("Number of models = " + component.get('numberOfModels'));
     if (models.get('length') === 0) {
       component.set("modelsInView", []);
       component.set("paginateArray", []);
@@ -129,9 +117,6 @@ export default Ember.Component.extend({
     }
 
     component.set('totalPages', totalPages);
-
-    // console.log("Paginating on = " + paginateSize);
-    // console.log("NumberToShow = " + numberToShow);
 
     var modelsInView = [];
     var paginateArray = [];
@@ -145,10 +130,6 @@ export default Ember.Component.extend({
 
     component.set("paginateArray", paginateArray);
 
-    var startingPosition = (pageNumber-1)*paginateSize;
-    var endingPosition = ((pageNumber-1)*paginateSize)+paginateSize;
-    var iterateNumber=0;
-
     if (pageNumber == 1)
       component.set('leftButtonState', "disabled");
     else
@@ -159,44 +140,38 @@ export default Ember.Component.extend({
     else
       component.set('rightButtonState', "");
 
-    models.forEach(function(model){
-      if ((iterateNumber>=startingPosition) && (iterateNumber<endingPosition)) {
-    //    console.log("Icon field is--" + model.get("icon") + "--");
-        if (typeof model.get("icon") === "undefined" ) {
-          if (typeof model.get("meta") !== "undefined") {
-            var meta = model.get("meta");
-      //      console.log("Checking meta fields: " + meta);
-            if (meta['provider'] !== "DataONE")
-              model['icon'] = "/icons/globus-logo-large.png";
-            else
-              model['icon'] = "/icons/d1-logo-large.png";
-          } else {
-            model['icon'] = "/images/whole_tale_logo.png";
-          }
-        }
-        var title = model.get('title');
+    let startIndex = (pageNumber-1) * paginateSize;
+    let endIndex = startIndex + paginateSize;
 
-        var description = model.get('description');
-
-        if ((description == null) ) {
-          model.set('tagName', "No Description ...");
-        } else {
-          if (description.length > 200)
-            model.set('tagName', description.substring(0,200) + "..");
+    for(let i = startIndex; i < endIndex && i < arraySize; i++) {
+      let model = models.objectAt(i);
+      if (typeof model.get("icon") === "undefined" ) {
+        if (typeof model.get("meta") !== "undefined") {
+          var meta = model.get("meta");
+          if (meta['provider'] !== "DataONE")
+            model['icon'] = "/icons/globus-logo-large.png";
           else
-            model.set('tagName', description);
+            model['icon'] = "/icons/d1-logo-large.png";
+        } else {
+          model['icon'] = "/images/whole_tale_logo.png";
         }
-
-        modelsInView.push(model);
       }
 
+      var description = model.get('description');
 
-      ++iterateNumber;
-    });
+      if ((description == null) ) {
+        model.set('tagName', "No Description ...");
+      } else {
+        if (description.length > 200)
+          model.set('tagName', description.substring(0,200) + "..");
+        else
+          model.set('tagName', description);
+      }
+
+      modelsInView.push(model);
+    }
 
     component.set("modelsInView", modelsInView);
-
-    //console.log(this.get("modelsInView"));
   },
 
   actions: {
