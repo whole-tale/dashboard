@@ -59,6 +59,10 @@ Router.map(function() {
     this.route('view', { path: '/view/:tale_id' });
   });
 
+  this.route('register-dataone', function() {
+    this.route('', { path: '/:doi' });
+  });
+  
 });
 
 export default Router;
