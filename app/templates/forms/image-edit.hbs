@@ -2,7 +2,7 @@
 
 <div class="ui form">
     <div class="ui fifteen wide field">
-        <label style="display:inline;">Using Recipe</label> 
+        <label style="display:inline;">Using Recipe</label>
         <i class="recipes grey circle help icon"></i>
         <div class="floating ui basic blue label hidden" style="left:1em !important; top: -2em !important; padding:8px;" id="recipe-info-data-content">Either create a new recipe in the previous step or search for existing ones.</div>
     </div>
@@ -71,6 +71,16 @@
       <div class="ui twelve wide field">
         <label>Mount Work Directory</label>
         {{input value=imageWorkDirectory type="text" placeholder="Work directory..."}}
+      </div>
+    </div>
+    <div class="two fields">
+      <div class="ui twelve wide field">
+        <label>URL Path</label>
+        {{input value=imageUrlPath type="text" placeholder="Git repository, tarball or plain text file..."}}
+      </div>
+      <div class="ui twelve wide field">
+        <label>Port</label>
+        {{input value=imagePort type="text" placeholder="The exposed port..."}}
       </div>
     </div>
     <div class="ui divider"></div>

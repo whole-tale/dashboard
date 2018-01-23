@@ -83,6 +83,8 @@ export default Ember.Controller.extend({
   imageUser: '',
   imageCommand: '',
   imageDescription: '',
+  imageUrlPath: '',
+  imagePort: null,
   nextName : "Import Recipe",
   showSkipButton: true,
   importButtonDisabled: true,
@@ -158,7 +160,7 @@ export default Ember.Controller.extend({
         tags:        this.get("tags"),
       }}}).then(onSuccess).catch(onFail);
     },
-    
+
     saveImage() {
       const component = this;
 
@@ -180,7 +182,9 @@ export default Ember.Controller.extend({
         config:      JSON.stringify({
           command: this.get('imageCommand'),
           targetMount: this.get('imageWorkDirectory'),
-          user: this.get('imageUser')
+          user: this.get('imageUser'),
+          urlPath: this.get('imageUrlPath'),
+          port: Number.parseInt(this.get('imagePort'))
         })
       };
 
@@ -202,6 +206,8 @@ export default Ember.Controller.extend({
             component.set("imageWorkDirectory", '');
             component.set("imageUser", '');
             component.set("show_errors", false);
+            component.set("imageUrlPath", '');
+            component.set("imagePort", null);
           }), 3000);
           component.send("skip");
         })
