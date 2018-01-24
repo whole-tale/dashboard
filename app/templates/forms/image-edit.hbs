@@ -62,25 +62,25 @@
     <div class="three fields">
       <div class="ui twelve wide field">
         <label>Command</label>
-        {{input value=imageCommand type="text" placeholder="Command to run when the container starts..."}}
+        {{input value=imageCommand type="text" placeholder="Command to run when the container starts"}}
       </div>
       <div class="ui twelve wide field">
         <label>User</label>
-        {{input value=imageUser type="text" placeholder="Username created inside container..."}}
+        {{input value=imageUser type="text" placeholder="Username used inside the running container"}}
       </div>
       <div class="ui twelve wide field">
         <label>Mount Work Directory</label>
-        {{input value=imageWorkDirectory type="text" placeholder="Work directory..."}}
+        {{input value=imageWorkDirectory type="text" placeholder="Path where the Whole Tale filesystem will be mounted"}}
       </div>
     </div>
     <div class="two fields">
       <div class="ui twelve wide field">
         <label>URL Path</label>
-        {{input value=imageUrlPath type="text" placeholder="Git repository, tarball or plain text file..."}}
+        {{input value=imageUrlPath type="text" placeholder="Subpath appended to the randomly generated container URL"}}
       </div>
       <div class="ui twelve wide field">
         <label>Port</label>
-        {{input value=imagePort type="text" placeholder="The exposed port..."}}
+        {{input value=imagePort type="text" placeholder="The exposed internal port that is going to be accessbile through HTTP(S)"}}
       </div>
     </div>
     <div class="ui divider"></div>
