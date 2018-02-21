@@ -12,6 +12,56 @@
       </div>
     {{/if}}
 
+    <div class="ui small blue icon button" {{action 'launchTale'}} style="float: right;">
+        <i class="play icon"></i>
+        Launch Tale
+    </div>
+
+  {{#if tale_instantiating}}
+      <div class="ui segment" style="height:100px">
+          <div class="ui active inverted dimmer">
+              <div class="ui text loader">Launching Tale {{model.name}}</div>
+          </div>
+      </div>
+  {{/if}}
+
+  {{#if tale_instantiated}}
+      <div class="ui green icon message">
+          <i class="checkmark icon"></i>
+          <div class="content">
+              <div class="header">
+                  <p>The Tale '{{model.name}}' has been launched !</p>
+
+                  <div class="ui buttons">
+                      <a href="{{instance.url}}" target="_blank">
+                          <div class="ui green icon button" style="margin-right: 10px">
+                              <i class="play icon"></i>
+                              Go to Tale
+                          </div></a>
+                    {{#link-to 'status' class="ui blue icon button"}}
+                        <i class="line chart icon"></i>
+                        Check Status
+                    {{/link-to}}
+                  </div>
+
+              </div>
+          </div>
+      </div>
+  {{/if}}
+
+  {{#if tale_not_instantiated}}
+      <div class="ui red icon message">
+          <i class="remove circle icon"></i>
+          <div class="content">
+              <div class="header">
+                  The Tale '{{model.name}}' could not be launched !<br>
+                {{error_msg}}
+              </div>
+          </div>
+      </div>
+  {{/if}}
+
+
 </div>
 <div class="card">
     <div class="content">
