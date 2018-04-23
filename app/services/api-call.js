@@ -183,4 +183,29 @@ export default Ember.Service.extend({
     client.send();
   },
 
+  exportTale : function (taleId, success, fail) {
+    var token = this.get('tokenHandler').getWholeTaleAuthToken();
+    var url = config.apiUrl + '/tale/' + taleId + '/export?contentDisposition=attachment';
+
+    var client = new XMLHttpRequest();
+    client.responseType = 'blob';
+    client.open('GET', url);
+    client.setRequestHeader("Girder-Token", token);
+
+    // Construct a filename for the download. Ideally this would be based upon
+    // the filename set by the backend but I'm not sure how to access this
+    // yet
+    // TODO: Set filename argument in success callback to use the filename
+    // provided by the backend
+    client.addEventListener("load", function() {
+      if (client.status === 200) {
+        success(client, "tale-export-" + taleId + '.zip')
+      } else {
+        fail(client)
+      }
+    });
+
+    client.send();
+  },
+
   });

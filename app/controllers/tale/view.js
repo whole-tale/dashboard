@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
+import FileSaver from 'file-saver';
 var inject = Ember.inject;
 
 Ember.TextField.reopen({
@@ -130,6 +131,32 @@ export default Ember.Controller.extend({
                 this.get('taleInstanceName'),
                 onSuccess,
                 onFail);
+        },
+        exportTale: function() {
+            var tale = this.get('model');
+            var success = function(client, filename) {
+                // Use the HTML5 Blob [1] API to send the file to the user. 
+                // There are two caveats here:
+                // 
+                //    1. Blob is used in favor of File [2] because Blob has 
+                //       wider support across browsers
+                //    2. AFAIK this loads the response in memory in the user's
+                //       browser so this will not scale well to large files
+                // 
+                // [1] https://developer.mozilla.org/en-US/docs/Web/API/Blob
+                // [2] https://developer.mozilla.org/en-US/docs/Web/API/File/File
+                //
+                // TODO: Find a good solution to the above problem
+                var file = new Blob([client.response], { type: 'application/zip' })
+                FileSaver.saveAs(file, filename);
+            }
+
+            var fail = function(client) {
+                // TODO: Handle this error state better
+                console.log("Failed to export Tale.", client);
+            }
+
+            this.get('apiCall').exportTale(tale.get("_id"), success, fail);
         },
         textUpdated: function(text) {
             // do something with
