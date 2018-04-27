@@ -23,9 +23,9 @@
     </div>
     <div class="field">
           <label>Description</label>
-          {{markdown-editor markdownValue=description}}
+          {{ui/markdown-editor markdownValue=description}}
     </div>
-    {{tags-widget tags=tags}}
+    {{ui/tags-widget tags=tags}}
     {{#if show_errors}}
         <div class="ui red message">
           <div class="content">

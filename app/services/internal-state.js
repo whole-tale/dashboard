@@ -75,6 +75,16 @@ export default Ember.Service.extend({
     return (localStorage.staticMenu!=0);
   },
 
+  setNewUIMode: function(val) {
+    if (val)
+      localStorage.newUIMode = 1;
+    else
+      localStorage.newUIMode = 0;
+  },
+
+  getNewUIMode: function() {
+    return (localStorage.newUIMode !=0);
+  },
 
   addFolderToRecentFolders: function(folderId) {
     var recentFolders = this.getRecentFolders();

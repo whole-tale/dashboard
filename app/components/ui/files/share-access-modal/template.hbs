@@ -1,0 +1,47 @@
+{{!-- app/components/share-access-modal/template.hbs --}}
+{{#ui-modal name="access-control" class="small acl-component" onApprove=(action 'submit') onDeny=(action 'cancel')}}
+    <div class="header">Access Control</div>
+    <div class="content">
+        {{#if error}}
+            <div class="ui negative message">
+                <div class="header">
+                    Error fetching access control settings
+                </div>
+                <p>{{error}}</p>
+            </div>
+        {{/if}}
+        <div class="ui basic segment">
+            <div class="ui form">
+                <div class="ui secondary segment" id="granted-list">
+                    <div class="ui two column grid">
+                        <div class="column">
+                            <i class="icon {{object._modelType}}"></i>  {{object.name}}
+                        </div>
+                        <div class="right aligned column">
+                            {{ui-checkbox class="toggle" label="Public" checked=object.public onChange=(action (mut object.public))}}
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    {{ui/user-access-control acl=granted}}
+                </div>
+                <div class="field">
+                    <label>
+                        Add a user or Group to share with ...
+                    </label>
+                    {{ui/user-search-widget selectedUser=selectedUser}}
+
+                </div>
+                <div class="ui inline button" {{action 'addUserOrGroup' userOrGroup on='click'}}>Add Group or User</div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui deny button">
+            Cancel
+        </div>
+        <div class="ui {{if error 'disabled'}} positive register icon button">
+            Submit
+        </div>
+    </div>
+{{/ui-modal}}

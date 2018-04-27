@@ -18,7 +18,7 @@
 
 {{#if showRegistered}}
   <div class="ui segment" >
-    {{wt-flix models=model.dataRegistered paginateOn=18 cardsPerRow="six" modelView="folder.view" showSearch=true showLink=true
+    {{ui/wt-flix models=model.dataRegistered paginateOn=18 cardsPerRow="six" modelView="folder.view" showSearch=true showLink=true
               addButtonName="Search for and register a new dataset from either Globus or DataOne."
               addButtonTagName="Register New Dataset"
               addButtonLogo=""
@@ -38,7 +38,7 @@
 
 {{#if showTales}}
   <div class="ui segment">
-    {{wt-flix models=model.tales paginateOn=18 cardsPerRow="six" modelView="tale.view" showSearch=true showLink=true showDelete=true
+    {{ui/wt-flix models=model.tales paginateOn=18 cardsPerRow="six" modelView="tale.view" showSearch=true showLink=true showDelete=true
               addButtonName="Compose and publish a new tale."
               addButtonTagName="Compose New Tale"
               addButtonLogo=""

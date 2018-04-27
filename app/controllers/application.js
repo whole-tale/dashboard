@@ -23,7 +23,8 @@ export default Ember.Controller.extend({
   loggedIn : false,
   staticMenu : true,
   isLoadingJobs: true,
-  
+  newUIMode : true,
+
   init() {
     this._super();
     // this.set('staticMenu', this.get('internalState').getIsStaticMenu());
@@ -83,6 +84,18 @@ export default Ember.Controller.extend({
       this.set('staticMenu', false);
       this.get('internalState').setStaticMenu(false);
     },
+    coolUI: function() {
+      this.set('newUIMode', true);
+      this.get('internalState').setNewUIMode(true);
+      this.transitionToRoute("browse");
+    },
+    boringUI: function() {
+      this.set('newUIMode', false);
+      this.get('internalState').setNewUIMode(false);
+      this.transitionToRoute("index");
+    },
+
+
     closeMenu : function(pageTitle, icon) {
       this.set('currentPage', pageTitle);
       this.set('currentIcon', icon);

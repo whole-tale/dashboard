@@ -14,7 +14,6 @@ Router.map(function() {
 
   this.route('explore');
   this.route('search');
-  this.route('compose');
   this.route('recipe-image');
   this.route('status');
   this.route('login');
@@ -58,6 +57,18 @@ Router.map(function() {
   this.route('tale', function(){
     this.route('view', { path: '/view/:tale_id' });
   });
+
+  this.route('browse');
+  // old compose UI route.
+  this.route('pcompose');
+
+
+  // new UI routes
+
+  this.route('browse');
+  this.route('run');
+  this.route('manage');
+  this.route('compose');
 
 });
 

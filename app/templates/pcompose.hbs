@@ -1,0 +1,73 @@
+
+
+<div class="ui large header">
+    Create Tale
+</div>
+
+<div class="ui segment">
+  <div class="ui fluid stackable steps">
+      <a class="{{stepsActive.[0]}} step" {{action "gotoStep" 0 }}>
+          <div class="content">
+              <div class="title">Tale Info</div>
+              <div class="description">Tale metadata Information</div>
+          </div>
+      </a>
+      <a class="{{stepsActive.[1]}} step" {{action "gotoStep" 1 }}>
+          <div class="content">
+              <div class="title">Frontend Image</div>
+              <div class="description">WholeTale frontend image</div>
+          </div>
+      </a>
+      <a class="{{stepsActive.[2]}} step" {{action "gotoStep" 2 }}>
+          <div class="content">
+              <div class="title">Data</div>
+              <div class="description">Folder containing your data</div>
+          </div>
+      </a>
+      <a class="{{stepsActive.[3]}} step" {{action "gotoStep" 3 }}>
+          <div class="content">
+              <div class="title">Create</div>
+              <div class="description">Confirm</div>
+          </div>
+      </a>
+  </div>
+
+    <div style="display: {{showStep.[0]}}">
+      {{partial "forms/tale-input"}}
+    </div>
+
+    <div style="display: {{showStep.[1]}}">
+      {{ui/wt-flix models=model.images paginateOn=6 cardsPerRow="six" modelView="image.view" showSelect=true showSearch=true action="itemSelected"}}
+    </div>
+
+    <div style="display: {{showStep.[2]}}">
+        {{ui/files/folder-chooser
+             id="mini-browser"
+             onSelectedFolder=(action "selectedFolder")
+         }}
+    </div>
+
+    <div style="display: {{showStep.[3]}}">
+        <div class="ui large header">Confirm Details</div>
+
+      {{partial "forms/tale-details"}}
+    </div>
+
+
+    <div class="ui secondary menu" >
+        <a class="item" style="padding-left: 0;">
+            <div class="large ui blue labeled icon button" {{action "moveLeft"}}>
+                <i class="caret left icon"></i> Previous
+            </div>
+        </a>
+      <div class="right menu">
+          <a class="item">
+              <div class="large ui blue right labeled icon button" {{action "moveRight"}}>
+                  {{nextName}}
+                <i class="caret right icon"></i>
+              </div>
+          </a>
+      </div>
+    </div>
+
+</div>

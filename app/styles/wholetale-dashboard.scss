@@ -1,0 +1,419 @@
+/*
+ * WholeTale Dashboard - Semantic UI
+ */
+
+/* Miscellaneous styles */
+
+html, body {
+}
+
+body {
+  background: #d6e1e8;
+}
+
+
+/* Navigation - Top Nav */
+
+.ui.inverted.menu.wt.top {
+  background: #132f43;
+  font-size: 1.4rem;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  border-radius: 0;
+}
+.ui.inverted.menu.wt.top .item {
+  color: rgba(255,255,255,0.5);
+  letter-spacing: .05rem;
+}
+.ui.inverted.menu.wt.top .active.item {
+  background: transparent;
+}
+.ui.inverted.menu.wt.top .item::before {
+  background: transparent;
+  width: 0;
+}
+.ui.menu.wt.top .item.wt.brand {
+  text-transform: uppercase;
+  font-weight: 400;
+  letter-spacing: 0.1rem;
+  vertical-align: text-bottom;
+  color: #fff;
+}
+.ui.menu.wt.top .item.wt.brand span {
+  font-size: .9rem;
+  font-weight: 300;
+  letter-spacing: 0.2rem;
+  padding-top: .1rem;
+  padding-left: .2rem;
+}
+.ui.menu.wt.top .item.wt.brand img {
+  width: 1.5em;
+  margin-right: .5rem;
+}
+
+
+/* Navigation - WT Dashboard modes */
+
+.ui.menu.wt.dash {
+  background: transparent;
+  border: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  padding: .3rem 2rem 1rem;
+}
+.ui.menu.wt.dash .item {
+  font-size: 1.2rem;
+  letter-spacing: .05rem;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.5);
+  border-bottom: 4px solid transparent;
+  padding: 0 .2em .3em;
+  margin-left: .75em;
+  margin-right: .75em;
+}
+.ui.menu.wt.dash .active.item {
+  background: transparent;
+  font-weight: 600;
+  color: rgba(0,0,0,0.95);
+  border-bottom: 4px solid #2185d0;
+}
+.ui.menu.wt.dash .item::before {
+  background: transparent;
+  width: 0;
+}
+.ui.menu.wt.dash .item.wt.brand {
+  text-transform: none;
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.1rem;
+  vertical-align: text-bottom;
+  color: rgba(0,0,0,0.95);
+}
+.ui.menu.wt.dash .item.wt.brand span:first-child {
+  font-size: .9rem;
+  font-weight: 300;
+  letter-spacing: 0.2rem;
+  padding: .1rem .2rem 0;
+}
+.ui.menu.wt.dash .item:hover {
+  background: transparent;
+}
+
+
+/* Navigation - Launched Tales panel */
+
+.ui.vertical.menu.tales {
+  margin-top: 0;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+.ui.vertical.menu.tales .item:first-child {
+  border-top: none;
+}
+
+.ui.vertical.menu.tales .item {
+  position: relative;
+  padding: 1em 1em 1.25em 6em;
+  border-left: 4px solid transparent;
+  min-height: 6.3rem;
+}
+.ui.vertical.menu.tales .active.item {
+  background: #e8f3fa;
+  border-left: 3px solid #2185d0;
+}
+.ui.vertical.menu.tales .item.active:first-child {
+  background: #e8f3fa;
+  border-left: 4px solid #2185d0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.ui.vertical.menu.tales .item:hover {
+  background: #e8f3fa;
+}
+
+.ui.vertical.menu.tales .item img {
+  width: 4rem;
+  margin-right: .5rem;
+  position: absolute;
+  top: 1.5rem;
+  left: 1.25rem;
+}
+.ui.vertical.menu.tales .item img.env {
+  width: 2.5rem;
+  position: absolute;
+  top: 1rem;
+  left: .75rem;
+}
+
+.ui.vertical.menu.tales .item i {
+  float: right;
+  position: relative;
+}
+
+.ui.vertical.menu.tales .item p {
+  font-size: 1.2rem;
+  line-height: 1.2;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 1.5rem 0 0;
+}
+
+
+/* Navigation - Environments panel */
+
+.grey.zone {
+  padding: 1rem;
+  background: #f3f3f3;
+}
+.grey.zone .ui.input {
+  width: 100%;
+}
+
+.ui.vertical.menu.envs {
+  margin-top: 0;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+.ui.vertical.menu.tales .item:first-child {
+  border-top: none;
+}
+
+.ui.vertical.menu.envs .item {
+  position: relative;
+  padding: 1.25em 1em 1.25em 4.5em;
+  border-left: 4px solid transparent;
+  min-height: 4.75rem;
+}
+.ui.vertical.menu.envs .active.item {
+  background: #e8f3fa;
+  border-left: 3px solid #2185d0;
+}
+.ui.vertical.menu.envs .item.active:first-child {
+  background: #e8f3fa;
+  border-left: 4px solid #2185d0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.ui.vertical.menu.envs.envs .item:hover {
+  background: #e8f3fa;
+}
+
+.ui.vertical.menu.envs .item img {
+  width: 2.75rem;
+  position: absolute;
+  top: 1.25rem;
+  left: .75rem;
+}
+
+.ui.vertical.menu.envs .item i {
+  float: right;
+  position: relative;
+}
+
+.ui.vertical.menu.envs .item p {
+  font-size: 1.2rem;
+  line-height: 1.2;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0 1.5rem 0 0;
+}
+
+
+
+/* Panels - general */
+
+.ui.grid {
+}
+.ui.grid > .row.dashboard-modes {
+  padding-top: 0;
+  padding-left: 2rem;
+}
+.ui.grid > .row.panel.container {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 0;
+  height: 85vh;
+}
+.ui.grid > .row.panel.container > .column {
+  padding-left: .5rem;
+  padding-right: .5rem;
+}
+
+.wt.panel {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.20);
+  -webkit-border-radius: 1rem;
+  -moz-border-radius: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 4px rgba(0,0,0,0.075);
+  padding: 0;
+  height: 100%;
+}
+.wt.panel.bg.grey {
+  background: #f3f3f3;
+}
+.wt.panel:nth-child(2) {
+  margin-top: 1rem;
+}
+
+.wt.panel .wt.paddleboard {
+  border-bottom: 1px solid rgba(0,0,0,0.20);
+  padding: .8rem 1.6rem;
+  letter-spacing: .02rem;
+  background: #fff;
+  -webkit-border-top-left-radius: 1rem;
+  -moz-border-top-left-radius: 1rem;
+  border-top-left-radius: 1rem;
+  -webkit-border-top-right-radius: 1rem;
+  -moz-border-top-right-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+.wt.panel .wt.paddleboard img {
+  height: 2.25rem;
+  margin: 0 .75rem 0 0;
+  float:left;
+}
+.wt.panel .wt.paddleboard span {
+  font-size: 1.3rem;
+  color: rgba(0,0,0,0.4);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: .05rem;
+  padding-left: .4rem;
+}
+.wt.panel .wt.paddleboard span.quota {
+  color: rgba(0,0,0,0.4);
+  float: right;
+  position: relative;
+  font-size: 1rem;
+}
+.wt.panel .wt.paddleboard i {
+  padding-right: .75rem;
+}
+.wt.panel .wt.paddleboard i.right {
+  color: rgba(0,0,0,0.6);
+  float: right;
+  position: relative;
+  padding-right: 0;
+  padding-top: .35rem;
+}
+.wt.panel .wt.panel.body {
+  padding: 1.5rem 3rem;
+}
+.wt.panel .wt.panel.body.bg.grey {
+  background-color: #f3f3f3;
+}
+
+.wt.panel.body .ui.input {
+  width: 100%;
+}
+
+.placeholder.message {
+  text-align: center;
+  padding: 40% 0 40%;
+  background: url(../images/wholetale_logo_watermark.png) center center no-repeat;
+  background-size: cover;
+}
+.placeholder.message p {
+  color: #283b49;
+  font-size: 2.5rem;
+  font-style: italic;
+  letter-spacing: .1rem;
+  width: 80%;
+  margin: 0 auto 2rem;
+}
+.placeholder.message p.note-sm {
+  font-size: 2.2rem;
+  letter-spacing: .05rem;
+  line-height: 1.3;
+}
+
+.wt.panel .tale-info {
+  padding: 1.5em;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+.wt.panel .title-info {
+  position: relative;
+  padding-left: 4rem;
+}
+.wt.panel .title-info img {
+  width: 3rem;
+  margin-right: .5rem;
+  position: absolute;
+  top: -.25rem;
+  left: 0rem;
+}
+.wt.panel .title-info img.env {
+  width: 2.5rem;
+  position: absolute;
+  top: -.75rem;
+  left: -.5rem;
+}
+.wt.panel .title-info p {
+  font-size: 1.2rem;
+  line-height: 1.2;
+  font-weight: 600;
+  margin: 0 1.5rem .2rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wt.panel .title-info p.qualifier {
+  font-size: 1rem;
+  font-weight: 400;
+  font-style: italic;
+}
+
+
+
+/* MEDIA QUERIES
+-------------------------------------------------- */
+
+
+@media (min-width: 1200px) {
+}
+
+@media (min-width: 1600px) {
+}
+
+@media (max-width: 991px) {
+}
+
+@media (max-width: 767px) {
+}
+
+@media (max-width: 640px) {
+}
+
+@media (max-width: 574px) {
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -33,7 +33,7 @@
           My Data
       {{/link-to}}
 
-      {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
+      {{#link-to 'pcompose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
           <i class="plus icon"></i>
           Compose
       {{/link-to}}
@@ -59,6 +59,11 @@
           Collaborate
       {{/link-to}}
 -->
+
+        <a class="item" {{action 'coolUI'}}>
+            <i class="paint brush icon"></i>
+            New UI
+        </a>
 
       {{!-- <a class="item" {{action 'dynamicMenu'}}>
           <i class="content icon"></i>
