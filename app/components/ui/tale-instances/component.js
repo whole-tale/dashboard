@@ -2,43 +2,52 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   store: Ember.inject.service(),
+  userAuth: Ember.inject.service(),
+  apiCall : Ember.inject.service('api-call'),
+  internalState: Ember.inject.service(),
+  taleInstanceName : "",
+  filteredSet: Ember.A(),
+  filters: ['All', 'Mine', 'Published', 'Recent'],
+  filter: 'All',
   numberOfModels: 0,
   pageNumber: 1,
   totalPages:1,
   leftButtonState: "disabled",
   rightButtonState: "disabled",
-
-  apiCall : Ember.inject.service('api-call'),
+  lastAnimationTime : 0,
+  animationRefreshTime : 500, // min ms time between animation refreshes
   item : null,
+  guid : null,
 
-  imageName : null,
+
   init() {
     this._super(...arguments);
     console.log("Attributes updated");
 
-    var modelsPromised = this.get("models");
+    var models = this.get("models");
+    console.log(models);
 
     var component = this;
 
-    modelsPromised.then(function(models) {
-      if (component.get('addButtonName') != null){
-        var paginateSize = Number(component.get('paginateOn'));
-        component.set('paginateOn', --paginateSize); // remove one to fit the plus.
-      }
-      component.set('searchView', models);
-      component.paginate(component, models);
+    models.forEach(function(item) {
+      component.get('store').findRecord('tale', item.get('taleId')).then(tale => {
+        item.set('tale', tale);
+      })
     });
+
+    var paginateSize = Number(component.get('paginateOn'));
+    component.set('paginateOn', paginateSize);
+
+    component.set('completeModels', models);
+    component.paginate(component, models);
 
     this.set('addButtonLogo', '/icons/plus-sign.png');
   },
   didRender() {
-    $('.selectable.cards .image').dimmer({
-      on: 'hover'
-    });
   },
   didUpdate() {
-
   },
+
 
   paginate(component, models) {
 
@@ -46,22 +55,20 @@ export default Ember.Component.extend({
     var pageNumber = component.get('pageNumber');
     var arraySize = models.get('length');
 
-    var numberToShow = arraySize % paginateSize;
-    var totalPages = arraySize / paginateSize;
-    if (numberToShow>0)
-      ++totalPages;
+    var totalPages = Math.ceil(arraySize / paginateSize);
 
-  //  console.log(models);
     component.set('numberOfModels', arraySize);
 
-    //console.log("Number of models = " + component.get('numberOfModels'));
-
-    if (models.get('length') === 0) return;
+    if (models.get('length') === 0) {
+      component.set("modelsInView", []);
+      component.set("paginateArray", []);
+      component.set('rightButtonState', "disabled");
+      component.set('lefttButtonState', "disabled");
+      component.set('totalPages', 0);
+      return;
+    }
 
     component.set('totalPages', totalPages);
-
-    //console.log("Paginating on = " + paginateSize);
-    //console.log("NumberToShow = " + numberToShow);
 
     var modelsInView = [];
     var paginateArray = [];
@@ -75,10 +82,6 @@ export default Ember.Component.extend({
 
     component.set("paginateArray", paginateArray);
 
-    var startingPosition = (pageNumber-1)*paginateSize;
-    var endingPosition = ((pageNumber-1)*paginateSize)+paginateSize;
-    var iterateNumber=0;
-
     if (pageNumber == 1)
       component.set('leftButtonState', "disabled");
     else
@@ -89,41 +92,42 @@ export default Ember.Component.extend({
     else
       component.set('rightButtonState', "");
 
-    models.forEach(function(model){
-      if ((iterateNumber>=startingPosition) && (iterateNumber<endingPosition)) {
-    //    console.log("Icon field is--" + model.get("icon") + "--");
-        if (typeof model.get("icon") === "undefined" ) {
-          if (typeof model.get("meta") !== "undefined") {
-            var meta = model.get("meta");
-      //      console.log("Checking meta fields: " + meta);
-            if (meta['provider'] !== "DataONE")
-              model['icon'] = "/icons/globus-logo-large.png";
-            else
-              model['icon'] = "/icons/d1-logo-large.png";
-          } else {
-            model['icon'] = "/images/whole_tale_logo.png";
-          }
+    let startIndex = (pageNumber-1) * paginateSize;
+    let endIndex = startIndex + paginateSize;
+
+    for(let i = startIndex; i < endIndex && i < arraySize; i++) {
+      let model = models.objectAt(i);
+      if (typeof model.get("icon") === "undefined" ) {
+        if (typeof model.get("meta") !== "undefined") {
+          var meta = model.get("meta");
+          if (meta['provider'] !== "DataONE")
+            model['icon'] = "/icons/globus-logo-large.png";
+          else
+            model['icon'] = "/icons/d1-logo-large.png";
+        } else {
+          model['icon'] = "/images/whole_tale_logo.png";
         }
-        var name = model.get('name');
-
-        if (name.length > 20)
-          model.set('tagName', name.substring(0,20) + "..");
-        else
-          model.set('tagName', name);
-
-        modelsInView.push(model);
       }
 
+      var description = model.get('description');
 
-      ++iterateNumber;
-    });
+      if ((description == null) ) {
+        model.set('tagName', "No Description ...");
+      } else {
+        if (description.length > 200)
+          model.set('tagName', description.substring(0,200) + "..");
+        else
+          model.set('tagName', description);
+      }
 
+      modelsInView.push(model);
+    }
+
+    console.log("Models in View!!!");
+    console.log(modelsInView);
     component.set("modelsInView", modelsInView);
-
-    //console.log(this.get("modelsInView"));
-
-
   },
+
   actions: {
     leftButtonClicked : function() {
       if (this.get('leftButtonState') === "disabled") return;
@@ -140,34 +144,13 @@ export default Ember.Component.extend({
       this.set('pageNumber', tabNumber);
       this.paginate(this, this.get('searchView'));
     },
-    searchFilter : function () {
-      var searchStr = this.get('searchStr');
-     // console.log(searchStr);
 
-      var modelsPromised = this.get("models");
-
-
-      var component = this;
-
-      modelsPromised.then(function(models) {
-        var searchView = [];
-
-        models.forEach(function(model) {
-          var name = model.get('name');
-
-          if (name.indexOf(searchStr) !== -1)
-              searchView.push(model);
-        });
-
-        component.set('searchView', searchView);
-        component.paginate(component, searchView);
-      });
-
+    onModelChange : function (model) {
+    //  alert("1");
+      this.sendAction('onLeftModelChange', model); // sends evnt to parent component
     },
-    select : function (model) {
-      this.set('item', model);
-      this.sendAction('action', model); // sends to compose.js controller, action itemSelected, based on template spec.
-    },
+
+
     openDeleteModal: function(id) {
       var selector = '.ui.' + id + '.modal';
       console.log("Selector: " +  selector);
@@ -196,53 +179,50 @@ export default Ember.Component.extend({
         this.sendAction("onAddNew");
     },
 
-    launch: function (image) {
+    launchTale: function (tale) {
       var component = this;
 
-      component.set("imageName", image.get('name'));
-
-      component.set("model_instantiating", true);
+      component.set("tale_instantiating_id", tale.id);
+      component.set("tale_instantiating", true);
 
       var onSuccess = function(item) {
         console.log(item);
-        component.set("model_instantiating", false);
-        component.set("model_instantiated", true);
+        component.set("tale_instantiating", false);
+        component.set("tale_instantiated", true);
 
         var instance = Ember.Object.create(JSON.parse(item));
 
         component.set("instance", instance);
 
         Ember.run.later((function() {
-          component.set("model_instantiated", false);
+          component.set("tale_instantiated", false);
         }), 30000);
       };
 
       var onFail = function(item) {
         // deal with the failure here
-        component.set("model_instantiating", false);
-        component.set("model_not_instantiated", true);
+        component.set("tale_instantiating", false);
+        component.set("tale_not_instantiated", true);
         item = JSON.parse(item);
 
         console.log(item);
         component.set("error_msg", item.message);
 
         Ember.run.later((function() {
-          component.set("model_not_instantiated", false);
+          component.set("tale_not_instantiated", false);
         }), 10000);
 
       };
 
       // submit: API
-      // httpCommand, taleid, imageId, name
-
+      // httpCommand, taleid, imageId, folderId, instanceId, name, description, isPublic, config
 
       this.get("apiCall").postInstance(
-        null,
-        image.get('_id'),
+        tale.get("_id"),
+        tale.get("imageId"),
         null,
         onSuccess,
         onFail);
     },
   }
-
 });

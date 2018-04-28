@@ -2,7 +2,18 @@
     <div class="wt paddleboard">
         <h2><img src="images/wholetale_logo_sm.png" />Current Tale <i class="fas fa-expand right"></i></h2>
     </div>
-    <div class="placeholder message">
-        <p>Choose from<br/>Launched Tales panel</p>
-    </div>
+
+
+      {{#if model.url}}
+          <iframe src="{{model.url}}" style="width:100%; height: 600px; padding: 0; margin: 0;" class="ui segment" >
+
+          </iframe>
+      {{else}}
+          <div class="placeholder message">
+              <p>Choose from<br/>Launched Tales panel</p>
+          </div>
+      {{/if}}
+
+
 </div>
+

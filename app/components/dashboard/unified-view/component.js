@@ -11,16 +11,25 @@ export default Ember.Component.extend({
     leftTitle: null,
     leftView: null,
     leftPanelColor: null,
+    leftModel: null,
 
     rightTitle: null,
     rightView: null,
     rightPanelColor: null,
 
+    init() {
+      this._super(...arguments);
+      console.log("Left View = " + this.get("leftView"));
+      console.log("Right View = " + this.get("rightView"));
+    },
     didRender() {
     },
 
     actions: {
-        dummy(value) {
-        }
+      onLeftModelChange: function (model) {
+      // alert("In unified route !!" + model.get("url"));
+        this.set("leftModel", model);
+
+      },
     }
 });

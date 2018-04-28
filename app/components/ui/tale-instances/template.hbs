@@ -1,0 +1,61 @@
+
+
+<div class="wt panel">
+
+  {{#if showSearch}}
+      <div class="ui secondary menu">
+        {{#if item}}
+            <div class="header item" style="font-size: 120%">
+                <span class="ui huge blue label" style="margin-right: 10px;">Currently Selected</span> {{item.name}}
+            </div>
+        {{/if}}
+
+          <div class="right menu">
+              <div class="ui large rounded icon search input">
+                {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
+
+
+                  <div class="results">
+
+                  </div>
+              </div>
+          </div>
+      </div>
+  {{/if}}
+    <div class="wt paddleboard">
+        <h2><i class="far fa-play-circle"></i> Launched Tales  <span class="quota">3 of 10</span></h2>
+    </div>
+
+  {{#each modelsInView as |model|}}
+      <div class="ui vertical menu fluid tales">
+          <a class="item" {{action 'onModelChange' model}}>
+              <img src="{{model.tale.illustration}}" />
+              <img src="{{model.tale.icon}}" class="env" />
+              <i class="fas fa-ellipsis-v"></i>
+              <p>{{model.name}}</p>
+          </a>
+      </div>
+  {{/each}}
+
+</div>
+
+
+<div class="ui grid">
+    <div class="center aligned sixteen wide column">
+        <div class="ui mini pagination menu">
+            <a class="{{leftButtonState}} item" {{action "leftButtonClicked"}}>
+                <i class="caret left icon"></i>
+            </a>
+          {{#each paginateArray as |paginateItem|}}
+              <a class="{{paginateItem.state}} item" {{action "tabClicked" paginateItem.number}}>
+                {{paginateItem.number}}
+              </a>
+          {{/each}}
+            <a class="{{rightButtonState}} item" {{action "rightButtonClicked"}}>
+                <i class="caret right icon"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+

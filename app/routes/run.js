@@ -14,6 +14,13 @@ export default AuthenticateRoute.extend({
 
     controller.set('model', model);
 
+  },
+  actions: {
+
+    onShowInstance: function (model) {
+      alert("In Run Route !!");
+      //this.sendAction('onShowInstance', model); // sends to parent component
+    },
   }
 
 

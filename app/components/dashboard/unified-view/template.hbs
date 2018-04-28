@@ -1,11 +1,14 @@
 <div class="ui stretched stackable grid" style="margin-bottom: 10px">
     <div class="row panel container">
+
        <div class="eleven wide column">
               {{component leftView
                 title=leftTitle
                 view=leftView
+                url=url
                 hint=leftHint
                 color=leftPanelColor
+                model=leftModel
               }}
         </div>
         <div class="five wide column">
@@ -13,6 +16,9 @@
             title=rightTitle
             hint=rightHint
             color=rightPanelColor
+            rightModelTop=rightModelTop
+            rightModelBottom=rightModelBottom
+            onLeftModelChange=(action "onLeftModelChange")
           }}
         </div>
     </div>

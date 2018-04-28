@@ -29,6 +29,8 @@ export default Ember.Controller.extend({
     this._super();
     // this.set('staticMenu', this.get('internalState').getIsStaticMenu());
     this.set('staticMenu', true);
+    this.get('internalState').setNewUIMode(true);
+
     // this.set('eventStream', this.getEventStream.call(this));
   },
 
