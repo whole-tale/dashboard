@@ -27,9 +27,7 @@ export default Ember.Component.extend({
 
     actions: {
       onLeftModelChange: function (model) {
-      // alert("In unified route !!" + model.get("url"));
         this.set("leftModel", model);
-
-      },
+      }
     }
 });

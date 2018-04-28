@@ -3,9 +3,10 @@ import Ember from 'ember';
 export default Ember.Component.extend({
 
   actions: {
-    dummy: function() {
-      //this.sendAction('action');
-    }
-  }
+    gotoPublish : function(name) {
+      scroll(0,0);
+      this.sendAction("gotoPublish", name);
+    },
+  },
 
 });

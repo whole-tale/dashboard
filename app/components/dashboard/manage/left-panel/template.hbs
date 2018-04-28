@@ -2,7 +2,52 @@
     <div class="wt paddleboard">
         <h2><img src="images/wholetale_logo_sm.png" />Current Tale <i class="fas fa-expand right"></i></h2>
     </div>
-    <div class="placeholder message">
-        <p>Manage<br/>Stuff !!!</p>
+
+  {{ui/files/bread-crumbs currentNavTitle=currentNavTitle currentBreadCrumb=currentBreadCrumb fileBreadCrumbs=fileBreadCrumbs isMain=true action="breadcrumbClicked"}}
+
+    <div class="ui stackable grid" >
+        <div class="two wide column">
+            <div class="ui collapsable grid">
+              {{ui/files/folder-navigator currentNavCommand=currentNavCommand action="navClicked"}}
+            </div>
+        </div>
+        <div class="fourteen wide column">
+            <div class="ui collapsable grid" >
+                <div class="fourteen wide column">
+                    <div style="margin-left: 10px">
+                      {{#if currentFolderId}}
+                        {{input type="file" value=file class="nice upload hidden" multiple=true}}
+                          <button class="ui blue basic button" {{action "selectUpload"}}>
+                              <i class="cloud upload icon"></i>
+                              <span>Upload</span>
+                          </button>
+                          <button class="ui blue basic button" {{action "openModal" "newfolder" on="click"}}>
+                              <i class="cloud upload icon"></i>
+                              <span>New Folder</span>
+                          </button>
+                      {{/if}}
+                    </div>
+                </div>
+                <div class="two wide column">
+                    <div class="ui fluid green labeled icon button" {{action 'openModal' "harvester" on='click'}}>
+                        <i class="plus icon"></i>
+                        Add Data
+                    </div>
+                </div>
+            </div>
+            <div class="ui collapsable grid" style="margin-left: 10px">
+                <div class="sixteen wide right aligned column">
+                  {{ui/files/directory-browser folderList=model.folderContents fileList=model.itemContents action="itemClicked"}}
+                </div>
+                <div class="sixteen wide column overlay">
+                  {{#unless currentBreadCrumb.isCollection}}
+                    {{ui/files/nice-dropzone folderId=currentFolderId refresh=(action 'refresh')}}
+                  {{/unless}}
+                </div>
+            </div>
+        </div>
     </div>
+
+  {{ui/files/create-folder-modal onNewFolder=(action "insertNewFolder")}}
+
 </div>

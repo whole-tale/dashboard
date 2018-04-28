@@ -29,17 +29,33 @@ export default Ember.Component.extend({
 
     var component = this;
 
-    models.forEach(function(item) {
-      component.get('store').findRecord('tale', item.get('taleId')).then(tale => {
-        item.set('tale', tale);
-      })
-    });
+    if (typeof models.then === "function") {
+      models.then(function(models) {
+        models.forEach(function(item) {
+          component.get('store').findRecord('tale', item.get('taleId')).then(tale => {
+            item.set('tale', tale);
+          })
+        });
+        var paginateSize = Number(component.get('paginateOn'));
+        component.set('paginateOn', paginateSize);
 
-    var paginateSize = Number(component.get('paginateOn'));
-    component.set('paginateOn', paginateSize);
+        component.set('searchView', models);
+        component.paginate(component, models);
 
-    component.set('completeModels', models);
-    component.paginate(component, models);
+      });
+      } else {
+      models.forEach(function(item) {
+        component.get('store').findRecord('tale', item.get('taleId')).then(tale => {
+          item.set('tale', tale);
+        })
+      });
+      var paginateSize = Number(component.get('paginateOn'));
+      component.set('paginateOn', paginateSize);
+
+      component.set('searchView', models);
+      component.paginate(component, models);
+    }
+
 
     this.set('addButtonLogo', '/icons/plus-sign.png');
   },
@@ -179,50 +195,6 @@ export default Ember.Component.extend({
         this.sendAction("onAddNew");
     },
 
-    launchTale: function (tale) {
-      var component = this;
 
-      component.set("tale_instantiating_id", tale.id);
-      component.set("tale_instantiating", true);
-
-      var onSuccess = function(item) {
-        console.log(item);
-        component.set("tale_instantiating", false);
-        component.set("tale_instantiated", true);
-
-        var instance = Ember.Object.create(JSON.parse(item));
-
-        component.set("instance", instance);
-
-        Ember.run.later((function() {
-          component.set("tale_instantiated", false);
-        }), 30000);
-      };
-
-      var onFail = function(item) {
-        // deal with the failure here
-        component.set("tale_instantiating", false);
-        component.set("tale_not_instantiated", true);
-        item = JSON.parse(item);
-
-        console.log(item);
-        component.set("error_msg", item.message);
-
-        Ember.run.later((function() {
-          component.set("tale_not_instantiated", false);
-        }), 10000);
-
-      };
-
-      // submit: API
-      // httpCommand, taleid, imageId, folderId, instanceId, name, description, isPublic, config
-
-      this.get("apiCall").postInstance(
-        tale.get("_id"),
-        tale.get("imageId"),
-        null,
-        onSuccess,
-        onFail);
-    },
   }
 });

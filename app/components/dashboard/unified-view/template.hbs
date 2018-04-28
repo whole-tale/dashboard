@@ -3,19 +3,11 @@
 
        <div class="eleven wide column">
               {{component leftView
-                title=leftTitle
-                view=leftView
-                url=url
-                hint=leftHint
-                color=leftPanelColor
                 model=leftModel
               }}
         </div>
         <div class="five wide column">
           {{component rightView
-            title=rightTitle
-            hint=rightHint
-            color=rightPanelColor
             rightModelTop=rightModelTop
             rightModelBottom=rightModelBottom
             onLeftModelChange=(action "onLeftModelChange")

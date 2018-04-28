@@ -10,8 +10,8 @@ export default AuthenticateRoute.extend({
     let currentUserId = this.get('userAuth').getCurrentUserID();
 
     return {
-        images: this.get('store').findAll('image', {reload: true}),
-        tales: this.get('store').findAll('tale', {reload: true, adapterOptions: { queryParams:{sort: "created", sortdir: "1", limit: "2000"}}}),
+        instances: this.get('store').findAll('instance', { reload: true }),
+        tales: this.get('store').findAll('tale', {reload: true, adapterOptions: { queryParams:{sort: "created", sortdir: "1", limit: "0"}}})
         };
   }
 });

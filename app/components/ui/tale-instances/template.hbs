@@ -23,7 +23,7 @@
       </div>
   {{/if}}
     <div class="wt paddleboard">
-        <h2><i class="far fa-play-circle"></i> Launched Tales  <span class="quota">3 of 10</span></h2>
+        <h2><i class="circle play icon"></i> Launched Tales  <span class="quota">{{pageNumber}} of {{totalPages}}</span></h2>
     </div>
 
   {{#each modelsInView as |model|}}
@@ -31,13 +31,13 @@
           <a class="item" {{action 'onModelChange' model}}>
               <img src="{{model.tale.illustration}}" />
               <img src="{{model.tale.icon}}" class="env" />
-              <i class="fas fa-ellipsis-v"></i>
+              <i class="large ellipsis vertical icon"></i>
               <p>{{model.name}}</p>
           </a>
       </div>
   {{/each}}
 
-</div>
+
 
 
 <div class="ui grid">
@@ -58,4 +58,5 @@
     </div>
 </div>
 
+</div>
 

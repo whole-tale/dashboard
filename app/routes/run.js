@@ -6,7 +6,7 @@ export default AuthenticateRoute.extend({
   model: function(params) {
     this._super();
 
-    return this.get('store').findAll('instance');
+    return this.get('store').findAll('instance', { reload: true });
   },
 
   setupController: function(controller, model) {
@@ -18,10 +18,17 @@ export default AuthenticateRoute.extend({
   actions: {
 
     onShowInstance: function (model) {
-      alert("In Run Route !!");
+     // alert("In Run Route !!");
       //this.sendAction('onShowInstance', model); // sends to parent component
     },
-  }
+
+    refreshCurrentRoute: function() {
+      console.log("Refreshing Data");
+      this.refresh();
+    }
+
+}
+
 
 
 });

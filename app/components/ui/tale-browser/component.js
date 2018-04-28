@@ -29,6 +29,8 @@ export default Ember.Component.extend({
 
     var modelsPromised = this.get("models");
 
+    console.log(modelsPromised);
+
     var component = this;
 
     modelsPromised.then(function(models) {
