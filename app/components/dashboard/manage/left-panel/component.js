@@ -29,7 +29,7 @@ export default Ember.Component.extend({
   fileBreadCrumbs: {},
   currentBreadCrumb: [],
   currentNavCommand: "home",
-  currentNavTitle: "Home",
+  currentNavTitle: "Home Directory",
   parentId: null,
   file: "",
 
@@ -65,7 +65,7 @@ export default Ember.Component.extend({
     // console.log(bc);
 
     var fileBreadCrumbs = state.getCurrentFileBreadcrumbs();
-    if (fileBreadCrumbs == null) {
+    if (!fileBreadCrumbs) {
       fileBreadCrumbs = [];
       state.setCurrentFileBreadcrumbs(fileBreadCrumbs); // new collection, reset crumbs
     }
@@ -108,7 +108,7 @@ export default Ember.Component.extend({
       this.set("currentNavTitle", nav.name);
 
       if (nav.command === "home" || nav.command === "user_data" || nav.command === "workspace") {
-        folderContents = this.store.query('folder', { "parentId": nav.parentId, "parentType": nav.parentType, "name": nav.name })
+        folderContents = controller.get('store').query('folder', { "parentId": nav.parentId, "parentType": nav.parentType, "name": nav.name })
           .then(folders => {
             if (folders.length) {
               let folder_id = folders.content[0].id;
@@ -137,7 +137,7 @@ export default Ember.Component.extend({
         });
         var payload = JSON.stringify({ "folder": recentFolders });
         // console.log(payload);
-        folderContents = this.store.query('resource', { "resources": payload });
+        folderContents = controller.get('store').query('resource', { "resources": payload });
         // console.log(folderContents);
         // alert("Not implemented yet ...");
       }

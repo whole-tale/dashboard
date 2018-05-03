@@ -5,8 +5,9 @@
     <a class="item">Team</a>
     <a class="item" {{action "boringUI" }}>Old UI</a>
     <div class="right menu">
+        <label class="item small font"><i class="far fa-user-circle white"></i>&nbsp; {{user.firstName}} {{user.lastName}}</label>
         <a class="item" {{action 'closeMenu' 'logout'}}>
-            Log Out
+            <i class="server white icon"></i>{{!--  Log Out --}}
         </a>
     </div>
 

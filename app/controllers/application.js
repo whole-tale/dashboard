@@ -30,7 +30,7 @@ export default Ember.Controller.extend({
     // this.set('staticMenu', this.get('internalState').getIsStaticMenu());
     this.set('staticMenu', true);
     this.get('internalState').setNewUIMode(true);
-
+    this.set('user', this.get('userAuth').getCurrentUser());
     // this.set('eventStream', this.getEventStream.call(this));
   },
 
@@ -51,6 +51,7 @@ export default Ember.Controller.extend({
   checkMyRouteName: Ember.computed(function() {
     return this.get('routing.currentRouteName');
   }),
+  currentUserName: 'Hallo, Damian',
   actions: {
     toggle: function(subSidebarName) {
       console.log(subSidebarName);
