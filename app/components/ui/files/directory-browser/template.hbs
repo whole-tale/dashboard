@@ -1,12 +1,13 @@
-<div class="droppable" style="height:100vh; overflow-y: scroll">
-  <table class="ui very basic single line table" style="margin:0;">
+<div class="droppable">
+  <table class="ui very basic table" style="margin: 0 15px; width: calc(100% - 30px);">
       <thead>
-      <tr>
-          <th>Name</th>
-          <th>Created</th>
-          <th>Last Modified</th>
-          <th>Size</th>
-      </tr></thead>
+        <tr>
+            <th width="85%" style="font-weight: 500;font-size: 12px;padding: 10px 0 0 0">Name</th>
+            {{!-- <th>Created</th>
+            <th>Last Modified</th> --}}
+            <th width="15%" style="font-weight: 500;font-size: 12px;padding: 10px 0 0 0">Size</th>
+        </tr>
+      </thead>
       <tbody>
 
       {{#each folderList as |item|}}
@@ -40,12 +41,12 @@
                            {{/ui-dropdown}}
                   {{/if}}
               </td>
-              <td >
+              {{!-- <td >
                 {{from-now item.created}}
               </td>
               <td >
                 {{from-now item.updated}}
-              </td>
+              </td> --}}
               <td >
                 {{bytes-to-readable item.size}}
               </td>

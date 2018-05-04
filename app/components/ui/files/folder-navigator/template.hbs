@@ -1,19 +1,29 @@
 <div class="ui grid">
     <div class="sixteen wide tablet computer only column">
-        <div class="ui vertical mini labeled compact icon menu">
+        <div class="ui vertical mini compact menu">
           {{#each navs as |nav|}}
-            {{#if (eq currentNavCommand nav.command)}}
-                <a class="active item" {{action "navClicked" nav}}>
-                    <i class="{{nav.icon}} icon"></i>
-                    {{nav.name}}
+            <div class="sixteen menu-item clickable" {{action "navClicked" nav}}>
+                {{#if (eq currentNavCommand nav.command)}}
+                <a class="active item">
+                    <div style="padding-left: 1rem; padding-top: 4px;">
+                        <span class="instructions">{{nav.instructions}}</span>
+                        <i class="fas fa-plus-circle icon blue large" style="float: right;"></i>
+                    </div>
+                    <div class="icon-wrapper">
+                        <i class="{{nav.icon}} icon big"></i> {{nav.name}}
+                    </div>
                 </a>
-            {{/if}}
-            {{#unless (eq currentNavCommand nav.command)}}
-                <a class="item" {{action "navClicked" nav}}>
-                    <i class="{{nav.icon}} icon"></i>
-                  {{nav.name}}
+                {{/if}}
+                {{#unless (eq currentNavCommand nav.command)}}
+                <a class="item">
+                    <div style="padding-left: 1rem; padding-top: 4px;">
+                        <span class="instructions">{{nav.instructions}}</span>
+                        <i class="fas fa-plus-circle icon blue large" style="float: right;"></i>
+                    </div>
+                    <div class="icon-wrapper"><i class="{{nav.icon}} icon big"></i> {{nav.name}}</div>
                 </a>
-            {{/unless}}
+                {{/unless}}
+            </div>
           {{/each}}
         </div>
     </div>

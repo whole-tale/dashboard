@@ -16,33 +16,36 @@ export default Ember.Service.extend({
         parentId: thisUserID,
         parentType : "user",
         icon : "home",
-        isFolder :  true
+        isFolder :  true,
+        instructions: 'Synced to local machine'
       },
       {
         name : "Data",
         command : "user_data",
         parentId : thisUserID,
         parentType : "user",
-        icon : "file",
-        isFolder :  true
+        icon: "linkify",
+        isFolder: true,
+        instructions: 'Linked from external sources'
       },
       {
-        name : "Workspace",
+        name : "Results",
         command : "workspace",
         parentId : thisUserID,          //TODO: Find out what the parent is
         parentType : "user",
         icon : "folder",
-        isFolder :  true                //TODO: Find out whether this is an actual folder
-      },
+        isFolder: true, //TODO: Find out whether this is an actual folder
+        instructions: 'Output from Tales'
+      }/*,
       {
         name : "Recent",
         command : "recent",
         parentId : null,
         parentType : null,
         icon : "calendar",
-        isFolder :  false
-      }
-
+        isFolder: false,
+        instructions: null
+      }*/
     ];
     },
     getFolderNavFor: function (navCommand) {

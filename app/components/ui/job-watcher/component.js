@@ -21,7 +21,7 @@ export default Ember.Component.extend({
   didInsertElement() {
     this._super(...arguments);
 
-    const jobs = this.jobs.toArray();
+    const jobs = this.jobs ? this.jobs.toArray() : [];
     if (jobs.length) {
       const { _watched, _past } = jobs.reduce((all, job) => {
         const status = job.get('status');

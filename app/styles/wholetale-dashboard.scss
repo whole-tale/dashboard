@@ -4,17 +4,37 @@
 
 /* Miscellaneous styles */
 
-html, body {
+$inverted-menu-bg: rgb(30, 46, 68);
+$inverted-menu-height: 48px;
+$main-menu-bg: rgb(206, 220, 226);
+$main-menu-height: 64px;
+$nav-vertical-menu-bg: rgb(243, 243, 243);
+$wt-paddleboard-panel-height: 50px;
+$wt-main-row-height: 52px;
+$bottom-separation: 2.5rem;
+
+@mixin main-row {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding: .6rem 1.6rem;
 }
 
 body {
   background: #d6e1e8;
 }
 
-
 /* Navigation - Top Nav */
 
-.ui.inverted.menu.wt.top {
+// NEW UI
+.main-row {
+  @include main-row;
+
+  .ui.button,
+  .ui.breadcrumb {
+    margin-bottom: 0 !important;
+  }
+}
+
+ui.inverted.menu.wt.top {
   background: #132f43;
   font-size: 1.4rem;
   -moz-border-radius: 0;
@@ -50,7 +70,86 @@ body {
   width: 1.5em;
   margin-right: .5rem;
 }
+.item.wt.gravatar-container {
+  padding: 0.92857143em 0;
+  .gravatar {
+    margin-right: 0;
+    border-radius: 50%;
+  }
+}
 
+
+/* Navigation NEW UI - Manage section starts */
+.folder-navigator-container {
+  background: rgba(0, 0, 0, 0.05);
+  border-bottom-left-radius: 14px;
+  $difference: $inverted-menu-height+$main-menu-height+$wt-paddleboard-panel-height+$wt-main-row-height;
+  height: calc(100vh - #{$difference} - #{$bottom-separation});
+  box-shadow: 2px 0px 0px 0px rgba(34, 36, 38, 0.15);
+
+  .folder-grid {
+    display: inline;
+
+    .grid > .tablet.ony,
+    .grid > .computer.only {
+      .ui.menu {
+        border-radius: 0;
+        border: none;
+        width: 100% !important;
+        background: transparent;
+        border-bottom-color: transparent;
+        box-shadow: 0px 0px 0px 0px rgba(34, 36, 38, 0.15);
+
+
+        &.vertical {
+          .instructions {
+            color: rgba(0, 0, 0, 0.4);
+            font-size: 12px;
+            font-style: italic;
+          }
+          .big.icon {
+            margin: 0.25rem;
+          }
+          .menu-item {
+            border-bottom: 1px solid $main-menu-bg;
+            .item,
+            .active {
+              background: transparent; //rgba(0, 0, 0, 0.05);
+            }
+            .item {
+              text-align: left;
+              padding: 0;
+              min-height: 80px;
+              .icon-wrapper {
+                padding: 0.92857143em 1.14285714em;
+              }
+            }
+
+          }
+          .menu-item:last-of-type {
+            border-bottom: none;
+          }
+          .menu-item > a:hover {
+            // background: rgba(0, 0, 0, 0.03);
+            color: rgba(0, 0, 0, 0.95);
+            font-weight: 900;
+          }
+
+          .item:before {
+            height: 0;
+            background: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+.droppable {
+  height: calc(100vh - #{$main-menu-height} - #{$inverted-menu-height} - #{$bottom-separation});
+  overflow-y: auto;
+}
+/* Navigation NEW UI - Manage section ends */
 
 /* Navigation - WT Dashboard modes */
 
@@ -60,7 +159,7 @@ body {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  padding: .3rem 2rem 1rem;
+  padding: .3rem 2rem 0 2rem;
 }
 .ui.menu.wt.dash .item {
   font-size: 1.2rem;
@@ -229,8 +328,6 @@ body {
   margin: 0 1.5rem 0 0;
 }
 
-
-
 /* Panels - general */
 
 .ui.grid {
@@ -259,6 +356,10 @@ body {
   box-shadow: 0 0 4px rgba(0,0,0,0.075);
   padding: 0;
   height: 100%;
+
+  &.manage {
+    height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height}));
+  }
 }
 .wt.panel.bg.grey {
   background: #f3f3f3;
@@ -268,8 +369,7 @@ body {
 }
 
 .wt.panel .wt.paddleboard {
-  border-bottom: 1px solid rgba(0,0,0,0.20);
-  padding: .8rem 1.6rem;
+  @include main-row;
   letter-spacing: .02rem;
   background: #fff;
   -webkit-border-top-left-radius: 1rem;
@@ -398,22 +498,3 @@ body {
 
 @media (max-width: 574px) {
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
