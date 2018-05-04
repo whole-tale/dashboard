@@ -5,12 +5,13 @@
     <a class="item">Team</a>
     <a class="item" {{action "boringUI" }}>Old UI</a>
     <div class="right menu">
-        <label class="item small font"><i class="far fa-user-circle white"></i>&nbsp; {{user.firstName}} {{user.lastName}}</label>
+        <div class="item wt brand gravatar-container">
+            <img src="{{user.gravatar_baseUrl}}" class="gravatar" />
+        </div>
+        <label class="item small font" style="padding-left: 0;">{{user.firstName}} {{user.lastName}}</label>
         <a class="item" {{action 'closeMenu' 'logout'}}>
             <i class="server white icon"></i>{{!--  Log Out --}}
         </a>
     </div>
-
-
 </div>
 

@@ -70,6 +70,14 @@ ui.inverted.menu.wt.top {
   width: 1.5em;
   margin-right: .5rem;
 }
+.item.wt.gravatar-container {
+  padding: 0.92857143em 0;
+  .gravatar {
+    margin-right: 0;
+    border-radius: 50%;
+  }
+}
+
 
 /* Navigation NEW UI - Manage section starts */
 .folder-navigator-container {
@@ -102,12 +110,21 @@ ui.inverted.menu.wt.top {
           .big.icon {
             margin: 0.25rem;
           }
-          .item,
-          .active {
-            background: transparent;//rgba(0, 0, 0, 0.05);
-          }
           .menu-item {
             border-bottom: 1px solid $main-menu-bg;
+            .item,
+            .active {
+              background: transparent; //rgba(0, 0, 0, 0.05);
+            }
+            .item {
+              text-align: left;
+              padding: 0;
+              min-height: 80px;
+              .icon-wrapper {
+                padding: 0.92857143em 1.14285714em;
+              }
+            }
+
           }
           .menu-item:last-of-type {
             border-bottom: none;

@@ -11,7 +11,7 @@ export default Ember.Service.extend({
 
     return [
       {
-        name : "Home Directory",
+        name : "Home",
         command : "home",
         parentId: thisUserID,
         parentType : "user",
@@ -20,11 +20,11 @@ export default Ember.Service.extend({
         instructions: 'Synced to local machine'
       },
       {
-        name : "Registered Data",
+        name : "Data",
         command : "user_data",
         parentId : thisUserID,
         parentType : "user",
-        icon : "linkify",
+        icon: "linkify",
         isFolder: true,
         instructions: 'Linked from external sources'
       },
@@ -36,7 +36,7 @@ export default Ember.Service.extend({
         icon : "folder",
         isFolder: true, //TODO: Find out whether this is an actual folder
         instructions: 'Output from Tales'
-      },
+      }/*,
       {
         name : "Recent",
         command : "recent",
@@ -45,8 +45,7 @@ export default Ember.Service.extend({
         icon : "calendar",
         isFolder: false,
         instructions: null
-      }
-
+      }*/
     ];
     },
     getFolderNavFor: function (navCommand) {

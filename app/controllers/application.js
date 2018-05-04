@@ -30,7 +30,15 @@ export default Ember.Controller.extend({
     // this.set('staticMenu', this.get('internalState').getIsStaticMenu());
     this.set('staticMenu', true);
     this.get('internalState').setNewUIMode(true);
-    this.set('user', this.get('userAuth').getCurrentUser());
+    this.get('userAuth').getCurrentUserFromServer().then(
+      (user) => {
+        this.set('user', user);
+      },
+      (error) => {
+        console.log(`There was an error loading the logged user: ${error}`);
+      }
+    );
+    
     // this.set('eventStream', this.getEventStream.call(this));
   },
 
