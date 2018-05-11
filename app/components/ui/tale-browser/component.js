@@ -43,6 +43,7 @@ export default Ember.Component.extend({
     });
 
     this.set('addButtonLogo', '/icons/plus-sign.png');
+    this.setFilter();
   },
   didRender() {
     $('.selectable.cards .image').dimmer({
