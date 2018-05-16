@@ -1,10 +1,9 @@
-
 /* global require, module */
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 const isTesting = process.env.EMBER_ENV === 'test';
 
-module.exports = function(defaults) {
+module.exports = function (defaults) {
   var app = new EmberApp(defaults, {
     // Add options here
     hinting: !isTesting,
@@ -15,7 +14,32 @@ module.exports = function(defaults) {
       useLintTree: false
     },
     'ember-cli-qunit': {
-     useLintTree: false
+      useLintTree: false
+    },
+    'ember-2-legacy': {
+      'ember-k': false,
+      'safe-string': false,
+      'enumerable-contains': false,
+      'underscore-actions': false,
+      'reversed-observer-args': false,
+      'initializer-arity': false,
+      'router-resouce': false,
+      'current-when': false,
+      'controller-wrapped': false,
+      'application-registry': false,
+      'immediate-observer': false,
+      'string-fmt': false,
+      'ember-freezable': false,
+      'component-defaultLayout': false,
+      'ember-binding': false,
+      'input-transform': false,
+      'deprecation-options': false,
+      'orphaned-outlets': false,
+      'warn-options': false,
+      'resolver-function': false,
+      'init-attrs': false,
+      'render-support': false,
+      'property-required': false
     },
 
     emberCliDropzonejs: {
