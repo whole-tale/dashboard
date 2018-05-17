@@ -43,6 +43,7 @@ export default Ember.Component.extend({
     });
 
     this.set('addButtonLogo', '/icons/plus-sign.png');
+    this.setFilter();
   },
   didRender() {
     $('.selectable.cards .image').dimmer({
@@ -194,30 +195,36 @@ export default Ember.Component.extend({
     },
     searchFilter : function () {
       let searchStr = this.get('searchStr');
-    //  console.log(searchStr);
+       //  console.log(searchStr);
 
       const filteredSet = this.get("filteredSet");
       const component = this;
 
-      let searchView = [];
-      filteredSet.forEach(model => {
-        let title = model.get('title');
-        if (new RegExp(searchStr, "i").test(title)) {
-          searchView.push(model);
-        }
+      let promise = new Ember.RSVP.Promise((resolve) => {
+        let searchView = [];
+        filteredSet.forEach(model => {
+          let title = model.get('title');
+          if (new RegExp(searchStr, "i").test(title)) {
+            searchView.push(model);
+          }
+        });
+        resolve(searchView);
       });
 
-      component.set('searchView', searchView);
-      component.paginate(component, searchView);
+      promise.then((searchView) => {
+        component.set('searchView', searchView);
+        component.paginate(component, searchView);
+      });
     },
-    select : function (model) {
+
+    select: function (model) {
       this.set('item', model);
       this.sendAction('action', model); // sends to compose.js controller, action itemSelected, based on template spec.
     },
 
     openDeleteModal: function(id) {
       var selector = '.ui.' + id + '.modal';
-      console.log("Selector: " +  selector);
+      console.log("Selector: " + selector);
       $(selector).modal('show');
     },
 
@@ -225,7 +232,9 @@ export default Ember.Component.extend({
       console.log("Deleting model " + model.name);
       var component = this;
 
-      model.destroyRecord({ reload: true }).then( function () {
+      model.destroyRecord({
+        reload: true
+      }).then(function () {
         // refresh
 //        component.get('store').findAll('tale', { reload: true }).then(function(tales) {
           component.paginate(component, component.get('models'));
