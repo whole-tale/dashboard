@@ -1,6 +1,5 @@
 <div class="wt panel manage">
     <div class="wt paddleboard">
-        {{!-- <h2><img src="images/wholetale_logo_sm.png" />Current Tale <i class="fas fa-expand right"></i></h2> --}}
         <h2><i class="far fa-hdd"></i> Data <span style="font-style:italic;">Import or link data to use in Tales</span></h2>
     </div>
 
@@ -10,7 +9,6 @@
                 {{#if currentFolderId}}
                     {{input type="file" value=file class="nice upload hidden" multiple=true}}
                     <button class="ui small blue button" {{action "openModal" "newfolder" on="click" }}>
-                        {{!-- <i class="cloud upload icon"></i> --}}
                         <span>New Folder</span>
                     </button>
                 {{/if}}
@@ -28,29 +26,6 @@
             </div>
         </div>
         <div class="eleven wide column">
-            {{!-- <div class="ui collapsable grid" >
-                <div class="twelve wide column">
-                    <div style="margin-left: 10px">
-                      {{#if currentFolderId}}
-                        {{input type="file" value=file class="nice upload hidden" multiple=true}}
-                          <button class="ui blue basic button" {{action "selectUpload"}}>
-                              <i class="cloud upload icon"></i>
-                              <span>Upload</span>
-                          </button>
-                          <button class="ui blue basic button" {{action "openModal" "newfolder" on="click"}}>
-                              <i class="cloud upload icon"></i>
-                              <span>New Folder</span>
-                          </button>
-                      {{/if}}
-                    </div>
-                </div>
-                <div class="four wide column">
-                    <div class="ui fluid green labeled icon button" {{action 'openModal' "harvester" on='click'}}>
-                        <i class="plus icon"></i>
-                        Add Data
-                    </div>
-                </div>
-            </div> --}}
             <div class="ui collapsable grid" style="margin-left: 10px">
                 <div class="sixteen wide right aligned column">
                   {{ui/files/directory-browser folderList=model.folderContents fileList=model.itemContents action="itemClicked"}}
@@ -64,6 +39,6 @@
         </div>
     </div>
 
-  {{ui/files/create-folder-modal onNewFolder=(action "insertNewFolder")}}
+    {{ui/files/create-folder-modal onNewFolder=(action "insertNewFolder")}}
 
 </div>

@@ -7,7 +7,7 @@ export default Ember.Controller.extend({
   },
   actions: {
     login: function(url) {
-      var content = Ember.$.ajax(url);
+      let content = Ember.$.ajax(url);
       window.open(url, "_self");
       console.log(content);
     },

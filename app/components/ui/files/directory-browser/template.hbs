@@ -120,7 +120,7 @@
     <div class="ui form attached fluid segment">
         <div class="field">
             <label>Type REMOVE into the box below, then click confirm.</label>
-            {{input type="text" value=confirmValue action=(action "confirmValueEquals" "REMOVE") on="input"}}
+            {{input value=confirmValue action=(action "confirmValueEquals" "REMOVE")}}
         </div>
         <div class="ui button {{confirmDisabled}}" {{action "confirmedRemove" on="click"}}>Confirm</div>
     </div>
