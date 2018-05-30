@@ -1,91 +1,96 @@
-module.exports = function() {
-    return {
-        moment: {
-            // Options:
-            // 'all' - all years, all timezones
-            // '2010-2020' - 2010-2020, all timezones
-            // 'none' - no data, just timezone API
-            includeTimezone: 'all'
-        }
+'use strict';
+
+module.exports = function () {
+  return {
+    moment: {
+      // Options:
+      // 'all' - all years, all timezones
+      // '2010-2020' - 2010-2020, all timezones
+      // 'none' - no data, just timezone API
+      includeTimezone: 'all'
     }
+  }
 };
 
-module.exports = function(environment) {
-    var ENV = {
-        taleIconHeight: "360",
-        taleIconWidth: "360",
+module.exports = function (environment) {
+  let ENV = {
+    taleIconHeight: "360",
+    taleIconWidth: "360",
 
-        modulePrefix: 'wholetale',
-        environment: environment,
-        rootURL: '/',
-        locationType: 'auto',
-        torii: {
-            providers: { /*....*/ }
-        },
-        EmberENV: {
-            FEATURES: {
-                // Here you can enable experimental features on an ember canary build
-                // e.g. 'with-controller': true
-            },
-            EXTEND_PROTOTYPES: {
-                // Prevent Ember Data from overriding Date.parse.
+    modulePrefix: 'wholetale',
+    environment: environment,
+    rootURL: '/',
+    locationType: 'auto',
+    torii: {
+      providers: { /*....*/ }
+    },
+    EmberENV: {
+      FEATURES: {
+        // Here you can enable experimental features on an ember canary build
+        // e.g. 'with-controller': true
+      },
+      EXTEND_PROTOTYPES: {
+        // Prevent Ember Data from overriding Date.parse.
+        Date: false
+      },
+      'ember-oauth2': {
+        model: {}
+      }
+    },
 
-                Date: false
-            }
-        },
+    APP: {
+      // Here you can pass flags/options to your application instance
+      // when it is created
+    }
+  };
 
-        APP: {
-            // Here you can pass flags/options to your application instance
-            // when it is created
-        }
-    };
+  ENV['ember-cli-mirage'] = {
+    enabled: false
+  };
 
+  if (environment === 'test') {
     ENV['ember-cli-mirage'] = {
-        enabled: false
+      enabled: true
     };
+    // Testem prefers this...
+    ENV.locationType = 'none';
 
-    if (environment === 'test') {
-        ENV['ember-cli-mirage'] = { enabled: true };
-        // Testem prefers this...
-        ENV.locationType = 'none';
+    // keep test console output quieter
+    ENV.APP.LOG_ACTIVE_GENERATION = false;
+    ENV.APP.LOG_VIEW_LOOKUPS = false;
 
-        // keep test console output quieter
-        ENV.APP.LOG_ACTIVE_GENERATION = false;
-        ENV.APP.LOG_VIEW_LOOKUPS = false;
+    ENV.APP.rootElement = '#ember-testing';
+    ENV.apiHost = '';
+    ENV.apiPath = '/api';
+    ENV.apiUrl = '';
+    // ENV.APP.autoboot = false;
+  }
 
-        ENV.APP.rootElement = '#ember-testing';
-        ENV.apiHost = '';
-        ENV.apiPath = '/api';
-        ENV.apiUrl = '';
-    }
+  if (environment === 'test-dev') {
+    ENV.apiHost = 'https://girdertest.wholetale.org';
+    ENV.apiPath = 'api/v1';
+    ENV.apiUrl = 'https://girdertest.wholetale.org/api/v1';
+  }
 
-    if (environment === 'test-dev') {
-        ENV.apiHost = 'https://girdertest.wholetale.org';
-        ENV.apiPath = 'api/v1';
-        ENV.apiUrl = 'https://girdertest.wholetale.org/api/v1';
-    }
+  if (environment === 'development') {
+    // ENV.APP.LOG_RESOLVER = true;
+    // ENV.APP.LOG_ACTIVE_GENERATION = true;
+    // ENV.APP.LOG_TRANSITIONS = true;
+    // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
+    // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV.apiHost = 'https://girder.dev.wholetale.org';
+    ENV.apiPath = 'api/v1';
+    ENV.apiUrl = 'https://girder.dev.wholetale.org/api/v1';
+  }
 
-    if (environment === 'development') {
-        // ENV.APP.LOG_RESOLVER = true;
-        // ENV.APP.LOG_ACTIVE_GENERATION = true;
-        // ENV.APP.LOG_TRANSITIONS = true;
-        // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
-        // ENV.APP.LOG_VIEW_LOOKUPS = true;
-        ENV.apiHost = 'https://girder.dev.wholetale.org';
-        ENV.apiPath = 'api/v1';
-        ENV.apiUrl = 'https://girder.dev.wholetale.org/api/v1';
-    }
+  if (environment === 'production') {
+    ENV.apiHost = 'apiHOST';
+    ENV.apiPath = 'api/v1';
+    ENV.apiUrl = ENV.apiHost + '/' + ENV.apiPath;
+  }
 
-    if (environment === 'production') {
-        ENV.apiHost = 'apiHOST';
-        ENV.apiPath = 'api/v1';
-        ENV.apiUrl = ENV.apiHost + '/' + ENV.apiPath;
-    }
-
-    return ENV;
+  return ENV;
 };
-
-
 
 /*
 

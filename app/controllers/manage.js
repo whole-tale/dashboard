@@ -1,9 +1,7 @@
 import Ember from 'ember';
-var inject = Ember.inject;
-
+const inject = Ember.inject;
 
 export default Ember.Controller.extend({
-
     init() {
 
     },

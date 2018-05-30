@@ -1,6 +1,5 @@
 import Ember from 'ember';
-
-var inject = Ember.inject;
+const inject = Ember.inject;
 
 function wrapFolder(folderID, folderName) {
   return {
@@ -20,9 +19,7 @@ Ember.TextField.reopen({
   attributeBindings: ['multiple']
 });
 
-
 export default Ember.Component.extend({
-
   internalState: inject.service(),
   store: inject.service(),
   folderNavs: inject.service(),

@@ -1,17 +1,10 @@
-<div class="ui stretched stackable grid" style="margin-bottom: 10px">
-    <div class="row panel container">
-
-       <div class="eleven wide column">
-              {{component leftView
-                model=leftModel
-              }}
-        </div>
-        <div class="five wide column">
-          {{component rightView
-            rightModelTop=rightModelTop
-            rightModelBottom=rightModelBottom
-            onLeftModelChange=(action "onLeftModelChange")
-          }}
-        </div>
+<div class="ui stretched stackable grid">
+  <div class="row panel container">
+    <div class="eleven wide column">
+      {{component leftView model=leftModel }}
     </div>
+    <div class="five wide column">
+      {{component rightView rightModelTop=rightModelTop rightModelBottom=rightModelBottom onLeftModelChange=(action "onLeftModelChange")}}
+    </div>
+  </div>
 </div>

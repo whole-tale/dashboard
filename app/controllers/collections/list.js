@@ -1,11 +1,11 @@
 import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
+import { alias } from '@ember/object/computed';
 
 export default Ember.Controller.extend({
-  collections: Ember.computed.alias('content'),
+  collections: alias('model'),
   isSelected : null,
   init() {
-
     var isSel= {};
     var models = this.collections;
     console.log(models);

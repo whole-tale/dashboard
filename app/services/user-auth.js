@@ -2,7 +2,7 @@ import Ember from 'ember';
 import config from '../config/environment';
 
 export default Ember.Service.extend({
-  tokenHandler: Ember.inject.service("token-handler"),
+  tokenHandler: Ember.inject.service('token-handler'),
   store: Ember.inject.service('store'),
   authRequest: Ember.inject.service(),
 
