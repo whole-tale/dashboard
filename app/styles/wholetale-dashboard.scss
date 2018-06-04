@@ -204,6 +204,7 @@ ui.inverted.menu.wt.top {
 
 .ui.vertical.menu.tales {
   margin-top: 0;
+  margin-bottom: 0;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -331,6 +332,11 @@ ui.inverted.menu.wt.top {
 /* Panels - general */
 
 .ui.grid {
+  &.bottom {
+    position: absolute;
+    bottom: 0.5rem;
+    left: calc(50% - 78px);
+  }
 }
 .ui.grid > .row.dashboard-modes {
   padding-top: 0;

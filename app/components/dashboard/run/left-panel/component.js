@@ -1,52 +1,62 @@
 import Ember from 'ember';
-import service from "ember-service/inject";
+import inject from "ember-service/inject";
 
 export default Ember.Component.extend({
-  router: service("-routing"),
+  router: inject("-routing"),
 
-  loadError:  false,
+  loadError: false,
   model: null,
 
-  result : {
-    CouldNotLoadUrl:1,
-    UrlLoadedButContentCannotBeAccessed:2,
-    UrlLoadedContentCanBeAccessed:3
+  result: {
+    CouldNotLoadUrl: 1,
+    UrlLoadedButContentCannotBeAccessed: 2,
+    UrlLoadedContentCanBeAccessed: 3
   },
 
-  modelChanged: Ember.observer('model', function() {
-      console.log("Updated !");
+  modelChanged: Ember.observer('model', function () {
+    console.log("Updated !");
 
-      // gets the url that is being used by the iFrame
-      var url = this.get('model').url;
+    // gets the url that is being used by the iFrame
+    var url = this.get('model').url;
 
-    }),
+  }),
 
   didRender() {
-    // Like Jquery on page load
-
+    // Similar to Jquery on page load
     // doesn't work because of the handlebars. But even if you unhide the element, the iframes show
     // that they load ok even though some are blocked and some are not.
-//    var frame = document.getElementById('frontendDisplay');
+    let frame = document.getElementById('frontendDisplay');
+    if (frame) {
+      frame.onload = function (e) {  
+        console.dir(e);
+        let iframeWindow = frame.contentWindow;
+        let that = $(this)[0];
+        
+        window.addEventListener("message", function(event) {
+          if (event.origin !== window.location.origin) {
+            // something from an unknown domain, let's ignore it
+            return;
+          }
+          console.log( "received: " + event.data );
+        }, false);
 
-//    frame.onload = function(e){
-  //    console.dir(e)
-    //};
-
+        iframeWindow.parent.postMessage('message sent', window.location.origin);
+      };
+    }
   },
-
 
   actions: {
     stop: function () {
       this.set("model", null);
     },
 
-    openDeleteModal: function(id) {
+    openDeleteModal: function (id) {
       var selector = '.ui.' + id + '.modal';
-      console.log("Selector: " +  selector);
+      console.log("Selector: " + selector);
       $(selector).modal('show');
     },
 
-    approveDelete: function(model) {
+    approveDelete: function (model) {
       console.log("Deleting model " + model.name);
       model.deleteRecord();
       model.save();
@@ -56,12 +66,9 @@ export default Ember.Component.extend({
       return false;
     },
 
-    denyDelete: function() {
+    denyDelete: function () {
       return true;
     }
 
-
-
   }
-
 });

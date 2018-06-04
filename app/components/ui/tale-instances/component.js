@@ -3,22 +3,21 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   store: Ember.inject.service(),
   userAuth: Ember.inject.service(),
-  apiCall : Ember.inject.service('api-call'),
+  apiCall: Ember.inject.service('api-call'),
   internalState: Ember.inject.service(),
-  taleInstanceName : "",
+  taleInstanceName: "",
   filteredSet: Ember.A(),
   filters: ['All', 'Mine', 'Published', 'Recent'],
   filter: 'All',
   numberOfModels: 0,
   pageNumber: 1,
-  totalPages:1,
+  totalPages: 1,
   leftButtonState: "disabled",
   rightButtonState: "disabled",
-  lastAnimationTime : 0,
-  animationRefreshTime : 500, // min ms time between animation refreshes
-  item : null,
-  guid : null,
-
+  lastAnimationTime: 0,
+  animationRefreshTime: 500, // min ms time between animation refreshes
+  item: null,
+  guid: null,
 
   init() {
     this._super(...arguments);
@@ -30,8 +29,8 @@ export default Ember.Component.extend({
     var component = this;
 
     if (typeof models.then === "function") {
-      models.then(function(models) {
-        models.forEach(function(item) {
+      models.then(function (models) {
+        models.forEach(function (item) {
           component.get('store').findRecord('tale', item.get('taleId')).then(tale => {
             item.set('tale', tale);
           })
@@ -43,8 +42,8 @@ export default Ember.Component.extend({
         component.paginate(component, models);
 
       });
-      } else {
-      models.forEach(function(item) {
+    } else {
+      models.forEach(function (item) {
         component.get('store').findRecord('tale', item.get('taleId')).then(tale => {
           item.set('tale', tale);
         })
@@ -56,17 +55,12 @@ export default Ember.Component.extend({
       component.paginate(component, models);
     }
 
-
     this.set('addButtonLogo', '/icons/plus-sign.png');
   },
-  didRender() {
-  },
-  didUpdate() {
-  },
-
+  didRender() {},
+  didUpdate() {},
 
   paginate(component, models) {
-
     var paginateSize = component.get('paginateOn');
     var pageNumber = component.get('pageNumber');
     var arraySize = models.get('length');
@@ -76,8 +70,8 @@ export default Ember.Component.extend({
     component.set('numberOfModels', arraySize);
 
     if (models.get('length') === 0) {
-      component.set("modelsInView", []);
-      component.set("paginateArray", []);
+      component.set('modelsInView', []);
+      component.set('paginateArray', []);
       component.set('rightButtonState', "disabled");
       component.set('lefttButtonState', "disabled");
       component.set('totalPages', 0);
@@ -89,11 +83,17 @@ export default Ember.Component.extend({
     var modelsInView = [];
     var paginateArray = [];
 
-    for (var i=1; i<=totalPages; ++i) {
-      if (i==pageNumber)
-        paginateArray[i] = {number: i, state: "active"};
+    for (var i = 1; i <= totalPages; ++i) {
+      if (i == pageNumber)
+        paginateArray[i] = {
+          number: i,
+          state: "active"
+        };
       else
-        paginateArray[i] = {number: i, state: ""};
+        paginateArray[i] = {
+          number: i,
+          state: ""
+        };
     }
 
     component.set("paginateArray", paginateArray);
@@ -108,12 +108,12 @@ export default Ember.Component.extend({
     else
       component.set('rightButtonState', "");
 
-    let startIndex = (pageNumber-1) * paginateSize;
+    let startIndex = (pageNumber - 1) * paginateSize;
     let endIndex = startIndex + paginateSize;
 
-    for(let i = startIndex; i < endIndex && i < arraySize; i++) {
+    for (let i = startIndex; i < endIndex && i < arraySize; i++) {
       let model = models.objectAt(i);
-      if (typeof model.get("icon") === "undefined" ) {
+      if (typeof model.get("icon") === "undefined") {
         if (typeof model.get("meta") !== "undefined") {
           var meta = model.get("meta");
           if (meta['provider'] !== "DataONE")
@@ -127,11 +127,11 @@ export default Ember.Component.extend({
 
       var description = model.get('description');
 
-      if ((description == null) ) {
+      if ((description == null)) {
         model.set('tagName', "No Description ...");
       } else {
         if (description.length > 200)
-          model.set('tagName', description.substring(0,200) + "..");
+          model.set('tagName', description.substring(0, 200) + "..");
         else
           model.set('tagName', description);
       }
@@ -145,56 +145,57 @@ export default Ember.Component.extend({
   },
 
   actions: {
-    leftButtonClicked : function() {
+    leftButtonClicked: function () {
       if (this.get('leftButtonState') === "disabled") return;
-      this.set('pageNumber', this.get('pageNumber') -1);
+      this.set('pageNumber', this.get('pageNumber') - 1);
       this.paginate(this, this.get('searchView'));
     },
-    rightButtonClicked : function() {
+    rightButtonClicked: function () {
       if (this.get('rightButtonState') === "disabled") return;
-      this.set('pageNumber', this.get('pageNumber') +1);
+      this.set('pageNumber', this.get('pageNumber') + 1);
       this.paginate(this, this.get('searchView'));
     },
-    tabClicked : function(tabNumber) {
+    tabClicked: function (tabNumber) {
       // alert("Clicked " + tabNumber)
       this.set('pageNumber', tabNumber);
       this.paginate(this, this.get('searchView'));
     },
 
-    onModelChange : function (model) {
-    //  alert("1");
+    onModelChange: function (model) {
+      //  alert("1");
       this.sendAction('onLeftModelChange', model); // sends evnt to parent component
     },
 
 
-    openDeleteModal: function(id) {
+    openDeleteModal: function (id) {
       var selector = '.ui.' + id + '.modal';
-      console.log("Selector: " +  selector);
+      console.log("Selector: " + selector);
       $(selector).modal('show');
     },
 
-    approveDelete: function(model) {
+    approveDelete: function (model) {
       console.log("Deleting model " + model.name);
       var component = this;
 
-      model.destroyRecord({ reload: true }).then( function () {
+      model.destroyRecord({
+        reload: true
+      }).then(function () {
         // refresh
-//        component.get('store').findAll('tale', { reload: true }).then(function(tales) {
-          component.paginate(component, component.get('models'));
-  //      });
+        //        component.get('store').findAll('tale', { reload: true }).then(function(tales) {
+        component.paginate(component, component.get('models'));
+        //      });
       });
 
       return false;
     },
 
-    denyDelete: function() {
+    denyDelete: function () {
       return true;
     },
 
-    addNew: function() {
-        this.sendAction("onAddNew");
-    },
-
+    addNew: function () {
+      this.sendAction("onAddNew");
+    }
 
   }
 });
