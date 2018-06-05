@@ -10,7 +10,7 @@
   "scripts": {
     "build": "ember build",
     "lint:js": "eslint ./*.js app blueprints config lib server tests",
-    "start": "ember serve",
+    "start": "./node_modules/.bin/ember s",
     "test": "ember test"
   },
   "repository": "",
