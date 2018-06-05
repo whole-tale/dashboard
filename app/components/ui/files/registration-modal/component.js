@@ -14,7 +14,6 @@ export default Ember.Component.extend({
     notificationHandler: Ember.inject.service(),
 
     datasources: Ember.A(),
-    dev: config.dev,
     num_results: -1,
     error: false,
     errorMessage: '',
