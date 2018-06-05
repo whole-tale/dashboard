@@ -14,7 +14,7 @@ export default Ember.Component.extend({
     notificationHandler: Ember.inject.service(),
 
     datasources: Ember.A(),
-
+    dev: config.dev,
     num_results: -1,
     error: false,
     errorMessage: '',
@@ -25,6 +25,9 @@ export default Ember.Component.extend({
     name: '',
     repository: '',
     size: '',
+    useDev: '',
+    devUrl: 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2',
+    prodUrl: 'https://cn.dataone.org/cn/v2',
 
     didInsertElement() {
         this._super(...arguments);
@@ -108,9 +111,15 @@ export default Ember.Component.extend({
     },
 
     actions: {
+
+        updateDev(value) {
+            // Called if the `use dev` checkbox is clicked
+            this.set('useDev', value)
+        },
+
         register() {
             this.set('error', false);
-
+            let self = this;
             let state = this.get('internalState');
             let userAuth = this.get('userAuth');
 
@@ -134,22 +143,28 @@ export default Ember.Component.extend({
                 repository: this.repository
             }]);
 
+            let baseUrl=this.get('podUrl');
+            if (this.get('useDev')) {
+                baseUrl=this.get('devUrl')
+            }
+
             let url = config.apiUrl + '/dataset/register' + queryParams;
             let options = {
                 method: 'POST',
                 data: {
-                    dataMap: dataMap
+                    dataMap: dataMap,
+                    base_url: baseUrl
                 }
             };
 
             let source = this.getEventStream();
-            let self = this;
 
             this.get('authRequest').send(url, options)
                 .then(rep => {
                 })
                 .catch(e => {
                     let notifier = self.get('notificationHandler');
+
                     notifier.pushNotification({
                         header: "Error Registering Dataset",
                         message: e
@@ -174,10 +189,17 @@ export default Ember.Component.extend({
             Ember.$('#results').removeClass('hidden');
 
             let url = config.apiUrl + '/repository/lookup';
+
+            let baseUrl=this.get('podUrl');
+            if (this.get('useDev')) {
+                baseUrl=this.get('devUrl')
+            }
+
             let options = {
                 method: 'GET',
                 data: {
-                    dataId: JSON.stringify(this.searchDataId.split())
+                    dataId: JSON.stringify(this.searchDataId.split()),
+                    base_url: baseUrl
                 }
             };
 

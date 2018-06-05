@@ -11,6 +11,12 @@
                     </label>
                     {{input type="text" id="searchbox" value=searchDataId}}
                     <div class="ui inline button" {{action 'search' on='click'}}>Search</div>
+                        {{#if config.dev}}
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="devFlag" onchange={{action "updateDev" value="target.checked"}}>
+                                <label>Register from dev.nceas</label>
+                            </div>
+                        {{/if}}
                 </div>
                 <div class="ui secondary hidden segment" id="results">
                     {{#if (gt num_results -1)}}
