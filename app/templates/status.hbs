@@ -1,6 +1,4 @@
-
 <div class="ui large header">Running Tales</div>
-
 
 <div class="ui icon message">
     <i class="small blue play icon"></i>
@@ -10,23 +8,21 @@
                 <p>There are {{model.length}} Tales Currently Running</p>
             </div>
         </div>
-
     </div>
 </div>
 
-
 <table class="ui celled padded table">
     <thead>
-    <tr>
-
-        <th>Name</th>
-        <th>Image Name</th>
-        <th>Folder Name</th>
-        <th>Created</th>
-        <th>Last Activity</th>
-        <th>Status</th>
-        <th>Tools</th>
-    </tr></thead>
+        <tr>
+            <th>Name</th>
+            <th>Image Name</th>
+            <th>Folder Name</th>
+            <th>Created</th>
+            <th>Last Activity</th>
+            <th>Status</th>
+            <th>Tools</th>
+        </tr>
+    </thead>
     <tbody>
     {{#each model as |instance|}}
         <tr class="center aligned">
@@ -95,11 +91,5 @@
 {{/if}}
 
 {{#if showTale }}
-
-
-  <iframe src="{{tale_to_show_url}}" style="width:100%; height: 600px;">
-
-  </iframe>
-
-
+  <iframe src="{{tale_to_show_url}}" style="width:100%; height: 600px;"></iframe>
 {{/if}}

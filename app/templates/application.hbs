@@ -3,8 +3,9 @@
   {{partial "common/menu"}}
 
   {{outlet}}
+  {{partial "common/footer"}}
 {{else}}
-    <div class="ui pushable segment component context">
+    <div class="ui pushable component context">
       {{#if staticMenu}}
         {{partial "common/header-static"}}
           <div style="overflow: hidden; height: 100%">

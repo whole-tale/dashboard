@@ -12,6 +12,7 @@ $nav-vertical-menu-bg: rgb(243, 243, 243);
 $wt-paddleboard-panel-height: 50px;
 $wt-main-row-height: 52px;
 $bottom-separation: 2.5rem;
+$footer-height: 94px;
 
 @mixin main-row {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -83,7 +84,7 @@ ui.inverted.menu.wt.top {
 .folder-navigator-container {
   background: rgba(0, 0, 0, 0.05);
   border-bottom-left-radius: 14px;
-  $difference: $inverted-menu-height+$main-menu-height+$wt-paddleboard-panel-height+$wt-main-row-height;
+  $difference: $inverted-menu-height+$main-menu-height+$wt-paddleboard-panel-height+$wt-main-row-height+$footer-height;
   height: calc(100vh - #{$difference} - #{$bottom-separation});
   box-shadow: 2px 0px 0px 0px rgba(34, 36, 38, 0.15);
 
@@ -204,6 +205,7 @@ ui.inverted.menu.wt.top {
 
 .ui.vertical.menu.tales {
   margin-top: 0;
+  margin-bottom: 0;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -331,6 +333,11 @@ ui.inverted.menu.wt.top {
 /* Panels - general */
 
 .ui.grid {
+  &.bottom {
+    position: absolute;
+    bottom: 0.5rem;
+    left: calc(50% - 78px);
+  }
 }
 .ui.grid > .row.dashboard-modes {
   padding-top: 0;
