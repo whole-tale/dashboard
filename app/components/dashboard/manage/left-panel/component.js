@@ -47,6 +47,7 @@ export default Ember.Component.extend({
   init() {
     this._super(...arguments);
     let state = this.get('internalState');
+    this.set('fileData', this.model);
     this.set("currentFolderId", state.getCurrentFolderID());
     // console.log("Heading into browse upload controller" );
 
