@@ -1,7 +1,7 @@
 <div class="ui stretched stackable grid">
   <div class="row panel container">
     <div class="eleven wide column">
-      {{component leftView fileData=leftModel }}
+      {{component leftView model=leftModel }}
     </div>
     <div class="five wide column">
       {{component rightView rightModelTop=rightModelTop rightModelBottom=rightModelBottom onLeftModelChange=(action "onLeftModelChange")}}
