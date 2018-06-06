@@ -8,14 +8,14 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "ember build",
+    "build": "./node_modules/.bin/ember build",
     "lint:js": "eslint ./*.js app blueprints config lib server tests",
-    "start": "ember serve",
-    "test": "ember test"
+    "start": "./node_modules/.bin/ember s",
+    "test": "./node_modules/.bin/ember test"
   },
   "repository": "",
   "engines": {
-    "node": "^4.5 || 6.* || >= 7.*"
+    "node": ">= 8.*"
   },
   "author": "",
   "license": "MIT",

@@ -1,16 +1,16 @@
 {{#if isMain}}
   <div class="ui large breadcrumb">
-      <a class="section"> {{currentNavTitle}}</a>
+      <a class="section" {{action "navClicked" currentNavTitle}}> {{currentNavTitle}}</a>
 
       {{#each fileBreadCrumbs as |bc|}}
-          <a class="section" {{action "breadcrumbClicked" bc}}>{{truncate-breadcrumb bc.name}}</a>
           <i class="right chevron icon divider"></i>
+          <a class="section" {{action "breadcrumbClicked" bc}}>{{truncate-breadcrumb bc.name}}</a>
       {{/each}}
 
+      {{#if currentBreadCrumb.name}}<i class="right chevron icon divider"></i>{{/if}}
       <div class="active section" style="font-weight:bold;">{{truncate-breadcrumb currentBreadCrumb.name}}</div>
 
   </div>
-
 {{else}}
 
     <div class="ui grid">

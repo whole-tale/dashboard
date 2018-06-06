@@ -8,14 +8,14 @@ export function fileIconFor(filename/*, hash*/) {
   //console.log("Filename being passed in is");
   //console.log(filename);
 
-  if (filename.length=1) // array - this is a hack, need to figure this out...
+  if (filename.length==1) // array - this is a hack, need to figure this out...
     filename = filename[0];
 
   if ((filename == null) || (typeof filename  == 'undefined')) return '<i class="large file outline icon"></i>';
 
   var res = filename.split(".");
 
-  if (res.length <2 ) return '<i class="large file outline icon"></i>';
+  if (res.length < 2 ) return '<i class="large file outline icon"></i>';
 
   var suffix = res[1].toLowerCase();
 
