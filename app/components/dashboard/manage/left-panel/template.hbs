@@ -8,16 +8,16 @@
             <div class="five wide column">
                 {{#if currentFolderId}}
                     {{input type="file" value=file class="nice upload hidden" multiple=true}}
-                    <button class="ui small blue button" {{action "openModal" "newfolder" on="click" }}>
+                    {{!-- <button class="ui small blue button" {{action "openModal" "newfolder" on="click" }}>
                         <span>New Folder</span>
-                    </button>
+                    </button> --}}
                 {{/if}}
             </div>
             <div class="eleven wide column">
-                {{ui/files/bread-crumbs currentNavTitle=currentNavTitle currentBreadCrumb=currentBreadCrumb fileBreadCrumbs=fileBreadCrumbs isMain=true navClicked="navClicked" bcClicked="breadcrumbClicked"}}
+                {{ui/files/bread-crumbs currentNav=currentNav currentBreadCrumb=currentBreadCrumb fileBreadCrumbs=fileBreadCrumbs isMain=true navClicked="navClicked" bcClicked="breadcrumbClicked"}}
             </div>
         </div>
-    </div>
+    </div> 
 
     <div class="ui stackable grid">
         <div class="five wide column folder-navigator-container">

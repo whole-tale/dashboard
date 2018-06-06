@@ -12,8 +12,7 @@ export default Ember.Component.extend({
     },
 
     navClicked: function(nav) {
-      console.log(nav);
-      // this.sendAction('navClicked', nav.toLowerCase())
+      this.sendAction('navClicked', nav);
     }
   }
 });
