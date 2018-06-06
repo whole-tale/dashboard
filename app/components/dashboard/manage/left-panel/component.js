@@ -27,7 +27,7 @@ export default Ember.Component.extend({
   fileBreadCrumbs: {},
   currentBreadCrumb: [],
   currentNavCommand: "home",
-  currentNavTitle: "Home Directory",
+  currentNavTitle: "Home",
   parentId: null,
   file: "",
 
@@ -110,14 +110,18 @@ export default Ember.Component.extend({
       this.set("currentNavTitle", nav.name);
 
       if (nav.command === "home" || nav.command === "user_data" || nav.command === "workspace") {
+        console.log(nav);
         folderContents = controller.get('store').query('folder', { "parentId": nav.parentId, "parentType": nav.parentType, "name": nav.name })
           .then(folders => {
             if (folders.length) {
               let folder_id = folders.content[0].id;
 
               state.setCurrentFolderID(folder_id);
+              state.setCurrentParentId(nav.parentId);
+              state.setCurrentParentType(nav.parentType);
+              state.setCurrentFolderName(nav.name);
               controller.set("currentFolderId", folder_id);
-
+ 
               itemContents = controller.store.query('item', { "folderId": folder_id });
               return controller.store.query('folder', { "parentId": folder_id, "parentType": "folder" });
             }
@@ -162,7 +166,7 @@ export default Ember.Component.extend({
       state.setCurrentFileBreadcrumbs([]); // new nav folder, reset crumbs
       state.setCurrentFolderName("");
       this.set("currentBreadCrumb", null);
-      this.set("fileBreadCrumbs", null);
+      this.set("fileBreadCrumbs", []);
 
     },
 
@@ -216,7 +220,9 @@ export default Ember.Component.extend({
 
           let fileBreadCrumbs = state.getCurrentFileBreadcrumbs();
 
-          fileBreadCrumbs.push(previousBreadCrumb);
+          if (previousBreadCrumb) {  // NOTE(Adam): prevent from pushing a null value into the array
+            fileBreadCrumbs.push(previousBreadCrumb);
+          }
 
           state.setCurrentFileBreadcrumbs(fileBreadCrumbs);
 
@@ -231,6 +237,7 @@ export default Ember.Component.extend({
 
     //----------------------------------------------------------------------------
     breadcrumbClicked: function(item) {
+      console.log(item);
       let state = this.get('internalState');
       let crumbs = state.getCurrentFileBreadcrumbs();
 
