@@ -1,6 +1,6 @@
 {{#if isMain}}
   <div class="ui large breadcrumb">
-      <a class="section" {{action "navClicked" currentNavTitle}}> {{currentNavTitle}}</a>
+      <a class="section" {{action "navClicked" currentNav}}> {{currentNav.name}}</a>
 
       {{#each fileBreadCrumbs as |bc|}}
           <i class="right chevron icon divider"></i>

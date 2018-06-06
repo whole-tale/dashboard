@@ -26,6 +26,7 @@ export default Ember.Component.extend({
   folderNavs: inject.service(),
   fileBreadCrumbs: {},
   currentBreadCrumb: [],
+  currentNav: {},
   currentNavCommand: "home",
   currentNavTitle: "Home",
   parentId: null,
@@ -50,6 +51,7 @@ export default Ember.Component.extend({
     // console.log("Heading into browse upload controller" );
 
     let currentNav = this.get("folderNavs").getCurrentFolderNavAndSetOn(this);
+    this.set('currentNav', currentNav);
 
     // console.log(currentNav);
 
@@ -58,20 +60,19 @@ export default Ember.Component.extend({
       this.set("currentNavTitle", currentNav.name);
     }
 
-    let bc = wrapFolder(state.getCurrentFolderID(), state.getCurrentFolderName());
-
-    // console.log(bc);
-
     let fileBreadCrumbs = state.getCurrentFileBreadcrumbs();
     if (!fileBreadCrumbs) {
       fileBreadCrumbs = [];
       state.setCurrentFileBreadcrumbs(fileBreadCrumbs); // new collection, reset crumbs
     }
+    
+    if (state.getCurrentParentType() !== 'user') {
+      let bc = wrapFolder(state.getCurrentFolderID(), state.getCurrentFolderName());
+      this.set("currentBreadCrumb", bc);
+      state.setCurrentBreadCrumb(bc);
+    }
 
-    this.set("currentBreadCrumb", bc);
     this.set("fileBreadCrumbs", state.getCurrentFileBreadcrumbs()); // new collection, reset crumbs
-
-    state.setCurrentBreadCrumb(bc);
   },
 
   actions: {
@@ -88,7 +89,7 @@ export default Ember.Component.extend({
 
       let newModel = { 'folderContents': folderContents, 'itemContents': itemContents };
 
-      //   alert("Folder clicked and delving into " + itemName);
+      // alert("Folder clicked and delving into " + itemName);
 
       // console.log(newModel);
       // console.log(state.toString());
@@ -98,7 +99,7 @@ export default Ember.Component.extend({
 
     //----------------------------------------------------------------------------
     navClicked: function(nav) {
-      //   console.log("Folder Nav clicked " + nav.command);
+      // console.log("Folder Nav clicked " + nav.command);
       let controller = this;
       let state = this.get('internalState');
 
@@ -106,6 +107,7 @@ export default Ember.Component.extend({
       let itemContents = null;
 
       state.setCurrentNavCommand(nav.command);
+      this.set('currentNav', nav);
       this.set("currentNavCommand", nav.command);
       this.set("currentNavTitle", nav.name);
 
@@ -237,7 +239,6 @@ export default Ember.Component.extend({
 
     //----------------------------------------------------------------------------
     breadcrumbClicked: function(item) {
-      console.log(item);
       let state = this.get('internalState');
       let crumbs = state.getCurrentFileBreadcrumbs();
 
