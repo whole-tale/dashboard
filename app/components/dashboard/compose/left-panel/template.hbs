@@ -1,14 +1,17 @@
-<div class="wt panel">
+<div class="wt panel manage">
     <div class="wt paddleboard">
-        <h2><img src="images/wholetale_logo_sm.png" />Current Tale <i class="fas fa-expand right"></i></h2>
+        <h2>
+            {{!-- <img src="images/wholetale_logo_sm.png" /> --}}
+            <i class="fas fa-edit left"></i> Compose <i class="fas fa-expand right"></i>
+        </h2>
     </div>
 
-    <div class="ui large header">
+    {{!-- <div class="ui large header">
         Create Tale
-    </div>
+    </div> --}}
 
-    <div class="ui segment">
-        <div class="ui fluid stackable steps">
+    <div class="ui segment rounded-bottom">
+        {{!-- <div class="ui fluid stackable steps">
             <a class="{{stepsActive.[0]}} step" {{action "gotoStep" 0 }}>
                 <div class="content">
                     <div class="title">Tale Info</div>
@@ -33,7 +36,7 @@
                     <div class="description">Confirm</div>
                 </div>
             </a>
-        </div>
+        </div> --}}
 
         <div style="display: {{showStep.[0]}}">
           {{partial "forms/tale-input"}}

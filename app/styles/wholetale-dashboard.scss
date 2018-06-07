@@ -338,7 +338,13 @@ ui.inverted.menu.wt.top {
     bottom: 0.5rem;
     left: calc(50% - 78px);
   }
+  &.centered.footer {
+    position: absolute;
+    width: 100vw;
+    bottom: 0;
+  }
 }
+
 .ui.grid > .row.dashboard-modes {
   padding-top: 0;
   padding-left: 2rem;
@@ -347,7 +353,7 @@ ui.inverted.menu.wt.top {
   padding-left: 2rem;
   padding-right: 2rem;
   padding-top: 0;
-  height: 85vh;
+  height: calc(100% - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height}));
 }
 .ui.grid > .row.panel.container > .column {
   padding-left: .5rem;
@@ -365,7 +371,31 @@ ui.inverted.menu.wt.top {
   height: 100%;
 
   &.manage {
-    height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height}));
+    height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height}));
+
+    .rounded-bottom {
+      position: relative;
+      background: #FFFFFF;
+      -webkit-box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15);
+      box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15);
+      padding: 1em 1em;
+      border-bottom-left-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      border: none;
+      margin: 0;
+      height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + #{$wt-paddleboard-panel-height}));
+      overflow-y: auto;
+      /*
+      $inverted-menu-height: 48px;
+      $main-menu-height: 64px;
+      $wt-paddleboard-panel-height: 50px;
+      $wt-main-row-height: 52px;
+      $bottom-separation: 2.5rem;
+      $footer-height: 94px;
+      */
+    }
   }
 }
 .wt.panel.bg.grey {
@@ -428,9 +458,10 @@ ui.inverted.menu.wt.top {
 
 .placeholder.message {
   text-align: center;
-  padding: 40% 0 40%;
+  // padding: 40% 0;
   background: url(../images/wholetale_logo_watermark.png) center center no-repeat;
-  background-size: cover;
+  background-size: contain;
+  height: calc(100% - #{$main-menu-height});
 }
 .placeholder.message p {
   color: #283b49;
@@ -439,6 +470,8 @@ ui.inverted.menu.wt.top {
   letter-spacing: .1rem;
   width: 80%;
   margin: 0 auto 2rem;
+  top: calc(50% - #{$inverted-menu-height});
+  position: relative;
 }
 .placeholder.message p.note-sm {
   font-size: 2.2rem;
