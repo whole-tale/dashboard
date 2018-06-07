@@ -1,8 +1,10 @@
-@import "./dropzone";
-@import "./basic";
-@import "./contextmenu";
+// @import "./dropzone";
+// @import "./basic";
+// @import "./contextmenu";
+@import "./modals.scss";
 @import "./wholetale-dashboard";
 @import "./fontawesome-all.min";
+@import "./floating-action-button";
 
 html, body {
   margin: 0px;
