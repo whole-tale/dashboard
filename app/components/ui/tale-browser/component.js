@@ -3,23 +3,23 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   store: Ember.inject.service(),
   userAuth: Ember.inject.service(),
-  apiCall : Ember.inject.service('api-call'),
+  apiCall: Ember.inject.service('api-call'),
   internalState: Ember.inject.service(),
-  taleInstanceName : "",
+  taleInstanceName: "",
   filteredSet: Ember.A(),
   filters: ['All', 'Mine', 'Published', 'Recent'],
   filter: 'All',
   numberOfModels: 0,
   pageNumber: 1,
-  totalPages:1,
+  totalPages: 1,
   leftButtonState: "disabled",
   rightButtonState: "disabled",
-  lastAnimationTime : 0,
-  animationRefreshTime : 500, // min ms time between animation refreshes
-  item : null,
-  guid : null,
+  lastAnimationTime: 0,
+  animationRefreshTime: 500, // min ms time between animation refreshes
+  item: null,
+  guid: null,
 
-  filterObserver: Ember.observer('filter', function() {
+  filterObserver: Ember.observer('filter', function () {
     this.setFilter.call(this);
   }),
 
@@ -33,8 +33,8 @@ export default Ember.Component.extend({
 
     var component = this;
 
-    modelsPromised.then(function(models) {
-      if (component.get('addButtonName') != null){
+    modelsPromised.then(function (models) {
+      if (component.get('addButtonName') != null) {
         var paginateSize = Number(component.get('paginateOn'));
         component.set('paginateOn', paginateSize);
       }
@@ -54,9 +54,10 @@ export default Ember.Component.extend({
     //TODO schedule once to avoid race condition
     var guid = this.get('guid');
 
-    if (guid ==null) {
+    if (guid == null) {
       guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        var r = Math.random() * 16 | 0,
+          v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
       });
       this.set('guid', guid);
@@ -66,10 +67,9 @@ export default Ember.Component.extend({
     var milliseconds = d.getTime();
     var lastMSTime = Number(this.get('lastAnimationTime'));
 
-    if (milliseconds-lastMSTime > Number(this.get('animationRefreshTime'))) {
+    if (milliseconds - lastMSTime > Number(this.get('animationRefreshTime'))) {
       $('.selectable.cards.' + guid + ' .image img')
-        .transition('jiggle')
-      ;
+        .transition('jiggle');
       this.set('lastAnimationTime', milliseconds);
     }
 
@@ -84,9 +84,12 @@ export default Ember.Component.extend({
       this.set('filteredSet', models);
     } else if (filter === 'Mine') {
       const userId = this.get('userAuth').getCurrentUserID();
-      this.set('filteredSet', models.filter(m=>m.get('creatorId')===userId));
+      this.set('filteredSet', models.filter(m => m.get('creatorId') === userId));
     } else if (filter === 'Published') {
-      this.set('filteredSet', models.filter(m=>{console.log(m.get('published')); return m.get('published')===true;}));
+      this.set('filteredSet', models.filter(m => {
+        console.log(m.get('published'));
+        return m.get('published') === true;
+      }));
       console.log(this.get('filteredSet'));
     } else if (filter === 'Recent') {
       const recentTales = this.get('internalState').getRecentTales();
@@ -123,11 +126,17 @@ export default Ember.Component.extend({
     var modelsInView = [];
     var paginateArray = [];
 
-    for (var i=1; i<=totalPages; ++i) {
-      if (i==pageNumber)
-        paginateArray[i] = {number: i, state: "active"};
+    for (var i = 1; i <= totalPages; ++i) {
+      if (i == pageNumber)
+        paginateArray[i] = {
+          number: i,
+          state: "active"
+        };
       else
-        paginateArray[i] = {number: i, state: ""};
+        paginateArray[i] = {
+          number: i,
+          state: ""
+        };
     }
 
     component.set("paginateArray", paginateArray);
@@ -142,12 +151,12 @@ export default Ember.Component.extend({
     else
       component.set('rightButtonState', "");
 
-    let startIndex = (pageNumber-1) * paginateSize;
+    let startIndex = (pageNumber - 1) * paginateSize;
     let endIndex = startIndex + paginateSize;
 
-    for(let i = startIndex; i < endIndex && i < arraySize; i++) {
+    for (let i = startIndex; i < endIndex && i < arraySize; i++) {
       let model = models.objectAt(i);
-      if (typeof model.get("icon") === "undefined" ) {
+      if (typeof model.get("icon") === "undefined") {
         if (typeof model.get("meta") !== "undefined") {
           var meta = model.get("meta");
           if (meta['provider'] !== "DataONE")
@@ -161,11 +170,11 @@ export default Ember.Component.extend({
 
       var description = model.get('description');
 
-      if ((description == null) ) {
+      if ((description == null)) {
         model.set('tagName', "No Description ...");
       } else {
         if (description.length > 200)
-          model.set('tagName', description.substring(0,200) + "..");
+          model.set('tagName', description.substring(0, 200) + "..");
         else
           model.set('tagName', description);
       }
@@ -177,24 +186,24 @@ export default Ember.Component.extend({
   },
 
   actions: {
-    leftButtonClicked : function() {
+    leftButtonClicked: function () {
       if (this.get('leftButtonState') === "disabled") return;
-      this.set('pageNumber', this.get('pageNumber') -1);
+      this.set('pageNumber', this.get('pageNumber') - 1);
       this.paginate(this, this.get('searchView'));
     },
-    rightButtonClicked : function() {
+    rightButtonClicked: function () {
       if (this.get('rightButtonState') === "disabled") return;
-      this.set('pageNumber', this.get('pageNumber') +1);
+      this.set('pageNumber', this.get('pageNumber') + 1);
       this.paginate(this, this.get('searchView'));
     },
-    tabClicked : function(tabNumber) {
+    tabClicked: function (tabNumber) {
       // alert("Clicked " + tabNumber)
       this.set('pageNumber', tabNumber);
       this.paginate(this, this.get('searchView'));
     },
-    searchFilter : function () {
+    searchFilter: function () {
       let searchStr = this.get('searchStr');
-       //  console.log(searchStr);
+      //  console.log(searchStr);
 
       const filteredSet = this.get("filteredSet");
       const component = this;
@@ -221,13 +230,13 @@ export default Ember.Component.extend({
       this.sendAction('action', model); // sends to compose.js controller, action itemSelected, based on template spec.
     },
 
-    openDeleteModal: function(id) {
+    openDeleteModal: function (id) {
       var selector = '.ui.' + id + '.modal';
       console.log("Selector: " + selector);
       $(selector).modal('show');
     },
 
-    approveDelete: function(model) {
+    approveDelete: function (model) {
       console.log("Deleting model " + model.name);
       var component = this;
 
@@ -235,20 +244,20 @@ export default Ember.Component.extend({
         reload: true
       }).then(function () {
         // refresh
-//        component.get('store').findAll('tale', { reload: true }).then(function(tales) {
-          component.paginate(component, component.get('models'));
-  //      });
+        // component.get('store').findAll('tale', { reload: true }).then(function(tales) {
+        component.paginate(component, component.get('models'));
+        // });
       });
 
       return false;
     },
 
-    denyDelete: function() {
+    denyDelete: function () {
       return true;
     },
 
-    addNew: function() {
-        this.sendAction("onAddNew");
+    addNew: function () {
+      this.sendAction("onAddNew");
     },
 
     launchTale: function (tale) {
@@ -257,7 +266,7 @@ export default Ember.Component.extend({
       component.set("tale_instantiating_id", tale.id);
       component.set("tale_instantiating", true);
 
-      var onSuccess = function(item) {
+      var onSuccess = function (item) {
         console.log(item);
         component.set("tale_instantiating", false);
         component.set("tale_instantiated", true);
@@ -266,12 +275,12 @@ export default Ember.Component.extend({
 
         component.set("instance", instance);
 
-        Ember.run.later((function() {
+        Ember.run.later((function () {
           component.set("tale_instantiated", false);
         }), 30000);
       };
 
-      var onFail = function(item) {
+      var onFail = function (item) {
         // deal with the failure here
         component.set("tale_instantiating", false);
         component.set("tale_not_instantiated", true);
@@ -280,7 +289,7 @@ export default Ember.Component.extend({
         console.log(item);
         component.set("error_msg", item.message);
 
-        Ember.run.later((function() {
+        Ember.run.later((function () {
           component.set("tale_not_instantiated", false);
         }), 10000);
 
