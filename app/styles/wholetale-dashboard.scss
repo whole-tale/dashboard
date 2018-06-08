@@ -12,6 +12,7 @@ $nav-vertical-menu-bg: rgb(243, 243, 243);
 $wt-paddleboard-panel-height: 50px;
 $wt-main-row-height: 52px;
 $bottom-separation: 2.5rem;
+$footer-height: 94px;
 
 @mixin main-row {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -83,7 +84,7 @@ ui.inverted.menu.wt.top {
 .folder-navigator-container {
   background: rgba(0, 0, 0, 0.05);
   border-bottom-left-radius: 14px;
-  $difference: $inverted-menu-height+$main-menu-height+$wt-paddleboard-panel-height+$wt-main-row-height;
+  $difference: $inverted-menu-height+$main-menu-height+$wt-paddleboard-panel-height+$wt-main-row-height+$footer-height;
   height: calc(100vh - #{$difference} - #{$bottom-separation});
   box-shadow: 2px 0px 0px 0px rgba(34, 36, 38, 0.15);
 
@@ -122,6 +123,9 @@ ui.inverted.menu.wt.top {
               min-height: 80px;
               .icon-wrapper {
                 padding: 0.92857143em 1.14285714em;
+                .chevron-span {
+                  visibility: hidden;
+                }
               }
             }
 
@@ -138,6 +142,28 @@ ui.inverted.menu.wt.top {
           .item:before {
             height: 0;
             background: none;
+          }
+        }
+      }
+    }
+  }
+}
+.show-chevron {
+  .folder-navigator-container {
+    .folder-grid {
+      .grid > .tablet.ony,
+      .grid > .computer.only {
+        .ui.menu.vertical {
+          .menu-item {
+            .item {
+              .icon-wrapper {
+                .chevron-span {
+                  visibility: visible;
+                  float: right;
+                  color: grey;
+                }
+              }
+            }
           }
         }
       }
@@ -204,6 +230,7 @@ ui.inverted.menu.wt.top {
 
 .ui.vertical.menu.tales {
   margin-top: 0;
+  margin-bottom: 0;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -331,7 +358,23 @@ ui.inverted.menu.wt.top {
 /* Panels - general */
 
 .ui.grid {
+  &.bottom {
+    position: absolute;
+    bottom: 0.5rem;
+    left: calc(50% - 78px);
+  }
+  &.centered.footer {
+    position: absolute;
+    width: 100vw;
+    bottom: 0;
+  }
+  &.paginator-container {
+    position: relative;
+    bottom: 0.5rem;
+    margin: 0 auto;
+  }
 }
+
 .ui.grid > .row.dashboard-modes {
   padding-top: 0;
   padding-left: 2rem;
@@ -340,13 +383,34 @@ ui.inverted.menu.wt.top {
   padding-left: 2rem;
   padding-right: 2rem;
   padding-top: 0;
-  height: 85vh;
+  height: calc(100% - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height}));
 }
 .ui.grid > .row.panel.container > .column {
   padding-left: .5rem;
   padding-right: .5rem;
 }
 
+.show-instances.show-mini-browser {
+  .wt.panel.manage {
+    height: calc((100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + 1em))/2);
+    margin-bottom: 1em;
+
+    .folder-navigator-container {
+      border-bottom-left-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      border: none;
+      margin: 0;
+      height: calc((100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + 1em))/2 - #{$wt-paddleboard-panel-height});
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+  }
+  .wt.panel.manage.second {
+    margin-bottom: 0;
+  }
+}
 .wt.panel {
   background: #fff;
   border: 1px solid rgba(0,0,0,0.20);
@@ -358,9 +422,27 @@ ui.inverted.menu.wt.top {
   height: 100%;
 
   &.manage {
-    height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height}));
+    height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height}));
+
+    .rounded-bottom {
+      position: relative;
+      background: #FFFFFF;
+      -webkit-box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15);
+      box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15);
+      padding: 1em 1em;
+      border-bottom-left-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      border: none;
+      margin: 0;
+      height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + #{$wt-paddleboard-panel-height}));
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
   }
 }
+
 .wt.panel.bg.grey {
   background: #f3f3f3;
 }
@@ -421,9 +503,10 @@ ui.inverted.menu.wt.top {
 
 .placeholder.message {
   text-align: center;
-  padding: 40% 0 40%;
+  // padding: 40% 0;
   background: url(../images/wholetale_logo_watermark.png) center center no-repeat;
-  background-size: cover;
+  background-size: contain;
+  height: calc(100% - #{$main-menu-height});
 }
 .placeholder.message p {
   color: #283b49;
@@ -432,6 +515,8 @@ ui.inverted.menu.wt.top {
   letter-spacing: .1rem;
   width: 80%;
   margin: 0 auto 2rem;
+  top: calc(50% - #{$inverted-menu-height});
+  position: relative;
 }
 .placeholder.message p.note-sm {
   font-size: 2.2rem;

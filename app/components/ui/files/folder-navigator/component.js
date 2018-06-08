@@ -13,8 +13,19 @@ export default Ember.Component.extend({
       console.log(this.user);
     },
     actions: {
+        //--------------------------------------------
         navClicked : function(nav) {
-            this.sendAction('action', nav);
+            this.sendAction('navClicked', nav);
+        },
+
+        //--------------------------------------------
+        openCreateFolderModal: function() {
+          this.sendAction('openCreateFolderModal');
+        },
+
+        //--------------------------------------------
+        openUploadDialog: function() {
+          this.sendAction('openUploadDialog');
         }
     }
 });

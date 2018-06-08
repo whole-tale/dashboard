@@ -1,18 +1,19 @@
 import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
-var inject = Ember.inject;
+const inject = Ember.inject;
 
 Ember.TextField.reopen({
     attributes: ['data-content']
 });
 
 export default Ember.Controller.extend({
-    store: Ember.inject.service(),
-    apiCall: Ember.inject.service('api-call'),
-    userAuth: Ember.inject.service(),
-    accessControl: Ember.inject.service(),
-    internalState: Ember.inject.service(),
+    store: inject.service(),
+    apiCall: inject.service('api-call'),
+    userAuth: inject.service(),
+    accessControl: inject.service(),
+    internalState: inject.service(),
     taleInstanceName: "",
+
     init() {
         this.set("tale_instantiated", false);
         this.set('user_id', this.get('userAuth').getCurrentUserID());
@@ -28,11 +29,10 @@ export default Ember.Controller.extend({
         // model.set('config', JSON.stringify(model.get('config')));
         console.log(model.get('config'));
     }),
-    isOwner: Ember.computed('model.creatorId', 'user_id', function(){
+    isOwner: Ember.computed('model.creatorId', 'user_id', function() {
         
         let user_id = this.get("user_id");
-        let creator_id = this.get("model").get("creatorId");
-        
+        let creator_id = this.get("model").get("creatorId");      
         // TODO: Uncomment below As soon as access control for tales are working
         // const object = this.get('model').toJSON();
         // return this.get('accessControl').fetch(object)
@@ -42,8 +42,7 @@ export default Ember.Controller.extend({
         //             return true;
         //         } 
         //         return false;
-        //     })
-        // ;
+        //     });
 
         return creator_id === user_id;
     }),

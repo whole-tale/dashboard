@@ -1,8 +1,10 @@
-@import "./dropzone";
-@import "./basic";
-@import "./contextmenu";
+// @import "./dropzone";
+// @import "./basic";
+// @import "./contextmenu";
+@import "./modals.scss";
 @import "./wholetale-dashboard";
 @import "./fontawesome-all.min";
+@import "./floating-action-button";
 
 html, body {
   margin: 0px;
@@ -204,6 +206,7 @@ div.upload.progress {
 .ui.inverted.blue.segment {
   background-color: #283b49 !important;
   color: #FFFFFF !important;
+  padding: 1em 2.5em;
 }
 
 .ui.card {
@@ -451,7 +454,7 @@ pre {
   padding: 8px;
 }
 
-.ui.inverted.grey.segment {
+.ui.inverted.grey {
   background-color: #f3f3f3 !important;
   color: #FFFFFF !important;
 }

@@ -1,5 +1,6 @@
-{{ui/tale-instances
-models=rightModelTop
-paginateOn=3
-onLeftModelChange=(action "onLeftModelChange")
-}}
+{{#if showInstances}}
+    {{ui/tale-instances models=rightModelTop paginateOn=3 onLeftModelChange=(action "onLeftModelChange") }}
+{{/if}}
+{{#if showMiniBrowser}}
+    {{ui/files/mini-browser }}
+{{/if}}

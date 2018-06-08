@@ -7,8 +7,12 @@ export default Ember.Component.extend({
 
   actions: {
     breadcrumbClicked : function(item) {
-      this.sendAction('action', item);
+      this.sendAction('bcClicked', item);
 
     },
+
+    navClicked: function(nav) {
+      this.sendAction('navClicked', nav);
+    }
   }
 });

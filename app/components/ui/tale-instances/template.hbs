@@ -1,62 +1,63 @@
+<div class="wt panel manage">
+    {{#if showSearch}}
+        <div class="ui secondary menu">
+            {{#if item}}
+                <div class="header item" style="font-size: 120%">
+                    <span class="ui huge blue label" style="margin-right: 10px;">Currently Selected</span> {{item.name}}
+                </div>
+            {{/if}}
 
-
-<div class="wt panel">
-
-  {{#if showSearch}}
-      <div class="ui secondary menu">
-        {{#if item}}
-            <div class="header item" style="font-size: 120%">
-                <span class="ui huge blue label" style="margin-right: 10px;">Currently Selected</span> {{item.name}}
+            <div class="right menu">
+                <div class="ui large rounded icon search input">
+                    {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
+                    <div class="results">
+                    </div>
+                </div>
             </div>
-        {{/if}}
-
-          <div class="right menu">
-              <div class="ui large rounded icon search input">
-                {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
-
-
-                  <div class="results">
-
-                  </div>
-              </div>
-          </div>
-      </div>
-  {{/if}}
+        </div>
+    {{/if}}
     <div class="wt paddleboard">
-        <h2><i class="circle play icon"></i> Launched Tales  <span class="quota">{{pageNumber}} of {{totalPages}}</span></h2>
+        <h2>
+            <i class="circle play icon"></i> Launched Tales
+            {{#if pageNumber}} 
+                <span class="quota">{{pageNumber}} of {{totalPages}}</span>
+            {{/if}}
+        </h2>
     </div>
 
-  {{#each modelsInView as |model|}}
-      <div class="ui vertical menu fluid tales">
-          <a class="item" {{action 'onModelChange' model}}>
-              <img src="{{model.tale.illustration}}" />
-              <img src="{{model.tale.icon}}" class="env" />
-              <i class="large ellipsis vertical icon"></i>
-              <p>{{model.name}}</p>
-          </a>
-      </div>
-  {{/each}}
-
-
-
-
-<div class="ui grid">
-    <div class="center aligned sixteen wide column">
-        <div class="ui mini pagination menu">
-            <a class="{{leftButtonState}} item" {{action "leftButtonClicked"}}>
-                <i class="caret left icon"></i>
-            </a>
-          {{#each paginateArray as |paginateItem|}}
-              <a class="{{paginateItem.state}} item" {{action "tabClicked" paginateItem.number}}>
-                {{paginateItem.number}}
-              </a>
-          {{/each}}
-            <a class="{{rightButtonState}} item" {{action "rightButtonClicked"}}>
-                <i class="caret right icon"></i>
+    {{#each modelsInView as |model|}}
+        <div class="ui vertical menu fluid tales">
+            <a class="item" {{action 'onModelChange' model}}>
+                <img src="{{model.tale.illustration}}" />
+                <img src="{{model.tale.icon}}" class="env" />
+                <i class="large ellipsis vertical icon"></i>
+                <p>{{model.name}}</p>
             </a>
         </div>
-    </div>
+    {{else}}
+        <div class="ui vertical menu fluid tales">
+            <div class="ui grid">
+                <div class="center aligned sixteen wide column">
+                    <div style="padding: 45% 0; font-style:italic;">No tales have been launched</div>
+                </div>
+            </div>
+        </div>
+    {{/each}}
+    {{!-- <div class="ui grid bottom">
+        <div class="center aligned sixteen wide column">
+            <div class="ui mini pagination menu" style="margin-bottom: 15px;">
+                <a class="{{leftButtonState}} item" {{action "leftButtonClicked"}}>
+                    <i class="caret left icon"></i>
+                </a>
+                {{#each paginateArray as |paginateItem|}}
+                    <a class="{{paginateItem.state}} item" {{action "tabClicked" paginateItem.number}}>
+                        {{paginateItem.number}}
+                    </a>
+                {{/each}}
+                <a class="{{rightButtonState}} item" {{action "rightButtonClicked"}}>
+                    <i class="caret right icon"></i>
+                </a>
+            </div>
+        </div>
+    </div> --}}
 </div>
-
-</div>
-

@@ -2,27 +2,36 @@
     <div class="sixteen wide tablet computer only column">
         <div class="ui vertical mini compact menu">
           {{#each navs as |nav|}}
-            <div class="sixteen menu-item clickable" {{action "navClicked" nav}}>
-                {{#if (eq currentNavCommand nav.command)}}
-                <a class="active item">
-                    <div style="padding-left: 1rem; padding-top: 4px;">
-                        <span class="instructions">{{nav.instructions}}</span>
-                        <i class="fas fa-plus-circle icon blue large" style="float: right;"></i>
-                    </div>
-                    <div class="icon-wrapper">
-                        <i class="{{nav.icon}} icon big"></i> {{nav.name}}
-                    </div>
-                </a>
+            <div class="sixteen menu-item clickable">
+                {{#if (and (eq currentNavCommand nav.command) nav.allowUpload)}}
+                    <a class="active item">
+                        <div style="padding-left: 1rem; padding-top: 4px;">
+                            <span class="instructions">{{nav.instructions}}</span>
+                            <nav class="fabcontainer"> 
+                            <a href="#" class="fabbuttons" tooltip="Upload">
+                                <i class="fas fa-upload icon blue big" tooltip="Upload" {{action 'openUploadDialog'}}></i>
+                            </a>
+                            <a href="#" class="fabbuttons" tooltip="Create Folder">
+                                <i class="fas fa-folder icon blue big" tooltip="Create Folder" {{action 'openCreateFolderModal'}}></i>
+                            </a>
+                            <i class="fabbuttons fas fa-plus-circle icon blue large" style="float: right;"></i>
+                            </nav>
+                            {{!-- <i class="fas fa-plus-circle icon blue large" style="float: right;"></i> --}}
+                        </div>
+                        <div class="icon-wrapper">
+                            <i class="{{nav.icon}} icon big"></i> {{nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
+                        </div>
+                    </a>
+                {{else}}
+                    <a class="item" {{action "navClicked" nav}}>
+                        <div style="padding-left: 1rem; padding-top: 4px;">
+                            <span class="instructions">{{nav.instructions}}</span>
+                        </div>
+                        <div class="icon-wrapper">
+                            <i class="{{nav.icon}} icon big"></i> {{nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
+                        </div>
+                    </a>
                 {{/if}}
-                {{#unless (eq currentNavCommand nav.command)}}
-                <a class="item">
-                    <div style="padding-left: 1rem; padding-top: 4px;">
-                        <span class="instructions">{{nav.instructions}}</span>
-                        <i class="fas fa-plus-circle icon blue large" style="float: right;"></i>
-                    </div>
-                    <div class="icon-wrapper"><i class="{{nav.icon}} icon big"></i> {{nav.name}}</div>
-                </a>
-                {{/unless}}
             </div>
           {{/each}}
         </div>
@@ -32,13 +41,13 @@
           {{#each navs as |nav|}}
             {{#if (eq currentNavCommand nav.command)}}
                 <a class="active item" {{action "navClicked" nav}}>
-                    <i class="{{nav.icon}} icon"></i>
+                  <i class="{{nav.icon}} icon"></i>
                   {{nav.name}}
                 </a>
             {{/if}}
             {{#unless (eq currentNavCommand nav.command)}}
                 <a class="item" {{action "navClicked" nav}}>
-                    <i class="{{nav.icon}} icon"></i>
+                  <i class="{{nav.icon}} icon"></i>
                   {{nav.name}}
                 </a>
             {{/unless}}
