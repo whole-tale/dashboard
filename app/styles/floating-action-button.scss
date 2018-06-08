@@ -14,8 +14,8 @@ p.fabcredits {
   position: absolute;
   right: 0px;
   top: 3px;
-  width: 75px;
-  height: 75px;
+  width:0px;
+  height:0px;
 }
 
 .fabbuttons {
@@ -44,10 +44,15 @@ p.fabcredits {
   width: 40px;
   height: 40px;
   margin: 20px auto 0;
-  opacity: 0;
-  -webkit-transform: translateX(-50px);
-      -ms-transform: translateX(-50px);
-          transform: translateX(-50px);
+  opacity: 1;
+  -webkit-transform: translateX(-550px);
+      -ms-transform: translateX(-550px);
+          transform: translateX(-550px);
+}
+
+.fabcontainer:hover {
+  height:75px;
+  width:75px;
 }
 
 .fabcontainer:hover 
