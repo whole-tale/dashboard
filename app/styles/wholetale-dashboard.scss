@@ -411,6 +411,11 @@ ui.inverted.menu.wt.top {
     margin-bottom: 0;
   }
 }
+
+.left.panel.content {
+  height: calc(88vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height}));
+}
+
 .wt.panel {
   background: #fff;
   border: 1px solid rgba(0,0,0,0.20);
