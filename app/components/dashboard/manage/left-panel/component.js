@@ -270,7 +270,7 @@ export default Ember.Component.extend({
     },
 
     //----------------------------------------------------------------------------
-    selectUpload() {
+    openUploadDialog() {
       Ember.$('.nice.upload.hidden').click();
     },
 
@@ -302,6 +302,7 @@ export default Ember.Component.extend({
   
       Ember.$('.ui.modal.newfolder').modal('show');
     }
+
   }
 
 });

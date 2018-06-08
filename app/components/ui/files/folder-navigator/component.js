@@ -21,6 +21,11 @@ export default Ember.Component.extend({
         //--------------------------------------------
         openCreateFolderModal: function() {
           this.sendAction('openCreateFolderModal');
+        },
+
+        //--------------------------------------------
+        openUploadDialog: function() {
+          this.sendAction('openUploadDialog');
         }
     }
 });
