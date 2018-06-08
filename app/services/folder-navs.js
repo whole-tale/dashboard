@@ -17,7 +17,8 @@ export default Ember.Service.extend({
         parentType : "user",
         icon : "home",
         isFolder :  true,
-        instructions: 'Synced to local machine'
+        instructions: 'Synced to local machine',
+        allowUpload: true
       },
       {
         name : "Data",
@@ -26,7 +27,8 @@ export default Ember.Service.extend({
         parentType : "user",
         icon: "linkify",
         isFolder: true,
-        instructions: 'Linked from external sources'
+        instructions: 'Linked from external sources',
+        allowUpload: false
       },
       {
         name : "Results",
@@ -35,7 +37,8 @@ export default Ember.Service.extend({
         parentType : "user",
         icon : "folder",
         isFolder: true, //TODO: Find out whether this is an actual folder
-        instructions: 'Output from Tales'
+        instructions: 'Output from Tales',
+        allowUpload: true
       }/*,
       {
         name : "Recent",

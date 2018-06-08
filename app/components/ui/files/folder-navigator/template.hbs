@@ -3,7 +3,7 @@
         <div class="ui vertical mini compact menu">
           {{#each navs as |nav|}}
             <div class="sixteen menu-item clickable">
-                {{#if (eq currentNavCommand nav.command)}}
+                {{#if (and (eq currentNavCommand nav.command) nav.allowUpload)}}
                 <a class="active item">
                     <div style="padding-left: 1rem; padding-top: 4px;">
                         <span class="instructions">{{nav.instructions}}</span>
@@ -22,15 +22,14 @@
                         <i class="{{nav.icon}} icon big"></i> {{nav.name}}
                     </div>
                 </a>
-                {{/if}}
-                {{#unless (eq currentNavCommand nav.command)}}
+                {{else}}
                 <a class="item" {{action "navClicked" nav}}>
                     <div style="padding-left: 1rem; padding-top: 4px;">
                         <span class="instructions">{{nav.instructions}}</span>
                     </div>
                     <div class="icon-wrapper"><i class="{{nav.icon}} icon big"></i> {{nav.name}}</div>
                 </a>
-                {{/unless}}
+                {{/if}}
             </div>
           {{/each}}
         </div>
