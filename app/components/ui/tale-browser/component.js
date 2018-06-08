@@ -101,7 +101,6 @@ export default Ember.Component.extend({
   },
 
   paginate(component, models) {
-
     var paginateSize = component.get('paginateOn');
     var pageNumber = component.get('pageNumber');
     var arraySize = models.get('length');

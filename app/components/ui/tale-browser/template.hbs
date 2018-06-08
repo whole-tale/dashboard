@@ -1,7 +1,43 @@
 <style>
-    .ui[class*="top attached"].label, .ui.attached.label {
-        padding: 5px!important;
+    .ui[class*="top attached"].label,
+    .ui.attached.label {
+        padding: 5px !important;
     }
+    
+    .item {
+        padding: 0 1em;
+    }
+    .secondary > .header.item {
+        width: 100%;
+    }
+    .secondary.menu.item > .right {
+        float: right;
+        padding-right: 0;
+    }
+    .inverted.large.icon {
+        text-shadow: -2px 0 rgba(72,72,74,1.0), 0 2px rgba(72,72,74,1.0), 2px 0 rgba(72,72,74,1.0), 0 -1px rgba(72,72,74,1.0);
+    }
+    .ui.button.tertiary {
+        padding: 0;
+        box-shadow: none !important;
+        background: none !important;
+        -webkit-font-smoothing: antialiased;
+        font-weight: 500;
+    }
+    .ui.button.tertiary:hover {
+        color: #2185d0;
+        text-decoration: underline;
+    }
+    .ui.button.tertiary:not(:hover) {
+        color: rgb(94, 139, 188);
+    }
+    .ui.icon.input > i.icon {
+        right: 1em;
+    }
+    .ui.search {
+        font-size: 1em;
+        width: 100%;
+    }   
 
     img {
         display: block;
@@ -29,218 +65,211 @@
         opacity: .4;
     }
 
-    .pic{
+    .pic {
         object-fit: cover;
     }
 
     span.zoom-icon {
-        position:absolute;
-        right:0;
-        top:0;
-        filter:alpha(opacity=50);
-        -moz-opacity:0.8;
+        position: absolute;
+        right: 0;
+        top: 0;
+        filter: alpha(opacity=50);
+        -moz-opacity: 0.8;
         -khtml-opacity: 0.8;
         opacity: 0.8;
         width: 80px;
     }
 
     .middle.text {
-        color: #666666; text-wrap: normal; text-align: justify
+        color: #666666;
+        text-wrap: normal;
+        text-align: justify
     }
-
 </style>
 
 <div class="ui inverted grey">
     {{#if showSearch}}
-      <div class="ui secondary stackable menu" style="margin: 10px;">
-
-            <div class="header item" style="font-size: 140%; padding: 0">
+        <div class="item">
+            <div class="ui mini rounded icon search input">
+                {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
+                <i class="search icon"></i>
+            </div>
+            <div class="results"></div>
+        </div>
+        <div class="ui secondary stackable menu" style="margin: 10px;">
+            {{!-- <div class="header item" style="font-size: 140%; padding: 0">
                 <i class="criss cross icon"></i> Tales
             </div>
-          <div class="item">
-            {{#ui-popup content="Tales capture the whole story associated with your research, including the research environment in which work was conducted, the source data
-                used in analyses and models, and the resulting derived data and visualizations.  Launch a Tale to work with it in its associated Research Environment."}}
-                <div class="ui blue icon button">
-                    <i class="info icon"></i>
-                </div>
-            {{/ui-popup}}
-          </div>
-
-          <div class="header item">
-              <span style="padding-right:.5rem;">Filter Tales</span>
-              {{#ui-dropdown class="selection" selected=filter onChange=(action (mut filter))}}
-              <div class="default text">Apply Filter</div>
-              <i class="dropdown icon"></i>
-              <div class="menu">
-                {{#each filters as |_filter|}}
-                  <div class="item" data-value="{{_filter}}">
-                    {{_filter}}
-                  </div>
-                {{/each}}
-              </div>
-              {{/ui-dropdown}}  
-          </div>
-<!--
-            <div class="middle text">
-            </div>
--->
-          <div class="right item">
-                  <div class="ui large rounded icon search input">
-                    {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
-                      <i class="search icon"></i>
-                  </div>
-                  <div class="results"></div>
-          </div>
-            {{#if addButtonName}}
-                    <div class="item">
-                        <div class="ui mini green labeled icon button" {{action 'addNew' on='click'}}>
-                            <i class="plus icon"></i>
-                            New Tale
-                        </div>
+            <div class="item">
+                {{#ui-popup content="Tales capture the whole story associated with your research, including the research environment in which
+                    work was conducted, the source data used in analyses and models, and the resulting derived data and visualizations.
+                    Launch a Tale to work with it in its associated Research Environment."}}
+                    <div class="ui blue icon button">
+                        <i class="info icon"></i>
                     </div>
-            {{/if}}
-       </div>
-      {{/if}}
+                {{/ui-popup}}
+            </div> --}}
 
+            <div class="header item">
+                {{!-- <span style="padding-right:.5rem;">Filter Tales</span> --}}
+                <i class="filter inverted large icon"></i>
+                {{#ui-dropdown class="selection" selected=filter onChange=(action (mut filter))}}
+                    <div class="default text">Apply Filter</div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        {{#each filters as |_filter|}}
+                            <div class="item" data-value="{{_filter}}">
+                                {{_filter}}
+                            </div>
+                        {{/each}}
+                    </div>
+                {{/ui-dropdown}}
+                <span class="item aligned right">
+                    <button class="ui button tertiary">Switch to list view</button>
+                </span>
+            </div>
+            {{!-- {{#if addButtonName}}
+                <div class="item">
+                    <div class="ui mini green labeled icon button" {{action 'addNew' on='click' }}>
+                        <i class="plus icon"></i>
+                        New Tale
+                    </div>
+                </div>
+            {{/if}} --}}
+        </div>
+    {{/if}}
     {{#unless modelsInView.length}}
-    <div class="ui center aligned segment">
-      There are no tales to display for applied filter {{filter}}
-    </div>
+        <div class="ui center aligned segment">
+            There are no tales to display for applied filter {{filter}}
+        </div>
     {{/unless}}
 
-    <div class="ui {{cardsPerRow}} doubling selectable cards {{guid}}" style="padding: 5px 20px 5px 20px">
-
-      {{#each modelsInView as |model|}}
+    <div class="ui {{cardsPerRow}} doubling selectable cards {{guid}}" style="padding: 5px 20px 5px 20px; margin-bottom: 1em;">
+        {{#each modelsInView as |model|}}
             <div class="card">
                 <div class="blurring dimmable fluid image" style="min-height: 250px;">
                     <div class="ui dimmer">
                         <div class="content">
                             <div class="center">
-                              {{#if showLink}}
-                                  {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
-                              {{/if}}
-                              {{#if showSelect}}
-                                  <div class="ui inverted button" {{action 'select' model}}>Select</div>
-                              {{/if}}
-                              {{#if showDelete}}
-                                  <div class="ui {{model._id}} modal" style="display: none">
-                                      <i class="close icon"></i>
-                                      <div class="header">
-                                          Really Delete Tale?
-                                      </div>
-                                      <div class="image content">
-                                          <div class="description">
-                                              <p>This will permanently delete the '{{model.name}}' Tale. Continue?</p>
-                                          </div>
-                                      </div>
-                                      <div class="actions">
-                                          <div class="ui black deny button" {{action 'denyDelete'}}>
-                                              No
-                                          </div>
-                                          <div class="ui positive right labeled icon button" {{action 'approveDelete' model}}>
-                                              Yes
-                                              <i class="checkmark icon"></i>
-                                          </div>
-                                      </div>
-                                  </div>
+                                {{#if showLink}}
+                                    {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
+                                {{/if}} 
+                                {{#if showSelect}}
+                                    <div class="ui inverted button" {{action 'select' model}}>Select</div>
+                                {{/if}}
+                                {{#if showDelete}}
+                                    <div class="ui {{model._id}} modal" style="display: none">
+                                        <i class="close icon"></i>
+                                        <div class="header">
+                                            Really Delete Tale?
+                                        </div>
+                                        <div class="image content">
+                                            <div class="description">
+                                                <p>This will permanently delete the '{{model.name}}' Tale. Continue?</p>
+                                            </div>
+                                        </div>
+                                        <div class="actions">
+                                            <div class="ui black deny button" {{action 'denyDelete'}}>
+                                                No
+                                            </div>
+                                            <div class="ui positive right labeled icon button" {{action 'approveDelete' model}}>
+                                                Yes
+                                                <i class="checkmark icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <a class="ui tiny bottom right attached label" {{action 'openDeleteModal' model._id}}>
-                                    <i class="red remove icon"></i>
-                                </a>
-                              {{/if}}
+                                    <a class="ui tiny bottom right attached label" {{action 'openDeleteModal' model._id}}>
+                                        <i class="red remove icon"></i>
+                                    </a>
+                                {{/if}}
                             </div>
                         </div>
                     </div>
 
                     <img src="{{model.illustration}}" height="400" style="height: 400px;" alt="Research Image" class="pic" />
                     <span class="zoom-icon">
-                      <img src="{{model.icon}}" width="80" style="width: 80px;" alt="Compute Icon">
+                        <img src="{{model.icon}}" width="80" style="width: 80px;" alt="Compute Icon">
                     </span>
 
                 </div>
 
                 <div class="content" style="color: #515151">
                     <div style="text-transform: uppercase; color: #ba975e;font-weight: 700;">{{model.category}}</div>
-
                     <div style="font-weight: 700; font-size: 120%; padding: 0 0 5px 0"> {{truncate-name model.title}} </div>
 
                     <div style="height:120px; overflow: scroll;">
-                      {{convert-markdown model.description}}
+                        {{convert-markdown model.description}}
                     </div>
                     <div style="padding: 4px"></div>
                     <div style="color: #67c096">{{model.authors}}
                     </div>
                     <div style="padding: 8px"></div>
-                    <div class="ui center aligned grid" style="padding: 0">
-                      <div class="center aligned row" style="padding: 0">
-                          <div class="ui center aligned mini green labeled icon button" {{action 'launchTale' model}}>
-                              <i class="play icon"></i>
-                              Launch
-                          </div>
-                      </div>
+                    <div class="ui right aligned grid" style="padding: 0; float: right;">
+                        <div class="right aligned row" style="padding: 0">
+                            <div class="ui right aligned mini green labeled icon button" {{action 'launchTale' model}}>
+                                <i class="play icon"></i>
+                                Launch
+                            </div>
+                        </div>
                     </div>
-                  {{#if (eq tale_instantiating_id model.id)}}
+                    {{#if (eq tale_instantiating_id model.id)}} {{#if tale_instantiating}}
+                    <div class="ui segment" style="height:100px">
+                        <div class="ui active inverted dimmer">
+                            <div class="ui text loader">Launching Tale {{model.title}}</div>
+                        </div>
+                    </div>
+                    {{/if}} {{#if tale_instantiated}}
+                    <div class="ui green icon message">
+                        <i class="checkmark icon"></i>
+                        <div class="content">
+                            <div class="header">
+                                <p>The Tale '{{model.title}}' has been launched !</p>
 
-                    {{#if tale_instantiating}}
-                      <div class="ui segment" style="height:100px">
-                          <div class="ui active inverted dimmer">
-                              <div class="ui text loader">Launching Tale {{model.title}}</div>
-                          </div>
-                      </div>
+                                <div class="ui buttons">
+                                    <a href="{{instance.url}}" target="_blank">
+                                        <div class="ui mini green icon button" style="margin-right: 10px">
+                                            <i class="play icon"></i>
+                                            Go to Tale
+                                        </div>
+                                    </a>
+                                    {{#link-to 'status' class="ui mini blue icon button"}}
+                                    <i class="line chart icon"></i>
+                                    Check Status {{/link-to}}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                     {{/if}}
-                    {{#if tale_instantiated}}
-                        <div class="ui green icon message">
-                            <i class="checkmark icon"></i>
-                            <div class="content">
-                                <div class="header">
-                                    <p>The Tale '{{model.title}}' has been launched !</p>
-
-                                    <div class="ui buttons">
-                                        <a href="{{instance.url}}" target="_blank">
-                                            <div class="ui mini green icon button" style="margin-right: 10px">
-                                                <i class="play icon"></i>
-                                                Go to Tale
-                                            </div></a>
-                                      {{#link-to 'status' class="ui mini blue icon button"}}
-                                          <i class="line chart icon"></i>
-                                          Check Status
-                                      {{/link-to}}
+                        {{#if tale_not_instantiated}}
+                            <div class="ui red icon message">
+                                <i class="remove circle icon"></i>
+                                <div class="content">
+                                    <div class="header">
+                                        The Tale '{{model.name}}' could not be launched !
+                                        <br> {{error_msg}}
                                     </div>
-
                                 </div>
                             </div>
-                        </div>
+                        {{/if}} 
                     {{/if}}
-
-                    {{#if tale_not_instantiated}}
-                        <div class="ui red icon message">
-                            <i class="remove circle icon"></i>
-                            <div class="content">
-                                <div class="header">
-                                    The Tale '{{model.name}}' could not be launched !<br>
-                                  {{error_msg}}
-                                </div>
-                            </div>
-                        </div>
-                    {{/if}}
-                  {{/if}}
                 </div>
             </div>
-      {{/each}}
-
+        {{/each}}
     </div>
 
-    <div class="ui grid">
+    <div class="ui grid paginator-container">
         <div class="center aligned sixteen wide column">
-            <div class="ui pagination menu">
+            <div class="ui mini pagination menu">
                 <a class="{{leftButtonState}} item" {{action "leftButtonClicked"}}>
                     <i class="caret left icon"></i>
                 </a>
-              {{#each paginateArray as |paginateItem|}}
-                  <a class="{{paginateItem.state}} item" {{action "tabClicked" paginateItem.number}}>
-                    {{paginateItem.number}}
-                  </a>
-              {{/each}}
+                {{#each paginateArray as |paginateItem|}}
+                    <a class="{{paginateItem.state}} item" {{action "tabClicked" paginateItem.number}}>
+                        {{paginateItem.number}}
+                    </a>
+                {{/each}}
                 <a class="{{rightButtonState}} item" {{action "rightButtonClicked"}}>
                     <i class="caret right icon"></i>
                 </a>

@@ -6,7 +6,8 @@
     <a class="item" {{action "boringUI" }}>Old UI</a>
     <div class="right menu">
         <div class="item wt brand gravatar-container">
-            <img src="{{user.gravatar_baseUrl}}" class="gravatar" />
+            {{!-- <img src="{{user.gravatar_baseUrl}}" class="gravatar" /> --}}
+            <img src="{{gravatarUrl}}" class="gravatar" />
         </div>
         <label class="item small font" style="padding-left: 0;">{{user.firstName}} {{user.lastName}}</label>
         <a class="item" {{action 'closeMenu' 'logout'}}>

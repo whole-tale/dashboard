@@ -343,6 +343,11 @@ ui.inverted.menu.wt.top {
     width: 100vw;
     bottom: 0;
   }
+  &.paginator-container {
+    position: relative;
+    bottom: 0.5rem;
+    margin: 0 auto;
+  }
 }
 
 .ui.grid > .row.dashboard-modes {
@@ -387,14 +392,7 @@ ui.inverted.menu.wt.top {
       margin: 0;
       height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + #{$wt-paddleboard-panel-height}));
       overflow-y: auto;
-      /*
-      $inverted-menu-height: 48px;
-      $main-menu-height: 64px;
-      $wt-paddleboard-panel-height: 50px;
-      $wt-main-row-height: 52px;
-      $bottom-separation: 2.5rem;
-      $footer-height: 94px;
-      */
+      overflow-x: hidden;
     }
   }
 }
