@@ -291,6 +291,16 @@ export default Ember.Component.extend({
       let collections = this.fileData.collections;
       let newModel = { 'folderContents': folderContents, 'itemContents': itemContents, 'collections': collections };
       this.set('fileData', newModel);
+    },
+
+    //-----------------------------------------------------------------------------
+    openCreateFolderModal() {
+      // NOTE(Adam): Certain Semantic UI components depends heavily on jquery to work properly. The Modal component is one such component
+      //             , and although its bad practice to include jquery, it is needed here until we can
+      //             replace Semantic UI Modals with something else.
+      // (see: https://semantic-org.github.io/Semantic-UI-Ember/#/modules/modal)
+  
+      Ember.$('.ui.modal.newfolder').modal('show');
     }
   }
 
