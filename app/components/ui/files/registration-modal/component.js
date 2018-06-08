@@ -14,7 +14,6 @@ export default Ember.Component.extend({
     notificationHandler: Ember.inject.service(),
 
     datasources: Ember.A(),
-
     num_results: -1,
     error: false,
     errorMessage: '',
@@ -24,7 +23,16 @@ export default Ember.Component.extend({
     doi: '',
     name: '',
     repository: '',
+    // Size of the package found
     size: '',
+    // When set to true, the backend will search the DataONE dev server
+    useDev: '',
+    // Controls whether the results section is shown in the UI
+    showResults: false,
+    // URL to the Development member node
+    devUrl: 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2',
+    // URL to the DataONE production server
+    prodUrl: 'https://cn.dataone.org/cn/v2',
 
     didInsertElement() {
         this._super(...arguments);
@@ -60,7 +68,7 @@ export default Ember.Component.extend({
 
     clearModal() {
         Ember.$('#harvester-dropdown').dropdown('clear');
-        Ember.$('#results').addClass('hidden');
+        this.set('showResults', false);
         Ember.$('#searchbox').val('');
 
         this.set('datasources', Ember.A());
@@ -108,9 +116,15 @@ export default Ember.Component.extend({
     },
 
     actions: {
+
+        updateDev(value) {
+            // Called if the `use dev` checkbox is clicked
+            this.set('useDev', value);
+        },
+
         register() {
             this.set('error', false);
-
+            let self = this;
             let state = this.get('internalState');
             let userAuth = this.get('userAuth');
 
@@ -134,22 +148,28 @@ export default Ember.Component.extend({
                 repository: this.repository
             }]);
 
+            let baseUrl=this.get('podUrl');
+            if (this.get('useDev')) {
+                baseUrl=this.get('devUrl')
+            }
+
             let url = config.apiUrl + '/dataset/register' + queryParams;
             let options = {
                 method: 'POST',
                 data: {
-                    dataMap: dataMap
+                    dataMap: dataMap,
+                    base_url: baseUrl
                 }
             };
 
             let source = this.getEventStream();
-            let self = this;
 
             this.get('authRequest').send(url, options)
                 .then(rep => {
                 })
                 .catch(e => {
                     let notifier = self.get('notificationHandler');
+
                     notifier.pushNotification({
                         header: "Error Registering Dataset",
                         message: e
@@ -171,13 +191,20 @@ export default Ember.Component.extend({
         search() {
             this.clearModal();
             this.set('searching', true);
-            Ember.$('#results').removeClass('hidden');
+            this.set('showResults', true);
 
             let url = config.apiUrl + '/repository/lookup';
+
+            let baseUrl=this.get('podUrl');
+            if (this.get('useDev')) {
+                baseUrl=this.get('devUrl')
+            }
+
             let options = {
                 method: 'GET',
                 data: {
-                    dataId: JSON.stringify(this.searchDataId.split())
+                    dataId: JSON.stringify(this.searchDataId.split()),
+                    base_url: baseUrl
                 }
             };
 

@@ -11,37 +11,41 @@
                     </label>
                     {{input type="text" id="searchbox" value=searchDataId}}
                     <div class="ui inline button" {{action 'search' on='click'}}>Search</div>
-                </div>
-                <div class="ui secondary hidden segment" id="results">
-                    {{#if (gt num_results -1)}}
-                        <p>Found {{num_results}} result(s)</p>
-                        {{#unless dataId}}
-                            <b>Select one of the datasets found</b>
-                        {{/unless}}
-                        {{#ui-dropdown id="harvester-dropdown" class="fluid selection" selected=data onChange=(action (mut data))}}
-                        <i class="dropdown icon"></i>
-                        <div class="default text">Select Data Sources</div>
-                        <div class="menu">
-                            {{#each datasources as |item|}}
-                            <div class="item" data-value="{{item.doi}}">
-                                {{item.name}}
+                        {{#if config.dev}}
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="devFlag" onchange={{action "updateDev" value="target.checked"}}>
+                                <label>Register from dev.nceas</label>
                             </div>
-                            {{/each}}
+                        {{/if}}
+                </div> 
+                {{#if showResults}}
+                <div class="ui secondary segment" id="results">
+                    {{#if (gt num_results -1)}}
+                    <p>Found {{num_results}} result(s)</p>
+                    {{#unless dataId}}
+                    <b>Select one of the datasets found</b>
+                    {{/unless}} {{#ui-dropdown id="harvester-dropdown" class="fluid selection" selected=data onChange=(action (mut data))}}
+                    <i class="dropdown icon"></i>
+                    <div class="default text">Select Data Sources</div>
+                    <div class="menu">
+                        {{#each datasources as |item|}}
+                        <div class="item" data-value="{{item.doi}}">
+                            {{item.name}}
                         </div>
-                        {{/ui-dropdown}}
-                    {{else if searching}}
-                        <div class="ui active inline indeterminate tiny loader"></div>Searching DataONE and Globus
-                        <p></p>
+                        {{/each}}
+                    </div>
+                    {{/ui-dropdown}} {{else if searching}}
+                    <div class="ui active inline indeterminate tiny loader"></div>
+                    Searching DataONE and Globus
+                    <p></p>
+                    {{/if}} {{#if error}}
+                    <div class="ui negative message">
+                        <div class="header"></div>
+                        <p>{{errorMessage}}</p>
+                    </div>
                     {{/if}}
-
-                    {{#if error}}
-                        <div class="ui negative message">
-                            <div class="header"></div>
-                            <p>{{errorMessage}}</p>
-                        </div>
-                    {{/if}}
-
                 </div>
+                {{/if}}
                 <div class="ui tertiary segment">
                     <div class="inline field">
                         <label>Folder Name</label>
