@@ -23,9 +23,15 @@ export default Ember.Component.extend({
     doi: '',
     name: '',
     repository: '',
+    // Size of the package found
     size: '',
+    // When set to true, the backend will search the DataONE dev server
     useDev: '',
+    // Controls whether the results section is shown in the UI
+    showResults: false,
+    // URL to the Development member node
     devUrl: 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2',
+    // URL to the DataONE production server
     prodUrl: 'https://cn.dataone.org/cn/v2',
 
     didInsertElement() {
@@ -62,7 +68,7 @@ export default Ember.Component.extend({
 
     clearModal() {
         Ember.$('#harvester-dropdown').dropdown('clear');
-        Ember.$('#results').addClass('hidden');
+        this.set('showResults', false);
         Ember.$('#searchbox').val('');
 
         this.set('datasources', Ember.A());
@@ -113,7 +119,7 @@ export default Ember.Component.extend({
 
         updateDev(value) {
             // Called if the `use dev` checkbox is clicked
-            this.set('useDev', value)
+            this.set('useDev', value);
         },
 
         register() {
@@ -185,7 +191,7 @@ export default Ember.Component.extend({
         search() {
             this.clearModal();
             this.set('searching', true);
-            Ember.$('#results').removeClass('hidden');
+            this.set('showResults', true);
 
             let url = config.apiUrl + '/repository/lookup';
 
