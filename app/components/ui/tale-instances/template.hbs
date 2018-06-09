@@ -19,30 +19,31 @@
     <div class="wt paddleboard">
         <h2>
             <i class="circle play icon"></i> Launched Tales
-            {{#if pageNumber}} 
+            {{!-- {{#if pageNumber}} 
                 <span class="quota">{{pageNumber}} of {{totalPages}}</span>
-            {{/if}}
+            {{/if}} --}}
         </h2>
     </div>
-
-    {{#each modelsInView as |model|}}
-        <div class="ui vertical menu fluid tales">
-            <a class="item" {{action 'onModelChange' model}}>
-                <img src="{{model.tale.illustration}}" />
-                <img src="{{model.tale.icon}}" class="env" />
-                <i class="large ellipsis vertical icon"></i>
-                <p>{{model.name}}</p>
-            </a>
-        </div>
-    {{else}}
-        <div class="ui vertical menu fluid tales">
-            <div class="ui grid">
-                <div class="center aligned sixteen wide column">
-                    <div style="padding: 45% 0; font-style:italic;">No tales have been launched</div>
+    <div class="tales-list" style="overflow-y:auto;height:calc(100% - 48px - 1rem);border-bottom-left-radius:1rem;border-bottom-right-radius: 1rem;">
+        {{#each modelsInView as |model|}}
+            <div class="ui vertical menu fluid tales">
+                <a class="item" {{action 'onModelChange' model}}>
+                    <img src="{{model.tale.illustration}}" />
+                    <img src="{{model.tale.icon}}" class="env" />
+                    <i class="large ellipsis vertical icon"></i>
+                    <p>{{model.name}}</p>
+                </a>
+            </div>
+        {{else}}
+            <div class="ui vertical menu fluid tales">
+                <div class="ui grid">
+                    <div class="center aligned sixteen wide column">
+                        <div style="padding: 45% 0; font-style:italic;">No tales have been launched</div>
+                    </div>
                 </div>
             </div>
-        </div>
-    {{/each}}
+        {{/each}}
+    </div>
     {{!-- <div class="ui grid bottom">
         <div class="center aligned sixteen wide column">
             <div class="ui mini pagination menu" style="margin-bottom: 15px;">

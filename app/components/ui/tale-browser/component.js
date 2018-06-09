@@ -18,6 +18,8 @@ export default Ember.Component.extend({
   animationRefreshTime: 500, // min ms time between animation refreshes
   item: null,
   guid: null,
+  listView: false,
+  showFilter: false,
 
   filterObserver: Ember.observer('filter', function () {
     this.setFilter.call(this);
@@ -27,15 +29,15 @@ export default Ember.Component.extend({
     this._super(...arguments);
     console.log("Attributes updated");
 
-    var modelsPromised = this.get("models");
+    let modelsPromised = this.get("models");
 
     console.log(modelsPromised);
 
-    var component = this;
+    let component = this;
 
     modelsPromised.then(function (models) {
       if (component.get('addButtonName') != null) {
-        var paginateSize = Number(component.get('paginateOn'));
+        let paginateSize = models.length; // Number(component.get('paginateOn'));
         component.set('paginateOn', paginateSize);
       }
       component.set('searchView', models);
@@ -52,9 +54,9 @@ export default Ember.Component.extend({
   },
   didUpdate() {
     //TODO schedule once to avoid race condition
-    var guid = this.get('guid');
+    let guid = this.get('guid');
 
-    if (guid == null) {
+    if (!guid) {
       guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0,
           v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -63,9 +65,9 @@ export default Ember.Component.extend({
       this.set('guid', guid);
     }
 
-    var d = new Date();
-    var milliseconds = d.getTime();
-    var lastMSTime = Number(this.get('lastAnimationTime'));
+    let d = new Date();
+    let milliseconds = d.getTime();
+    let lastMSTime = Number(this.get('lastAnimationTime'));
 
     if (milliseconds - lastMSTime > Number(this.get('animationRefreshTime'))) {
       $('.selectable.cards.' + guid + ' .image img')
@@ -101,14 +103,15 @@ export default Ember.Component.extend({
     }
 
     this.actions.searchFilter.call(this);
+    this.actions.toggleFiltersVisibility.call(this);
   },
 
   paginate(component, models) {
-    var paginateSize = component.get('paginateOn');
-    var pageNumber = component.get('pageNumber');
-    var arraySize = models.get('length');
+    let paginateSize = component.get('paginateOn');
+    let pageNumber = component.get('pageNumber');
+    let arraySize = models.get('length');
 
-    var totalPages = Math.ceil(arraySize / paginateSize);
+    let totalPages = Math.ceil(arraySize / paginateSize);
 
     component.set('numberOfModels', arraySize);
 
@@ -123,10 +126,10 @@ export default Ember.Component.extend({
 
     component.set('totalPages', totalPages);
 
-    var modelsInView = [];
-    var paginateArray = [];
+    let modelsInView = [];
+    let paginateArray = [];
 
-    for (var i = 1; i <= totalPages; ++i) {
+    for (let i = 1; i <= totalPages; ++i) {
       if (i == pageNumber)
         paginateArray[i] = {
           number: i,
@@ -158,7 +161,7 @@ export default Ember.Component.extend({
       let model = models.objectAt(i);
       if (typeof model.get("icon") === "undefined") {
         if (typeof model.get("meta") !== "undefined") {
-          var meta = model.get("meta");
+          let meta = model.get("meta");
           if (meta['provider'] !== "DataONE")
             model['icon'] = "/icons/globus-logo-large.png";
           else
@@ -168,7 +171,7 @@ export default Ember.Component.extend({
         }
       }
 
-      var description = model.get('description');
+      let description = model.get('description');
 
       if ((description == null)) {
         model.set('tagName', "No Description ...");
@@ -186,6 +189,19 @@ export default Ember.Component.extend({
   },
 
   actions: {
+    toggleListView: function() {
+      let newValue = !this.get('listView');
+      this.set('listView', newValue);
+    },
+    toggleFiltersVisibility: function() {
+      let newValue = !this.get('showFilter');
+      this.set('showFilter', newValue);
+      console.log('filters visible: ' + this.get('showFilter'));
+    },
+    removeCurrentFilter: function() {
+      this.set('filter', 'All');
+      this.setFilter();
+    },
     leftButtonClicked: function () {
       if (this.get('leftButtonState') === "disabled") return;
       this.set('pageNumber', this.get('pageNumber') - 1);
@@ -238,7 +254,7 @@ export default Ember.Component.extend({
 
     approveDelete: function (model) {
       console.log("Deleting model " + model.name);
-      var component = this;
+      let component = this;
 
       model.destroyRecord({
         reload: true
