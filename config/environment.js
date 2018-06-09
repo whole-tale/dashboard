@@ -63,6 +63,7 @@ module.exports = function (environment) {
     ENV.apiHost = '';
     ENV.apiPath = '/api';
     ENV.apiUrl = '';
+    ENV.dev = true;
     // ENV.APP.autoboot = false;
   }
 
@@ -70,6 +71,7 @@ module.exports = function (environment) {
     ENV.apiHost = 'https://girdertest.wholetale.org';
     ENV.apiPath = 'api/v1';
     ENV.apiUrl = 'https://girdertest.wholetale.org/api/v1';
+    ENV.dev = true;
   }
 
   if (environment === 'development') {
@@ -81,12 +83,14 @@ module.exports = function (environment) {
     ENV.apiHost = 'https://girder.dev.wholetale.org';
     ENV.apiPath = 'api/v1';
     ENV.apiUrl = 'https://girder.dev.wholetale.org/api/v1';
+    ENV.dev = true;
   }
 
   if (environment === 'production') {
     ENV.apiHost = 'apiHOST';
     ENV.apiPath = 'api/v1';
     ENV.apiUrl = ENV.apiHost + '/' + ENV.apiPath;
+    ENV.dev = false;
   }
 
   return ENV;
