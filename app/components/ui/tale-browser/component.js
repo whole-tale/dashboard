@@ -19,7 +19,7 @@ export default Ember.Component.extend({
   item: null,
   guid: null,
   listView: false,
-  showFilter: false,
+  showFilter: true,
 
   filterObserver: Ember.observer('filter', function () {
     this.setFilter.call(this);
