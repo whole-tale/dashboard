@@ -92,7 +92,7 @@ ui.inverted.menu.wt.top {
   .folder-grid {
     display: inline;
 
-    .grid > .tablet.ony,
+    .grid > .tablet.only,
     .grid > .computer.only {
       .ui.menu {
         border-radius: 0;
@@ -152,7 +152,7 @@ ui.inverted.menu.wt.top {
 .show-chevron {
   .folder-navigator-container {
     .folder-grid {
-      .grid > .tablet.ony,
+      .grid > .tablet.only,
       .grid > .computer.only {
         .ui.menu.vertical {
           .menu-item {
@@ -473,7 +473,7 @@ ui.inverted.menu.wt.top {
   float:left;
 }
 .wt.panel .wt.paddleboard span {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: rgba(0,0,0,0.4);
   font-weight: 300;
   font-style: italic;

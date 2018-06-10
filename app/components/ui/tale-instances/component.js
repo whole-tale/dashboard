@@ -35,7 +35,7 @@ export default Ember.Component.extend({
             item.set('tale', tale);
           })
         });
-        var paginateSize = Number(component.get('paginateOn'));
+        var paginateSize = models.length; // Number(component.get('paginateOn'));
         component.set('paginateOn', paginateSize);
 
         component.set('searchView', models);
@@ -48,7 +48,7 @@ export default Ember.Component.extend({
           item.set('tale', tale);
         })
       });
-      var paginateSize = Number(component.get('paginateOn'));
+      var paginateSize = models.length; // Number(component.get('paginateOn'));
       component.set('paginateOn', paginateSize);
 
       component.set('searchView', models);
