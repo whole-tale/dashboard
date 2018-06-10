@@ -13,6 +13,7 @@ $wt-paddleboard-panel-height: 50px;
 $wt-main-row-height: 52px;
 $bottom-separation: 2.5rem;
 $footer-height: 94px;
+$left-panel-padding: 38px;
 
 @mixin main-row {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -413,7 +414,7 @@ ui.inverted.menu.wt.top {
 }
 
 .left.panel.content {
-  height: calc(88vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height}));
+  height: calc(100vh - (#{$left-panel-padding} + #{$wt-paddleboard-panel-height} + #{$wt-main-row-height} + #{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height}));
 }
 
 .wt.panel {
