@@ -30,6 +30,7 @@ export default Ember.Service.extend({
         instructions: 'Linked from external sources',
         allowUpload: false
       },
+      /*
       {
         name : "Results",
         command : "workspace",
@@ -39,7 +40,7 @@ export default Ember.Service.extend({
         isFolder: true, //TODO: Find out whether this is an actual folder
         instructions: 'Output from Tales',
         allowUpload: true
-      }/*,
+      },
       {
         name : "Recent",
         command : "recent",
@@ -48,7 +49,8 @@ export default Ember.Service.extend({
         icon : "calendar",
         isFolder: false,
         instructions: null
-      }*/
+      }
+      */
     ];
     },
     getFolderNavFor: function (navCommand) {

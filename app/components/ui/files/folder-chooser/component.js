@@ -32,6 +32,7 @@ export default Ember.Component.extend({
 
         store.query('folder', { "parentId": userID, "parentType": "user"})
           .then(folderContents => {
+              folderContents = folderContents.filter(f=>f.name!=='Workspace');
               self.set('directory', {id: userID, type: "user", })
               self.set('folders', folderContents);
           })
@@ -181,7 +182,8 @@ export default Ember.Component.extend({
                     return store.query('folder', { parentId: parentId, parentType: parentType});
                 })
                 .then(folders => {
-                    if(fileToMove) folders = folders.reject(f=>{return f.id === fileToMove.id;});
+                    if(fileToMove) folders = folders.reject(f=>(f.id===fileToMove.id));
+                    folders = folders.reject(f=>f.name==='Workspace');
                     self.set('folders', folders);
                 })
                 .catch(e => {
