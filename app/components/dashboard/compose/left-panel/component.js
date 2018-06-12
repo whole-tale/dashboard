@@ -3,9 +3,15 @@ import Ember from 'ember';
 export default Ember.Component.extend({
 
   apiCall : Ember.inject.service('api-call'),
+  wtEvents: Ember.inject.service(),
 
   init() {
     this._super(...arguments);
+    let events = this.get('wtEvents').events;
+
+    events.on('select', function(allSelected) {
+      console.log(allSelected);
+    });
   },
 
   // just checking the toggle works ...
