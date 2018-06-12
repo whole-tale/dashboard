@@ -29,7 +29,6 @@ export default Ember.Component.extend({
 
     init() {
         this._super(...arguments);
-        this.set('loading', true);
 
         const self = this;
 
