@@ -341,7 +341,7 @@
                                             </div>
                                             <div class="image content">
                                                 <div class="description">
-                                                    <p>This will permanently delete the '{{model.name}}' Tale. Continue?</p>
+                                                    <p>This will permanently delete the '{{truncate-name model.name}}' Tale. Continue?</p>
                                                 </div>
                                             </div>
                                             <div class="actions">
@@ -398,7 +398,7 @@
                             {{#if tale_instantiating}}
                                 <div class="ui segment" style="height:100px">
                                     <div class="ui active inverted dimmer">
-                                        <div class="ui text loader">Launching Tale {{model.title}}</div>
+                                        <div class="ui text loader">Launching Tale {{truncate-name model.title}}</div>
                                     </div>
                                 </div>
                             {{/if}} 
@@ -407,7 +407,7 @@
                                     <i class="checkmark icon"></i>
                                     <div class="content">
                                         <div class="header">
-                                            <p>The Tale '{{model.title}}' has been launched !</p>
+                                            <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
 
                                             <div class="ui buttons">
                                                 <a href="{{instance.url}}" target="_blank">
@@ -430,7 +430,7 @@
                                     <i class="remove circle icon"></i>
                                     <div class="content">
                                         <div class="header">
-                                            The Tale '{{model.name}}' could not be launched !
+                                            The Tale '{{truncate-name model.name}}' could not be launched !
                                             <br> {{error_msg}}
                                         </div>
                                     </div>
