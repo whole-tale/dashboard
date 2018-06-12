@@ -1,5 +1,4 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:100,200,300,400,500);
-
 p.fabcredits {
   text-align: center;
   margin-top: 100px;
@@ -14,30 +13,27 @@ p.fabcredits {
   position: absolute;
   right: 0px;
   top: 3px;
-  width:0px;
-  height:0px;
+  width: 0px;
+  height: 0px;
 }
 
 .fabbuttons {
-  box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.18), 
-              0px 4px 12px -7px rgba(0, 0, 0, 0.15);
-  // border-radius: 50%;
+  box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.18), 0px 4px 12px -7px rgba(0, 0, 0, 0.15); // border-radius: 50%;
   display: block;
   width: 56px;
   height: 56px;
   margin: 20px auto 0;
-  right: 0px;
-  // top: 3px;
+  right: 0px; // top: 3px;
   position: absolute;
   -webkit-transition: all .1s ease-out;
-          transition: all .1s ease-out;  
+  transition: all .1s ease-out;
 }
 
-.fabbuttons:active, 
-.fabbuttons:focus, 
+.fabbuttons:active,
+.fabbuttons:focus,
 .fabbuttons:hover {
-  box-shadow: 0 0 4px rgba(0,0,0,.14),
-    0 4px 8px rgba(0,0,0,.28);
+  box-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
+  outline: 0;
 }
 
 .fabbuttons:not(:last-child) {
@@ -46,54 +42,52 @@ p.fabcredits {
   margin: 20px auto 0;
   opacity: 1;
   -webkit-transform: translateX(-550px);
-      -ms-transform: translateX(-550px);
-          transform: translateX(-550px);
+  -ms-transform: translateX(-550px);
+  transform: translateX(-550px);
 }
 
 .fabcontainer:hover {
-  height:75px;
-  width:75px;
+  height: 75px;
+  width: 75px;
+  i {
+    outline: 0;
+  }
 }
 
-.fabcontainer:hover 
-.fabbuttons:not(:last-child) {
+.fabcontainer:hover .fabbuttons:not(:last-child) {
   opacity: 1;
   -webkit-transform: none;
-      -ms-transform: none;
-          transform: none;
+  -ms-transform: none;
+  transform: none;
   margin: 15px auto 0;
 }
 
-/* Unessential styling for sliding up buttons at differnt speeds */
+/* Unessential styling for sliding up buttons at different speeds */
 
 .fabbuttons:nth-last-child(1) {
   box-shadow: none !important;
   -webkit-transition-delay: 25ms;
-          transition-delay: 25ms;
-  // background-image: url('https://cbwconline.com/IMG/Share.svg');
+  transition-delay: 25ms; // background-image: url('https://cbwconline.com/IMG/Share.svg');
   background-size: contain;
 }
 
 .fabbuttons:not(:last-child):nth-last-child(2) {
   -webkit-transition-delay: 50ms;
-          transition-delay: 20ms;
-  margin:27px 5px !important;
-  // background-image: url('https://cbwconline.com/IMG/Facebook-Flat.png');
+  transition-delay: 20ms;
+  margin: 27px 5px !important; // background-image: url('https://cbwconline.com/IMG/Facebook-Flat.png');
   background-size: contain;
 }
 
 .fabbuttons:not(:last-child):nth-last-child(3) {
   -webkit-transition-delay: 75ms;
-          transition-delay: 40ms;
-  margin:27px 56px !important;
-  // background-image: url('https://cbwconline.com/IMG/Twitter-Flat.png');
+  transition-delay: 40ms;
+  margin: 27px 56px !important; // background-image: url('https://cbwconline.com/IMG/Twitter-Flat.png');
   background-size: contain;
 }
 
 .fabbuttons:not(:last-child):nth-last-child(4) {
   -webkit-transition-delay: 100ms;
-          transition-delay: 60ms;
-  // background-image: url('https://cbwconline.com/IMG/Google%20Plus.svg');
+  transition-delay: 60ms; // background-image: url('https://cbwconline.com/IMG/Google%20Plus.svg');
   background-size: contain;
 }
 

@@ -293,6 +293,7 @@ export default Ember.Component.extend({
 
         Ember.run.later((function () {
           component.set("tale_instantiated", false);
+          component.set("tale_instantiating_id", 0);
         }), 30000);
       };
 
@@ -307,6 +308,7 @@ export default Ember.Component.extend({
 
         Ember.run.later((function () {
           component.set("tale_not_instantiated", false);
+          component.set("tale_instantiating_id", 0);
         }), 10000);
 
       };
