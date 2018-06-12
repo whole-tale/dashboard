@@ -15,9 +15,9 @@
             {{ui/wt-flix models=model.images paginateOn=6 cardsPerRow="six" modelView="image.view" showSelect=true showSearch=true action="itemSelected"}}
         </div>
 
-        <div style="display: {{showStep.[2]}}">
+        {{!-- <div style="display: {{showStep.[2]}}">
             {{ui/files/folder-chooser id="mini-browser" onSelectedFolder=(action "selectedFolder") }}
-        </div>
+        </div> --}}
 
         <div style="display: {{showStep.[3]}}">
             <div class="ui large header">Confirm Details</div>

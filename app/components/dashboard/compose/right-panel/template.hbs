@@ -1,9 +1,15 @@
-{{!-- {{#if showInstances}}
-    {{ui/tale-instances models=rightModelTop paginateOn=3 onLeftModelChange=(action "onLeftModelChange") }}
-{{/if}} --}}
+<div>
+    {{#if showInstances}} 
+        {{ui/compute-environments models=rightModelTop onLeftModelChange=(action "onLeftModelChange") }}
+    {{/if}}
+</div>
+{{!--
 <div class="wt panel manage">
     <div class="wt paddleboard">
-        <h2><i class="far fa-play-circle"></i> Launched Tales  <span class="quota">3 of 10</span></h2>
+        <h2>
+            <i class="far fa-play-circle"></i> Launched Tales
+            <span class="quota">3 of 10</span>
+        </h2>
     </div>
     <div class="ui vertical menu fluid tales">
         <a href="run-etur.html" class="item">
@@ -25,7 +31,7 @@
             <p>Example Tale with Jupyter with a really long name to test</p>
         </a>
     </div>
-</div>
-{{#if showMiniBrowser}}
-    {{ui/files/mini-browser }}
+</div> --}} 
+{{#if showMiniBrowser}} 
+    {{ui/files/mini-browser }} 
 {{/if}}

@@ -9,6 +9,9 @@ module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
     // Add options here
     hinting: !isTesting,
+    sassOptions: {
+      includePaths: ['app']
+    },
     mediumEditorOptions: {
       theme: 'tim'
     },

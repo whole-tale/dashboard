@@ -21,6 +21,16 @@ export default AuthenticateRoute.extend({
             limit: "0"
           }
         }
+      }),
+      images: this.get('store').findAll('image', {
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            sort: "lowerName",
+            sortdir: "1",
+            limit: "50"
+          }
+        }
       })
     };
   }

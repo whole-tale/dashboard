@@ -392,9 +392,45 @@ ui.inverted.menu.wt.top {
 }
 
 .show-instances.show-mini-browser {
+  .show-search {
+    .wt.panel.manage > .environments-list {
+      overflow-y: auto;
+      height: calc(100% - #{$wt-main-row-height} - 1rem - 40px);
+      border-bottom-left-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+
+      .fluid.menu {
+        a > p {
+          margin-top: 1rem;
+        }
+        a > i {
+          color: rgb(70,133, 193);
+        }
+      }
+    }
+  }
   .wt.panel.manage {
     height: calc((100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + 1em))/2);
     margin-bottom: 1em;
+
+    .ui.secondary.menu {
+      margin: 0;
+    
+      .item {
+        width: 100%;
+        margin: 0;
+        
+        .mini.search {
+          width: 100%;
+        }
+      }
+    }
+    .environments-list {
+      overflow-y: auto;
+      height: calc(100% - #{$wt-main-row-height} - 1rem);
+      border-bottom-left-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+    }
 
     .folder-navigator-container {
       border-bottom-left-radius: 1rem;
