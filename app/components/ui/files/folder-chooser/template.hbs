@@ -37,67 +37,86 @@
     </div>
 </div>
 {{else}}
-    {{#if selectedFolder}}
+    {{!-- {{#if selectedFolder}}
         <div class="header item" style="font-size: 120%">
             <span class="ui large blue label" style="margin-right: 10px;">Currently Selected</span> {{selectedFolder.name}}
         </div>
         <div class="ui divider"></div>
-    {{/if}}
-    <div class="">
+    {{/if}} --}}
+    <div class="" style="padding:1em;">
     {{#unless loading}}
       <div style="max-height: 500px; overflow-y: scroll">
+         {{ui/files/bread-crumbs currentNav=currentNav currentBreadCrumb=currentBreadCrumb fileBreadCrumbs=fileBreadCrumbs isMain=true navClicked="navClicked" bcClicked="breadcrumbClicked"}}
+         {{!-- {{#if (eq directory.type "folder")}}
+          <tr class="left aligned selectable" id={{item.id}} {{action "clickedRow" directory on="click"}}>
+              <td>
+                  <span>{{directory.name}}</span><i class="large level up icon clickable" {{action "clickedLevelUp" directory on="click"}}></i>
+              </td>
+          </tr>
+          {{else if (eq directory.type "registered")}}
+          <tr class="left aligned">
+              <td>
+                  <span>{{directory.name}}</span><i class="large level up icon clickable" {{action "clickedLevelUp" directory on="click"}}></i>
+              </td>
+          </tr>
+          {{else}}
+          <!-- <tr class="left aligned">
+              <td>
+                  <span></span><i class="large level up icon clickable" {{action "clickedLevelUp" directory on="click"}}></i>
+              </td>
+          </tr> -->
+          {{/if}} --}}
         <table class="ui very basic single line table" style="margin:0;">
             <thead>
                 <tr>
+                <th></th>
                 <th>Name</th>
-                <th>Created</th>
+                {{!-- <th>Created</th> --}}
                 {{!-- <th>Last Modified</th> --}}
-                <th>Size</th>
+                <th class="right aligned">Size</th>
             </tr></thead>
             <tbody>
-                {{#if (eq directory.type "folder")}}
-                <tr class="left aligned selectable" id={{item.id}} {{action "clickedRow" directory on="click"}}>
-                    <td>
-                        <span>{{directory.name}}</span><i class="large level up icon clickable" {{action "clickedLevelUp" directory on="click"}}></i>
-                    </td>
-                </tr>
-                {{else if (eq directory.type "registered")}}
-                <tr class="left aligned">
-                    <td>
-                        <span>{{directory.name}}</span><i class="large level up icon clickable" {{action "clickedLevelUp" directory on="click"}}></i>
-                    </td>
-                </tr>
-                {{else}}
-                <!-- <tr class="left aligned">
-                    <td>
-                        <span></span><i class="large level up icon clickable" {{action "clickedLevelUp" directory on="click"}}></i>
-                    </td>
-                </tr> -->
-                {{/if}}
+               
                 {{#each folders as |item|}}
-                    <tr class="left aligned selectable" id={{item.id}} {{action "clickedRow" item on="click"}}>
+                    <tr class="left aligned selectable" id={{item.id}}>
                         <td>
-                            <i class="fas fa-folder icon black large"></i> {{truncate-name item.name}}
+                          {{#unless item.nonselectable}}
+                          {{#if item.selected}}
+                          <i class="far fa-check-square clickable" {{action "deselectItem" item on="click"}}></i>
+                          {{else}}
+                          <i class="far fa-square clickable" {{action "selectItem" item on="click"}}></i>
+                          {{/if}}
+                          {{/unless}}
                         </td>
-                        <td >
+                        <td {{action "clickedLevelDown" item on="click"}}>
+                          {{#if item.icon}}
+                          <i class="{{item.icon}} icon black large"></i>
+                          {{else}}
+                          <i class="fas fa-folder icon black large"></i> 
+                          {{/if}}
+                          {{truncate-name item.name}}
+                        </td>
+                        {{!-- <td >
                             {{from-now item.created}}
-                        </td>
+                        </td> --}}
                         {{!-- <td >
                             {{from-now item.updated}}
                         </td> --}}
-                        <td >
+                        <td class="right aligned" {{action "clickedLevelDown" item on="click"}}>
                             {{bytes-to-readable item.size}}
                         </td>
-                        <td>
-                            {{#if item.selected}}
-                                <i class="large level down icon clickable" style="" {{action "clickedLevelDown" item on="click"}}></i>
-                            {{/if}}
-                        </td>
+                        {{!-- <td>
+                          {{#if item.selected}}
+                          <i class="large level down icon clickable" style="" {{action "clickedLevelDown" item on="click"}}></i>
+                          {{else}}
+                          <i class="large level down icon clickable" style="color:rgba(0,0,0,0);"></i>
+                          {{/if}}
+                        </td> --}}
                     </tr>
                 {{/each}}
             </tbody>
         </table>
-            {{#if (eq directory.type "user")}}
+            {{!-- {{#if (eq directory.type "user")}}
                 <div class="ui center aligned basic segment">
                     <div class="ui horizontal divider">
                         Or
@@ -107,7 +126,7 @@
                         <i class="level down icon"></i>
                     </div>
                 </div>
-            {{/if}}
+            {{/if}} --}}
       </div>
     {{else}}
        {{#ui-progress class="ui top attached progress" value=990 progress=990 total=1000}}

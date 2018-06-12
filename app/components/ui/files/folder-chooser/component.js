@@ -3,13 +3,17 @@ import RSVP from 'rsvp';
 import config from '../../../../config/environment';
 import layout from './template';
 
+const service = Ember.inject.service.bind(Ember);
+
 /**/
 export default Ember.Component.extend({
     layout,
 
-    store: Ember.inject.service(),
-    authRequest: Ember.inject.service(),
-    userAuth: Ember.inject.service(),
+    store: service(),
+    authRequest: service(),
+    userAuth: service(),
+    folderNavs: service(),
+    wtEvents: service(),
 
     folders: Ember.A(),    //Array of folders in the directory
     directory: null,       //The folder object currently browsed
@@ -19,21 +23,37 @@ export default Ember.Component.extend({
 
     selectedRow: null,
 
+    selectedItems: Ember.A(),
+
     registered: {name: "Registered", id: "registered", type: "registered"},
 
     init() {
         this._super(...arguments);
-
         this.set('loading', true);
 
-        let self = this;
+        const self = this;
+
         let store = this.get('store');
         let userID = this.get('userAuth').getCurrentUserID();
-
+        
+        let navs = this.get('folderNavs').getFolderNavs();
+        this.set('directory', {id: userID, type: "user", })
+        
+        this.set('loading', true);
         store.query('folder', { "parentId": userID, "parentType": "user"})
           .then(folderContents => {
-              folderContents = folderContents.filter(f=>f.name!=='Workspace');
               self.set('directory', {id: userID, type: "user", })
+              folderContents = folderContents
+                .filter(f=>f.name!=='Workspace')
+                .map(f=>{
+                  let idx = navs.findIndex(n=>n.name===f.name);
+                  if (idx > -1) {
+                    f.set('icon', navs[idx].icon);
+                    f.set('nonselectable', true);
+                  }
+                  return f;
+                })
+              ;
               self.set('folders', folderContents);
           })
           .finally(_ => {
@@ -207,7 +227,7 @@ export default Ember.Component.extend({
 
             this.clearSelected();
 
-            let onClickedRow = this.folders.find(f=>{return folder.id === f.id;})
+            let onClickedRow = this.folders.find(f=>folder.id===f.id);
             if(onClickedRow) onClickedRow.set('selected', true);
             this.get('folders').arrayContentDidChange();
 
@@ -223,6 +243,22 @@ export default Ember.Component.extend({
             //Save the item for when the user clicks on a menu action
             this.sendAction("onSelectedFolder", folder);
             this.set("selectedFolder", folder);
+        },
+
+        selectItem(item) {
+          item.set('selected', true);
+          let allSelected = this.get('selectedItems');
+          allSelected.push(item);
+          this.set('selectedItems', allSelected);
+          this.get('wtEvents').events.select(allSelected);
+        },
+
+        deselectItem(item) {
+          item.set('selected', false);
+          let allSelected = this.get('selectedItems');
+          allSelected = allSelected.reject(i=>i.id===item.id);
+          this.set('selectedItems', allSelected);
+          this.get('wtEvents').events.select(allSelected);
         },
 
         close() {
