@@ -31,6 +31,8 @@ export function fileIconFor(params/*, hash*/) {
     return iconTemplate("/icons/pdf.jpg");
   } else if ((suffix === "doc") || (suffix === "docx")) {
     return iconTemplate("/icons/word.jpg");
+  } else if (suffix === "html") {
+    return iconTemplate("/icons/html.png");
   }
 
   // images
@@ -60,7 +62,7 @@ export function fileIconFor(params/*, hash*/) {
     margin:auto;
     font-size: .8em;
     font-weight: bolder;">${res[1].substr(0,3)}</span>`;
-  }
+}
   
   // border: 1.5px solid white;
   // border-radius: 15%;
