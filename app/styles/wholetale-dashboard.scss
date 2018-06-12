@@ -446,6 +446,31 @@ ui.inverted.menu.wt.top {
       overflow-y: auto;
       overflow-x: hidden;
     }
+
+    .composer-container {
+      background-color: rgba(0, 0, 0, 0.05);
+
+      .row {
+        margin: 1em 0;
+        
+        .column > .input-label {
+          padding: 1rem 0;
+        }
+        .column > label {
+          font-size: 1.2rem;
+        }
+        .column > input {
+          font-size: 1.5rem;
+        }
+
+        .eleven {
+          label {
+            font-style: italic;
+            font-weight: 500;
+          }
+        }
+      }
+    }
   }
 }
 

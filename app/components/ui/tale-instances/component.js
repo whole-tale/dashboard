@@ -58,7 +58,10 @@ export default Ember.Component.extend({
     this.set('addButtonLogo', '/icons/plus-sign.png');
   },
   didRender() {},
-  didUpdate() {},
+  didUpdate() {
+    console.log('tales number of instances changed');
+    debugger;
+  },
 
   paginate(component, models) {
     var paginateSize = component.get('paginateOn');
@@ -163,6 +166,7 @@ export default Ember.Component.extend({
 
     onModelChange: function (model) {
       //  alert("1");
+      debugger;
       this.sendAction('onLeftModelChange', model); // sends evnt to parent component
     },
 

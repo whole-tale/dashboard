@@ -1,8 +1,8 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-
   apiCall : Ember.inject.service('api-call'),
+  invalidNewTale: true,
 
   init() {
     this._super(...arguments);
@@ -20,7 +20,7 @@ export default Ember.Component.extend({
   showStep : ["inline", "none", "none", "none"],
   stepsActive : ["active", "", "", ""],
   currentStep : 0,
-  public_checked : false,
+  // public_checked : false,
   frontend : null,
   folder : null,
   nextName : "Next",
@@ -28,18 +28,27 @@ export default Ember.Component.extend({
   tale_created: false,
   configuration : JSON.stringify({}),
 
-  clearWizard() {
+  clearForm() {
     this.set("showStep", ["inline", "none", "none", "none"]);
-    this.set('stepsActive', ["active", "", "", ""]);
-    this.set('currentStep', 0);
-    this.set('public_checked', false);
     this.set('frontend', null);
     this.set('folder', null);
-    this.set('nextName', "Next");
     this.set('tale_creating', false);
     this.set('tale_created', false);
     this.set('configuration', JSON.stringify({}));
   },
+
+  // clearWizard() {
+  //   this.set("showStep", ["inline", "none", "none", "none"]);
+  //   this.set('stepsActive', ["active", "", "", ""]);
+  //   this.set('currentStep', 0);
+  //   this.set('public_checked', false);
+  //   this.set('frontend', null);
+  //   this.set('folder', null);
+  //   this.set('nextName', "Next");
+  //   this.set('tale_creating', false);
+  //   this.set('tale_created', false);
+  //   this.set('configuration', JSON.stringify({}));
+  // },
 
   actions: {
 
@@ -54,93 +63,94 @@ export default Ember.Component.extend({
       this.set('folder', model);
     },
 
-    gotoStep : function (stepNo) {
-      console.log("Going to step no " + stepNo);
-      var stepsActive = this.get("stepsActive");
-      for (var i=0;  i< stepsActive.length; ++i) {
-        Ember.set(stepsActive, i.toString(), "");
-      }
+    // gotoStep : function (stepNo) {
+    //   console.log("Going to step no " + stepNo);
+    //   var stepsActive = this.get("stepsActive");
+    //   for (var i=0;  i< stepsActive.length; ++i) {
+    //     Ember.set(stepsActive, i.toString(), "");
+    //   }
 
-      Ember.set(stepsActive, stepNo.toString(), "active");
+    //   Ember.set(stepsActive, stepNo.toString(), "active");
 
-      var showStep = this.get("showStep");
-      for (i=0;  i< showStep.length; ++i) {
-        Ember.set(showStep, i.toString(), "none");
-      }
+    //   var showStep = this.get("showStep");
+    //   for (i=0;  i< showStep.length; ++i) {
+    //     Ember.set(showStep, i.toString(), "none");
+    //   }
 
-      Ember.set(showStep, stepNo.toString(), "inline");
+    //   Ember.set(showStep, stepNo.toString(), "inline");
 
-      //this.set("stepsActive", stepsActive);
-      //this.set("showStep", showStep);
+    //   //this.set("stepsActive", stepsActive);
+    //   //this.set("showStep", showStep);
 
-      console.log(this.get("showStep"));
-      console.log(this.get("stepsActive"));
+    //   console.log(this.get("showStep"));
+    //   console.log(this.get("stepsActive"));
 
-      this.set("currentStep", stepNo);
+    //   this.set("currentStep", stepNo);
 
-      if(stepNo === 2) {
-        this.set('startChooserFromFolder', "registered");
-      }
+    //   if(stepNo === 2) {
+    //     this.set('startChooserFromFolder', "registered");
+    //   }
 
-    },
+    // },
 
-    moveLeft: function () {
-      var step = this.get("currentStep");
-      if (step !=0)
-        this.send("gotoStep", step-1);
-    },
-    moveRight: function () {
-      var step = this.get("currentStep");
-      if (step !=3) {
-        this.send("gotoStep", step + 1);
+    // moveLeft: function () {
+    //   var step = this.get("currentStep");
+    //   if (step !=0)
+    //     this.send("gotoStep", step-1);
+    // },
+    // moveRight: function () {
+    //   var step = this.get("currentStep");
+    //   if (step !=3) {
+    //     this.send("gotoStep", step + 1);
 
-        if (step == 2) {
-          this.set('nextName', "Submit");
-        }
-        else
-          this.set('nextName', "Next");
-      } else {
+    //     if (step == 2) {
+    //       this.set('nextName', "Submit");
+    //     }
+    //     else
+    //       this.set('nextName', "Next");
+    //   } else {
 
-        var component = this;
+    //     var component = this;
 
-        component.set("tale_creating", true);
+    //     component.set("tale_creating", true);
 
-        var onSuccess = function(item) {
-          component.set("tale_creating", false);
-          component.set("tale_created", true);
+    //     var onSuccess = function(item) {
+    //       component.set("tale_creating", false);
+    //       component.set("tale_created", true);
 
-          Ember.run.later((function() {
-            component.set("tale_created", false);
-            component.clearWizard();
-            component.transitionToRoute('tale.view', item);
-          }), 3000);
-        };
+    //       Ember.run.later((function() {
+    //         component.set("tale_created", false);
+    //         // component.clearWizard();
+    //         component.clearForm();
+    //         component.transitionToRoute('tale.view', item);
+    //       }), 3000);
+    //     };
 
-        var onFail = function(e) {
-          // deal with the failure here
-          component.set("tale_creating", false);
-          component.set("tale_not_created", true);
-          console.log(e);
+    //     var onFail = function(e) {
+    //       // deal with the failure here
+    //       component.set("tale_creating", false);
+    //       component.set("tale_not_created", true);
+    //       console.log(e);
 
-          Ember.run.later((function() {
-            component.set("tale_not_created", false);
-          }), 3000);
+    //       Ember.run.later((function() {
+    //         component.set("tale_not_created", false);
+    //       }), 3000);
 
-        };
+    //     };
 
-        let new_tale = this.get('store').createRecord('tale', {
-          "config": {},   //TODO: Implement configuration editor
-          "description": this.get('description'),
-          "folderId":    this.get('folder').get('_id'),
-          "imageId":     this.get('frontend').get('_id'),
-          "public":      this.get('public_checked'),
-          "title":       this.get('title'),
-        });
+    //     let new_tale = this.get('store').createRecord('tale', {
+    //       "config": {},   //TODO: Implement configuration editor
+    //       "description": this.get('description'),
+    //       "folderId":    this.get('folder').get('_id'),
+    //       "imageId":     this.get('frontend').get('_id'),
+    //       "public":      this.get('public_checked'),
+    //       "title":       this.get('title'),
+    //     });
 
-        new_tale.save().then(onSuccess).catch(onFail);
-      }
+    //     new_tale.save().then(onSuccess).catch(onFail);
+    //   }
 
-    },
+    // },
 
   }
 
