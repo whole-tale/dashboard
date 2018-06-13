@@ -50,7 +50,7 @@ export default Ember.Component.extend({
         },
 
         closedMiniBrowser: function() {
-             let mini = Ember.$('#mini-browser');
+             let mini = Ember.$('#mini-folder-browser');
              mini.addClass('hidden');
         },
 
@@ -76,7 +76,7 @@ export default Ember.Component.extend({
 
         move(file) {
             this.set('fileToMove', file);
-            let mini = Ember.$('#mini-browser');
+            let mini = Ember.$('#mini-folder-browser');
 
             mini.css({
                 // top: event.layerY+"px",
@@ -90,7 +90,7 @@ export default Ember.Component.extend({
         moveFile(fileToMove, moveTo) {
             let self = this;
 
-            Ember.$('#mini-browser').addClass('hidden');
+            Ember.$('#mini-folder-browser').addClass('hidden');
 
             // let queryParams = {folderId: moveTo.get('id')};
             let queryParams = {};

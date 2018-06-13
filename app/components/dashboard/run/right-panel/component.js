@@ -1,9 +1,9 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  classNameBindings: ['showInstances', 'showMiniBrowser'],
-  showInstances: true,
-  showMiniBrowser: true,
+  classNameBindings: ['showUpperPanel', 'showLowerPanel'],
+  showUpperPanel: true,
+  showLowerPanel: true,
 
   actions: {
     onLeftModelChange : function (model) {
