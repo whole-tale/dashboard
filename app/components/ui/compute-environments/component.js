@@ -102,7 +102,7 @@ export default Ember.Component.extend({
 
       promise.then((searchView) => {
         component.set('modelsInView', searchView);
-        component.updateModels(component, searchView);
+        // component.updateModels(component, searchView);
       });
     },
     onModelChange: function (model) {
