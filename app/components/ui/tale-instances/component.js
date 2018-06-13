@@ -185,7 +185,7 @@ export default Ember.Component.extend({
         component.paginate(component, component.get('models'));
         //      });
       });
-
+      // TODO refresh the tale browser component
       return false;
     },
 

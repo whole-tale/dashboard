@@ -25,14 +25,34 @@
         </h2>
     </div>
     <div class="tales-list" style="overflow-y:auto;height:calc(100% - 48px - 1rem);border-bottom-left-radius:1rem;border-bottom-right-radius: 1rem;">
-        {{#each models as |model|}}
+        {{#each models as |instance|}}
             <div class="ui vertical menu fluid tales">
-                <a class="item" {{action 'onModelChange' model}}>
-                    <img src="{{model.tale.illustration}}" />
-                    <img src="{{model.tale.icon}}" class="env" />
-                    <i class="large ellipsis vertical icon"></i>
-                    <p>{{model.name}}</p>
+                <a class="item" {{action 'onModelChange' instance}}>
+                    <img src="{{instance.tale.illustration}}" />
+                    <img src="{{instance.tale.icon}}" class="env" />
+                    <i class="times icon" {{ action 'openDeleteModal' instance._id }} ></i>
+                    <p>{{instance.name}}</p>
                 </a>
+            </div>
+            <div class="ui {{instance._id}} modal" style="display: none">
+              <i class="close icon"></i>
+              <div class="header">
+                Really Delete Instance?
+              </div>
+              <div class="image content">
+                <div class="description">
+                  <p>This will permanently delete the '{{instance.name}}' instance. Continue?</p>
+                </div>
+              </div>
+              <div class="actions">
+                <div class="ui black deny button" {{action 'denyDelete'}}>
+                  No
+                </div>
+                <div class="ui positive right labeled icon button" {{action 'approveDelete' instance}}>
+                  Yes
+                  <i class="checkmark icon"></i>
+                </div>
+              </div>
             </div>
         {{else}}
             <div class="ui vertical menu fluid tales">
