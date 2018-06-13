@@ -5,7 +5,6 @@ export default AuthenticateRoute.extend({
   userAuth: Ember.inject.service(),
 
   model() {
-    debugger;
     let currentUserId = this.get('userAuth').getCurrentUserID();
 
     return {

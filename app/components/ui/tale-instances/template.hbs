@@ -19,13 +19,13 @@
     <div class="wt paddleboard">
         <h2>
             <i class="circle play icon"></i> Launched Tales
-            {{!-- {{#if pageNumber}} 
+            {{!-- {{#if pageNumber}}
                 <span class="quota">{{pageNumber}} of {{totalPages}}</span>
             {{/if}} --}}
         </h2>
     </div>
     <div class="tales-list" style="overflow-y:auto;height:calc(100% - 48px - 1rem);border-bottom-left-radius:1rem;border-bottom-right-radius: 1rem;">
-        {{#each modelsInView as |model|}}
+        {{#each models as |model|}}
             <div class="ui vertical menu fluid tales">
                 <a class="item" {{action 'onModelChange' model}}>
                     <img src="{{model.tale.illustration}}" />

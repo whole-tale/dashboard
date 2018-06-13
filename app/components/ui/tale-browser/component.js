@@ -291,6 +291,9 @@ export default Ember.Component.extend({
 
         component.set("instance", instance);
 
+        //Add the new instance to the list of instances in the right panel
+        component.get('taleLaunched')();
+
         Ember.run.later((function () {
           component.set("tale_instantiated", false);
           component.set("tale_instantiating_id", 0);
