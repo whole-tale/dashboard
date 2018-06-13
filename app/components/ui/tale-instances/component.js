@@ -60,7 +60,6 @@ export default Ember.Component.extend({
   didRender() {},
   didUpdate() {
     console.log('tales number of instances changed');
-    debugger;
   },
 
   paginate(component, models) {
@@ -166,7 +165,6 @@ export default Ember.Component.extend({
 
     onModelChange: function (model) {
       //  alert("1");
-      debugger;
       this.sendAction('onLeftModelChange', model); // sends evnt to parent component
     },
 

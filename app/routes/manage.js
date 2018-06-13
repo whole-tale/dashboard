@@ -1,15 +1,12 @@
 import Ember from 'ember';
 var inject = Ember.inject;
 
-// for dev:
-
-
 import AuthenticateRoute from 'wholetale/routes/authenticate';
 
 export default AuthenticateRoute.extend({
   internalState: inject.service(),
   userAuth: inject.service(),
-  model: function() {
+  model: function () {
     this._super();
     var state = this.get('internalState');
 
@@ -26,21 +23,42 @@ export default AuthenticateRoute.extend({
     var folderContents = null;
     var itemContents = null;
 
-    if (folderID === null || folderID === "null" ) {
-      folderContents = this.get('store').query('folder', {parentId: thisUserID, parentType : "user" });
+    if (!folderID || folderID === "null") {
+      folderContents = this.get('store').query('folder', {
+        parentId: thisUserID,
+        parentType: "user"
+      });
       state.setCurrentParentId(thisUserID);
       state.setCurrentParentType("user");
     } else {
       console.log("Folder != null, so loading folder and items");
-      folderContents = this.get('store').query('folder', {parentId: folderID, parentType: 'folder'}); 
-      itemContents= this.get('store').query('item', {folderId: folderID});
+      folderContents = this.get('store').query('folder', {
+        parentId: folderID,
+        parentType: 'folder'
+      });
+      itemContents = this.get('store').query('item', {
+        folderId: folderID
+      });
       console.log("Folder != null, leaving");
     }
 
-    return {'folderContents' : folderContents, 'itemContents' : itemContents};
+    return {
+      'folderContents': folderContents,
+      'itemContents': itemContents,
+      images: this.get('store').findAll('image', {
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            sort: "lowerName",
+            sortdir: "1",
+            limit: "50"
+          }
+        }
+      })
+    };
   },
 
-  setupController: function(controller, model) {
+  setupController: function (controller, model) {
     this._super(controller, model);
     controller.set('fileData', model);
   }

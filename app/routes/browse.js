@@ -5,7 +5,6 @@ export default AuthenticateRoute.extend({
   userAuth: Ember.inject.service(),
 
   model() {
-    debugger;
     let currentUserId = this.get('userAuth').getCurrentUserID();
 
     return {
@@ -19,16 +18,6 @@ export default AuthenticateRoute.extend({
             sort: "created",
             sortdir: "1",
             limit: "0"
-          }
-        }
-      }),
-      images: this.get('store').findAll('image', {
-        reload: true,
-        adapterOptions: {
-          queryParams: {
-            sort: "lowerName",
-            sortdir: "1",
-            limit: "50"
           }
         }
       })

@@ -390,6 +390,35 @@ ui.inverted.menu.wt.top {
   padding-left: .5rem;
   padding-right: .5rem;
 }
+.ui.secondary.menu {
+  margin: 0;
+
+  .item {
+    width: 100%;
+    margin: 0;
+    
+    .mini.search {
+      width: 100%;
+    }
+  }
+}
+.show-search {
+  .wt.panel.manage > .environments-list {
+    overflow-y: auto;
+    height: calc(100% - #{$wt-main-row-height} - 1rem - 40px);
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+
+    .fluid.menu {
+      a > p {
+        margin-top: 1rem;
+      }
+      a > i {
+        color: rgb(70,133, 193);
+      }
+    }
+  }
+}
 
 .show-upper-panel.show-lower-panel {
   .show-search {
