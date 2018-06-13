@@ -27,13 +27,13 @@
         {{#each modelsInView as |model|}}
             <div class="ui vertical menu fluid tales">
                 <a class="item" {{action 'onModelChange' model}}>
-                    {{!-- <img src="{{model.image.illustration}}" /> --}}
                     <img src="{{model.icon}}" />
-                    {{!-- <i class="large ellipsis vertical icon"></i> --}}
-                    <i class="fas fa-info blue"></i>
+                    <i class="fas fa-info blue" onclick={{action "openDetailsModal" model}}></i>
                     <p>{{model.name}}</p>
                 </a>
             </div>
         {{/each}}
     </div>
 </div>
+
+{{ui/compute-environments/environment-details-modal model=detailsModel}}

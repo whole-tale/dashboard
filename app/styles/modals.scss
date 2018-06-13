@@ -10,3 +10,11 @@
 .newfolder {
   height: 200px;
 }
+
+.envdetails {
+  height: calc(100% - 64px - 60px);
+
+  .content {
+    height: calc(100% - 64px - 60px);
+  }
+}

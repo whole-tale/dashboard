@@ -136,10 +136,24 @@ export default Ember.Component.extend({
     addNew: function () {
       this.sendAction("onAddNew");
     },
-    removeCurrentFilter: function() {
+    removeCurrentFilter: function () {
       this.set('filter', 'All');
       this.setFilter();
+    },
+    openModal: function (modalName) {
+      let modal = Ember.$('.ui.' + modalName + '.modal');
+      modal.parent().prependTo(Ember.$(document.body));
+      modal.modal('show');
+    },
+    openDetailsModal: function (model) {
+      this.set('detailsModel', model);
+      console.log('attempting to open details modal');
+      Ember.$('.ui.modal.envdetails').modal('show');
+    },
+    selectEnvironment: function(model) {
+      let component = this;
+      component.set('selectedEnvironmentName', model.name);
+      console.log('selected environment: ' + component.get('selectedEnvironmentName'));
     }
-
   }
 });

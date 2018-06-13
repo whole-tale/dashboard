@@ -1,0 +1,21 @@
+{{#ui-modal name="envdetails" class="small envdetails" onApprove=(action 'selectEnvironment' model) onDeny=(action 'cancel')}}
+    <div class="header">Environment Details</div>
+    <div class="content">
+        <div class="ui form">
+            <div class="ui fluid">
+                <label>Description</label>
+                <div class="ui sixteen wide column">
+                  {{convert-markdown model.description}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui deny button">
+            Cancel
+        </div>
+        <div class="ui positive register left labeled icon button">
+            <i class="icon check"></i> Select Environment
+        </div>
+    </div>
+{{/ui-modal}}

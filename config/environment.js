@@ -18,7 +18,6 @@ module.exports = function (environment) {
     taleIconWidth: "360",
 
     modulePrefix: 'wholetale',
-    podModulePrefix: 'wholetale',
     environment: environment,
     rootURL: '/',
     locationType: 'auto',
