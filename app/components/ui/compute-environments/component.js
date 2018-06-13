@@ -24,24 +24,14 @@ export default Ember.Component.extend({
     var models = this.get("models");
     console.log(models);
 
-    var component = this;
-    if (typeof models.then === "function") {
-      models.then(function (models) {
-        models.forEach(function (item) {
-          component.get('store').findRecord('image', item.get('id')).then(environment => {
-            item.set('environment', environment);
-          })
-        });
-        let environmentCount = models.length;
-        console.log(`environment count: ${environmentCount}`);
+    if(!models) {
+      models = Promise.resolve([]);
+    }
 
-        component.set('searchView', models);
-        component.set('numberOfModels', environmentCount);
-        component.updateModels(component, models);
-      });
-    } else {
+    var component = this;
+    models.then(function (models) {
       models.forEach(function (item) {
-        component.get('store').findRecord('image', item.get('_id')).then(environment => {
+        component.get('store').findRecord('image', item.get('id')).then(environment => {
           item.set('environment', environment);
         })
       });
@@ -51,7 +41,7 @@ export default Ember.Component.extend({
       component.set('searchView', models);
       component.set('numberOfModels', environmentCount);
       component.updateModels(component, models);
-    }
+    });
   },
   didRender() {},
   didUpdate() {
