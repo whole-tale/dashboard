@@ -7,38 +7,35 @@ export default Ember.Component.extend({
   internalState: Ember.inject.service(),
   selectedEnvironmentName: "",
   filteredSet: Ember.A(),
-  filters: ['All', 'Mine', 'Published', 'Recent'],
-  filter: 'All',
+  searchStr: '',
   numberOfModels: 0,
-  //lastAnimationTime: 0,
-  //animationRefreshTime: 500, // min ms time between animation refreshes
-  //item: null,
-  //guid: null,
   showSearch: true,
   classNameBindings: ['showSearch'],
+
+  filterObserver: Ember.observer('searchStr', function () {
+    this.setFilter.call(this);
+  }),
 
   init() {
     this._super(...arguments);
     console.log("Attributes updated");
 
-    var models = this.get("models");
+    let models = this.get("models");
     console.log(models);
 
-    if(!models) {
+    if (!models) {
       models = Promise.resolve([]);
     }
 
-    var component = this;
+    let component = this;
     models.then(function (models) {
       models.forEach(function (item) {
         component.get('store').findRecord('image', item.get('id')).then(environment => {
           item.set('environment', environment);
         })
       });
-      let environmentCount = models.length;
-      console.log(`environment count: ${environmentCount}`);
-
       component.set('searchView', models);
+      let environmentCount = models.length;
       component.set('numberOfModels', environmentCount);
       component.updateModels(component, models);
     });
@@ -79,28 +76,54 @@ export default Ember.Component.extend({
     component.set("modelsInView", modelsInView);
   },
 
+  setFilter() { 
+    const filter = this.get('searchStr');
+    const models = this.get('models');
+    this.set('filteredSet', models);
+    this.actions.searchFilter.call(this);
+  },
+
   actions: {
+    searchFilter: function () {
+      let searchStr = this.get('searchStr');
+      const filteredSet = this.get('filteredSet');
+      const component = this;
+
+      let promise = new Ember.RSVP.Promise((resolve) => {
+        let searchView = [];
+        filteredSet.forEach(model => {
+          let name = model.get('name');
+          if (new RegExp(searchStr, "i").test(name)) {
+            searchView.push(model);
+          }
+        });
+        resolve(searchView);
+      });
+
+      promise.then((searchView) => {
+        component.set('modelsInView', searchView);
+        component.updateModels(component, searchView);
+      });
+    },
     onModelChange: function (model) {
       this.sendAction('onLeftModelChange', model); // sends event to parent component
     },
 
     openDeleteModal: function (id) {
-      var selector = '.ui.' + id + '.modal';
+      let selector = '.ui.' + id + '.modal';
       console.log("Selector: " + selector);
       $(selector).modal('show');
     },
 
     approveDelete: function (model) {
       console.log("Deleting model " + model.name);
-      var component = this;
+      let component = this;
 
       model.destroyRecord({
         reload: true
       }).then(function () {
         // refresh
-        //        component.get('store').findAll('tale', { reload: true }).then(function(tales) {
-        // component.paginate(component, component.get('models'));
-        //      });
+        component.updateModels(component, component.get('models'));
       });
 
       return false;
@@ -112,6 +135,10 @@ export default Ember.Component.extend({
 
     addNew: function () {
       this.sendAction("onAddNew");
+    },
+    removeCurrentFilter: function() {
+      this.set('filter', 'All');
+      this.setFilter();
     }
 
   }
