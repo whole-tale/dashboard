@@ -30,11 +30,11 @@ export default Ember.Component.extend({
         this.set("leftModel", model);
       },
       taleLaunched: function() {
-        // TODO convert this interaction to use the wholetale events service instead
-        // Update model and test if the interface updates automatically
+        // TODO convert this interaction to use the wt-events service instead
+        // Update right panel models
         let self = this;
-        this.get('store').unloadAll('instance');
-        this.get('store').findAll('instance', { reload: true, adapterOptions: { queryParams:{sort: "created", sortdir: "-1", limit: "0"}} })
+        // NOTE: using store.query here as a work around to disable store.findAll caching
+        this.get('store').query('instance', {})
           .then(models => {
             self.set('rightModelTop', models);
           });
