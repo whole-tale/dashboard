@@ -8,7 +8,9 @@ export default Ember.Service.extend({
         this.trigger('select', allSelected);
       },
 
-      
+      selectEnvironment(environment) {
+        this.trigger('selectEnvironment', environment);
+      }
     });
     return Events.create();
   }()

@@ -5,7 +5,6 @@ import layout from './template';
 
 const service = Ember.inject.service.bind(Ember);
 
-/**/
 export default Ember.Component.extend({
   layout,
 
