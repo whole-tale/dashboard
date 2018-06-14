@@ -58,9 +58,7 @@ export default Ember.Component.extend({
     this.set('addButtonLogo', '/icons/plus-sign.png');
   },
   didRender() {},
-  didUpdate() {
-    console.log('tales number of instances changed');
-  },
+  didUpdate() {},
 
   paginate(component, models) {
     var paginateSize = component.get('paginateOn');
@@ -187,7 +185,7 @@ export default Ember.Component.extend({
         component.paginate(component, component.get('models'));
         //      });
       });
-
+      // TODO refresh the tale browser component
       return false;
     },
 
