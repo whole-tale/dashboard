@@ -26,6 +26,7 @@ export default Ember.Component.extend({
   updateSelected: false,
 
   selectedItems: Ember.Object.create({}),
+  allSelected: Ember.A(),
 
   init() {
     this._super(...arguments);
@@ -274,17 +275,19 @@ export default Ember.Component.extend({
     },
 
     selectItem(item) {
-      let allSelected = this.get('selectedItems');
-      allSelected.set(item.id, true);
-      this.set('selectedItems', Ember.Object.create(allSelected));
-      this.get('wtEvents').events.select(allSelected);
+      let selectedItems = this.get('selectedItems');
+      selectedItems.set(item.id, true);
+      this.set('selectedItems', Ember.Object.create(selectedItems));
+      this.allSelected.pushObject(item);
+      this.get('wtEvents').events.select(this.allSelected);
     },
 
     deselectItem(item) {
-      let allSelected = this.get('selectedItems');
-      allSelected.set(item.id, false);
-      this.set('selectedItems', Ember.Object.create(allSelected));
-      this.get('wtEvents').events.select(allSelected);
+      let selectedItems = this.get('selectedItems');
+      selectedItems.set(item.id, false);
+      this.set('selectedItems', Ember.Object.create(selectedItems));
+      this.allSelected.removeObject(item);
+      this.get('wtEvents').events.select(this.allSelected);
     },
 
     close() {

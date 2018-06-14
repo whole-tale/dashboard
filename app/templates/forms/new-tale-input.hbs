@@ -18,6 +18,10 @@
     <div class="row panel container">
         <div class="five wide column field">
             <label>Input data:</label>
+            {{#each inputData as |item|}}
+              {{item.name}}
+            {{/each}}
+
         </div>
         <div class="eleven wide column field disabled">
             <label>Select from Data panel</label>
