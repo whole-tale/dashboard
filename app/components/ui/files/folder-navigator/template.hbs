@@ -4,7 +4,7 @@
           {{#each navs as |nav|}}
             <div class="sixteen menu-item clickable">
                 {{#if (and (eq currentNavCommand nav.command) nav.allowUpload)}}
-                    <a class="active item">
+                    <a class="active item" {{action "navClicked" nav}}>
                         <div style="padding-left: 1rem; padding-top: 4px;">
                             <span class="instructions">{{nav.instructions}}</span>
                             <nav class="fabcontainer"> 
