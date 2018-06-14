@@ -1,0 +1,23 @@
+<tr class="left aligned selectable" id={{item.id}}>
+  <td>
+    {{#unless item.disallowImport}}
+      {{#if (get-key selectedItems item.id)}}
+      <i class="far fa-check-square clickable" {{action "deselectItem" item on="click"}}></i>
+      {{else}}
+      <i class="far fa-square clickable" {{action "selectItem" item on="click"}}></i>
+      {{/if}}
+    {{/unless}}
+  </td>
+  <td {{action "clickedLevelDown" item on="click"}}>
+    {{#if item.icon}}
+    <i class="{{item.icon}} icon black large"></i>
+    {{else}}
+      {{#if (eq item._modelType 'folder')}}
+      <i class="fas fa-folder icon black large"></i> 
+      {{else}}
+      <i class="far fa-file icon large"></i> 
+      {{/if}}
+    {{/if}}
+    {{truncate-name item.name}}
+  </td>
+</tr>

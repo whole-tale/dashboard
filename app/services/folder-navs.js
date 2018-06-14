@@ -18,7 +18,8 @@ export default Ember.Service.extend({
         icon : "home",
         isFolder :  true,
         instructions: 'Synced to local machine',
-        allowUpload: true
+        allowUpload: true,
+        disallowImport: false
       },
       {
         name : "Data",
@@ -28,7 +29,8 @@ export default Ember.Service.extend({
         icon: "linkify",
         isFolder: true,
         instructions: 'Linked from external sources',
-        allowUpload: false
+        allowUpload: false,
+        disallowImport: true
       },
       /*
       {

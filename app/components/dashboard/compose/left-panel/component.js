@@ -5,12 +5,14 @@ export default Ember.Component.extend({
   invalidNewTale: true,
   wtEvents: Ember.inject.service(),
 
+  inputData: Ember.A(),
+
   init() {
     this._super(...arguments);
     let events = this.get('wtEvents').events;
-
+    const self = this;
     events.on('select', function(allSelected) {
-      console.log(allSelected);
+      self.set('inputData', allSelected);
     });
   },
 

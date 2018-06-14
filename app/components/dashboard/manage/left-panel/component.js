@@ -33,7 +33,6 @@ export default Ember.Component.extend({
   file: "",
 
   fileChosen: Ember.observer('file', function() {
-    console.log(this.get('file'));
     if (this.get('file') === "") return;
     let uploader = Ember.$('.nice.upload.hidden');
     let files = uploader[0].files;
