@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  router: Ember.inject.service(),
   store: Ember.inject.service(),
   userAuth: Ember.inject.service(),
   apiCall: Ember.inject.service('api-call'),
@@ -195,7 +196,12 @@ export default Ember.Component.extend({
 
     addNew: function () {
       this.sendAction("onAddNew");
-    }
+    },
+
+    transitionToRun: function(instance){
+      // this.get('router').transitionTo('run', instance._id);
+      this.get('router').transitionTo('run');
+    },
 
   }
 });
