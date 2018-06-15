@@ -10,19 +10,12 @@
             {{partial "forms/new-tale-input"}}
         </div>
 
-        {{!-- <div style="display: {{showStep.[1]}}">
-            {{ui/wt-flix models=model.images paginateOn=6 cardsPerRow="six" modelView="image.view" showSelect=true showSearch=true action="itemSelected"}}
-        </div>
-
-        <div style="display: {{showStep.[3]}}">
-            <div class="ui large header">Confirm Details</div>
-
-            {{partial "forms/tale-details"}}
-        </div> --}}
-
         <div class="ui secondary menu">
             <div style="margin: 0 auto">
-                <button class="ui big grey icon button" disabled={{invalidNewTale}}>Launch New Tale</button>
+                <button class="ui big icon button {{if invalidNewTale 'grey'}} {{unless invalidNewTale 'blue'}}" 
+                        disabled={{invalidNewTale}}>
+                        Launch New Tale
+                </button>
             </div>
         </div>
     </div>

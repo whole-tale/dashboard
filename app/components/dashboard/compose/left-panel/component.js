@@ -1,12 +1,21 @@
 import Ember from 'ember';
+import {computed} from '@ember/object';
 
 export default Ember.Component.extend({
   apiCall : Ember.inject.service('api-call'),
-  invalidNewTale: true,
+  // invalidNewTale: true,
   wtEvents: Ember.inject.service(),
 
   inputData: Ember.A(),
   selectedEnvironment: Ember.Object.create({}),
+  newTaleName: '',
+
+  invalidNewTale: computed('inputData', 'selectedEnvironment', 'newTaleName', 'inputData.length', function() {
+    let hasName = Boolean(this.get('newTaleName') && this.get('newTaleName').length);
+    let hasEnvironment = Boolean(this.get('selectedEnvironment') && this.get('selectedEnvironment').id);
+    let hasData = Boolean(this.get('inputData') && this.get('inputData').length);
+    return !(hasName && hasEnvironment && hasData);
+  }),
 
   init() {
     this._super(...arguments);
