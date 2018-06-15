@@ -331,8 +331,8 @@ export default Ember.Component.extend({
       let cwd = this.get('directory');
 
       selectionTree[item.id] = {check:true, partialCheck: false, parentId: cwd.id, type: 'item'};
-      selectionTree[cwd.id].partialCheck = true;
-      selectionTree[cwd.id].check = false;
+      _.set(selectionTree, `${cwd.id}.partialCheck`, true);
+      _.set(selectionTree, `${cwd.id}.check`, false);
       inputData.addObject(item);
       inputData = inputData.reject(i=>i.id===cwd.id);
 
@@ -351,10 +351,10 @@ export default Ember.Component.extend({
       let removing = [{id:cwd.id}];
       for(let i = 0; i < keys.length; i++) {
         let key = keys[i];
-        if (selectionTree[key].parentId === folderId || key === folderId) {
+        if (_.get(selectionTree, `${key}.parentId`) === folderId || key === folderId) {
           removing.push({id:key});
-          selectionTree[key].check = false;
-          selectionTree[key].partialCheck = false;
+          _.set(selectionTree, `${key}.partialCheck`, false);
+          _.set(selectionTree, `${key}.check`, false);
           if (selectionTree[key].type === 'folder' && key !== folderId) {
             this.send('uncheckFolder', selectionTree[key]);
           }
@@ -391,7 +391,7 @@ export default Ember.Component.extend({
       let selectionTree = this.get('selectionTree');
       let cwd = this.get('directory');
 
-      selectionTree[item.id].check = false;
+      _.set(selectionTree, `${item.id}.check`, false);
       let removing = [{id:cwd.id}, {id:item.id}];
       _.pullAllBy(inputData, removing, 'id');
       inputData.arrayContentDidChange();
@@ -406,11 +406,11 @@ export default Ember.Component.extend({
         }
       });
       if (this.hasSiblingsChecked(item)) {
-        selectionTree[cwd.id].partialCheck = true;
-        selectionTree[cwd.id].check = false;
+        _.set(selectionTree, `${cwd.id}.partialCheck`, true);
+        _.set(selectionTree, `${cwd.id}.check`, false);
       } else {
-        selectionTree[cwd.id].partialCheck = false;
-        selectionTree[cwd.id].check = false;
+        _.set(selectionTree, `${cwd.id}.partialCheck`, false);
+        _.set(selectionTree, `${cwd.id}.check`, false);
       }
       this.get('wtEvents').events.select(inputData);
 
