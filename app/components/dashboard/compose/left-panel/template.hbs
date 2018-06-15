@@ -13,7 +13,8 @@
         <div class="ui secondary menu">
             <div style="margin: 0 auto">
                 <button class="ui big icon button {{if invalidNewTale 'grey'}} {{unless invalidNewTale 'blue'}}" 
-                        disabled={{invalidNewTale}}>
+                        disabled={{invalidNewTale}}
+                        {{action "launchTale"}}>
                         Launch New Tale
                 </button>
             </div>
