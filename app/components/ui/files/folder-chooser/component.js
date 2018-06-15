@@ -6,7 +6,6 @@ import _ from 'lodash';
 
 const service = Ember.inject.service.bind(Ember);
 
-/**/
 export default Ember.Component.extend({
   layout,
 

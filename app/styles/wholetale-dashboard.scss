@@ -249,11 +249,13 @@ ui.inverted.menu.wt.top {
   border-left: 4px solid transparent;
   min-height: 6.3rem;
 }
-.ui.vertical.menu.tales .active.item {
+.ui.vertical.menu.tales .active.item,
+.ui.vertical.menu.tales .active-class.item {
   background: #e8f3fa;
   border-left: 3px solid #2185d0;
 }
-.ui.vertical.menu.tales .item.active:first-child {
+.ui.vertical.menu.tales .item.active:first-child,
+.ui.vertical.menu.tales .item.active-class:first-child {
   background: #e8f3fa;
   border-left: 4px solid #2185d0;
   -webkit-border-radius: 0;
@@ -290,7 +292,6 @@ ui.inverted.menu.wt.top {
   line-height: 1.2;
   margin: 0 1.5rem 0 0;
 }
-
 
 /* Navigation - Environments panel */
 
@@ -515,6 +516,17 @@ ui.inverted.menu.wt.top {
     .composer-container {
       background-color: rgba(0, 0, 0, 0.05);
 
+      .env-image {
+        display: inline-block;
+        vertical-align: middle;
+        margin: -0.3em 0em;
+        height: 2.5em;
+      }
+      .env-name {
+        margin-left: 1em;
+        font-size: 1.2rem;
+      }
+
       .row {
         margin: 1em 0;
         
@@ -532,6 +544,7 @@ ui.inverted.menu.wt.top {
           label {
             font-style: italic;
             font-weight: 500;
+            opacity: 0.35;
           }
         }
       }

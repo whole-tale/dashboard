@@ -1,66 +1,67 @@
-<!-- app/components/mini-directory-browser/template.hbs -->
-{{#if contextMenu}}
+{{!-- app/components/mini-directory-browser/template.hbs --}} {{#if contextMenu}}
 <div class="ui card">
   <div class="content">
-    <div class="ui top right attached red label" style="color: white;" {{action "close" on="click"}}>
+    <div class="ui top right attached red label" style="color: white;" {{action "close" on="click" }}>
       <i class="ui close icon "></i>
     </div>
     <div class="ui large header" style="padding-top: 5px">Move file {{fileToMove.name}}</div>
     <div class="ui large header" style="padding-top: 5px">To {{moveTo.name}}</div>
   </div>
   <div class="content" style="font-size: 110%">
-    {{#unless loading}}
+    {{#unless loading}} 
       {{#if (eq directory.type "folder")}}
-      <i class="large level up icon clickable" {{action "clickedLevelUp" on="click"}}></i>
+        <i class="large level up icon clickable" {{action "clickedLevelUp" on="click" }}></i>
       {{/if}}
       <div class="ui list">
         {{#each folders as |item|}}
-        <div class="item context-menu-item" id={{item.id}} {{action "clickedRow" item on="click"}}>
-          <i class="large folder outline icon"></i>
-          <div class="content inline" style="width:100%;">
-            {{item.name}}
-            {{#if item.selected}}<i class="large level down icon clickable" style="float:right;" {{action "clickedLevelDown" item on="click"}}></i>{{/if}}
+          <div class="item context-menu-item" id={{item.id}} {{action "clickedRow" item on="click" }}>
+            <i class="large folder outline icon"></i>
+            <div class="content inline" style="width:100%;">
+              {{item.name}} 
+              {{#if item.selected}}
+                <i class="large level down icon clickable" style="float:right;" {{action "clickedLevelDown" item on="click" }}></i>
+              {{/if}}
+            </div>
           </div>
-        </div>
         {{/each}}
       </div>
       {{#if moveTo}}
-      <div style="text-align:center;">
-        <div class="ui blue button" {{action "move"}}>Move</div>
-      </div>
-      {{/if}}
-    {{else}}
+        <div style="text-align:center;">
+          <div class="ui blue button" {{action "move"}}>Move</div>
+        </div>
+      {{/if}} 
+    {{else}} 
       {{#ui-progress class="ui top attached progress" value=990 progress=990 total=1000}}
-      <div class="bar"></div>
-      {{/ui-progress}}
+        <div class="bar"></div>
+      {{/ui-progress}} 
     {{/unless}}
   </div>
 </div>
 {{else}}
   <div class="" style="padding:1em;">
-  {{#unless loading}}
-    <div style="max-height: 500px; overflow-y: auto">
-      {{#if directory.name}}
-      <i class="fas fa-arrow-left selectable" {{action 'clickedLevelUp'}}></i>
-      {{else}}
-      <i class="fas fa-arrow-left" style="color:gray;"></i>
-      {{/if}}
-      <span style="margin-left:1em">{{directory.name}}</span>
-      <table class="ui very basic single line table" style="margin:0;">
-        <tbody>
-          {{#each folders as |item|}}
-            {{partial "compose/item-list"}}
-          {{/each}}
-          {{#each files as |item|}}
-            {{partial "compose/item-list"}}
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
-  {{else}}
-    {{#ui-progress class="ui top attached progress" value=990 progress=990 total=1000}}
-    <div class="bar"></div>
-    {{/ui-progress}}
-  {{/unless}}
+    {{#unless loading}}
+      <div style="max-height: 500px; overflow-y: auto">
+        {{#if directory.name}}
+          <i class="fas fa-arrow-left selectable" {{action 'clickedLevelUp'}}></i>
+        {{else}}
+          <i class="fas fa-arrow-left" style="color:gray;"></i>
+        {{/if}}
+        <span style="margin-left:1em">{{directory.name}}</span>
+        <table class="ui very basic single line table" style="margin:0;">
+          <tbody>
+            {{#each folders as |item|}} 
+              {{partial "compose/item-list"}}
+            {{/each}}
+            {{#each files as |item|}}
+              {{partial "compose/item-list"}}
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    {{else}} 
+      {{#ui-progress class="ui top attached progress" value=990 progress=990 total=1000}}
+        <div class="bar"></div>
+      {{/ui-progress}}
+    {{/unless}}
   </div>
 {{/if}}

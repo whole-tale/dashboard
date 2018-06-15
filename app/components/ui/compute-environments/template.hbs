@@ -15,7 +15,7 @@
 
             <div class="item">
                 <div class="ui mini rounded icon search input">
-                    {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
+                    {{input class="prompt" placeholder="Search compute environments..." value=searchStr key-up="search"}}
                     <i class="search icon"></i>
                 </div>
                 <div class="results"></div>
@@ -24,9 +24,9 @@
     {{/if}}
     </div>
     <div class="environments-list">
-        {{#each modelsInView as |model|}}
+        {{#each modelsInView as |model index|}}
             <div class="ui vertical menu fluid tales">
-                <a class="item" {{action 'onModelChange' model}}>
+                <a class="item {{active-class index selectedMenuIndex}}" {{action 'selectEnvironment' model index}}>
                     <img src="{{model.icon}}" />
                     <i class="fas fa-info blue" onclick={{action "openDetailsModal" model}}></i>
                     <p>{{model.name}}</p>

@@ -1,12 +1,16 @@
 import Ember from 'ember';
 
+const service = Ember.inject.service.bind(Ember);
+
 export default Ember.Component.extend({
-  store: Ember.inject.service(),
-  userAuth: Ember.inject.service(),
-  apiCall: Ember.inject.service('api-call'),
-  internalState: Ember.inject.service(),
-  selectedEnvironmentName: "",
-  filteredSet: Ember.A(),
+  store: service(),
+  userAuth: service(),
+  apiCall: service('api-call'),
+  internalState: service(),
+  wtEvents: service(),
+  
+  selectedMenuIndex: -1,
+  selectedEnvironment: Ember.Object.create({}),
   searchStr: '',
   numberOfModels: 0,
   showSearch: true,
@@ -42,7 +46,7 @@ export default Ember.Component.extend({
   },
   didRender() {},
   didUpdate() {
-    console.log('environments length just changed!');
+    console.log('environments length just changed to: ' + this.get('modelsInView').length);
   },
 
   updateModels(component, models) {
@@ -58,7 +62,6 @@ export default Ember.Component.extend({
       }
 
       let description = model.get('description');
-
       if (!description) {
         model.set('tags', "No Description ...");
       } else {
@@ -76,24 +79,22 @@ export default Ember.Component.extend({
     component.set("modelsInView", modelsInView);
   },
 
-  setFilter() { 
-    const filter = this.get('searchStr');
-    const models = this.get('models');
-    this.set('filteredSet', models);
-    this.actions.searchFilter.call(this);
+  setFilter() {
+    this.actions.search.call(this);
   },
 
   actions: {
-    searchFilter: function () {
-      let searchStr = this.get('searchStr');
-      const filteredSet = this.get('filteredSet');
+    search: function () {
+      let searchStr = this.get('searchStr').trim();
+      const models = this.get('models');
       const component = this;
 
       let promise = new Ember.RSVP.Promise((resolve) => {
         let searchView = [];
-        filteredSet.forEach(model => {
+        models.forEach(model => {
           let name = model.get('name');
-          if (new RegExp(searchStr, "i").test(name)) {
+          //  if (new RegExp(searchStr, "i").test(name))
+          if(~name.toLowerCase().indexOf(searchStr.toLowerCase())) {
             searchView.push(model);
           }
         });
@@ -102,11 +103,25 @@ export default Ember.Component.extend({
 
       promise.then((searchView) => {
         component.set('modelsInView', searchView);
+        let selected = searchView.filter((env,i) => {
+          if(env.id === component.get('selectedEnvironment').id) {
+            component.set('selectedMenuIndex', i);
+          }
+          return env.id === component.get('selectedEnvironment').id;
+        });
+        if(!selected.length) {
+          component.set('selectedMenuIndex', -1);
+          // component.set('selectedEnvironment', Ember.Object.create({}));
+          // component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
+        }
         // component.updateModels(component, searchView);
       });
     },
-    onModelChange: function (model) {
-      this.sendAction('onLeftModelChange', model); // sends event to parent component
+    onModelChange: function (model, index) {
+      // this.sendAction('onLeftModelChange', model); // sends event to parent component
+      this.set('selectedEnvironment', model);
+      this.set('selectedMenuIndex', index);
+      this.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
     },
 
     openDeleteModal: function (id) {
@@ -150,10 +165,12 @@ export default Ember.Component.extend({
       console.log('attempting to open details modal');
       Ember.$('.ui.modal.envdetails').modal('show');
     },
-    selectEnvironment: function(model) {
+    selectEnvironment: function(model, index) {
       let component = this;
-      component.set('selectedEnvironmentName', model.name);
-      console.log('selected environment: ' + component.get('selectedEnvironmentName'));
+      component.set('selectedEnvironment', model);
+      component.set('selectedMenuIndex', index);
+      component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
+      console.log('selected environment: ' + model.name);
     }
   }
 });

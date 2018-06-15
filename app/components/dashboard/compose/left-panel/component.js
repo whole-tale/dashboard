@@ -6,6 +6,7 @@ export default Ember.Component.extend({
   wtEvents: Ember.inject.service(),
 
   inputData: Ember.A(),
+  selectedEnvironment: Ember.Object.create({}),
 
   init() {
     this._super(...arguments);
@@ -13,6 +14,9 @@ export default Ember.Component.extend({
     const self = this;
     events.on('select', function(allSelected) {
       self.set('inputData', allSelected);
+    });
+    events.on('selectEnvironment', function(selectedEnvironment) {
+      self.set('selectedEnvironment', selectedEnvironment);
     });
   },
 
