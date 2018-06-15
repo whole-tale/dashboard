@@ -162,8 +162,13 @@ export default Ember.Component.extend({
 
       this.set('loading', true);
 
-      let selectionTree = this.get('selectionTree');
       let self = this;
+
+      let cwd = this.get('directory');
+      let selectionTree = this.get('selectionTree');
+      if (!_.get(selectionTree, folder.id)) {
+        _.set(selectionTree, folder.id, {check:false, partialCheck:false, parentId: cwd.id, type: 'folder'})
+      }
 
       let store = this.get('store');
       let fileToMove = this.get('fileToMove');
@@ -318,6 +323,9 @@ export default Ember.Component.extend({
       let cwd = this.get('directory');
 
       selectionTree[folder.id] = {check:true, partialCheck: false, parentId: cwd.id, type: 'folder'};
+
+      this.send('partialCheck', cwd);
+
       inputData.addObject(folder);
 
       this.get('wtEvents').events.select(inputData);
@@ -336,9 +344,33 @@ export default Ember.Component.extend({
       inputData.addObject(item);
       inputData = inputData.reject(i=>i.id===cwd.id);
 
+      this.send('partialCheck', cwd);
+
       this.get('wtEvents').events.select(inputData);
 
       this.set('selectionTree', Ember.Object.create(selectionTree));
+    },
+
+    partialCheck(folder) {
+      let selectionTree = this.get('selectionTree');
+      _.set(selectionTree, `${folder.id}.partialCheck`, true);
+      _.set(selectionTree, `${folder.id}.check`, false);
+      this.set('selectionTree', Ember.Object.create(selectionTree));
+      let parentId = _.get(selectionTree, `${folder.id}.parentId`);
+      if (_.get(selectionTree, parentId)) {
+        this.send('partialCheck', {id:parentId});
+      }
+    },
+
+    uncheckParentFolders(folder) {
+      let selectionTree = this.get('selectionTree');
+      _.set(selectionTree, `${folder.id}.partialCheck`, false);
+      _.set(selectionTree, `${folder.id}.check`, false);
+      this.set('selectionTree', Ember.Object.create(selectionTree));
+      let parentId = _.get(selectionTree, `${folder.id}.parentId`);
+      if (_.get(selectionTree, parentId)) {
+        this.send('uncheckParentFolders', {id:parentId});
+      }
     },
 
     uncheckFolder(folder) {
@@ -377,8 +409,9 @@ export default Ember.Component.extend({
         _.set(selectionTree, `${cwd.id}.partialCheck`, true);
         _.set(selectionTree, `${cwd.id}.check`, false);
       } else {
-        _.set(selectionTree, `${cwd.id}.partialCheck`, false);
-        _.set(selectionTree, `${cwd.id}.check`, false);
+        this.send('uncheckParentFolders', cwd);
+        // _.set(selectionTree, `${cwd.id}.partialCheck`, false);
+        // _.set(selectionTree, `${cwd.id}.check`, false);
       }
       
       this.get('wtEvents').events.select(inputData);
@@ -409,8 +442,7 @@ export default Ember.Component.extend({
         _.set(selectionTree, `${cwd.id}.partialCheck`, true);
         _.set(selectionTree, `${cwd.id}.check`, false);
       } else {
-        _.set(selectionTree, `${cwd.id}.partialCheck`, false);
-        _.set(selectionTree, `${cwd.id}.check`, false);
+        this.send('uncheckParentFolders', cwd);
       }
       this.get('wtEvents').events.select(inputData);
 
