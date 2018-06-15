@@ -38,19 +38,14 @@ export default Ember.Component.extend({
     console.log("Description = " + this.get('description'));
   }),
 
-  showStep : ["inline", "none", "none", "none"],
-  stepsActive : ["active", "", "", ""],
-  currentStep : 0,
   // public_checked : false,
   frontend : null,
   folder : null,
-  nextName : "Next",
   tale_creating: false,
   tale_created: false,
   configuration : JSON.stringify({}),
 
   clearForm() {
-    this.set("showStep", ["inline", "none", "none", "none"]);
     this.set('frontend', null);
     this.set('folder', null);
     this.set('tale_creating', false);
@@ -59,22 +54,17 @@ export default Ember.Component.extend({
   },
 
   // clearWizard() {
-  //   this.set("showStep", ["inline", "none", "none", "none"]);
-  //   this.set('stepsActive', ["active", "", "", ""]);
-  //   this.set('currentStep', 0);
   //   this.set('public_checked', false);
   //   this.set('frontend', null);
   //   this.set('folder', null);
-  //   this.set('nextName', "Next");
   //   this.set('tale_creating', false);
   //   this.set('tale_created', false);
   //   this.set('configuration', JSON.stringify({}));
   // },
 
   actions: {
-
-    // this is called when someone selected the front end image
-    itemSelected: function (model) {
+    // this is called when someone selected the front end image/environment
+    selectEnvironment: function (model) {
       console.log(model.get('name') + " frontend image has been selected in compose.js...");
       this.set("frontend", model);
     },
@@ -84,54 +74,9 @@ export default Ember.Component.extend({
       this.set('folder', model);
     },
 
-    // gotoStep : function (stepNo) {
-    //   console.log("Going to step no " + stepNo);
-    //   var stepsActive = this.get("stepsActive");
-    //   for (var i=0;  i< stepsActive.length; ++i) {
-    //     Ember.set(stepsActive, i.toString(), "");
-    //   }
+    //   Launch new Tale functionality
 
-    //   Ember.set(stepsActive, stepNo.toString(), "active");
-
-    //   var showStep = this.get("showStep");
-    //   for (i=0;  i< showStep.length; ++i) {
-    //     Ember.set(showStep, i.toString(), "none");
-    //   }
-
-    //   Ember.set(showStep, stepNo.toString(), "inline");
-
-    //   //this.set("stepsActive", stepsActive);
-    //   //this.set("showStep", showStep);
-
-    //   console.log(this.get("showStep"));
-    //   console.log(this.get("stepsActive"));
-
-    //   this.set("currentStep", stepNo);
-
-    //   if(stepNo === 2) {
-    //     this.set('startChooserFromFolder', "registered");
-    //   }
-
-    // },
-
-    // moveLeft: function () {
-    //   var step = this.get("currentStep");
-    //   if (step !=0)
-    //     this.send("gotoStep", step-1);
-    // },
-    // moveRight: function () {
-    //   var step = this.get("currentStep");
-    //   if (step !=3) {
-    //     this.send("gotoStep", step + 1);
-
-    //     if (step == 2) {
-    //       this.set('nextName', "Submit");
-    //     }
-    //     else
-    //       this.set('nextName', "Next");
-    //   } else {
-
-    //     var component = this;
+    //     let component = this;
 
     //     component.set("tale_creating", true);
 
@@ -147,7 +92,7 @@ export default Ember.Component.extend({
     //       }), 3000);
     //     };
 
-    //     var onFail = function(e) {
+    //     let onFail = function(e) {
     //       // deal with the failure here
     //       component.set("tale_creating", false);
     //       component.set("tale_not_created", true);
@@ -169,9 +114,7 @@ export default Ember.Component.extend({
     //     });
 
     //     new_tale.save().then(onSuccess).catch(onFail);
-    //   }
-
-    // },
+    //   },
 
   }
 
