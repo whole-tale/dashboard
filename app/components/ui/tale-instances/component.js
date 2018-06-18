@@ -199,8 +199,7 @@ export default Ember.Component.extend({
     },
 
     transitionToRun: function(instance){
-      // this.get('router').transitionTo('run', instance._id);
-      this.get('router').transitionTo('run');
+      this.get('router').transitionTo('run.view', instance._id);
     },
 
   }
