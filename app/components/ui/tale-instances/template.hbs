@@ -1,58 +1,39 @@
 <div class="wt panel manage">
-    {{#if showSearch}}
-        <div class="ui secondary menu">
-            {{#if item}}
-                <div class="header item" style="font-size: 120%">
-                    <span class="ui huge blue label" style="margin-right: 10px;">Currently Selected</span> {{item.name}}
-                </div>
-            {{/if}}
-
-            <div class="right menu">
-                <div class="ui large rounded icon search input">
-                    {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
-                    <div class="results">
-                    </div>
-                </div>
-            </div>
-        </div>
-    {{/if}}
     <div class="wt paddleboard">
         <h2>
             <i class="circle play icon"></i> Launched Tales
-            {{!-- {{#if pageNumber}}
-                <span class="quota">{{pageNumber}} of {{totalPages}}</span>
-            {{/if}} --}}
         </h2>
     </div>
-    <div class="tales-list" style="overflow-y:auto;height:calc(100% - 48px - 1rem);border-bottom-left-radius:1rem;border-bottom-right-radius: 1rem;">
-        {{#each models as |instance|}}
+    <div class="ui inverted grey">
+        {{#if showSearch}}
+            <div class="ui secondary menu" style="display: block">
+                <div class="item">
+                    <div class="ui mini rounded icon search input">
+                        {{input class="prompt" placeholder="Search tales..." value=searchStr key-up="search"}}
+                        <i class="search icon"></i>
+                    </div>
+                    <div class="results">
+                    </div>
+                </div>
+                {{#if (and selectedInstance selectedInstance.name)}}
+                    <div class="header item" style="font-size: 120%; position: relative;">
+                        <span class="ui blue label" style="margin-right: 10px;">Currently Selected</span>
+                        <span>{{truncate-name selectedInstance.name}}</span>
+                        <i class="times icon" {{action 'deselectInstance'}}></i>
+                    </div>
+                {{/if}}
+            </div>
+        {{/if}}
+    </div>
+    <div class="tales-list {{if (and showSearch selectedInstance selectedInstance.name) 'has-selected-item'}}">
+        {{#each modelsInView as |instance index|}}
             <div class="ui vertical menu fluid tales">
-                <a class="item" {{action 'onModelChange' instance}}>
+                <a class="item {{active-class index selectedMenuIndex}}" {{action 'selectInstance' instance index}}>
                     <img src="{{instance.tale.illustration}}" />
                     <img src="{{instance.tale.icon}}" class="env" />
-                    <i class="times icon" {{ action 'openDeleteModal' instance._id }} ></i>
-                    <p>{{instance.name}}</p>
+                    <i class="times icon" {{action 'openDeleteModal' instance }} ></i>
+                    <p>{{truncate-name instance.name}}</p>
                 </a>
-            </div>
-            <div class="ui {{instance._id}} modal" style="display: none">
-              <i class="close icon"></i>
-              <div class="header">
-                Really Delete Instance?
-              </div>
-              <div class="image content">
-                <div class="description">
-                  <p>This will permanently delete the '{{instance.name}}' instance. Continue?</p>
-                </div>
-              </div>
-              <div class="actions">
-                <div class="ui black deny button" {{action 'denyDelete'}}>
-                  No
-                </div>
-                <div class="ui positive right labeled icon button" {{action 'approveDelete' instance}}>
-                  Yes
-                  <i class="checkmark icon"></i>
-                </div>
-              </div>
             </div>
         {{else}}
             <div class="ui vertical menu fluid tales">
@@ -65,3 +46,5 @@
         {{/each}}
     </div>
 </div>
+
+{{ui/delete-modal model=selectedInstance modelType="instance" approveDelete=(action "approveDelete"  selectedInstance)}}

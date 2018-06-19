@@ -397,6 +397,11 @@ ui.inverted.menu.wt.top {
   .item {
     width: 100%;
     margin: 0;
+
+    .icon.times {
+      position: absolute;
+      right: 0.5em;
+    }
     
     .mini.search {
       width: 100%;
@@ -404,11 +409,16 @@ ui.inverted.menu.wt.top {
   }
 }
 .show-search {
-  .wt.panel.manage > .environments-list {
+  .wt.panel.manage > .environments-list,
+  .wt.panel.manage > .tales-list {
     overflow-y: auto;
     height: calc(100% - #{$wt-main-row-height} - 1rem - 40px);
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
+
+    &.has-selected-item {
+      height: calc(100% - #{$wt-main-row-height} - 1rem - 40px - 46px);
+    }
 
     .fluid.menu {
       a > p {
@@ -423,11 +433,16 @@ ui.inverted.menu.wt.top {
 
 .show-upper-panel.show-lower-panel {
   .show-search {
-    .wt.panel.manage > .environments-list {
+    .wt.panel.manage > .environments-list,
+    .wt.panel.manage > .tales-list {
       overflow-y: auto;
       height: calc(100% - #{$wt-main-row-height} - 1rem - 40px);
       border-bottom-left-radius: 1rem;
       border-bottom-right-radius: 1rem;
+
+      &.has-selected-item {
+        height: calc(100% - #{$wt-main-row-height} - 1rem - 40px - 46px);
+      }
 
       .fluid.menu {
         a > p {
@@ -443,8 +458,9 @@ ui.inverted.menu.wt.top {
     height: calc((100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + 1em))/2);
     margin-bottom: 1em;
 
-    .ui.secondary.menu {
+    .ui.secondary.menu  {
       margin: 0;
+      display: block;
     
       .item {
         width: 100%;
@@ -455,11 +471,15 @@ ui.inverted.menu.wt.top {
         }
       }
     }
-    .environments-list {
+    .environments-list,
+    .tales-list {
       overflow-y: auto;
       height: calc(100% - #{$wt-main-row-height} - 1rem);
       border-bottom-left-radius: 1rem;
       border-bottom-right-radius: 1rem;
+      &.has-selected-item {
+        height: calc(100% - #{$wt-main-row-height} - 46px - 1rem);
+      }
     }
 
     .folder-navigator-container {

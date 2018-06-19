@@ -5,25 +5,26 @@
         </h2>
     </div>
     <div class="ui inverted grey">
-      {{#if showSearch}}
-        <div class="ui secondary menu">
-            {{#if item}}
-                <div class="header item" style="font-size: 120%">
-                    <span class="ui huge blue label" style="margin-right: 10px;">Currently Selected</span> {{selectedEnvironmentName}}
+        {{#if showSearch}}
+            <div class="ui secondary menu" style="display: block;">
+                <div class="item">
+                    <div class="ui mini rounded icon search input">
+                        {{input class="prompt" placeholder="Search compute environments..." value=searchStr key-up="search"}}
+                        <i class="search icon"></i>
+                    </div>
+                    <div class="results"></div>
                 </div>
-            {{/if}}
-
-            <div class="item">
-                <div class="ui mini rounded icon search input">
-                    {{input class="prompt" placeholder="Search compute environments..." value=searchStr key-up="search"}}
-                    <i class="search icon"></i>
-                </div>
-                <div class="results"></div>
+                {{#if (and selectedEnvironment selectedEnvironment.name)}}
+                    <div class="header item" style="font-size: 120%; position: relative;">
+                        <span class="ui blue label" style="margin-right: 10px; margin-left: 0;">Currently Selected</span> 
+                        <span>{{selectedEnvironment.name}}</span>
+                        <i class="times icon" {{action 'deselectEnvironment'}}></i>
+                    </div>
+                {{/if}}
             </div>
-        </div>
-    {{/if}}
+        {{/if}}
     </div>
-    <div class="environments-list">
+    <div class="environments-list {{if (and showSearch selectedEnvironment selectedEnvironment.name) 'has-selected-item'}}">
         {{#each modelsInView as |model index|}}
             <div class="ui vertical menu fluid tales">
                 <a class="item {{active-class index selectedMenuIndex}}" {{action 'selectEnvironment' model index}}>

@@ -171,6 +171,12 @@ export default Ember.Component.extend({
       component.set('selectedMenuIndex', index);
       component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
       console.log('selected environment: ' + model.name);
+    },
+    deselectEnvironment() {
+      let component = this;
+      component.set('selectedEnvironment', Ember.Object.create({}));
+      component.set('selectedMenuIndex', -1);
+      component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
     }
   }
 });

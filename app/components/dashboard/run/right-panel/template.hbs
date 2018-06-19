@@ -1,5 +1,9 @@
 {{#if showUpperPanel}}
-    {{ui/tale-instances models=rightModelTop paginateOn=3 onLeftModelChange=(action "onLeftModelChange") }}
+    {{ui/tale-instances 
+        models=rightModelTop 
+        paginateOn=3 
+        showSearch=true
+        onLeftModelChange=(action "onLeftModelChange") }}
 {{/if}}
 {{#if showLowerPanel}}
     {{ui/files/mini-browser }}

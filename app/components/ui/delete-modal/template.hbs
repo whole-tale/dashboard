@@ -1,0 +1,21 @@
+{{#ui-modal name="deletemodal" 
+            class="small {{model._id}} delete-modal" 
+            onDeny=(action "denyDelete")}}
+    <div class="header">
+        Really Delete {{modelType}}?
+    </div>
+    <div class="image content">
+        <div class="description">
+            <p>This will permanently delete the '{{model.name}}' {{modelType}}. Continue?</p>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            No
+        </div>
+        <div class="ui positive right labeled icon button" onclick={{action "approveDelete" preventDefault=false bubble=false}}>
+            Yes
+            <i class="trash icon"></i>
+        </div>
+    </div>
+{{/ui-modal}}

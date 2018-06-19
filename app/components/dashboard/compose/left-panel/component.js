@@ -56,67 +56,68 @@ export default Ember.Component.extend({
     this.set('configuration', JSON.stringify({}));
   },
 
-  // clearWizard() {
-  //   this.set('public_checked', false);
-  //   this.set('frontend', null);
-  //   this.set('folder', null);
-  //   this.set('tale_creating', false);
-  //   this.set('tale_created', false);
-  //   this.set('configuration', JSON.stringify({}));
-  // },
+  launchTale: function(tale) {
+    let component = this;
+
+    let onSuccess = function (item) {
+      // const instance = Ember.Object.create(JSON.parse(item));
+      console.log('Launching new instance');
+      Ember.run.later((function () {
+        component.get('router').transitionTo('run');
+      }), 3000);
+    };
+
+    let onFail = function (item) {
+      // deal with the failure here
+      item = JSON.parse(item);
+      console.log(item);
+    };
+
+    // submit: API
+    // httpCommand, taleid, imageId, folderId, instanceId, name, description, isPublic, config
+
+    component.get("apiCall").postInstance(
+      tale.get("_id"),
+      tale.get("imageId"),
+      null,
+      onSuccess,
+      onFail);
+  },
 
   actions: {
     // this is called when someone selected the front end image/environment
-    selectEnvironment: function (model) {
+    selectEnvironment(model) {
       console.log(model.get('name') + " frontend image has been selected in compose.js...");
-      this.set("frontend", model);
+      this.set("selectedEnvironment", model);
     },
 
-    selectedFolder: function (model) {
+    selectedFolder(model) {
       console.log(model.get('name'));
       this.set('folder', model);
     },
 
     //   Launch new Tale functionality
-    launchTale() {
+    createTale() {
       console.log('Attempting to launch tale!');
       let component = this;
 
-      // component.set("tale_creating", true);
-
-      let onSuccess = function(item) {
-        // component.set("tale_creating", false);
-        // component.set("tale_created", true);
-
-        Ember.run.later((function() {
-          // component.set("tale_created", false);
-          // component.clearWizard();
-          // component.clearForm();
-          // component.transitionToRoute('tale.view', item);
-          component.get('router').transitionTo('run');
-        }), 3000);
+      let onSuccess = function (item) {
+        component.launchTale(item);
       };
 
-      let onFail = function(e) {
+      let onFail = function (e) {
         // deal with the failure here
-        // component.set("tale_creating", false);
-        // component.set("tale_not_created", true);
         console.log(e);
-        // Ember.run.later((function() {
-        //   component.set("tale_not_created", false);
-        // }), 3000);
       };
 
       // temporary code while the API is modified to allow for multiple files/folders selection
       let data = Boolean(this.get('inputData') && this.get('inputData').length) ? this.get('inputData').firstObject.get('id') : '';
 
       let new_tale = this.get('store').createRecord('tale', {
-        "config": {},   //TODO: Implement configuration editor
-        // "description": this.get('description'),
-        "folderId":    data, // will change after API changes
-        "imageId":     this.get('selectedEnvironment').get('_id'),
-        // "public":      this.get('public_checked'),
-        "title":       this.get('newTaleName'),
+        "config": {}, //TODO: Implement configuration editor
+        "folderId": data, // will change after API changes
+        "imageId": this.get('selectedEnvironment').get('_id'),
+        "title": this.get('newTaleName'),
       });
 
       new_tale.save().then(onSuccess).catch(onFail);
