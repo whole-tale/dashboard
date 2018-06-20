@@ -1,7 +1,7 @@
 <div class="wt panel manage">
     <div class="wt paddleboard">
         <h2>
-            <img src="images/wholetale_logo_sm.png" />Current Tale
+            <img src="/images/wholetale_logo_sm.png" />Current Tale
             <span style="float: right">
                 {{#if model.url}}
                     <a {{action 'openDeleteModal' model._id}}>
@@ -20,18 +20,18 @@
         </h2>
     </div>
 
-    {{#if model.url}} 
+    {{#if model.url}}
         {{#if loadError}}
             <div class="placeholder message">
                 <p>Sorry, could not load {{model.name}}. Press external icon on top right to launch in a new tab.</p>
             </div>
         {{else}}
-            <iframe id="frontendDisplay" 
-                    src="{{model.url}}" 
-                    style="width:100%; height: 600px; padding: 0; margin: 0;" 
+            <iframe id="frontendDisplay"
+                    src="{{model.url}}"
+                    style="width:100%; height: 600px; padding: 0; margin: 0;"
                     class="ui basic segment">
             </iframe>
-        {{/if}} 
+        {{/if}}
     {{else}}
         <div class="placeholder message">
             <p>Choose from

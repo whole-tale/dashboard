@@ -5,6 +5,7 @@ const service = Ember.inject.service.bind(Ember);
 export default Ember.Component.extend({
   store: service(),
   userAuth: service(),
+  router: service(),
   apiCall: service('api-call'),
   internalState: service(),
   wtEvents: service(),
@@ -117,12 +118,12 @@ export default Ember.Component.extend({
         // component.updateModels(component, searchView);
       });
     },
-    onModelChange: function (model, index) {
-      // this.sendAction('onLeftModelChange', model); // sends event to parent component
-      this.set('selectedEnvironment', model);
-      this.set('selectedMenuIndex', index);
-      this.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
-    },
+    // onModelChange: function (model, index) {
+    //   // this.sendAction('onLeftModelChange', model); // sends event to parent component
+    //   this.set('selectedEnvironment', model);
+    //   this.set('selectedMenuIndex', index);
+    //   this.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
+    // },
 
     openDeleteModal: function (id) {
       let selector = '.ui.' + id + '.modal';
@@ -167,10 +168,14 @@ export default Ember.Component.extend({
     },
     selectEnvironment: function(model, index) {
       let component = this;
-      component.set('selectedEnvironment', model);
-      component.set('selectedMenuIndex', index);
-      component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
-      console.log('selected environment: ' + model.name);
+      if(this.get('isComposing')) {
+        component.set('selectedEnvironment', model);
+        component.set('selectedMenuIndex', index);
+        component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
+        console.log('selected environment: ' + model.name);
+      } else {
+        component.get('router').transitionTo('manage.view', model.get('id'));
+      }
     },
     deselectEnvironment() {
       let component = this;

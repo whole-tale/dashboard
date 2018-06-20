@@ -28,7 +28,8 @@
     <div class="tales-list {{if (and showSearch selectedInstance selectedInstance.name) 'has-selected-item'}}">
         {{#each modelsInView as |instance index|}}
             <div class="ui vertical menu fluid tales">
-                <a class="item {{active-class index selectedMenuIndex}}" {{action 'selectInstance' instance index}}>
+                {{!-- <a class="item {{active-class index selectedMenuIndex}}" {{action 'selectInstance' instance index}}> --}}
+                <a class="item  {{active-class index selectedMenuIndex}}" {{action 'transitionToRun' instance index}}>
                     <img src="{{instance.tale.illustration}}" />
                     <img src="{{instance.tale.icon}}" class="env" />
                     <i class="times icon" {{action 'openDeleteModal' instance }} ></i>

@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  router: Ember.inject.service(),
   store: Ember.inject.service(),
   userAuth: Ember.inject.service(),
   apiCall: Ember.inject.service('api-call'),
@@ -228,7 +229,7 @@ export default Ember.Component.extend({
         let searchView = [];
         models.forEach(model => {
           let name = model.get('name');
-          if(~name.toLowerCase().indexOf(searchStr.toLowerCase())) {
+          if (~name.toLowerCase().indexOf(searchStr.toLowerCase())) {
             searchView.push(model);
           }
         });
@@ -237,13 +238,13 @@ export default Ember.Component.extend({
 
       promise.then((searchView) => {
         component.set('modelsInView', searchView);
-        let selected = searchView.filter((tale,i) => {
-          if(tale.id === component.get('selectedInstance').id) {
+        let selected = searchView.filter((tale, i) => {
+          if (tale.id === component.get('selectedInstance').id) {
             component.set('selectedMenuIndex', i);
           }
           return tale.id === component.get('selectedInstance').id;
         });
-        if(!selected.length) {
+        if (!selected.length) {
           component.set('selectedMenuIndex', -1);
           // component.set('selectedInstance', Ember.Object.create({}));
           // component.get('wtEvents').events.selectEnvironment(this.get('selectedInstance'));
@@ -251,9 +252,14 @@ export default Ember.Component.extend({
         // component.updateModels(component, searchView);
       });
     },
-    
+
     addNew: function () {
       this.sendAction("onAddNew");
+    },
+
+    transitionToRun: function (instance, index) {
+      this.actions.selectInstance.call(this, instance, index);
+      this.get('router').transitionTo('run.view', instance._id);
     }
 
   }

@@ -87,7 +87,9 @@ Router.map(function () {
   // new UI routes
 
   this.route('browse');
-  this.route('run');
+  this.route('run', function() {
+    this.route('view', { path: '/:instance_id'});
+  });
   this.route('manage');
   this.route('compose');
 
