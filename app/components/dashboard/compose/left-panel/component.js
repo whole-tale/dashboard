@@ -64,7 +64,7 @@ export default Ember.Component.extend({
       console.log('Launching new instance');
       Ember.run.later((function () {
         component.get('router').transitionTo('run');
-      }), 3000);
+      }), 1000);
     };
 
     let onFail = function (item) {
@@ -121,7 +121,7 @@ export default Ember.Component.extend({
 
       let new_tale = this.get('store').createRecord('tale', {
         "config": {}, //TODO: Implement configuration editor
-        "involatileData": JSON.stringify(formattedData),
+        "involatileData": formattedData,
         "imageId": this.get('selectedEnvironment').get('_id'),
         "title": this.get('newTaleName')
       });

@@ -17,5 +17,5 @@ export default DS.Model.extend({
   "published": DS.attr('boolean'),
   "title": DS.attr('string'),
   "updated": DS.attr('date'),
-  "involatileData": DS.attr('string')
+  "involatileData": DS.attr()
 });

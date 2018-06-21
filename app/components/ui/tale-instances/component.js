@@ -192,11 +192,8 @@ export default Ember.Component.extend({
     },
 
     openDeleteModal: function (instance) {
-      var selector = '.ui.' + 'delete-modal' + '.modal';
+      let selector = '.ui.' + 'delete-modal' + '.modal';
       console.log("Selector: " + selector);
-      event.preventDefault();
-      event.cancelBubble = true;
-      return true;
       $(selector).modal('show');
     },
 
