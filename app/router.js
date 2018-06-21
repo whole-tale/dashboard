@@ -83,14 +83,16 @@ Router.map(function () {
   // old compose UI route.
   this.route('pcompose');
 
-
   // new UI routes
 
   this.route('browse');
   this.route('run', function() {
     this.route('view', { path: '/:instance_id'});
   });
-  this.route('manage');
+  this.route('manage', function () {
+    this.route('index', { path: '/'});
+    this.route('view', { path: '/:image_id'});
+  });
   this.route('compose');
 
   // found this typical error:

@@ -3,7 +3,7 @@ import AuthenticateRoute from 'wholetale/routes/authenticate';
 
 export default AuthenticateRoute.extend({
 
-  model: function (params) {
+  model (params) {
     this._super();
 
     return this.get('store').findAll('instance', {
@@ -11,7 +11,7 @@ export default AuthenticateRoute.extend({
     });
   },
 
-  setupController: function (controller, model) {
+  setupController (controller, model) {
     this._super(controller, model);
 
     controller.set('model', model);
@@ -19,12 +19,12 @@ export default AuthenticateRoute.extend({
   },
   actions: {
 
-    onShowInstance: function (model) {
+    onShowInstance (model) {
       // alert("In Run Route !!");
       //this.sendAction('onShowInstance', model); // sends to parent component
     },
 
-    refreshCurrentRoute: function () {
+    refreshCurrentRoute () {
       console.log("Refreshing Data");
       this.refresh();
     }

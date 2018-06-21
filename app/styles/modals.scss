@@ -12,10 +12,12 @@
   height: 200px;
 }
 
-.envdetails {
-  height: calc(100vh - 64px - 60px - 2em);
+.ui.modal.envdetails {
+  height: 50%; //calc(100vh - 64px - 60px - 2em);
+  width: 70%;
 
   .content {
     height: calc(100% - 64px - 60px);
+    overflow-y: auto;
   }
 }

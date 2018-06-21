@@ -56,7 +56,7 @@ export default Ember.Component.extend({
     this.set('configuration', JSON.stringify({}));
   },
 
-  launchTale: function(tale) {
+  launchTale: function (tale) {
     let component = this;
 
     let onSuccess = function (item) {
@@ -110,14 +110,20 @@ export default Ember.Component.extend({
         console.log(e);
       };
 
-      // temporary code while the API is modified to allow for multiple files/folders selection
-      let data = Boolean(this.get('inputData') && this.get('inputData').length) ? this.get('inputData').firstObject.get('id') : '';
+      let data = this.get('inputData') || {};
+      let formattedData = [];
+      data.forEach(x => {
+        formattedData.push({
+          'type': x.get('isFolder') ? 'folder' : 'item',
+          'id': x.get('id')
+        });
+      });
 
       let new_tale = this.get('store').createRecord('tale', {
         "config": {}, //TODO: Implement configuration editor
-        "folderId": data, // will change after API changes
+        "involatileData": JSON.stringify(formattedData),
         "imageId": this.get('selectedEnvironment').get('_id'),
-        "title": this.get('newTaleName'),
+        "title": this.get('newTaleName')
       });
 
       new_tale.save().then(onSuccess).catch(onFail);

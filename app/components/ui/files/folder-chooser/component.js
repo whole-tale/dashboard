@@ -67,7 +67,6 @@ export default Ember.Component.extend({
 
     loadFolders
       .finally(() => {
-        console.log("here");
         self.set('loading', false);
       })
     ;

@@ -1,23 +1,62 @@
-{{#ui-modal name="envdetails" class="small envdetails" onApprove=(action 'selectEnvironment' model) onDeny=(action 'cancel')}}
+{{#ui-modal name="envdetails" class="envdetails"}}
+    {{!--  onApprove=(action 'selectEnvironment' model) onDeny=(action 'cancel') --}}
     <div class="header">Environment Details</div>
     <div class="content">
         <div class="ui form">
             <div class="ui fluid">
                 <div class="ui sixteen wide column">
-                  <label>Description</label>
-                </div>
-                <div class="ui sixteen wide column">
-                  {{convert-markdown model.description}}
+                    <table class="table-condensed">
+                        <tbody>
+                            <tr>
+                                <td style="color: #515151; text-align: right;">Name:</td>
+                                <td>{{model.name}}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #515151; text-align: right;">Description:</td>
+                                <td>
+                                    {{#if (and model model.description)}}
+                                        {{convert-markdown model.description}}
+                                    {{else}}
+                                        No description
+                                    {{/if}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color: #515151; text-align: right;">Creator:</td>
+                                <td>
+                                    <div style="max-height:120px; overflow: auto;">
+                                        {{model.creator.firstName}} {{model.creator.lastName}}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color: #515151; text-align: right;">Is Public:</td>
+                                <td>
+                                    {{#if model.public }}
+                                        YES
+                                    {{else}}
+                                        NO
+                                    {{/if}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align:top">Configuration:</td>
+                                <td>
+                                    <pre>{{model.configuration}}</pre>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
     <div class="actions">
         <div class="ui deny button">
-            Cancel
+            Close
         </div>
-        <div class="ui positive register left labeled icon button">
+        {{!-- <div class="ui positive register left labeled icon button">
             <i class="icon check"></i> Select Environment
-        </div>
+        </div> --}}
     </div>
 {{/ui-modal}}

@@ -43,8 +43,8 @@ export default AuthenticateRoute.extend({
     }
 
     return {
-      'folderContents': folderContents,
-      'itemContents': itemContents,
+      folderContents: folderContents,
+      itemContents: itemContents,
       images: this.get('store').findAll('image', {
         reload: true,
         adapterOptions: {
@@ -60,6 +60,6 @@ export default AuthenticateRoute.extend({
 
   setupController: function (controller, model) {
     this._super(controller, model);
-    controller.set('fileData', model);
+    controller.set('fileData', { folderContents: model.folderContents, itemContents: model.itemContents});
   }
 });

@@ -14,27 +14,27 @@
                     </div>
                     <div class="results"></div>
                 </div>
-                {{#if (and selectedEnvironment selectedEnvironment.name)}}
+                {{!-- {{#if (and selectedEnvironment selectedEnvironment.name)}}
                     <div class="header item" style="font-size: 120%; position: relative;">
                         <span class="ui blue label" style="margin-right: 10px; margin-left: 0;">Currently Selected</span> 
                         <span>{{selectedEnvironment.name}}</span>
                         <i class="times icon" {{action 'deselectEnvironment'}}></i>
                     </div>
-                {{/if}}
+                {{/if}} --}}
             </div>
         {{/if}}
     </div>
-    <div class="environments-list {{if (and showSearch selectedEnvironment selectedEnvironment.name) 'has-selected-item'}}">
+    {{!-- {{if (and showSearch selectedEnvironment selectedEnvironment.name) 'has-selected-item'}} --}}
+    <div class="environments-list">
         {{#each modelsInView as |model index|}}
             <div class="ui vertical menu fluid tales">
-                <a class="item {{active-class index selectedMenuIndex}}" {{action 'selectEnvironment' model index}}>
+                <a class="item {{if (eq model.id selectedEnvironment.id) 'active-class'}}" {{action 'selectEnvironment' model index}}>
                     <img src="{{model.icon}}" />
-                    <i class="fas fa-info blue" onclick={{action "openDetailsModal" model}}></i>
+                    <i class="fas fa-info blue" onclick={{action "openDetailsModal" model preventDefault=true cancelBubble=true}}></i>
                     <p>{{model.name}}</p>
                 </a>
             </div>
         {{/each}}
     </div>
 </div>
-
 {{ui/compute-environments/environment-details-modal model=detailsModel}}
