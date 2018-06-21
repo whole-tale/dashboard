@@ -1,5 +1,5 @@
 {{#if showUpperPanel}}
-    {{ui/tale-instances models=rightModelTop paginateOn=3 onLeftModelChange=(action "onLeftModelChange") }}
+    {{ui/tale-instances models=rightModelTop paginateOn=3 onLeftModelChange=(action "onLeftModelChange") selectedInstance=selectedInstance}}
 {{/if}}
 {{#if showLowerPanel}}
     {{ui/files/mini-browser }}
