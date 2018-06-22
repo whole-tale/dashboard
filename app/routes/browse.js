@@ -1,12 +1,9 @@
-import Ember from 'ember';
 import AuthenticateRoute from 'wholetale/routes/authenticate';
+import CurrentInstanceMixin from 'wholetale/mixins/current-instance';
 
-export default AuthenticateRoute.extend({
-  userAuth: Ember.inject.service(),
-
+export default AuthenticateRoute.extend(CurrentInstanceMixin, {
   model() {
-    let currentUserId = this.get('userAuth').getCurrentUserID();
-
+    this._super(...arguments);
     return {
       instances: this.get('store').findAll('instance', {
         reload: true
@@ -20,7 +17,8 @@ export default AuthenticateRoute.extend({
             limit: "0"
           }
         }
-      })
+      }),
+      selected: this.getCurrentInstance()
     };
   }
 });

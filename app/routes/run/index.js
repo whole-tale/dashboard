@@ -1,14 +1,13 @@
 import AuthenticateRoute from 'wholetale/routes/authenticate';
 import RSVP from 'rsvp';
+import CurrentInstanceMixin from 'wholetale/mixins/current-instance'
 
-export default AuthenticateRoute.extend({
-  model(params) {
-    this._super(params);
-    let selected = params.instance_id;
-    let check_exists = typeof selected !== 'undefined';
+export default AuthenticateRoute.extend(CurrentInstanceMixin, {
+  model() {
+    this._super(...arguments);
     return RSVP.hash({
       instances: this.get('store').findAll('instance', { reload: true }),
-      selected: check_exists ? this.get('store').findRecord('instance', selected, { reload: true }) : null
+      selected: this.getCurrentInstance()
     });
   }
 });

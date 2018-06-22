@@ -22,10 +22,8 @@ export default Ember.Component.extend({
 
   init() {
     this._super(...arguments);
-    console.log("Attributes updated");
 
     var models = this.get("models");
-    console.log(models);
 
     var component = this;
 

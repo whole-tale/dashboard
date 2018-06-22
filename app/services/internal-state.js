@@ -189,4 +189,11 @@ export default Ember.Service.extend({
     localStorage.recentEnvironments = JSON.stringify(recent);
   },
 
+  getCurrentInstanceId(){
+    return localStorage.currentInstanceId;
+  },
+
+  setCurrentInstanceId(instanceId){
+    localStorage.currentInstanceId = instanceId;
+  }
 });
