@@ -27,7 +27,7 @@
     <div class="tales-list" style="overflow-y:auto;height:calc(100% - 48px - 1rem);border-bottom-left-radius:1rem;border-bottom-right-radius: 1rem;">
         {{#each models as |instance|}}
             <div class="ui vertical menu fluid tales">
-                <a class="item {{if (and selectedInstance  (eq selectedInstance.id instance.id)) 'active'}}" {{action 'transitionToRun' instance}}>
+                <a class="item {{if (and internalState.currentInstanceId (eq internalState.currentInstanceId instance._id)) 'active'}}" {{action 'transitionToRun' instance}}>
                     <img src="{{instance.tale.illustration}}" />
                     <img src="{{instance.tale.icon}}" class="env" />
                     <i class="times icon" {{ action 'openDeleteModal' instance._id }} ></i>

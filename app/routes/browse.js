@@ -1,7 +1,6 @@
 import AuthenticateRoute from 'wholetale/routes/authenticate';
-import CurrentInstanceMixin from 'wholetale/mixins/current-instance';
 
-export default AuthenticateRoute.extend(CurrentInstanceMixin, {
+export default AuthenticateRoute.extend({
   model() {
     this._super(...arguments);
     return {
@@ -17,8 +16,7 @@ export default AuthenticateRoute.extend(CurrentInstanceMixin, {
             limit: "0"
           }
         }
-      }),
-      selected: this.getCurrentInstance()
+      })
     };
   }
 });

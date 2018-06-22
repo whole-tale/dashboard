@@ -5,6 +5,15 @@ import Ember from 'ember';
 
 export default Ember.Service.extend({
   isAuthenticated: true,
+  currentInstanceId: Ember.computed({
+    get(key){
+      return localStorage.currentInstanceId;
+    },
+    set(key, value){
+      localStorage.currentInstanceId = value;
+      return value;
+    }
+  }),
 
   setCurrentNavCommand: function (val) {
     localStorage.currentNavCommand = val;
@@ -188,12 +197,4 @@ export default Ember.Service.extend({
     });
     localStorage.recentEnvironments = JSON.stringify(recent);
   },
-
-  getCurrentInstanceId(){
-    return localStorage.currentInstanceId;
-  },
-
-  setCurrentInstanceId(instanceId){
-    localStorage.currentInstanceId = instanceId;
-  }
 });
