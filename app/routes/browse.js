@@ -1,12 +1,8 @@
-import Ember from 'ember';
 import AuthenticateRoute from 'wholetale/routes/authenticate';
 
 export default AuthenticateRoute.extend({
-  userAuth: Ember.inject.service(),
-
   model() {
-    let currentUserId = this.get('userAuth').getCurrentUserID();
-
+    this._super(...arguments);
     return {
       instances: this.get('store').findAll('instance', {
         reload: true
