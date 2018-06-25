@@ -19,6 +19,7 @@ export default Ember.Service.extend({
         isFolder :  true,
         instructions: 'Synced to local machine',
         allowUpload: true,
+        allowRegister: false,
         disallowImport: false
       },
       {
@@ -30,6 +31,7 @@ export default Ember.Service.extend({
         isFolder: true,
         instructions: 'Linked from external sources',
         allowUpload: false,
+        allowRegister: true,
         disallowImport: true
       },
       /*

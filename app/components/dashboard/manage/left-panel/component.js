@@ -300,6 +300,11 @@ export default Ember.Component.extend({
       // (see: https://semantic-org.github.io/Semantic-UI-Ember/#/modules/modal)
   
       Ember.$('.ui.modal.newfolder').modal('show');
+    },
+
+    //-----------------------------------------------------------------------------
+    openRegisterModal() {
+      Ember.$('.ui.modal.harvester').modal('show');
     }
 
   }

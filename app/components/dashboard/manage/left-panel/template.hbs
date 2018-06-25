@@ -19,7 +19,7 @@
     <div class="ui stackable grid">
         <div class="five wide column folder-navigator-container">
             <div class="ui collapsable grid folder-grid">
-              {{ui/files/folder-navigator currentNavCommand=currentNavCommand openUploadDialog="openUploadDialog" openCreateFolderModal="openCreateFolderModal" navClicked="navClicked"}}
+              {{ui/files/folder-navigator currentNavCommand=currentNavCommand openUploadDialog="openUploadDialog" openCreateFolderModal="openCreateFolderModal" onRegisterDataset="openRegisterModal" navClicked="navClicked"}}
             </div>
         </div>
         <div class="eleven wide column">
@@ -38,3 +38,4 @@
 </div>
 
 {{ui/files/create-folder-modal onNewFolder=(action "insertNewFolder")}}
+{{ui/files/registration-modal}}

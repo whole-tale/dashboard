@@ -26,6 +26,12 @@ export default Ember.Component.extend({
         //--------------------------------------------
         openUploadDialog: function() {
           this.sendAction('openUploadDialog');
+        },
+
+        //--------------------------------------------
+        registerDataset: function() {
+          console.log("here");
+          this.sendAction('onRegisterDataset');
         }
     }
 });
