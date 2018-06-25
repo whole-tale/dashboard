@@ -24,6 +24,32 @@ body {
   background: #d6e1e8;
 }
 
+// loader starts
+.loading-pane {
+  /* position: relative; */
+  height: 100%;
+  width: 100%;
+  /* top: 0; */
+  /* left: 0; */
+  background: #f3f3f3 center center;
+  background-size: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.creating-tale-message {
+  position: absolute;
+  z-index: 100;
+  left: calc(((100% * 11) / 16) / 2 + 45px);
+  top: 2rem;
+
+  .centered {
+    text-align: center;
+    margin-top: 1em;
+  }
+}
+// loader ends
+
 /* Navigation - Top Nav */
 
 // NEW UI
@@ -528,7 +554,7 @@ ui.inverted.menu.wt.top {
       border-top-right-radius: 0;
       border: none;
       margin: 0;
-      height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + #{$wt-paddleboard-panel-height}));
+      height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + #{$wt-paddleboard-panel-height} + 3px));
       overflow-y: auto;
       overflow-x: hidden;
     }

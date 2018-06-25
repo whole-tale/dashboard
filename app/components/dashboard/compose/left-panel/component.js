@@ -12,18 +12,26 @@ export default Ember.Component.extend({
   inputData: Ember.A(),
   selectedEnvironment: Ember.Object.create({}),
   newTaleName: '',
+  message: 'Launching new Tale, please wait.',
+  launchingInstance: false,
 
   invalidNewTale: computed('inputData', 'selectedEnvironment', 'newTaleName', 'inputData.length', function () {
     let hasName = Boolean(this.get('newTaleName') && this.get('newTaleName').length);
     let hasEnvironment = Boolean(this.get('selectedEnvironment') && this.get('selectedEnvironment').id);
-    let hasData = Boolean(this.get('inputData') && this.get('inputData').length);
-    return !(hasName && hasEnvironment && hasData);
+    if(!this.get('inputData')) {
+      this.set('inputData', Ember.A());
+    }
+    // let hasData = Boolean(this.get('inputData') && this.get('inputData').length);
+    return !(hasName && hasEnvironment);
   }),
 
   init() {
     this._super(...arguments);
     let events = this.get('wtEvents').events;
     const self = this;
+    if (self.isDestroyed) {
+      return;
+    }
     events.on('select', function (allSelected) {
       self.set('inputData', allSelected);
     });
@@ -42,26 +50,26 @@ export default Ember.Component.extend({
   }),
 
   // public_checked : false,
-  frontend: null,
-  folder: null,
   tale_creating: false,
   tale_created: false,
   configuration: JSON.stringify({}),
 
   clearForm() {
     this.set('selectedEnvironment', null);
-    this.set('folder', null);
+    this.set('inputData', Ember.A());
     this.set('tale_creating', false);
     this.set('tale_created', false);
+    this.set('launchingInstance', false);
     this.set('configuration', JSON.stringify({}));
   },
 
-  launchTale: function (tale) {
+  launchTale(tale) {
     let component = this;
 
     let onSuccess = function (item) {
       // const instance = Ember.Object.create(JSON.parse(item));
       console.log('Launching new instance');
+      component.set('launchingInstance', false);
       Ember.run.later((function () {
         component.get('router').transitionTo('run');
       }), 1000);
@@ -82,6 +90,8 @@ export default Ember.Component.extend({
       null,
       onSuccess,
       onFail);
+    
+    component.set('launchingInstance', true);
   },
 
   actions: {
@@ -89,11 +99,6 @@ export default Ember.Component.extend({
     selectEnvironment(model) {
       console.log(model.get('name') + " frontend image has been selected in compose.js...");
       this.set("selectedEnvironment", model);
-    },
-
-    selectedFolder(model) {
-      console.log(model.get('name'));
-      this.set('folder', model);
     },
 
     //   Launch new Tale functionality

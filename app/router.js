@@ -94,7 +94,10 @@ Router.map(function () {
     this.route('index', { path: '/'});
     this.route('view', { path: '/:image_id'});
   });
-  this.route('compose');
+  this.route('compose', function() {
+    this.route('index', { path: '/' });
+    this.route('new', { path: '/new'});
+  });
 
   // found this typical error:
   // this.route("search", { path: "/search" });

@@ -6,24 +6,24 @@
         </h2>
     </div>
     <div class="ui segment rounded-bottom composer-container">
-        <div style="display: inline">
-            {{partial "forms/new-tale-input"}}
-            {{!-- <div class="loading-pane">
-                <div class="loading-message">
-                Launching new Tale, please wait.
-                <div class="spinner"></div>
+        {{#if launchingInstance}}
+            <div style="display: inline">
+                <div class="creating-tale-message">
+                    {{message}}
+                    <div class="centered"><i class="fa fa-4x fa-circle-notch fa-spin" aria-hidden="true"></i></div>
                 </div>
-            </div> --}}
-        </div>
-
-        <div class="ui secondary menu">
-            <div style="margin: 0 auto">
-                <button class="ui big icon button {{if invalidNewTale 'grey'}} {{unless invalidNewTale 'blue'}}"
-                        disabled={{invalidNewTale}}
-                        {{action "createTale"}}>
-                    Launch New Tale
-                </button>
             </div>
-        </div>
+        {{else}}
+            {{partial "forms/new-tale-input"}}
+            <div class="ui secondary menu">
+                <div style="margin: 0 auto">
+                    <button class="ui big icon button {{if invalidNewTale 'grey'}} {{unless invalidNewTale 'blue'}}"
+                            disabled={{invalidNewTale}}
+                            {{action "createTale"}}>
+                        Launch New Tale
+                    </button>
+                </div>
+            </div>
+        {{/if}}
     </div>
 </div>
