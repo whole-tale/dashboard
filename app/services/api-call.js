@@ -1,32 +1,31 @@
 import Ember from 'ember';
 import config from '../config/environment';
 
-
 export default Ember.Service.extend({
   tokenHandler: Ember.inject.service('token-handler'),
   isAuthenticated: true,
 
 
-  getFileContents : function (itemID, callback) {
+  getFileContents: function (itemID, callback) {
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/item/' + itemID + '/download?contentDisposition=attachment';
     var client = new XMLHttpRequest();
     client.open('GET', url);
     client.setRequestHeader("Girder-Token", token);
-    client.addEventListener("load", function() {
+    client.addEventListener("load", function () {
       callback(client.responseText);
     });
     client.send();
   },
 
-  getPreviewLink :function (itemID) {
+  getPreviewLink: function (itemID) {
     return config.apiUrl + '/item/' + itemID + '/download?contentDisposition=inline';
 
-//    https://girder.wholetale.org/api/v1/file/584ed73a548a6f00017d7504/download?contentDisposition=inline
+    // https://girder.wholetale.org/api/v1/file/584ed73a548a6f00017d7504/download?contentDisposition=inline
 
   },
 
-  getDownloadLink :function (itemID) {
+  getDownloadLink: function (itemID) {
     return config.apiUrl + '/item/' + itemID + '/download?contentDisposition=attachment';
   },
 
@@ -36,12 +35,12 @@ export default Ember.Service.extend({
     var url = config.apiUrl + '/item/' + itemID;
     var queryPars = "";
     if (name != null) {
-      queryPars += "name="+ encodeURIComponent(name);
+      queryPars += "name=" + encodeURIComponent(name);
     }
-    if (description !=null) {
+    if (description != null) {
       if (queryPars !== "")
         queryPars += "&";
-      queryPars += "description="+ encodeURIComponent(description);
+      queryPars += "description=" + encodeURIComponent(description);
     }
 
     if (queryPars !== "") {
@@ -50,7 +49,7 @@ export default Ember.Service.extend({
     var client = new XMLHttpRequest();
     client.open('PUT', url);
     client.setRequestHeader("Girder-Token", token);
-    client.addEventListener("load", function() {
+    client.addEventListener("load", function () {
       if (client.status === 200) {
         success(client.responseText);
       } else {
@@ -91,9 +90,9 @@ export default Ember.Service.extend({
         fail("You must provide a folder");
         return;
       }
-      queryPars += "imageId="+ encodeURIComponent(imageId);
+      queryPars += "imageId=" + encodeURIComponent(imageId);
       queryPars += "&";
-      queryPars += "folderId="+ encodeURIComponent(folderId);
+      queryPars += "folderId=" + encodeURIComponent(folderId);
     } else {
       url += taleID + "/";
     }
@@ -101,26 +100,26 @@ export default Ember.Service.extend({
     if (instanceId != null) {
       if (queryPars !== "")
         queryPars += "&";
-      queryPars += "instanceId="+ encodeURIComponent(instanceId);
+      queryPars += "instanceId=" + encodeURIComponent(instanceId);
     }
     if (title != null) {
       if (queryPars !== "")
         queryPars += "&";
-      queryPars += "title="+ encodeURIComponent(title);
+      queryPars += "title=" + encodeURIComponent(title);
     }
-    if (description !=null) {
+    if (description != null) {
       queryPars += "&";
-      queryPars += "description="+ encodeURIComponent(description);
+      queryPars += "description=" + encodeURIComponent(description);
     }
 
     if (isPublic != null) {
       queryPars += "&";
-      queryPars += "public="+ encodeURIComponent(isPublic);
+      queryPars += "public=" + encodeURIComponent(isPublic);
     }
 
     if (configuration != null) {
       queryPars += "&";
-      queryPars += "config="+ encodeURIComponent(configuration);
+      queryPars += "config=" + encodeURIComponent(configuration);
     }
 
     if (queryPars !== "") {
@@ -129,7 +128,7 @@ export default Ember.Service.extend({
     var client = new XMLHttpRequest();
     client.open(httpCommand, url);
     client.setRequestHeader("Girder-Token", token);
-    client.addEventListener("load", function() {
+    client.addEventListener("load", function () {
       if (client.status === 200) {
         success(client.responseText);
       } else {
@@ -160,7 +159,7 @@ export default Ember.Service.extend({
     }
     if (name != null) {
       queryPars += "&";
-      queryPars += "name="+ encodeURIComponent(name);
+      queryPars += "name=" + encodeURIComponent(name);
     }
 
 
@@ -170,7 +169,7 @@ export default Ember.Service.extend({
     var client = new XMLHttpRequest();
     client.open("post", url);
     client.setRequestHeader("Girder-Token", token);
-    client.addEventListener("load", function() {
+    client.addEventListener("load", function () {
       if (client.status === 200) {
         success(client.responseText);
       } else {
@@ -183,4 +182,4 @@ export default Ember.Service.extend({
     client.send();
   },
 
-  });
+});

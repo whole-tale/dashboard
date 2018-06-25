@@ -2,6 +2,7 @@ import Ember from 'ember';
 var inject = Ember.inject;
 
 import AuthenticateRoute from 'wholetale/routes/authenticate';
+import RSVP from 'rsvp';
 
 export default AuthenticateRoute.extend({
   internalState: inject.service(),
@@ -42,7 +43,7 @@ export default AuthenticateRoute.extend({
       console.log("Folder != null, leaving");
     }
 
-    return {
+    return RSVP.hash({
       folderContents: folderContents,
       itemContents: itemContents,
       images: this.get('store').findAll('image', {
@@ -55,7 +56,7 @@ export default AuthenticateRoute.extend({
           }
         }
       })
-    };
+    });
   },
 
   setupController: function (controller, model) {

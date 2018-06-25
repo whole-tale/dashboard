@@ -168,6 +168,10 @@ export default Ember.Service.extend({
     }
     return JSON.parse(recent);
   },
+  setRecentEnvironments(environments) {
+    environments = environments || Ember.A();
+    localStorage.recentEnvironments = JSON.stringify(environments);
+  },
 
   addRecentEnvironment(environmentId) {
     let recent = this.getRecentEnvironments();
@@ -181,12 +185,19 @@ export default Ember.Service.extend({
     localStorage.recentEnvironments = JSON.stringify(recent);
   },
 
-  removeRecentEnvironment: function (environmentId) {
+  removeRecentEnvironment(environmentId) {
     let recent = this.getRecentEnvironments();
     recent = recent.reject(id => {
       return environmentId === id;
     });
     localStorage.recentEnvironments = JSON.stringify(recent);
   },
+
+  setSearchString(searchStr) {
+    localStorage.lastSearchStr = searchStr;
+  },
+  getSearchString() {
+    return localStorage.searchStr;
+  }
 
 });

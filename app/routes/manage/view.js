@@ -32,12 +32,12 @@ export default AuthenticateRoute.extend({
         folderId: folderID
       });
     }
-    return {
+    return RSVP.hash({
       folderContents: folderContents,
       itemContents: itemContents,
       allImages: this.get('store').findAll('image', { reload: true }),
       selectedImage: this.get('store').findRecord('image', params.image_id, { reload: true })
-    };
+    });
   },
 
   setupController: function (controller, model) {

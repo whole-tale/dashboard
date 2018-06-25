@@ -9,7 +9,7 @@ export default Ember.Component.extend({
   apiCall: service('api-call'),
   internalState: service(),
   wtEvents: service(),
-  
+
   selectedMenuIndex: -1,
   selectedEnvironment: Ember.Object.create({}),
   searchStr: '',
@@ -32,13 +32,13 @@ export default Ember.Component.extend({
 
     let url = this.get('router').get('currentURL');
     let id = url.split('/manage/')[1];
-    
+
     let component = this;
-    let updater = function(models) {
+    let updater = function (models) {
       models.forEach(function (item, index) {
         component.get('store').findRecord('image', item.get('id')).then(environment => {
           item.set('environment', environment);
-          if(item.get('id') === id) {
+          if (item.get('id') === id) {
             component.set('selectedMenuIndex', index);
             component.set('selectedEnvironment', environment);
           }
@@ -59,8 +59,7 @@ export default Ember.Component.extend({
     }
   },
   didRender() {},
-  didUpdate() {
-  },
+  didUpdate() {},
 
   updateModels(component, models) {
     if (models.get('length') === 0) {
@@ -95,7 +94,7 @@ export default Ember.Component.extend({
   },
 
   actions: {
-    search () {
+    search() {
       let searchStr = this.get('searchStr').trim();
       const models = this.get('models');
       const component = this;
@@ -104,7 +103,7 @@ export default Ember.Component.extend({
         let searchView = [];
         models.forEach(model => {
           let name = model.get('name');
-          if(~name.toLowerCase().indexOf(searchStr.toLowerCase())) {
+          if (~name.toLowerCase().indexOf(searchStr.toLowerCase())) {
             searchView.push(model);
           }
         });
@@ -113,27 +112,28 @@ export default Ember.Component.extend({
 
       promise.then((searchView) => {
         component.set('modelsInView', searchView);
-        let selected = searchView.filter((env,i) => {
-          if(env.id === component.get('selectedEnvironment').id) {
-            component.set('selectedMenuIndex', i);
+        if(component.get('selectedEnvironment')) {
+          let selected = searchView.filter((env, index) => {
+            if (env.get('id') === component.get('selectedEnvironment').get('id')) {
+              component.set('selectedMenuIndex', index);
+            }
+            return env.get('id') === component.get('selectedEnvironment').get('id');
+          });
+          if (!selected.length) {
+            component.set('selectedMenuIndex', -1);
           }
-          return env.id === component.get('selectedEnvironment').id;
-        });
-        if(!selected.length) {
+        } else {
           component.set('selectedMenuIndex', -1);
-          // component.set('selectedEnvironment', Ember.Object.create({}));
-          // component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
-        }
-        // component.updateModels(component, searchView);
+        }        
       });
     },
 
-    openDeleteModal (id) {
+    openDeleteModal(id) {
       let selector = '.ui.' + id + '.modal';
       $(selector).modal('show');
     },
 
-    approveDelete (model) {
+    approveDelete(model) {
       console.log("Deleting model " + model.name);
       let component = this;
 
@@ -144,25 +144,25 @@ export default Ember.Component.extend({
       return false;
     },
 
-    denyDelete () {
+    denyDelete() {
       return true;
     },
 
-    addNew () {
+    addNew() {
       this.sendAction("onAddNew");
     },
-    removeCurrentFilter () {
+    removeCurrentFilter() {
       this.set('filter', 'All');
       this.setFilter();
     },
-    openModal (modalName) {
+    openModal(modalName) {
       let modal = Ember.$('.ui.' + modalName + '.modal');
       modal.parent().prependTo(Ember.$(document.body));
       modal.modal('show');
     },
-    openDetailsModal (model) {
+    openDetailsModal(model) {
       let component = this;
-      if(model) {
+      if (model) {
         model.set('configuration', JSON.stringify(model.get('config'), null, 2));
         let creatorId = model.get('creatorId');
         let creator = model.get('store').findRecord('user', creatorId).then(user => {
@@ -175,9 +175,9 @@ export default Ember.Component.extend({
       event.cancelBubble = true;
       return true;
     },
-    selectEnvironment (model, index) {
+    selectEnvironment(model, index) {
       let component = this;
-      if(this.get('isComposing')) {
+      if (this.get('isComposing')) {
         component.set('selectedEnvironment', model);
         component.set('selectedMenuIndex', index);
         component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
@@ -191,6 +191,7 @@ export default Ember.Component.extend({
       component.set('selectedEnvironment', Ember.Object.create({}));
       component.set('selectedMenuIndex', -1);
       component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
+      // component.get('router')
       component.get('router').transitionTo('manage.index');
     }
   }
