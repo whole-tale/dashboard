@@ -172,17 +172,14 @@
                                 </div>
 
                                 <div class="field">
-                                    AQUI
                                     <style type="text/css">
                                         .unhide.icon:hover {
                                             cursor: pointer;
                                         }
                                     </style>
                                     <label style="margin-right:.5em; display:inline-block;">Involatile Data</label>
-                                    {{#each items as |item|}}
-                                        <i class="inline unhide icon" {{action 'gotoFolderView' on='click' }} data-content="View details"></i>
-                                        <input type="text" name="folder" placeholder="Item" value="{{item.name}}" disabled>
-                                    {{/each}}
+                                    <i class="inline unhide icon" {{action 'gotoFolderView' on='click' }} data-content="View details"></i>
+                                    <input type="text" name="folder" placeholder="Items" value="{{involatileData}}" disabled>
                                 </div>
 
                                 <div class="field">
