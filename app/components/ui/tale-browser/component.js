@@ -30,9 +30,6 @@ export default Ember.Component.extend({
     console.log("Attributes updated");
 
     let modelsPromised = this.get("models");
-
-    console.log(modelsPromised);
-
     let component = this;
 
     modelsPromised.then(function (models) {
@@ -92,7 +89,6 @@ export default Ember.Component.extend({
         console.log(m.get('published'));
         return m.get('published') === true;
       }));
-      console.log(this.get('filteredSet'));
     } else if (filter === 'Recent') {
       const recentTales = this.get('internalState').getRecentTales();
       this.set('filteredSet', models.filter(m => {
@@ -196,7 +192,6 @@ export default Ember.Component.extend({
     toggleFiltersVisibility: function() {
       let newValue = !this.get('showFilter');
       this.set('showFilter', newValue);
-      console.log('filters visible: ' + this.get('showFilter'));
     },
     removeCurrentFilter: function() {
       this.set('filter', 'All');
@@ -213,13 +208,11 @@ export default Ember.Component.extend({
       this.paginate(this, this.get('searchView'));
     },
     tabClicked: function (tabNumber) {
-      // alert("Clicked " + tabNumber)
       this.set('pageNumber', tabNumber);
       this.paginate(this, this.get('searchView'));
     },
     searchFilter: function () {
       let searchStr = this.get('searchStr');
-      //  console.log(searchStr);
 
       const filteredSet = this.get("filteredSet");
       const component = this;

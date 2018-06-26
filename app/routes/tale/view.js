@@ -36,12 +36,25 @@ export default Ember.Route.extend({
     this._super(...arguments);
     this.get('internalState').addRecentTale(model.get('id'));
     let imageId = model.get('imageId');
-    let folderId = model.get('folderId');
 
-    this.get('store').find('folder', folderId)
-      .then(folder => {
-        controller.set('folder', folder);
+    let involatileData = model.get('involatileData');
+    if(involatileData) {
+      let promises = [];
+      involatileData.forEach(x => {
+        if(x.type === 'file') {
+          promises.push(this.get('store').find('file', x.id));
+        } else {
+          promises.push(this.get('store').find('folder', x.id));
+        }
       });
+
+      Promise.all(promises).then((values) => {
+        console.log(values);
+        controller.set('items', values);
+      });
+    } else {
+      controller.set('items', Ember.A());
+    }
 
     this.get('store').find('image', imageId)
       .then(image => {

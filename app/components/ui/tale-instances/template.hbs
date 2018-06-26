@@ -15,17 +15,10 @@
                     <div class="results">
                     </div>
                 </div>
-                {{#if (and selectedInstance selectedInstance.name)}}
-                    <div class="header item" style="font-size: 120%; position: relative;">
-                        <span class="ui blue label" style="margin-right: 10px;">Currently Selected</span>
-                        <span>{{truncate-name selectedInstance.name}}</span>
-                        <i class="times icon" {{action 'deselectInstance'}}></i>
-                    </div>
-                {{/if}}
             </div>
         {{/if}}
     </div>
-    <div class="tales-list {{if (and showSearch selectedInstance selectedInstance.name) 'has-selected-item'}}">
+    <div class="tales-list">
         {{#each modelsInView as |instance index|}}
             <div class="ui vertical menu fluid tales">
                 <a class="item {{if (and internalState.currentInstanceId (eq internalState.currentInstanceId instance._id)) 'active'}}" {{action 'transitionToRun' instance}}>
