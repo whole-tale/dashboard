@@ -9,15 +9,13 @@
                 </div>
                 <div class="ui inverted rounded-bottom" style="background-color: #f3f3f3;">
                     <div class="ui header" style="margin-bottom: 1rem;">
-                        <i class="info circle icon"></i> Folder Info
+                        <i class="info circle icon"></i> Involatile Data Info
                     </div>
 
                     <form class="ui form" {{action "updateDetails" on="submit"}}>
                         <div class="field">
-                            {{!-- <label>Involatile Data Name</label>
-                            {{input type="text" name="file-name" placeholder="Involatile Data" value=model.name}} --}}
-                            <label>Folder Name</label>
-                            {{input type="text" name="file-name" placeholder="File Name" value=model.name}}
+                            <label>Involatile Data Folder Name</label>
+                            <input type="text" name="file-name" placeholder="Involatile Data Folder Name" value="{{model.name}}" disabled/>
                         </div>
                         <div class="field">
                             <label>Description</label>
@@ -55,28 +53,30 @@
                             </div>
                         </div>
                     {{/if}}
-                    {{!-- Involatile Data --}}
                     <div class="ui header">
-                        <i class="tasks icon"></i> Folder Properties
+                        <i class="tasks icon"></i> Involatile Data Folder Properties
                     </div> 
                     <div class="ui form">
-                        {{!-- {{#each model.involatileData as |item|}} --}}
-                            <div class="field">
-                                <label>{{#if (eq item.type 'file') }}File{{else}}Folder{{/if}} ID</label>
-                                <input type="text" name="file-id" placeholder="File ID" value="{{item._id}}" disabled>
-                            </div>
+                        <div class="field">
+                            <label>Involatile Data Folder ID</label>
+                            <input type="text" name="folder-id" placeholder="Folder ID" value="{{model._id}}" disabled>
+                        </div>
 
 
-                            <div class="field">
-                                <label>{{#if (eq item.type 'file') }}File{{else}}Folder{{/if}} Created</label>
-                                <input type="text" name="date-created" placeholder="Date Created" value="{{from-now item.created}}" disabled>
-                            </div>
+                        <div class="field">
+                            <label>Involatile Data Folder Created</label>
+                            <input type="text" name="date-created" placeholder="Date Created" value="{{from-now model.created}}" disabled>
+                        </div>
 
-                            <div class="field">
-                                <label>{{#if (eq item.type 'file') }}File{{else}}Folder{{/if}} Updated</label>
-                                <input type="text" name="last-updated" placeholder="Last Updated" value="{{from-now item.updated}}" disabled>
-                            </div>
-                        {{!-- {{/each}} --}}
+                        <div class="field">
+                            <label>Involatile Data Folder Updated</label>
+                            <input type="text" name="last-updated" placeholder="Last Updated" value="{{from-now model.updated}}" disabled>
+                        </div>
+
+                        <div class="field">
+                            <label>Involatile Data Folder Size</label>
+                            <input type="text" name="folder-size" placeholder="Size" value="{{bytes-to-readable model.size}}" disabled>
+                        </div>
                     </div>
                 </div>
             </div>

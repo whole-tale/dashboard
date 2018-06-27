@@ -17,5 +17,6 @@ export default DS.Model.extend({
   "published": DS.attr('boolean'),
   "title": DS.attr('string'),
   "updated": DS.attr('date'),
-  "involatileData": DS.attr()
+  "involatileData": DS.attr(),
+  "folderId": DS.attr('string')
 });

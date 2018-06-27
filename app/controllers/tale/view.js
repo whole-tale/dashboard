@@ -174,7 +174,7 @@ export default Ember.Controller.extend({
                 });
         },
         gotoFolderView() {
-            this.transitionToRoute("folder.view", this.involatileData);
+            this.transitionToRoute("folder.view", this.folder);
         },
         gotoImageView() {
             this.transitionToRoute("image.view", this.image);

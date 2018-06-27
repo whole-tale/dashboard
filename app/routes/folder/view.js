@@ -12,7 +12,7 @@ export default Ember.Route.extend(ResetScroll, {
   },
 
   model(params, transition) {
-    var folderId;
+    let folderId = '';
 
     console.log("In the folder view routes and params is");
     console.log(params);
@@ -24,8 +24,8 @@ export default Ember.Route.extend(ResetScroll, {
       folderId = transition.params['folder.view'].folder_id;
 
     console.log("The folder ID " + folderId);
-
-    var folderObj = this.store.findRecord('folder', folderId);
+    
+    let folderObj = this.store.findRecord('folder', folderId);
 
     console.log(folderObj);
     return folderObj;
