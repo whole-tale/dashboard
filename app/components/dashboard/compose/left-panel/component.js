@@ -67,18 +67,19 @@ export default Ember.Component.extend({
     let component = this;
 
     let onSuccess = function (item) {
-      // const instance = Ember.Object.create(JSON.parse(item));
-      console.log('Launching new instance');
-      component.set('launchingInstance', false);
+      const instance = Ember.Object.create(JSON.parse(item));
+      const instanceId = instance._id;
+      console.log(`Launching new instance with id: ${instanceId}`);
       Ember.run.later((function () {
-        component.get('router').transitionTo('run');
+        component.set('launchingInstance', false);
+        component.get('router').transitionTo('run.view', instanceId);
       }), 1000);
     };
 
     let onFail = function (item) {
       // deal with the failure here
       item = JSON.parse(item);
-      console.log(item);
+      console.log(`Launching new instance ${item} threw some errors`);
     };
 
     // submit: API
@@ -103,7 +104,6 @@ export default Ember.Component.extend({
 
     //   Launch new Tale functionality
     createTale() {
-      console.log('Attempting to launch tale!');
       let component = this;
 
       let onSuccess = function (item) {

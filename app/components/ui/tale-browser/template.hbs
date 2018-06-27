@@ -168,23 +168,15 @@
                     <button class="ui button tertiary" {{action "toggleListView"}}>Switch to {{#if (eq listView true)}}cards{{else}}list{{/if}} view</button>
                 </span>
             </div>
-            {{!-- {{#if addButtonName}}
-                <div class="item">
-                    <div class="ui mini green labeled icon button" {{action 'addNew' on='click' }}>
-                        <i class="plus icon"></i>
-                        New Tale
-                    </div>
-                </div>
-            {{/if}} --}}
         </div>
     {{/if}}
-    {{#unless modelsInView.length}}
+    {{!-- {{#unless modelsInView.length}}
         <div class="ui center aligned segment" style="color: black;">
-            There are no tales to display for applied filter {{filter}}
+            There are no tales to display for applied filter: {{filter}}
         </div>
-    {{/unless}}
+    {{/unless}} --}}
 
-    {{#if (eq listView true)}}
+    {{#if (and modelsInView.length (eq listView true))}}
         <div class="ui selectable {{guid}} doubling selectable cards tales-table-wrapper">
             <table class="table table-striped table-bordered table-condensed">
                 <thead>
