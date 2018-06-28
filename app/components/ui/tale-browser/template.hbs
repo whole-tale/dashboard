@@ -3,7 +3,7 @@
     .ui.attached.label {
         padding: 5px !important;
     }
-    
+
     .item {
         padding: 0 1em;
     }
@@ -83,7 +83,7 @@
     .ui.search {
         font-size: 1em;
         width: 100%;
-    }   
+    }
 
     img {
         display: block;
@@ -208,7 +208,7 @@
                                                         <div class="center">
                                                             {{#if showLink}}
                                                                 {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
-                                                            {{/if}} 
+                                                            {{/if}}
                                                             {{#if showSelect}}
                                                                 <div class="ui inverted button" {{action 'select' model}}>Select</div>
                                                             {{/if}}
@@ -294,7 +294,7 @@
                                                         Check Status {{/link-to}}
                                                     </div>
                                                 </div>
-                                            </div>  
+                                            </div>
                                         {{/if}}
                                         {{#if tale_not_instantiated}}
                                             <div class="ui red icon message">
@@ -328,7 +328,7 @@
                                     <div class="center">
                                         {{#if showLink}}
                                             {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
-                                        {{/if}} 
+                                        {{/if}}
                                         {{#if showSelect}}
                                             <div class="ui inverted button" {{action 'select' model}}>Select</div>
                                         {{/if}}
@@ -393,14 +393,14 @@
                                     </div>
                                 </div>
                             </div>
-                            {{#if (eq tale_instantiating_id model.id)}} 
+                            {{#if (eq tale_instantiating_id model.id)}}
                                 {{#if tale_instantiating}}
                                     <div class="ui segment" style="height:100px">
                                         <div class="ui active inverted dimmer">
                                             <div class="ui text loader">Launching Tale {{truncate-name model.title}}</div>
                                         </div>
                                     </div>
-                                {{/if}} 
+                                {{/if}}
                                 {{#if tale_instantiated}}
                                     <div class="ui green icon message">
                                         <i class="checkmark icon"></i>
@@ -434,7 +434,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                {{/if}} 
+                                {{/if}}
                             {{/if}}
                         </div>
                     </div>
