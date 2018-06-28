@@ -20,6 +20,7 @@ export default Ember.Component.extend({
   guid: null,
   listView: false,
   showFilter: true,
+  loadingTales: true,
 
   filterObserver: Ember.observer('filter', function () {
     this.setFilter.call(this);
@@ -29,17 +30,16 @@ export default Ember.Component.extend({
     this._super(...arguments);
     console.log("Attributes updated");
 
-    let modelsPromised = this.get("models");
+    let models = this.get("models");
     let component = this;
+    component.set('loadingTales', false);
 
-    modelsPromised.then(function (models) {
-      if (component.get('addButtonName') != null) {
-        let paginateSize = models.length; // Number(component.get('paginateOn'));
-        component.set('paginateOn', paginateSize);
-      }
-      component.set('searchView', models);
-      component.paginate(component, models);
-    });
+    if (component.get('addButtonName') != null) {
+      let paginateSize = models.length;
+      component.set('paginateOn', paginateSize);
+    }
+    component.set('searchView', models);
+    component.paginate(component, models);
 
     this.set('addButtonLogo', '/icons/plus-sign.png');
     this.setFilter();
@@ -78,6 +78,7 @@ export default Ember.Component.extend({
     // 4 tabs public (all), mine, published, recently viewed
     const filter = this.get('filter');
     const models = this.get('models');
+    this.set('loadingTales', true);
 
     if (filter === 'All') {
       this.set('filteredSet', models);
@@ -86,7 +87,6 @@ export default Ember.Component.extend({
       this.set('filteredSet', models.filter(m => m.get('creatorId') === userId));
     } else if (filter === 'Published') {
       this.set('filteredSet', models.filter(m => {
-        console.log(m.get('published'));
         return m.get('published') === true;
       }));
     } else if (filter === 'Recent') {
@@ -140,12 +140,12 @@ export default Ember.Component.extend({
 
     component.set("paginateArray", paginateArray);
 
-    if (pageNumber == 1)
+    if (pageNumber === 1)
       component.set('leftButtonState', "disabled");
     else
       component.set('leftButtonState', "");
 
-    if (pageNumber == totalPages)
+    if (pageNumber === totalPages)
       component.set('rightButtonState', "disabled");
     else
       component.set('rightButtonState', "");
@@ -153,17 +153,16 @@ export default Ember.Component.extend({
     let startIndex = (pageNumber - 1) * paginateSize;
     let endIndex = startIndex + paginateSize;
 
-    for (let i = startIndex; i < endIndex && i < arraySize; i++) {
-      let model = models.objectAt(i);
-      if (typeof model.get("icon") === "undefined") {
-        if (typeof model.get("meta") !== "undefined") {
+    models.forEach(model => {
+      if (!model.get("icon") || typeof model.get("icon") === "undefined") {
+        if (model.get("meta") && typeof model.get("meta") !== "undefined") {
           let meta = model.get("meta");
-          if (meta['provider'] !== "DataONE")
-            model['icon'] = "/icons/globus-logo-large.png";
+          if (meta.get('provider') !== "DataONE")
+          model.set('icon', "/icons/globus-logo-large.png");
           else
-            model['icon'] = "/icons/d1-logo-large.png";
+          model.set('icon', "/icons/d1-logo-large.png");
         } else {
-          model['icon'] = "/images/whole_tale_logo.png";
+          model.set('icon', "/images/whole_tale_logo.png");
         }
       }
 
@@ -179,7 +178,7 @@ export default Ember.Component.extend({
       }
 
       modelsInView.push(model);
-    }
+    });
 
     component.set("modelsInView", modelsInView);
   },
@@ -225,6 +224,7 @@ export default Ember.Component.extend({
             searchView.push(model);
           }
         });
+        component.set('loadingTales', false);
         resolve(searchView);
       });
 
@@ -241,12 +241,10 @@ export default Ember.Component.extend({
 
     openDeleteModal: function (id) {
       var selector = '.ui.' + id + '.modal';
-      console.log("Selector: " + selector);
       $(selector).modal('show');
     },
 
     approveDelete: function (model) {
-      console.log("Deleting model " + model.name);
       let component = this;
 
       model.destroyRecord({
@@ -276,7 +274,6 @@ export default Ember.Component.extend({
       component.set("tale_instantiating", true);
 
       var onSuccess = function (item) {
-        console.log(item);
         component.set("tale_instantiating", false);
         component.set("tale_instantiated", true);
 
@@ -299,7 +296,6 @@ export default Ember.Component.extend({
         component.set("tale_not_instantiated", true);
         item = JSON.parse(item);
 
-        console.log(item);
         component.set("error_msg", item.message);
 
         Ember.run.later((function () {

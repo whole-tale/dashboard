@@ -1,95 +1,104 @@
-<div class="ui large header">Running Tales</div>
+<div class="ui stretched stackable grid">
+    <div class="row panel container">
+        <div class="sixteen wide column">
+            <div class="wt panel manage">
+                <div class="wt paddleboard"> 
+                    <h2>Running Tales</h2>
+                </div>
+                <div class="ui grey inverted rounded-bottom" style="height: calc(100vh - (2.5rem + 48px + 64px + 94px + 50px));">
+                    <div class="ui icon message">
+                        <i class="small blue play icon"></i>
+                        <div class="content">
+                            <div class="ui grid">
+                                <div class="eight wide column">
+                                    <p>There are {{model.length}} Tales Currently Running</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-<div class="ui icon message">
-    <i class="small blue play icon"></i>
-    <div class="content">
-        <div class="ui grid">
-            <div class="eight wide column">
-                <p>There are {{model.length}} Tales Currently Running</p>
+                    <table class="ui celled padded table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Image Name</th>
+                                <th>Folder Name</th>
+                                <th>Created</th>
+                                <th>Last Activity</th>
+                                <th>Status</th>
+                                <th>Tools</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {{#each model as |instance|}}
+                            <tr class="center aligned">
+                                <td>
+                                    <div class="ui center aligned header">{{instance.name}}</div>
+                                </td>
+                                <td>
+                                    {{instance.image.name}}
+                                </td>
+                                <td>
+                                    {{instance.folder.name}}
+                                </td>
+                                <td>
+                                    {{from-now instance.created}}
+                                </td>
+                                <td>
+                                    {{from-now instance.lastActivity}}
+                                </td>
+                                <td>
+                                    {{instance.status}}
+                                </td>
+                                <td>
+                                    <div class="ui compact buttons">
+                                    <a href="{{instance.url}}" target="_blank"><div class="ui green button"><i class="play icon"></i> </div></a>
+                                    <div class="ui blue button" {{action 'playTale' instance.url}}><i class="play icon"></i> </div>
+                                    <div class="ui red button" {{action 'openDeleteModal' instance._id}}><i class="remove icon"></i></div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <div class="ui {{instance._id}} modal" style="display: none">
+                                <i class="close icon"></i>
+                                <div class="header">
+                                    Really Delete Instance?
+                                </div>
+                                <div class="image content">
+                                    <div class="description">
+                                        <p>This will permanently delete the '{{instance.name}}' instance. Continue?</p>
+                                    </div>
+                                </div>
+                                <div class="actions">
+                                    <div class="ui black deny button" {{action 'denyDelete'}}>
+                                        No
+                                    </div>
+                                    <div class="ui positive right labeled icon button" {{action 'approveDelete' instance}}>
+                                        Yes
+                                        <i class="checkmark icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/each}}
+                        </tbody>
+                    </table>
+
+                    {{#if error }}
+                        <div class="ui red message">
+                            <div class="ui header">
+                                Errors
+                            </div>
+                            <ul>
+                                {{{error}}}
+                            </ul>
+                        </div>
+                    {{/if}}
+
+                    {{#if showTale }}
+                        <iframe src="{{tale_to_show_url}}" style="width:100%; height: 600px;"></iframe>
+                    {{/if}}
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<table class="ui celled padded table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Image Name</th>
-            <th>Folder Name</th>
-            <th>Created</th>
-            <th>Last Activity</th>
-            <th>Status</th>
-            <th>Tools</th>
-        </tr>
-    </thead>
-    <tbody>
-    {{#each model as |instance|}}
-        <tr class="center aligned">
-            <td>
-                <div class="ui center aligned header">{{instance.name}}</div>
-            </td>
-            <td>
-                {{instance.image.name}}
-            </td>
-            <td>
-                {{instance.folder.name}}
-            </td>
-            <td>
-              {{from-now instance.created}}
-            </td>
-            <td>
-              {{from-now instance.lastActivity}}
-            </td>
-            <td>
-              {{instance.status}}
-            </td>
-            <td>
-                <div class="ui compact buttons">
-                  <a href="{{instance.url}}" target="_blank"><div class="ui green button"><i class="play icon"></i> </div></a>
-                    <div class="ui blue button" {{action 'playTale' instance.url}}><i class="play icon"></i> </div>
-                  <div class="ui red button" {{action 'openDeleteModal' instance._id}}><i class="remove icon"></i></div>
-                </div>
-            </td>
-        </tr>
-
-        <div class="ui {{instance._id}} modal" style="display: none">
-            <i class="close icon"></i>
-            <div class="header">
-                Really Delete Instance?
-            </div>
-            <div class="image content">
-                <div class="description">
-                    <p>This will permanently delete the '{{instance.name}}' instance. Continue?</p>
-                </div>
-            </div>
-            <div class="actions">
-                <div class="ui black deny button" {{action 'denyDelete'}}>
-                    No
-                </div>
-                <div class="ui positive right labeled icon button" {{action 'approveDelete' instance}}>
-                    Yes
-                    <i class="checkmark icon"></i>
-                </div>
-            </div>
-        </div>
-    {{/each}}
-    </tbody>
-</table>
-
-{{#if error }}
-
-  <div class="ui red message">
-      <div class="ui header">
-          Errors
-      </div>
-      <ul>
-        {{{error}}}
-      </ul>
-  </div>
-
-{{/if}}
-
-{{#if showTale }}
-  <iframe src="{{tale_to_show_url}}" style="width:100%; height: 600px;"></iframe>
-{{/if}}

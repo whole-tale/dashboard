@@ -46,6 +46,9 @@ export default Ember.Controller.extend({
 
         return creator_id === user_id;
     }),
+    canEditTale: Ember.computed('model._accessLevel', function() {
+        return this.get('model') && this.get('model').get('_accessLevel') > 0;
+    }),
     actions: {
         shareTale(tale) {
             const state = this.get('internalState');

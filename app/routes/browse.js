@@ -1,9 +1,10 @@
 import AuthenticateRoute from 'wholetale/routes/authenticate';
+import RSVP from 'rsvp';
 
 export default AuthenticateRoute.extend({
   model() {
     this._super(...arguments);
-    return {
+    return RSVP.hash({
       instances: this.get('store').findAll('instance', {
         reload: true
       }),
@@ -17,6 +18,6 @@ export default AuthenticateRoute.extend({
           }
         }
       })
-    };
+    });
   }
 });

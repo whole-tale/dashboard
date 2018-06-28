@@ -139,17 +139,19 @@
                                 </div>
                             </div>
                         </div> --}}
-                        <div class="title">
-                            Edit Tale
-                        </div>
-                        <div class="content">
-                            {{partial "forms/tale-edit"}}
-                            <div class="ui blue submit button" {{action 'updateTale'}}>Update</div>
-                        </div>
+                        {{#if canEditTale}}
+                            <div class="title">
+                                Edit Tale
+                            </div>
+                            <div class="content">
+                                {{partial "forms/tale-edit"}}
+                                <div class="ui blue submit button" {{action 'updateTale'}}>Update</div>
+                            </div>
+                        {{/if}}
                         <div class="active title">
                             View Tale Properties
                         </div>
-                        <div class="content">
+                        <div class="content {{unless canEditTale 'active'}}">
                             <div class="ui header">
                                 <i class="tasks icon"></i> Tale Properties
                             </div>
