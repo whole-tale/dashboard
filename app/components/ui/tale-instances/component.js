@@ -36,37 +36,16 @@ export default Ember.Component.extend({
     this._super(...arguments);
 
     let models = this.get("models");
-
     let component = this;
 
-    if (typeof models.then === "function") {
-      models.then(function (models) {
-        models.forEach(function (item) {
-          component.get('store').findRecord('tale', item.get('taleId')).then(tale => {
-            item.set('tale', tale);
-          })
-        });
-        var paginateSize = models.length; // Number(component.get('paginateOn'));
-        component.set('paginateOn', paginateSize);
-
-        component.set('searchView', models);
-        component.paginate(component, models);
-
-      });
-    } else {
-      models.forEach(function (item) {
-        component.get('store').findRecord('tale', item.get('taleId')).then(tale => {
-          item.set('tale', tale);
-        })
-      });
-      var paginateSize = models.length; // Number(component.get('paginateOn'));
-      component.set('paginateOn', paginateSize);
-
-      component.set('searchView', models);
-      component.paginate(component, models);
-    }
-
-    this.set('addButtonLogo', '/icons/plus-sign.png');
+    models.forEach(function (item) {
+      component.get('store').findRecord('tale', item.get('taleId')).then(tale => {
+        item.set('tale', tale);
+      })
+    });
+    component.set('paginateOn', models.length);
+    component.set('searchView', models);
+    component.paginate(component, models);
   },
   didRender() {},
   didUpdate() {},
@@ -150,8 +129,6 @@ export default Ember.Component.extend({
       modelsInView.push(model);
     }
 
-    console.log("Models in View!!!");
-    console.log(modelsInView);
     component.set("modelsInView", modelsInView);
   },
 

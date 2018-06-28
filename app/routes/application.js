@@ -1,10 +1,9 @@
-import Ember from 'ember';
 import config from '../config/environment';
-
+import { inject as service } from '@ember/service';
 import AuthenticateRoute from 'wholetale/routes/authenticate';
 
 export default AuthenticateRoute.extend({
-
+  internalState: service(),
   model: function (params) {
     // console.log("Called Authenticate, proceeding in Application");
     let router = this;

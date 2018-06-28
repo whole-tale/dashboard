@@ -21,7 +21,7 @@
     <div class="tales-list">
         {{#each modelsInView as |instance index|}}
             <div class="ui vertical menu fluid tales">
-                <a class="item {{if (and internalState.currentInstanceId (eq internalState.currentInstanceId instance._id)) 'active'}}" {{action 'transitionToRun' instance}}>
+                <a class="item {{if (and internalState.currentInstanceId (eq internalState.currentInstanceId instance._id)) 'active'}}" {{action 'transitionToRun' instance index}}>
                     <img src="{{instance.tale.illustration}}" />
                     <img src="{{instance.tale.icon}}" class="env" />
                     <i class="times icon" {{action 'openDeleteModal' instance}} ></i>
