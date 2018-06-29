@@ -2,7 +2,8 @@
     <div class="wt paddleboard">
         <h2>
             {{!-- <img src="images/wholetale_logo_sm.png" /> --}}
-            Browse Tales <span style="font-style:italic;">Launch to add to Launched Tales list</span> <i class="fas fa-expand right"></i>
+            Browse Tales <span style="font-style:italic;">Launch to add to Launched Tales list</span> 
+            <i class="fas fa-expand right" style="cursor: pointer;" {{action 'toggleFullscreen'}}></i>
         </h2>
     </div>
 
@@ -15,6 +16,4 @@
                         taleLaunched=(action taleLaunched)
       }}
     </div>
-
-
 </div>

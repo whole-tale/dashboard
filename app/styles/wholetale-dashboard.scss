@@ -598,6 +598,17 @@ ui.inverted.menu.wt.top {
   }
 }
 
+div:-webkit-full-screen > .wt.panel.manage {
+  border-radius: 0;
+  width: 100vw;
+  height: 100vh;
+}
+div:-webkit-full-screen > .wt.panel.manage > .rounded-bottom {
+  border-radius: 0;
+  height: calc(100vh - #{$wt-main-row-height});
+  width: 100vw;
+}
+
 .wt.panel.bg.grey {
   background: #f3f3f3;
 }

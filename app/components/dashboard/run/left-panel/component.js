@@ -1,7 +1,8 @@
 import Ember from 'ember';
-import inject from "ember-service/inject";
+import inject from 'ember-service/inject';
+import FullScreenMixin from 'ember-cli-full-screen/mixins/full-screen';
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(FullScreenMixin, {
   router: inject("-routing"),
 
   loadError: false,
