@@ -37,8 +37,7 @@ export default Ember.Component.extend({
     component.set('loadingTales', false);
 
     if (component.get('addButtonName') != null) {
-      let paginateSize = models.length;
-      component.set('paginateOn', paginateSize);
+      component.set('paginateOn', models.length);
     }
     component.set('searchView', models);
     component.paginate(component, models);
