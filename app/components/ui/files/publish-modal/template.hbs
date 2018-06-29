@@ -1,0 +1,76 @@
+{{#ui-modal name="publisher" class="small publisher" onApprove=(action 'publishTale') onDeny=(action 'cancelPublish')}}
+<div class="header">
+    <h2>Publish Tale
+        <span style="font-style:italic;">Create an immutable copy of your Tale with a DOI</span>
+    </h2>
+</div>
+
+{{#ui-accordion as |execute|}}
+<div class="title">
+    <h2>
+        <i class="far fa-hdd"></i> Data
+        <span style="font-style:italic;">Select the files fully needed to reproduce your work</span>
+    </h2>
+    <i class="dropdown icon"></i>
+</div>
+
+<div class="content">
+    <div class="ui basic segment">
+    </div>
+</div>
+
+
+<div class="title">
+
+    <h2>
+        <i class="desktop icon"></i>Environment
+        <span style="font-style:italic;">Everything required to recreate chosen compute environment - view only</span>
+    </h2>
+    <i class="dropdown icon"></i>
+</div>
+
+<div class="content">
+</div>
+
+
+<div class="title">
+    <h2>
+        <i class="napster icon"></i>Usage Rights
+        <span style="font-style:italic;">Choose how you wish your Tale to be stored and reused</span>
+    </h2>
+    <i class="dropdown icon"></i>
+</div>
+<div class="content">
+</div>
+
+{{/ui-accordion}}
+
+
+<div class="actions">
+    {{#ui-dropdown class="search selection" allowAdditions=true selected=selectedRepository onChange=(action (mut selectedRepository))
+    as |execute mapper|}}
+    <div class="default text">Target Repository</div>
+    <i class="dropdown icon"></i>
+    <div class="menu">
+        <div data-value="" class="item">Development</div>
+        {{#each types as |type|}}
+        <div data-value="{{map-value mapper type}}" class="item">
+            {{type}}
+        </div>
+        {{/each}}
+    </div>
+    {{/ui-dropdown}} {{#if enablePublish}}
+    <div class="ui positive blue enabled right labeled icon button">
+        Publish Tale
+    </div>
+    {{else}}
+    <div class="ui positive blue disabled right labeled icon button">
+        Publish Tale
+    </div>
+    {{/if}}
+    <div class="ui deny blue inverted button">
+        Cancel
+        <i class="icon register"></i>
+    </div>
+</div>
+{{/ui-modal}}
