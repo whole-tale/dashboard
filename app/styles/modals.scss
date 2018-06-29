@@ -8,8 +8,22 @@
 }
 
 .newfolder,
-.delete-modal {
+.delete-modal,
+.warning-modal {
   height: 200px;
+
+  .header {
+    .close.icon {
+      position: absolute;
+      right: 1rem;
+      cursor: pointer;
+    }
+  }
+
+  .image.content {
+    height: auto;
+    color: black;
+  }
 }
 
 .ui.modal.envdetails {

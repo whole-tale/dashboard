@@ -213,28 +213,7 @@
                                                                 <div class="ui inverted button" {{action 'select' model}}>Select</div>
                                                             {{/if}}
                                                             {{#if showDelete}}
-                                                                <div class="ui {{model._id}} modal" style="display: none">
-                                                                    <i class="close icon"></i>
-                                                                    <div class="header">
-                                                                        Really Delete Tale?
-                                                                    </div>
-                                                                    <div class="image content">
-                                                                        <div class="description">
-                                                                            <p>This will permanently delete the '{{model.name}}' Tale. Continue?</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="actions">
-                                                                        <div class="ui black deny button" {{action 'denyDelete'}}>
-                                                                            No
-                                                                        </div>
-                                                                        <div class="ui positive right labeled icon button" {{action 'approveDelete' model}}>
-                                                                            Yes
-                                                                            <i class="checkmark icon"></i>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <a class="ui tiny bottom right attached label" {{action 'openDeleteModal' model._id}}>
+                                                                <a class="ui tiny bottom right attached label" {{action 'attemptDeletion' model}}>
                                                                     <i class="red remove icon"></i>
                                                                 </a>
                                                             {{/if}}
@@ -333,28 +312,7 @@
                                             <div class="ui inverted button" {{action 'select' model}}>Select</div>
                                         {{/if}}
                                         {{#if showDelete}}
-                                            <div class="ui {{model._id}} modal" style="display: none">
-                                                <i class="close icon"></i>
-                                                <div class="header">
-                                                    Really Delete Tale?
-                                                </div>
-                                                <div class="image content">
-                                                    <div class="description">
-                                                        <p>This will permanently delete the '{{truncate-name model.name}}' Tale. Continue?</p>
-                                                    </div>
-                                                </div>
-                                                <div class="actions">
-                                                    <div class="ui black deny button" {{action 'denyDelete'}}>
-                                                        No
-                                                    </div>
-                                                    <div class="ui positive right labeled icon button" {{action 'approveDelete' model}}>
-                                                        Yes
-                                                        <i class="checkmark icon"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <a class="ui tiny bottom right attached label" {{action 'openDeleteModal' model._id}}>
+                                            <a class="ui tiny bottom right attached label" {{action 'attemptDeletion' model}}>
                                                 <i class="red remove icon"></i>
                                             </a>
                                         {{/if}}
@@ -442,4 +400,26 @@
             </div>
         {{/if}}
     {{/if}}
+</div>
+
+{{ui/delete-modal 
+    model=selectedTale
+    modelType="tale" 
+    approveDelete=(action "approveDelete" selectedTale)
+    denyDelete=(action "denyDelete" selectedTale)}}
+
+<div class="ui warning-modal modal" style="display: none">
+    <div class="header">
+        Cannot Delete Tale {{!-- <i class="close icon" onclick={{action 'denyDelete' preventDefault=false bubble=false}}></i> --}}
+    </div>
+    <div class="image content">
+        <div class="description">
+            <p>{{cannotDeleteMessage}}</p>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button" {{action 'denyDelete'}}>
+            Close
+        </div>
+    </div>
 </div>

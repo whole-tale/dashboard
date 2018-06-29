@@ -21,6 +21,8 @@ export default Ember.Component.extend({
   listView: false,
   showFilter: true,
   loadingTales: true,
+  selectedTale: Ember.Object.create({}),
+  message: 'Tales loading. Please, wait.',
 
   filterObserver: Ember.observer('filter', function () {
     this.setFilter.call(this);
@@ -55,8 +57,8 @@ export default Ember.Component.extend({
 
     if (!guid) {
       guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0,
-          v = c == 'x' ? r : (r & 0x3 | 0x8);
+        let r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
       });
       this.set('guid', guid);
@@ -239,9 +241,44 @@ export default Ember.Component.extend({
       this.sendAction('action', model); // sends to compose.js controller, action itemSelected, based on template spec.
     },
 
-    openDeleteModal: function (id) {
-      var selector = '.ui.' + id + '.modal';
+    attemptDeletion(model) {
+      let component = this;
+      if(model) {
+        model.set('name', model.get('title'));
+        let taleId = model.get('_id');
+        let instances = component.get('store').query('instance', {
+          taleId: taleId
+        }).then((instances) => {
+          if(instances && instances.length) {
+            let message = `There ${instances.length === 1 ? "is" : "are"} ${instances.length} running instance${instances.length === 1 ? "" : "s"} associated to this tale.`;
+            component.set('cannotDeleteMessage', message);
+            console.log(`${message}. Cannot delete tale ${model.get('title')}`);
+            component.actions.openWarningModal.call(this);
+          } else {
+            component.actions.openDeleteModal.call(this, model);
+          }
+        });
+      }
+    },
+
+    openWarningModal() {
+      let selector = `.ui.warning-modal.modal`;
+      console.log("Selector: " + selector);
       $(selector).modal('show');
+    },
+
+    openDeleteModal(model) {
+      let component = this;
+      if(model) {
+        model.set('name', model.get('title'));
+      }
+      component.set('selectedTale', model);
+      let selector = `.delete-modal-tale>.ui.delete-modal.modal`;
+      console.log("Selector: " + selector);
+      Ember.run.later(() => {
+        console.log('showing modal now');
+        $(selector).modal('show');
+      }, 500);
     },
 
     approveDelete: function (model) {
@@ -253,6 +290,7 @@ export default Ember.Component.extend({
         // refresh
         // component.get('store').findAll('tale', { reload: true }).then(function(tales) {
         component.paginate(component, component.get('models'));
+        component.set('selectedTale', undefined);
         // });
       });
 
@@ -260,7 +298,8 @@ export default Ember.Component.extend({
     },
 
     denyDelete: function () {
-      return true;
+      this.set('selectedTale', undefined);
+      return false;
     },
 
     addNew: function () {
@@ -268,16 +307,16 @@ export default Ember.Component.extend({
     },
 
     launchTale: function (tale) {
-      var component = this;
+      let component = this;
 
       component.set("tale_instantiating_id", tale.id);
       component.set("tale_instantiating", true);
 
-      var onSuccess = function (item) {
+      let onSuccess = function (item) {
         component.set("tale_instantiating", false);
         component.set("tale_instantiated", true);
 
-        var instance = Ember.Object.create(JSON.parse(item));
+        let instance = Ember.Object.create(JSON.parse(item));
 
         component.set("instance", instance);
 
@@ -290,7 +329,7 @@ export default Ember.Component.extend({
         }), 30000);
       };
 
-      var onFail = function (item) {
+      let onFail = function (item) {
         // deal with the failure here
         component.set("tale_instantiating", false);
         component.set("tale_not_instantiated", true);
@@ -314,6 +353,6 @@ export default Ember.Component.extend({
         null,
         onSuccess,
         onFail);
-    },
+    }
   }
 });
