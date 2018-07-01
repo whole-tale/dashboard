@@ -595,6 +595,30 @@ ui.inverted.menu.wt.top {
         }
       }
     }
+    
+    .ui.secondary.menu  {
+      margin: 0;
+      display: block;
+    
+      .item {
+        width: 100%;
+        margin: 0;
+        
+        .mini.search {
+          width: 100%;
+        }
+      }
+    }
+    .environments-list,
+    .tales-list {
+      overflow-y: auto;
+      height: calc(100% - #{$wt-main-row-height} - 1rem);
+      border-bottom-left-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+      &.has-selected-item {
+        height: calc(100% - #{$wt-main-row-height} - 46px - 1rem);
+      }
+    }
   }
 }
 
