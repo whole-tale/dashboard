@@ -8,7 +8,7 @@
 $inverted-menu-bg: rgb(30, 46, 68);
 $inverted-menu-height: 48px;
 $main-menu-bg: rgb(206, 220, 226);
-$main-menu-height: 64px;
+$main-menu-height: 0px;//64px;
 $nav-vertical-menu-bg: rgb(243, 243, 243);
 $wt-paddleboard-panel-height: 50px;
 $wt-main-row-height: 52px;
@@ -117,6 +117,29 @@ ui.inverted.menu.wt.top {
     border-radius: 50%;
   }
 }
+
+/* Temporary styling to merge both header menus BEGINS */
+.ui.inverted.menu.wt.top .item:not(.not-nav) {
+  font-size: 1.2rem;
+  letter-spacing: .05rem;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  border-bottom: 4px solid transparent;
+  padding: 0 .2em .3em;
+  margin-left: .75em;
+  margin-right: .75em;
+}
+.ui.inverted.menu.wt.top .active.item {
+  background: transparent;
+  font-weight: 600;
+  color: rgba(0,0,0,0.95);
+  border-bottom: 4px solid #2185d0;
+}
+.ui.inverted.menu.wt.top .item::before {
+  background: transparent;
+  width: 0;
+}
+/* Temporary styling to merge both header menus ENDS */
 
 
 /* Navigation NEW UI - Manage section starts */

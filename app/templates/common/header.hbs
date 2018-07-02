@@ -1,16 +1,42 @@
 <div class="ui inverted menu wt top">
-    <div class="header item wt brand"><img src="/images/wholetale_logo_sm.png" />Whole<span>Tale</span></div>
-    <div class="active item">Dashboard</div>
-    <a class="item">About</a>
-    <a class="item">Team</a>
-    <a class="item" {{action "boringUI" }}>Old UI</a>
+    {{#if mergedMenus}}
+        <div class="header item wt brand"><img src="/images/wholetale_logo_sm.png" />Whole<span>Tale</span></div>
+        <div class="active item">Dashboard</div>
+        <a class="item">About</a>
+        <a class="item">Team</a>
+        <a class="item" {{action "boringUI" }}>Old UI</a>
+    {{else}}
+        <div class="header item wt brand"><img src="/images/wholetale_logo_sm.png" />WHOLE<span>TALE</span> <span> Dashboard</span></div>
+
+        {{#link-to 'browse' class="item" invokeAction=(action 'closeMenu' 'Browse' 'upload')}}
+            Browse
+        {{/link-to}}
+
+        {{#if internalState.currentInstanceId }}
+            {{#link-to 'run.view' internalState.currentInstanceId class="item" invokeAction=(action 'closeMenu' 'Run' 'play')}}
+                Run
+            {{/link-to}}
+        {{else}}
+            {{#link-to 'run' class="item" invokeAction=(action 'closeMenu' 'Run' 'play')}}
+                Run
+            {{/link-to}}
+        {{/if}}
+
+        {{#link-to 'manage' class="item" invokeAction=(action 'closeMenu' 'Manage' 'upload')}}
+            Manage
+        {{/link-to}}
+
+        {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
+            Compose
+        {{/link-to}}
+    {{/if}}
     <div class="right menu">
-        <div class="item wt brand gravatar-container">
+        <div class="item wt brand gravatar-container not-nav">
             {{!-- <img src="{{user.gravatar_baseUrl}}" class="gravatar" /> --}}
             <img src="{{gravatarUrl}}" class="gravatar" />
         </div>
-        <label class="item small font" style="padding-left: 0;">{{user.firstName}} {{user.lastName}}</label>
-        <a class="item" {{action 'closeMenu' 'logout'}}>
+        <label class="item small font not-nav" style="padding-left: 0;">{{user.firstName}} {{user.lastName}}</label>
+        <a class="item not-nav" {{action 'closeMenu' 'logout'}}>
             <i class="server white icon"></i>{{!--  Log Out --}}
         </a>
     </div>
