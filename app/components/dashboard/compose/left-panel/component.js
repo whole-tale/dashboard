@@ -2,12 +2,13 @@ import Ember from 'ember';
 import {
   computed
 } from '@ember/object';
+const service = Ember.inject.service.bind(Ember);
 
 export default Ember.Component.extend({
-  apiCall: Ember.inject.service('api-call'),
-  wtEvents: Ember.inject.service(),
-  store: Ember.inject.service(),
-  router: Ember.inject.service(),
+  apiCall: service('api-call'),
+  wtEvents: service(),
+  store: service(),
+  router: service(),
 
   inputData: Ember.A(),
   selectedEnvironment: Ember.Object.create({}),
@@ -16,7 +17,8 @@ export default Ember.Component.extend({
   launchingInstance: false,
 
   invalidNewTale: computed('inputData', 'selectedEnvironment', 'newTaleName', 'inputData.length', function () {
-    let hasName = Boolean(this.get('newTaleName') && this.get('newTaleName').length);
+    let name = this.get('newTaleName');
+    let hasName = Boolean(name && name.trim().length);
     let hasEnvironment = Boolean(this.get('selectedEnvironment') && this.get('selectedEnvironment').id);
     if(!this.get('inputData')) {
       this.set('inputData', Ember.A());
@@ -124,11 +126,12 @@ export default Ember.Component.extend({
         });
       });
 
+      let name = this.get('newTaleName').trim();
       let new_tale = this.get('store').createRecord('tale', {
         "config": {}, //TODO: Implement configuration editor
         "involatileData": formattedData,
         "imageId": this.get('selectedEnvironment').get('_id'),
-        "title": this.get('newTaleName')
+        "title": name
       });
 
       new_tale.save().then(onSuccess).catch(onFail);
