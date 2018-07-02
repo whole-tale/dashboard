@@ -275,7 +275,6 @@ export default Ember.Component.extend({
       let selector = `.delete-modal-tale>.ui.delete-modal.modal`;
       console.log("Selector: " + selector);
       Ember.run.later(() => {
-        console.log('showing modal now');
         $(selector).modal('show');
       }, 500);
     },

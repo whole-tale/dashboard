@@ -167,9 +167,11 @@ export default Ember.Component.extend({
     },
 
     openDeleteModal: function (instance) {
-      let selector = '.ui.' + 'delete-modal' + '.modal';
+      let selector = `.delete-modal-instance>.ui.delete-modal.modal`;
       console.log("Selector: " + selector);
-      $(selector).modal('show');
+      Ember.run.later(() => {
+        $(selector).modal('show');
+      }, 500);
     },
 
     approveDelete: function (model) {
@@ -233,7 +235,10 @@ export default Ember.Component.extend({
 
     transitionToRun: function (instance, index) {
       this.actions.selectInstance.call(this, instance, index);
-      this.get('router').transitionTo('run.view', instance._id);
+      // if clicked outside of delete icon
+      if (event && event.target && !$(event.target).hasClass('times')) {
+        this.get('router').transitionTo('run.view', instance._id);
+      }
     }
 
   }
