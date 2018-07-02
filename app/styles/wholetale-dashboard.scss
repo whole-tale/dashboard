@@ -430,6 +430,12 @@ ui.inverted.menu.wt.top {
     position: absolute;
     width: 100vw;
     bottom: 0;
+
+    @media (max-width: 768px) { 
+      .acknowledgement {
+        display: none;
+      }
+    }
   }
   &.paginator-container {
     position: relative;
