@@ -4,6 +4,7 @@ import FullScreenMixin from 'ember-cli-full-screen/mixins/full-screen';
 
 export default Ember.Component.extend(FullScreenMixin, {
   router: inject("-routing"),
+  internalState: inject(),
 
   loadError: false,
   model: null,
@@ -14,25 +15,17 @@ export default Ember.Component.extend(FullScreenMixin, {
     UrlLoadedContentCanBeAccessed: 3
   },
 
-  modelChanged: Ember.observer('model', function () {
-    console.log("Updated !");
-
-    // gets the url that is being used by the iFrame
-    var url = this.get('model').url;
-
-  }),
-
   didRender() {
     // Similar to Jquery on page load
     // doesn't work because of the handlebars. But even if you unhide the element, the iframes show
     // that they load ok even though some are blocked and some are not.
     let frame = document.getElementById('frontendDisplay');
     if (frame) {
-      frame.onload = function (e) {  
+      frame.onload = function (e) {
         console.dir(e);
         let iframeWindow = frame.contentWindow;
         let that = $(this)[0];
-        
+
         window.addEventListener("message", function(event) {
           if (event.origin !== window.location.origin) {
             // something from an unknown domain, let's ignore it
@@ -61,7 +54,7 @@ export default Ember.Component.extend(FullScreenMixin, {
       console.log("Deleting model " + model.name);
       model.deleteRecord();
       model.save();
-
+      // TODO check if the current instance was deleted and update the internal state to be null
       this.get('router').transitionTo('run');
 
       return false;

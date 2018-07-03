@@ -18,5 +18,6 @@ export default DS.Model.extend({
   name: DS.attr('string'),
   status: DS.attr('number'),
   taleId: DS.attr('string'),
-  url: DS.attr('string')
+  url: DS.attr('string'),
+  iframe: DS.attr('boolean')
 });
