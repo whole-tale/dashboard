@@ -24,34 +24,11 @@ export default Ember.Component.extend({
   selectedTale: Ember.Object.create({}),
   message: 'Tales loading. Please, wait.',
 
-  filterObserver: Ember.observer('filter', function () {
+  filterObserver: Ember.observer('filter', () => {
     this.setFilter.call(this);
   }),
 
-  init() {
-    this._super(...arguments);
-    console.log("Attributes updated");
-
-    let models = this.get("models");
-    let component = this;
-    component.set('loadingTales', false);
-
-    if (component.get('addButtonName') != null) {
-      component.set('paginateOn', models.length);
-    }
-    component.set('searchView', models);
-    component.paginate(component, models);
-
-    this.set('addButtonLogo', '/icons/plus-sign.png');
-    this.setFilter();
-  },
-  didRender() {
-    $('.selectable.cards .image').dimmer({
-      on: 'hover'
-    });
-  },
-  didUpdate() {
-    //TODO schedule once to avoid race condition
+  modelObserver: Ember.observer('model', 'numberOfModels', () => {
     let guid = this.get('guid');
 
     if (!guid) {
@@ -72,6 +49,28 @@ export default Ember.Component.extend({
         .transition('jiggle');
       this.set('lastAnimationTime', milliseconds);
     }
+  }),
+
+  init() {
+    this._super(...arguments);
+    console.log("Attributes updated");
+
+    let models = this.get("models");
+    let component = this;
+    component.set('loadingTales', false);
+    component.set('searchView', models);
+    
+    component.updateModels(component, models);
+
+    this.set('addButtonLogo', '/icons/plus-sign.png');
+    this.setFilter();
+  },
+  didRender() {
+    $('.selectable.cards .image').dimmer({
+      on: 'hover'
+    });
+  },
+  didUpdate() {
 
   },
 
@@ -103,60 +102,14 @@ export default Ember.Component.extend({
     this.actions.toggleFiltersVisibility.call(this);
   },
 
-  paginate(component, models) {
-    let paginateSize = component.get('paginateOn');
-    let pageNumber = component.get('pageNumber');
-    let arraySize = models.get('length');
-
-    let totalPages = Math.ceil(arraySize / paginateSize);
-
-    component.set('numberOfModels', arraySize);
-
-    if (models.get('length') === 0) {
-      component.set("modelsInView", []);
-      component.set("paginateArray", []);
-      component.set('rightButtonState', "disabled");
-      component.set('lefttButtonState', "disabled");
-      component.set('totalPages', 0);
-      return;
+  updateModels(component, models) {
+    if (!models.get('length')) {
+      component.set('modelsInView', []);
     }
-
-    component.set('totalPages', totalPages);
-
     let modelsInView = [];
-    let paginateArray = [];
-
-    for (let i = 1; i <= totalPages; ++i) {
-      if (i == pageNumber)
-        paginateArray[i] = {
-          number: i,
-          state: "active"
-        };
-      else
-        paginateArray[i] = {
-          number: i,
-          state: ""
-        };
-    }
-
-    component.set("paginateArray", paginateArray);
-
-    if (pageNumber === 1)
-      component.set('leftButtonState', "disabled");
-    else
-      component.set('leftButtonState', "");
-
-    if (pageNumber === totalPages)
-      component.set('rightButtonState', "disabled");
-    else
-      component.set('rightButtonState', "");
-
-    let startIndex = (pageNumber - 1) * paginateSize;
-    let endIndex = startIndex + paginateSize;
-
-    models.forEach(model => {
-      if (!model.get("icon") || typeof model.get("icon") === "undefined") {
-        if (model.get("meta") && typeof model.get("meta") !== "undefined") {
+    component.get('models').forEach(model => {
+      if (!model.get("icon")) {
+        if (model.get("meta")) {
           let meta = model.get("meta");
           if (meta.get('provider') !== "DataONE")
           model.set('icon', "/icons/globus-logo-large.png");
@@ -169,7 +122,7 @@ export default Ember.Component.extend({
 
       let description = model.get('description');
 
-      if ((description == null)) {
+      if (!description) {
         model.set('tagName', "No Description ...");
       } else {
         if (description.length > 200)
@@ -185,33 +138,19 @@ export default Ember.Component.extend({
   },
 
   actions: {
-    toggleListView: function() {
+    toggleListView() {
       let newValue = !this.get('listView');
       this.set('listView', newValue);
     },
-    toggleFiltersVisibility: function() {
+    toggleFiltersVisibility() {
       let newValue = !this.get('showFilter');
       this.set('showFilter', newValue);
     },
-    removeCurrentFilter: function() {
+    removeCurrentFilter() {
       this.set('filter', 'All');
       this.setFilter();
     },
-    leftButtonClicked: function () {
-      if (this.get('leftButtonState') === "disabled") return;
-      this.set('pageNumber', this.get('pageNumber') - 1);
-      this.paginate(this, this.get('searchView'));
-    },
-    rightButtonClicked: function () {
-      if (this.get('rightButtonState') === "disabled") return;
-      this.set('pageNumber', this.get('pageNumber') + 1);
-      this.paginate(this, this.get('searchView'));
-    },
-    tabClicked: function (tabNumber) {
-      this.set('pageNumber', tabNumber);
-      this.paginate(this, this.get('searchView'));
-    },
-    searchFilter: function () {
+    searchFilter() {
       let searchStr = this.get('searchStr');
 
       const filteredSet = this.get("filteredSet");
@@ -231,11 +170,11 @@ export default Ember.Component.extend({
 
       promise.then((searchView) => {
         component.set('searchView', searchView);
-        component.paginate(component, searchView);
+        component.set('modelsInView', searchView);
       });
     },
 
-    select: function (model) {
+    select(model) {
       this.set('item', model);
       this.sendAction('action', model); // sends to compose.js controller, action itemSelected, based on template spec.
     },
@@ -279,32 +218,30 @@ export default Ember.Component.extend({
       }, 500);
     },
 
-    approveDelete: function (model) {
+    approveDelete(model) {
       let component = this;
 
       model.destroyRecord({
         reload: true
-      }).then(function () {
+      }).then(() => {
         // refresh
-        // component.get('store').findAll('tale', { reload: true }).then(function(tales) {
-        component.paginate(component, component.get('models'));
+        component.updateModels(component, component.get('models'));
         component.set('selectedTale', undefined);
-        // });
       });
 
       return false;
     },
 
-    denyDelete: function () {
+    denyDelete() {
       this.set('selectedTale', undefined);
       return false;
     },
 
-    addNew: function () {
+    addNew() {
       this.sendAction("onAddNew");
     },
 
-    launchTale: function (tale) {
+    launchTale(tale) {
       let component = this;
 
       component.set("tale_instantiating_id", tale.id);

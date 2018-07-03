@@ -62,11 +62,11 @@ export default Ember.Component.extend({
   didUpdate() {},
 
   updateModels(component, models) {
-    if (models.get('length') === 0) {
+    if (!models.get('length')) {
       component.set('modelsInView', []);
     }
     let modelsInView = [];
-
+    
     for (let i = 0; i < component.numberOfModels; i++) {
       let model = models.objectAt(i);
       if (!model.get("icon")) {
