@@ -178,17 +178,21 @@ export default Ember.Component.extend({
       console.log("Deleting model " + model.name);
       let component = this;
 
-      model.destroyRecord({
-        reload: true
-      }).then(function () {
-        component.set('selectedInstance', undefined);
-        component.set('selectedMenuIndex', -1);
-        // refresh
-        // component.get('store').findAll('tale', { reload: true }).then(function(tales) {
-        component.paginate(component, component.get('models'));
-        // });
-      });
-      // TODO refresh the tale browser component
+      model.destroyRecord()
+        .then(function () {
+          component.set('selectedInstance', undefined);
+          component.set('selectedMenuIndex', -1);
+          component.paginate(component, component.get('models'));
+          // TODO replace this workaround for deletion with something more robust
+          component.get('store').unloadRecord(model);
+          component.get('internalState').set('currentInstanceId', undefined);
+          //transition to the run route if the current route is run.view
+          let router = component.get('router');
+          if(router.get('currentRouteName') === 'run.view'){
+            router.transitionTo('run');
+          }
+        });
+
       return false;
     },
 

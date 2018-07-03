@@ -54,7 +54,6 @@ export default Ember.Component.extend(FullScreenMixin, {
       console.log("Deleting model " + model.name);
       model.deleteRecord();
       model.save();
-      // TODO check if the current instance was deleted and update the internal state to be null
       this.get('router').transitionTo('run');
 
       return false;
