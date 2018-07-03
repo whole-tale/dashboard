@@ -1,5 +1,4 @@
-{{!-- app/components/share-access-modal/template.hbs --}}
-{{#ui-modal name="access-control" class="small acl-component" onApprove=(action 'submit') onDeny=(action 'cancel')}}
+{{#ui-modal name="access-control" class="acl-component" onApprove=(action 'submit') onDeny=(action 'cancel')}}
     <div class="header">Access Control</div>
     <div class="content">
         {{#if error}}

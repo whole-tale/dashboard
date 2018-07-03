@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import layout from './template';
 
-
 export default Ember.Component.extend({
     layout,
 
@@ -71,7 +70,13 @@ export default Ember.Component.extend({
         share(file) {
             const state = this.get('internalState');
             state.setACLObject(file);
-            Ember.$('.acl-component').modal('show');
+            let modalElem = $('.acl-component');
+            if(modalElem) {
+                modalElem.modal('show');
+                if(modalElem.hasClass("scrolling")) {
+                modalElem.removeClass("scrolling");
+                }
+            }
         },
 
         move(file) {
@@ -79,9 +84,6 @@ export default Ember.Component.extend({
             let mini = Ember.$('#mini-folder-browser');
 
             mini.css({
-                // top: event.layerY+"px",
-                // left: event.layerX+"px",
-                // position: "absolute"
                 margin: "auto"
             });
             mini.removeClass('hidden');
@@ -139,20 +141,6 @@ export default Ember.Component.extend({
         remove(file) {
             this.get('internalState').removeFolderFromRecentFolders(file.id);
             file.destroyRecord();
-
-            // this.set('fileToRemove', file);
-            // this.set("confirmValue", "");
-            // this.set("confirmDisabled", "disabled");
-
-            // let prompt = Ember.$('#confirm-remove');
-            // prompt.css({
-            //     // position:"absolute",
-            //     // top:event.layerY+"px",
-            //     // left:event.layerX+"px"
-            //     margin: 'auto',
-            //     maxWidth: '400px'
-            // });
-            // prompt.removeClass("hidden");
         },
 
         confirmedRemove() {
