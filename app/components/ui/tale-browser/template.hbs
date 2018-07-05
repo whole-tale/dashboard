@@ -262,15 +262,12 @@
                                                         <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
                                                     </div>
                                                     <div class="ui buttons">
-                                                        <a href="{{instance.url}}" target="_blank">
-                                                            <div class="ui mini green icon button" style="margin-right: 10px">
-                                                                <i class="play icon"></i>
-                                                                Go to Tale
-                                                            </div>
-                                                        </a>
-                                                        {{!-- {{#link-to 'status' class="ui mini blue icon button"}}
-                                                            <i class="line chart icon"></i> Check Status 
-                                                        {{/link-to}} --}}
+                                                      {{#link-to 'run.view' instance._id}}
+                                                        <div class="ui mini green icon button" style="margin-right: 10px">
+                                                          <i class="play icon"></i>
+                                                          Go to Tale
+                                                        </div>
+                                                      {{/link-to}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -367,15 +364,12 @@
                                                 <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
 
                                                 <div class="ui buttons">
-                                                    <a href="{{instance.url}}" target="_blank">
-                                                        <div class="ui mini green icon button" style="margin-right: 10px">
-                                                            <i class="play icon"></i>
-                                                            Go to Tale
-                                                        </div>
-                                                    </a>
-                                                    {{!-- {{#link-to 'status' class="ui mini blue icon button"}}
-                                                        <i class="line chart icon"></i> Check Status
-                                                    {{/link-to}} --}}
+                                                    {{#link-to 'run.view' instance._id}}
+                                                      <div class="ui mini green icon button" style="margin-right: 10px">
+                                                        <i class="play icon"></i>
+                                                        Go to Tale
+                                                      </div>
+                                                    {{/link-to}}
                                                 </div>
 
                                             </div>
@@ -402,9 +396,9 @@
     {{/if}}
 </div>
 
-{{ui/delete-modal 
+{{ui/delete-modal
     model=selectedTale
-    modelType="tale" 
+    modelType="tale"
     approveDelete=(action "approveDelete" selectedTale)
     denyDelete=(action "denyDelete" selectedTale)}}
 
