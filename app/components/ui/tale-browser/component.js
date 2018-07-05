@@ -24,17 +24,17 @@ export default Ember.Component.extend({
   selectedTale: Ember.Object.create({}),
   message: 'Tales loading. Please, wait.',
 
-  filterObserver: Ember.observer('filter', () => {
+  filterObserver: Ember.observer('filter', function () {
     this.setFilter.call(this);
   }),
 
-  modelObserver: Ember.observer('model', 'numberOfModels', () => {
+  modelObserver: Ember.observer('filter', 'model', 'numberOfModels', function () {
     let guid = this.get('guid');
 
     if (!guid) {
       guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         let r = Math.random() * 16 | 0,
-            v = c == 'x' ? r : (r & 0x3 | 0x8);
+          v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
       });
       this.set('guid', guid);
@@ -59,11 +59,11 @@ export default Ember.Component.extend({
     let component = this;
     component.set('loadingTales', false);
     component.set('searchView', models);
-    
+
     component.updateModels(component, models);
 
-    this.set('addButtonLogo', '/icons/plus-sign.png');
-    this.setFilter();
+    component.set('addButtonLogo', '/icons/plus-sign.png');
+    component.setFilter();
   },
   didRender() {
     $('.selectable.cards .image').dimmer({
@@ -112,9 +112,9 @@ export default Ember.Component.extend({
         if (model.get("meta")) {
           let meta = model.get("meta");
           if (meta.get('provider') !== "DataONE")
-          model.set('icon', "/icons/globus-logo-large.png");
+            model.set('icon', "/icons/globus-logo-large.png");
           else
-          model.set('icon', "/icons/d1-logo-large.png");
+            model.set('icon', "/icons/d1-logo-large.png");
         } else {
           model.set('icon', "/images/whole_tale_logo.png");
         }
@@ -143,8 +143,11 @@ export default Ember.Component.extend({
       this.set('listView', newValue);
     },
     toggleFiltersVisibility() {
-      let newValue = !this.get('showFilter');
-      this.set('showFilter', newValue);
+      let component = this;
+      Ember.run.later(function() {
+        let newValue = !component.get('showFilter');
+        component.set('showFilter', newValue);
+      }, 100);
     },
     removeCurrentFilter() {
       this.set('filter', 'All');
@@ -181,16 +184,15 @@ export default Ember.Component.extend({
 
     attemptDeletion(model) {
       let component = this;
-      if(model) {
+      if (model) {
         model.set('name', model.get('title'));
         let taleId = model.get('_id');
         let instances = component.get('store').query('instance', {
           taleId: taleId
         }).then((instances) => {
-          if(instances && instances.length) {
+          if (instances && instances.length) {
             let message = `There ${instances.length === 1 ? "is" : "are"} ${instances.length} running instance${instances.length === 1 ? "" : "s"} associated to this tale.`;
             component.set('cannotDeleteMessage', message);
-            console.log(`${message}. Cannot delete tale ${model.get('title')}`);
             component.actions.openWarningModal.call(this);
           } else {
             component.actions.openDeleteModal.call(this, model);
@@ -201,18 +203,16 @@ export default Ember.Component.extend({
 
     openWarningModal() {
       let selector = `.ui.warning-modal.modal`;
-      console.log("Selector: " + selector);
       $(selector).modal('show');
     },
 
     openDeleteModal(model) {
       let component = this;
-      if(model) {
+      if (model) {
         model.set('name', model.get('title'));
       }
       component.set('selectedTale', model);
       let selector = `.delete-modal-tale>.ui.delete-modal.modal`;
-      console.log("Selector: " + selector);
       Ember.run.later(() => {
         $(selector).modal('show');
       }, 500);
