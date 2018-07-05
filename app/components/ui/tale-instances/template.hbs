@@ -5,7 +5,7 @@
         </h2>
     </div>
     {{#if showSearch}}
-        <div class="ui inverted grey">    
+        <div class="ui inverted grey">
             <div class="ui secondary menu" style="display: block">
                 <div class="item">
                     <div class="ui mini rounded icon search input">
@@ -19,7 +19,7 @@
         </div>
     {{/if}}
     <div class="tales-list">
-        {{#each modelsInView as |instance index|}}
+        {{#each models as |instance index|}}
             <div class="ui vertical menu fluid tales">
                 <a class="item {{if (and internalState.currentInstanceId (eq internalState.currentInstanceId instance._id)) 'active'}}" {{action 'transitionToRun' instance index}}>
                     <img src="{{instance.tale.illustration}}" />
