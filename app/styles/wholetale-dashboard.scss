@@ -906,6 +906,7 @@ div:-webkit-full-screen > .wt.panel.manage > .rounded-bottom {
   .ui.stackable.grid:not(.vertically) > .row {
     padding-left: 0;
     padding-right: 0;
+    height: 100%;
   }
   .ui.inverted.menu.wt.top {
     padding: 0;
@@ -915,6 +916,12 @@ div:-webkit-full-screen > .wt.panel.manage > .rounded-bottom {
     $bottom-separation: 1.3em;
     height: calc(100vh - (#{$bottom-separation} + #{$main-menu-height} + #{$footer-height}));
     overflow-y: auto;
+
+    &.stretched {
+      $bottom-separation: 2.5em;
+      $main-menu-height: 4px;
+      height: calc(100vh - (#{$bottom-separation} + #{$main-menu-height} + #{$footer-height}));
+    }
 
     &.form {
       height: calc(100% - 48px);
