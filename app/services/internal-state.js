@@ -6,10 +6,10 @@ import Ember from 'ember';
 export default Ember.Service.extend({
   isAuthenticated: true,
   currentInstanceId: Ember.computed({
-    get(key){
-      return JSON.parse(localStorage.currentInstanceId);
+    get(key) {
+      return localStorage.currentInstanceId ? JSON.parse(localStorage.currentInstanceId) : undefined;
     },
-    set(key, value){
+    set(key, value) {
       localStorage.currentInstanceId = JSON.stringify(value);
       return value;
     }
