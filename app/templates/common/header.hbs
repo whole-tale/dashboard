@@ -6,6 +6,12 @@
         <a class="item">Team</a>
         <a class="item" {{action "boringUI" }}>Old UI</a>
     {{else}}
+        <div class="alt-image">
+            <img src="/images/wholetale_logo_sm.png" height="24px" width="24px"/>
+            {{#if (not mobileMenuDisplay)}}
+                <span class="white text">WHOLE <span class="tale">TALE</span></span>
+            {{/if}}
+        </div>
         <div class="header item wt brand"><img src="/images/wholetale_logo_sm.png" />WHOLE<span>TALE</span> <span> Dashboard</span></div>
 
         {{#link-to 'browse' class="item" invokeAction=(action 'closeMenu' 'Browse' 'upload')}}
@@ -31,14 +37,70 @@
         {{/link-to}}
     {{/if}}
     <div class="right menu">
-        <div class="item wt brand gravatar-container not-nav">
-            {{!-- <img src="{{user.gravatar_baseUrl}}" class="gravatar" /> --}}
+        <div class="item wt gravatar-container not-nav">
             <img src="{{gravatarUrl}}" class="gravatar" />
         </div>
         <label class="item small font not-nav" style="padding-left: 0;">{{user.firstName}} {{user.lastName}}</label>
         <a class="item not-nav" {{action 'closeMenu' 'logout'}}>
-            <i class="server white icon"></i>{{!--  Log Out --}}
+            <i class="server white icon"></i>
         </a>
     </div>
+    <div class="ember-burger-menu bm-item--push bm--slide right translucent-overlay {{if mobileMenuDisplay 'is-open'}}">
+        <div class="bm-menu-container">
+            <div class="bm-menu">
+                <a class="close right fa fa-times" {{action "toggleMobileMenu"}}></a>
+                <h2>
+                    <i aria-hidden="true" class="fa fa-bars"></i>
+                    MENU
+                </h2>
+                <ul>
+                    <li class="bm-menu-item">
+                        {{#link-to 'browse' invokeAction=(action 'closeMenu' 'Browse' 'upload')}}
+                            <i class="globe black icon"></i> Browse
+                        {{/link-to}}
+                    </li>
+                    <li class="bm-menu-item">
+                        {{#if internalState.currentInstanceId }}
+                            {{#link-to 'run.view' internalState.currentInstanceId invokeAction=(action 'closeMenu' 'Run' 'play')}}
+                                <i class="play black icon"></i> Run
+                            {{/link-to}}
+                        {{else}}
+                            {{#link-to 'run' invokeAction=(action 'closeMenu' 'Run' 'play')}}
+                                <i class="play black icon"></i> Run
+                            {{/link-to}}
+                        {{/if}}
+                    </li>
+                    <li class="bm-menu-item">
+                        {{#link-to 'manage' invokeAction=(action 'closeMenu' 'Manage' 'upload')}}
+                            <i class="cog black icon"></i> Manage
+                        {{/link-to}}
+                    </li>
+                    <li class="bm-menu-item">
+                        {{#link-to 'compose' invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
+                            <i class="edit black icon"></i> Compose
+                        {{/link-to}}
+                    </li>
+                    <li class="bm-menu-item">
+                        <a {{action 'closeMenu' 'logout'}}>
+                            <i class="server black icon"></i> Log Out
+                        </a>
+                    </li>
+                </ul>
+                <div style="position: absolute; bottom: 1rem; width: 100%; text-align: center;">
+                    <div class="wt gravatar-container not-nav">
+                        <img src="{{gravatarUrl}}" class="gravatar"  style="border-radius: 50%;"/>
+                    </div>
+                    <label>{{user.firstName}} {{user.lastName}}</label>
+                </div>
+            </div>
+        </div>
+        <div class="bm-outlet">
+            <div class="bm-menu-container"></div>
+            <div class="bm-content">
+                <a class="hamburger right {{if (not mobileMenuDisplay) 'is-open'}}" {{action "toggleMobileMenu"}}>
+                  <i aria-hidden="true" class="fa fa-bars"></i>
+                </a>
+            </div>
+        </div>     
+    </div>
 </div>
-

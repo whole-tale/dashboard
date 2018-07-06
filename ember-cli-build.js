@@ -12,6 +12,9 @@ module.exports = function (defaults) {
     sassOptions: {
       includePaths: ['app']
     },
+    import: {
+      'ember-burger-menu': 'ember-burger-menu'
+    },
     mediumEditorOptions: {
       theme: 'tim'
     },

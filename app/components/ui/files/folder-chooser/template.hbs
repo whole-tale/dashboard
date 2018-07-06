@@ -38,9 +38,9 @@
   </div>
 </div>
 {{else}}
-  <div class="" style="padding:1em;">
+  <div style="padding:1em;">
     {{#unless loading}}
-      <div style="max-height: 500px; overflow-y: auto">
+      <div class="folder-list-container" style="max-height: 500px; overflow-y: auto">
         {{#if directory.name}}
           <i class="fas fa-arrow-left selectable" {{action 'clickedLevelUp'}}></i>
         {{else}}
