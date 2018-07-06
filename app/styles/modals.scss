@@ -27,7 +27,7 @@
 }
 
 .ui.modal.envdetails {
-  height: 50%; //calc(100vh - 64px - 60px - 2em);
+  height: 50%;
   width: 70%;
 
   .content {
@@ -36,7 +36,8 @@
   }
 }
 
-.scrolling.undetached.dimmable .ui.modal.acl-component.scrolling {
+.scrolling.undetached.dimmable .ui.modal.acl-component.scrolling,
+.scrolling.undetached.dimmable .ui.modal.harvester.scrolling {
   min-height: 50vh;
   height: auto;
   max-height: 70%;

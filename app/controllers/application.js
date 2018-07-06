@@ -27,6 +27,7 @@ export default Ember.Controller.extend({
   staticMenu: true,
   isLoadingJobs: true,
   newUIMode: true,
+  mobileMenuDisplay: false,
 
   init() {
     this._super();
@@ -109,7 +110,10 @@ export default Ember.Controller.extend({
     closeMenu: function (pageTitle, icon) {
       this.set('currentPage', pageTitle);
       this.set('currentIcon', icon);
-      $('.sidebar').sidebar("toggle");
+      // $('.sidebar').sidebar("toggle");
+      if($('.ember-burger-menu')) {
+        this.actions.toggleMobileMenu.call(this);
+      }
 
       if (pageTitle === "logout") {
         this.send("logout"); // call logout above.
@@ -117,6 +121,10 @@ export default Ember.Controller.extend({
     },
     openJobWatcher() {
       $('.message.job-watcher').removeClass('hidden');
+    },
+    toggleMobileMenu() {
+      let displayMobileMenu = !this.get('mobileMenuDisplay');
+      this.set('mobileMenuDisplay', displayMobileMenu);
     }
   }
 

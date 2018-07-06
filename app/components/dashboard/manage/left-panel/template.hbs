@@ -4,10 +4,10 @@
     </div>
 
     <div class="main-row">
-        <div class="ui stackable grid">
+        <div class="ui grid">
             <div class="five wide column">
                 {{#if currentFolderId}}
-                {{input type="file" value=file class="nice upload hidden" multiple=true}}
+                    {{input type="file" value=file class="nice upload hidden" multiple=true}}
                 {{/if}}
             </div>
             <div class="eleven wide column">
@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <div class="ui stackable grid">
+    <div class="ui grid">
         <div class="five wide column folder-navigator-container">
             <div class="ui collapsable grid folder-grid">
               {{ui/files/folder-navigator currentNavCommand=currentNavCommand openUploadDialog="openUploadDialog" openCreateFolderModal="openCreateFolderModal" onRegisterDataset="openRegisterModal" navClicked="navClicked"}}

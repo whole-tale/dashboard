@@ -27,6 +27,10 @@ $desktop: "only screen and (min-width:#{$tablet-screen})";
 $landscape: "only screen and (orientation: landscape)";
 $portrait: "only screen and (orientation: portrait)";
 
+@import './ember-burger-menu/variables';
+@import './ember-burger-menu/animations/slide';
+@import './ember-burger-menu/animations/menu-item/push';
+
 @mixin main-row {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   padding: .6rem 1.6rem;
@@ -38,11 +42,8 @@ body {
 
 // loader starts
 .loading-pane {
-  /* position: relative; */
   height: 100%;
   width: 100%;
-  /* top: 0; */
-  /* left: 0; */
   background: #f3f3f3 center center;
   background-size: cover;
   position: absolute;
@@ -140,7 +141,87 @@ ui.inverted.menu.wt.top {
   width: 0;
 }
 /* Temporary styling to merge both header menus ENDS */
+.ember-burger-menu {
+  display: none;
+}
+@media only screen and (max-width: 1040px) {
+  .ui.inverted.menu.wt.top {
+    padding: 0;
 
+    .ember-burger-menu  {
+      display: block;
+      .bm-menu {
+        h2 {
+          margin: 0;
+          padding: 0.5em 1em;
+          color: rgba(0,0,0,.87);
+          text-shadow: 0 0 1px rgba(0,0,0,.1);
+          font-size: 2em;
+          text-align: center;
+          text-transform: uppercase;
+          font-weight: 700;
+        }
+        ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          li > a {
+            font-size: 1.2rem;
+            letter-spacing: .05rem;
+            color: rgba(0,0,0,.87);
+            display: block;
+            padding: 1em 1em 1em 1.2em;
+            outline: 0;
+            border-bottom: 1px solid rgba(0,0,0,.2);
+            text-transform: uppercase;
+            text-shadow: 0 0 1px rgba(255,255,255,.1);
+            transition: background .4s;
+            cursor: pointer;
+          }
+        } 
+        a.close {
+          position: absolute;
+          top: 0;
+          padding: 10px;
+        }
+        a:hover,
+        a.active {
+          background: whitesmoke;
+          font-weight: bold;
+        }
+      }
+
+      .bm-outlet {
+        .bm-content {
+          color: #{$bm-outlet-content-background};
+          
+          .hamburger.right {
+            right: 0;
+          }
+          .hamburger.burger-hidden {
+            opacity: 0;
+          }
+          .hamburger {
+            position: absolute;
+            padding: 10px 20px;
+            z-index: 100;
+            font-size: 28px;
+            cursor: pointer;
+            opacity: 1;
+            transition: opacity .4s;
+            -webkit-transition: opacity .4s;
+            color: #{$bm-outlet-content-background};
+          }
+        }
+      }
+
+    }
+    
+  }
+  .ui.inverted.menu.wt.top .item:not(.brand) {
+    display: none;
+  }
+}
 
 /* Navigation NEW UI - Manage section starts */
 .folder-navigator-container {
@@ -153,6 +234,7 @@ ui.inverted.menu.wt.top {
   .folder-grid {
     display: inline;
 
+    .grid > .mobile.only,
     .grid > .tablet.only,
     .grid > .computer.only {
       .ui.menu {
@@ -431,7 +513,7 @@ ui.inverted.menu.wt.top {
     width: 100vw;
     bottom: 0;
 
-    @media (max-width: 768px) { 
+    @media (max-width: 767px) { 
       .acknowledgement {
         display: none;
       }
@@ -745,7 +827,7 @@ div:-webkit-full-screen > .wt.panel.manage > .rounded-bottom {
   // padding: 40% 0;
   background: url(../images/wholetale_logo_watermark.png) center center no-repeat;
   background-size: contain;
-  height: calc(100% - #{$main-menu-height});
+  height: calc(100% - #{$wt-paddleboard-panel-height});
 }
 .placeholder.message p {
   color: #283b49;
@@ -815,10 +897,119 @@ div:-webkit-full-screen > .wt.panel.manage > .rounded-bottom {
 }
 
 @media (max-width: 767px) {
+  .ui.grid .ui.stackable.grid {
+    margin: 0 !important;
+  }
+  .ui.stackable.grid.autoheight {
+    height: 100%;
+  }
+  .ui.stackable.grid:not(.vertically) > .row {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .ui.inverted.menu.wt.top {
+    padding: 0;
+    margin: 0;
+  }
+  .ui.stackable.grid {
+    $bottom-separation: 1.3em;
+    height: calc(100vh - (#{$bottom-separation} + #{$main-menu-height} + #{$footer-height}));
+    overflow-y: auto;
+
+    &.form {
+      height: calc(100% - 48px);
+    }
+
+    .wt.panel {
+      &.manage.composer {
+        height: 400px;
+        max-height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height}));
+        .composer-container {
+          height: calc(100% - #{$wt-paddleboard-panel-height});
+          .form {
+            overflow-y: auto;
+            height: calc(100% - 56px);
+            .row.panel.container {
+              height: auto;
+            }
+          }
+          .secondary.menu {
+            margin-top: 10px;
+          }
+        }
+      }
+    }
+
+    .show-upper-panel.show-lower-panel .wt.panel.manage {
+      height: 100%;
+
+      .environments-list,
+      .tales-list,
+      .folder-navigator-container {
+        height: 100%;
+      }
+
+      .folder-navigator-container {
+        padding: 0 !important;
+
+        .folder-grid {
+          .folder-list-container {
+            height: 100%;
+            max-height: auto !important;
+
+            table {
+              td {
+                max-width: 50%;
+                display: table-cell !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 @media (max-width: 640px) {
 }
 
 @media (max-width: 574px) {
+}
+
+@media only screen and (min-width: 768px) and (max-width: 912px) {
+  .five.wide.column {
+    .wt.paddleboard {
+      h2 {
+        .fas.fa-desktop {
+          display: none;
+        }
+      }
+    }
+  }
+} 
+.ui.inverted.menu.wt.top .alt-image {
+  display: none;
+}
+@media only screen and (max-width: 649px) {
+  .ui.inverted.menu.wt.top .alt-image {
+    display: block;
+    font-size: 1.2rem;
+    height: 48px;
+    // width: 48px;
+    padding: 12px;
+
+    span {
+      vertical-align: super;
+      .tale {
+        font-size: .9rem;
+        font-weight: 300;
+        letter-spacing: 0.2rem;
+        padding-left: .2rem;
+        vertical-align: middle;
+      }
+    }
+  }
+  .ui.inverted.menu.wt.top .item.brand {
+    display: none;
+  }
 }
