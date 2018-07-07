@@ -42,7 +42,7 @@
         </div>
         <label class="item small font not-nav" style="padding-left: 0;">{{user.firstName}} {{user.lastName}}</label>
         <a class="item not-nav" {{action 'closeMenu' 'logout'}}>
-            <i class="server white icon"></i>
+            <i class="sign out white icon"></i>
         </a>
     </div>
     <div class="ember-burger-menu bm-item--push bm--slide right translucent-overlay {{if mobileMenuDisplay 'is-open'}}">
@@ -82,7 +82,7 @@
                     </li>
                     <li class="bm-menu-item">
                         <a {{action 'closeMenu' 'logout'}}>
-                            <i class="server black icon"></i> Log Out
+                            <i class="sign out black icon"></i> Log Out
                         </a>
                     </li>
                 </ul>
