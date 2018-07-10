@@ -3,7 +3,7 @@
         <h2>
             <img src="/images/wholetale_logo_sm.png" />Current Tale
             <span style="float: right">
-                {{#if (and model.iframe (eq internalState.currentInstanceId model._id))}}
+                {{#if (and (not-eq model.status 0) (and model.iframe (eq internalState.currentInstanceId model._id)))}}
                     <a href="{{model.url}}" target="_blank">
                         <i class="external alternate icon"></i>
                     </a>
@@ -14,19 +14,25 @@
         </h2>
     </div>
     {{#if (eq internalState.currentInstanceId model._id)}}
-        {{#unless model.iframe}}
-            <div class="placeholder message">
-                <p>The compute environment for this Tale must run in a separate browser window.<br/>
-                  <a class="ui primary button huge" href="{{model.url}}" target="_blank">Go to new window</a></p>
+      {{#if (not-eq model.status 0)}}
+          {{#unless model.iframe}}
+              <div class="placeholder message">
+                  <p>The compute environment for this Tale must run in a separate browser window.<br/>
+                    <a class="ui primary button huge" href="{{model.url}}" target="_blank">Go to new window</a></p>
 
-            </div>
-        {{else}}
-            <iframe id="frontendDisplay"
-                    src="{{model.url}}"
-                    style="width:100%; height: 600px; padding: 0; margin: 0;"
-                    class="ui basic segment">
-            </iframe>
-        {{/unless}}
+              </div>
+          {{else}}
+              <iframe id="frontendDisplay"
+                      src="{{model.url}}"
+                      style="width:100%; height: 600px; padding: 0; margin: 0;"
+                      class="ui basic segment">
+              </iframe>
+          {{/unless}}
+      {{else}}
+        <div class="placeholder message">
+          <p>Creating your new Tale...</p>
+        </div>
+      {{/if}}
     {{else}}
         <div class="placeholder message">
             <p>Choose from
