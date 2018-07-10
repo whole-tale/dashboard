@@ -89,15 +89,6 @@
     {{code-editor content=textData fileID=fileIdentifier}}
   {{/if}}
 
-  {{!-- {{ui/files/folder-chooser
-       id="mini-folder-browser"
-       class="hidden"
-       contextMenu=true
-       fileToMove=fileToMove
-       onClose=(action "closedMiniBrowser")
-       onClick=(action "moveFile")
-   }} --}}
-
   <div class="ui attached hidden warning message prompt" id="confirm-remove">
     <i class="close icon" {{action "closedPrompt" "#confirm-remove" on="click"}}></i>
     <div class="header">
@@ -114,3 +105,5 @@
   </div>
 
 </div>
+
+{{ui/files/context-menu-modal onMoveFile=(action "moveFile")}}
