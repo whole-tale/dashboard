@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import config from '../../../../config/environment';
 import layout from './template';
 
 export default Ember.Component.extend({
@@ -6,6 +7,8 @@ export default Ember.Component.extend({
 
     store: Ember.inject.service(),
     internalState: Ember.inject.service(),
+
+    apiUrl: config.apiUrl,
 
     showEditor : false,
 
@@ -120,10 +123,6 @@ export default Ember.Component.extend({
                         self.set('folderList', [copy].pushObjects(self.folderList.toArray()).sortBy('name'));
                     }
                 });
-        },
-
-        download(file) {
-            console.log("download "+file.get('name'));
         },
 
         remove(file) {
