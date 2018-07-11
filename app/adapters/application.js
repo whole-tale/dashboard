@@ -26,6 +26,7 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
   urlForUpdateRecord(id, modelName, snapshot) {
     let url = this._super(id, modelName, snapshot);
     let queryParams = _.get(snapshot, "adapterOptions.queryParams");
+
     if (_.get(snapshot, "adapterOptions.copy")) {
       url += "/copy";
     }
@@ -67,6 +68,12 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
   urlForCreateRecord(modelName, snapshot) {
     let url = this._super(modelName, snapshot);
     let queryParams = _.get(snapshot, 'adapterOptions.queryParams');
+    if (_.get(snapshot, "adapterOptions.copy")) {
+      url += `/${snapshot.adapterOptions.copy}/copy`;
+    }
+    if (_.get(snapshot, "adapterOptions.appendPath")) {
+      url += "/" + snapshot.adapterOptions.appendPath;
+    }
     if (queryParams) {
       let q = this.buildQueryParams(queryParams);
       url += "?" + q;
