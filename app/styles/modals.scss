@@ -26,10 +26,11 @@
   }
 }
 
-.contextmenu {
+.destinate-folder {
   left: 0 !important;
   margin: auto !important;
-  height: 50%;
+  height: fit-content;
+  width: fit-content;
 } 
 
 .ui.modal.envdetails {

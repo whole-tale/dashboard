@@ -48,11 +48,6 @@ export default Ember.Component.extend({
             this.sendAction('action', item, "false");
         },
 
-        closedMiniBrowser: function() {
-             let mini = Ember.$('#dest-folder-chooser');
-             mini.addClass('hidden');
-        },
-
         updateModel(file) {
             let attrs = file.changedAttributes();
             let keys = Object.keys(attrs);
@@ -74,20 +69,18 @@ export default Ember.Component.extend({
             if(modalElem) {
                 modalElem.modal('show');
                 if(modalElem.hasClass("scrolling")) {
-                modalElem.removeClass("scrolling");
+                  modalElem.removeClass("scrolling");
                 }
             }
         },
 
         move(file) {
             this.set('fileToMove', file);
-            Ember.$('.ui.modal.contextmenu').modal('show');
+            Ember.$('.ui.modal.destinate-folder').modal('show');
         },
 
         moveFile(fileToMove, moveTo) {
             let self = this;
-
-            Ember.$('#dest-folder-chooser').addClass('hidden');
 
             // let queryParams = {folderId: moveTo.get('id')};
             let queryParams = {};

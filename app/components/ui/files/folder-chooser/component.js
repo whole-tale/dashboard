@@ -1,6 +1,4 @@
 import Ember from 'ember';
-import RSVP from 'rsvp';
-import config from '../../../../config/environment';
 import layout from './template';
 import _ from 'lodash';
 
@@ -10,7 +8,6 @@ export default Ember.Component.extend({
   layout,
 
   store: service(),
-  authRequest: service(),
   userAuth: service(),
   folderNavs: service(),
   wtEvents: service(),
@@ -18,15 +15,6 @@ export default Ember.Component.extend({
   folders: Ember.A(),    //Array of folders in the directory
   files: Ember.A(),
   directory: null,       //The folder object currently browsed
-
-  moveTo: null,
-  fileToMove: null,
-
-  selectedRow: null,
-  updateSelected: false,
-
-  // selectedItems: Ember.Object.create({}),
-  // allSelected: Ember.A(),
 
   selectionTree: Ember.Object.create({}),
   inputData: Ember.A(),
@@ -72,75 +60,6 @@ export default Ember.Component.extend({
     ;
   },
 
-  //HACK: Initialize the mini browser. Find the file's parent folder. And then
-  //      populate the 'folders' array.
-  fileToMoveChanged: Ember.observer('fileToMove', function() {
-    this.set('loading', true);
-
-    let self = this;
-
-    let store = this.get('store');
-    let fileToMove = this.get('fileToMove');
-
-    this.getFileParent(fileToMove)
-      .then(folderMeta => {
-        self.set('directory', folderMeta);
-        return store.query('folder', { parentId: folderMeta.id, parentType: folderMeta.type});
-      })
-      .then(folders => {
-        folders = folders.reject(f => {return f.id === fileToMove.id;});
-        self.set('folders', folders);
-      })
-      .catch(e => {
-        console.log(e);
-      })
-      .finally(_ => {
-        self.set('loading', false);
-      })
-    ;
-  }),
-
-  clearSelected() {
-    let previouslySelected = this.get('moveTo') || this.get('selectedFolder') || null;
-    if(previouslySelected !== null) {
-      let sel = this.folders.find(f=>{return previouslySelected.id === f.id;});
-      if(sel) sel.set('selected', false);
-      if(this.selectedRow) this.selectedRow.css({background: ""});
-    }
-    this.set('moveTo', null);
-    this.set('selectedFolder', null);
-    this.get('folders').arrayContentDidChange();
-  },
-
-  getFileParent(file) {
-    let self = this;
-
-    let promisedParentMeta;
-
-    if(file.get('_modelType') === "folder") {
-      promisedParentMeta = new RSVP.Promise(resolve => {
-        resolve({
-          id:   file.get('parentId'),
-          type: file.get('parentCollection')
-        });
-      });
-    }
-    else {
-      let url = config.apiUrl + "/item/" + file.get('id') + "/rootpath";
-      promisedParentMeta = this.get('authRequest').send(url)
-        .then(response => {
-          let parent = response.pop();
-          return {
-            id:   parent.object._id,
-            type: parent.type
-          };
-        })
-      ;
-    }
-
-    return promisedParentMeta;
-  },
-
   hasSiblingsChecked(item) {
     let selectionTree = this.get('selectionTree');
     let parentId = _.get(selectionTree, `${item.id}.parentId`);
@@ -157,7 +76,6 @@ export default Ember.Component.extend({
   actions: {
     clickedLevelDown(folder) {
       if (folder._modelType !== 'folder') return;
-      this.clearSelected();
 
       this.set('loading', true);
 
@@ -170,7 +88,6 @@ export default Ember.Component.extend({
       }
 
       let store = this.get('store');
-      let fileToMove = this.get('fileToMove');
       let options = { parentId: folder.id, parentType: "folder"};
       folder.set('type', folder._modelType)
       self.set('directory', folder);
@@ -180,16 +97,12 @@ export default Ember.Component.extend({
     
       loadFolders
         .then(folders => {
-          if (fileToMove) {
-            folders = folders.reject(f=>f.id === fileToMove.id);
-          }
           if (_.get(selectionTree, `${folder.id}.check`)) {
             folders.forEach(f => {
               selectionTree[f.id] = {check:true, partialCheck:false, parentId: folder.id, type: 'folder'};
             });
           }
           self.set('folders', folders);
-          self.set('moveTo', folder);
         })
         .catch(e => {
           console.log(e);
@@ -226,13 +139,11 @@ export default Ember.Component.extend({
 
       let store = this.get('store');
       let parent = this.get('directory');
-      let fileToMove = this.get('fileToMove');
 
       let parentId = parent.get('parentId');
       let parentType = parent.get('parentCollection');
 
       self.set('directory', {type: parentType, id: parentId});
-      self.set('moveTo', parent);
 
       let loadFiles = Promise.resolve([]),
           loadFolders = store.query('folder', { parentId: parentId, parentType: parentType});
@@ -242,7 +153,6 @@ export default Ember.Component.extend({
 
       loadFolders
         .then(folders => {
-          if(fileToMove) folders = folders.reject(f=>(f.id===fileToMove.id));
           folders = folders.reject(f=>f.name==='Workspace');
           self.set('folders', folders);
         })
@@ -272,32 +182,6 @@ export default Ember.Component.extend({
           self.set('loading', false);
         })
       ;
-    },
-
-    clickedRow(folder) {
-      if(folder.selected) {
-        return this.actions.clickedLevelDown.call(this, folder);
-      }
-
-      this.clearSelected();
-
-      let onClickedRow = this.folders.find(f=>folder.id===f.id);
-      if(onClickedRow) onClickedRow.set('selected', true);
-      this.get('folders').arrayContentDidChange();
-
-      //Grab the selected row from the event object so we can
-      //highlight it to show it's been selected.
-      let selectedRow = event.path.find(offset => {
-        if(offset.classList) {
-          return /selectable/.test(offset.classList.value);
-        }
-      });
-      this.set("selectedRow", Ember.$(selectedRow));
-      this.selectedRow.css({background: "lightsteelblue"});
-
-      //Save the item for when the user clicks on a menu action
-      this.sendAction("onSelectedFolder", folder);
-      this.set("selectedFolder", folder);
     },
 
     check(item) {
@@ -447,24 +331,5 @@ export default Ember.Component.extend({
 
       this.set('selectionTree', Ember.Object.create(selectionTree));
     },
-
-    close() {
-        this.sendAction("onClose");
-        this.set('selected', null);
-    },
-
-    move() {
-        if(!this.moveTo) {
-            this.sendAction('onClose');
-        }
-        else if(this.moveTo.get('parentCollection') === "collection" && this.fileToMove.get('_modelType') !== "folder") {
-            this.sendAction('onClose');
-            console.log("Can't move a file move into a collection!");
-        }
-        else {
-            this.sendAction('onClick', this.fileToMove, this.moveTo);
-        }
-        this.clearSelected();
-    }
   }
 });

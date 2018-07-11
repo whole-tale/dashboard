@@ -1,0 +1,55 @@
+{{#ui-modal name="destinatefolder" class="small destinate-folder" onApprove=(action 'moveFile') onDeny=(action 'cancel')}}
+    <div class="header">Move File or Folder</div>
+    <div class="content">
+      <div class="folder-list-container" style="max-height: 500px; overflow-y: auto">
+        {{#if directory.name}}
+          <i class="fas fa-arrow-left selectable" {{action 'clickBack'}}></i>
+        {{else}}
+          <i class="fas fa-arrow-left" style="color:gray;"></i>
+        {{/if}}
+        <span style="margin-left:1em">{{directory.name}}</span>
+        <table class="ui very basic single line table" style="margin:0;">
+          <tbody>
+            {{#each folders as |item|}} 
+            <tr class="left aligned selectable" id={{item.id}}>
+              <td>
+                {{#unless item.disallowImport}}
+                  {{#if (is-checked selectionTree item.id)}}
+                  <i class="far fa-check-square clickable" {{action "uncheck" item on="click"}}></i>
+                  {{else if (is-partial-checked selectionTree item.id)}}
+                  <i class="far fa-minus-square clickable" {{action "uncheck" item on="click"}}></i>
+                  {{else}}
+                  <i class="far fa-square clickable" {{action "check" item on="click"}}></i>
+                  {{/if}}
+                {{/unless}}
+              </td>
+              <td {{action "clickFolder" item on="click"}}>
+                {{#if item.icon}}
+                <i class="{{item.icon}} icon black large"></i>
+                {{else}}
+                  {{#if (eq item._modelType 'folder')}}
+                  <i class="fas fa-folder icon black large"></i> 
+                  {{else}}
+                  <i class="far fa-file icon large"></i> 
+                  {{/if}}
+                {{/if}}
+                {{truncate-name item.name}}
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="actions">
+        {{#if destinationFolder.name}}
+          <span style="float:left;">Move to {{destinationFolder.name}}</span>
+        {{/if}}
+        <div class="ui deny button">
+            Cancel
+        </div>
+        <div class="ui positive {{unless destinationFolder.name 'disabled'}} register icon button">
+            Move
+        </div>
+    </div>
+{{/ui-modal}}
