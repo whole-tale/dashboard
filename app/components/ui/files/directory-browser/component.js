@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import config from '../../../../config/environment';
 import layout from './template';
 
 export default Ember.Component.extend({
@@ -6,6 +7,8 @@ export default Ember.Component.extend({
 
     store: Ember.inject.service(),
     internalState: Ember.inject.service(),
+
+    apiUrl: config.apiUrl,
 
     showEditor : false,
 
@@ -48,11 +51,6 @@ export default Ember.Component.extend({
             this.sendAction('action', item, "false");
         },
 
-        closedMiniBrowser: function() {
-             let mini = Ember.$('#mini-folder-browser');
-             mini.addClass('hidden');
-        },
-
         updateModel(file) {
             let attrs = file.changedAttributes();
             let keys = Object.keys(attrs);
@@ -74,25 +72,18 @@ export default Ember.Component.extend({
             if(modalElem) {
                 modalElem.modal('show');
                 if(modalElem.hasClass("scrolling")) {
-                modalElem.removeClass("scrolling");
+                  modalElem.removeClass("scrolling");
                 }
             }
         },
 
         move(file) {
             this.set('fileToMove', file);
-            let mini = Ember.$('#mini-folder-browser');
-
-            mini.css({
-                margin: "auto"
-            });
-            mini.removeClass('hidden');
+            Ember.$('.ui.modal.destinate-folder').modal('show');
         },
 
         moveFile(fileToMove, moveTo) {
             let self = this;
-
-            Ember.$('#mini-folder-browser').addClass('hidden');
 
             // let queryParams = {folderId: moveTo.get('id')};
             let queryParams = {};
@@ -132,10 +123,6 @@ export default Ember.Component.extend({
                         self.set('folderList', [copy].pushObjects(self.folderList.toArray()).sortBy('name'));
                     }
                 });
-        },
-
-        download(file) {
-            console.log("download "+file.get('name'));
         },
 
         remove(file) {

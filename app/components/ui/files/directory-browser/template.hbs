@@ -33,7 +33,7 @@
                                   <!-- -->
                                   <a class="item" {{action "share" item}}><i class="share icon"></i> Share</a>
                                   <a class="item" {{action "copy" item}}><i class="clone icon"></i> Copy</a>
-                                  <a class="item" {{action "download" item}}><i class="download icon"></i> Download</a>
+                                  <a class="item" href="{{apiUrl}}/folder/{{item.id}}/download?contentDisposition=attachment"><i class="download icon"></i> Download</a>
                                   <!-- -->
                                   <a class="item" {{action "remove" item}}><i class="trash icon"></i> Remove</a>
                               </div>
@@ -67,9 +67,9 @@
                                   <a class="item" {{action "move" item}}><i class="folder icon"></i> Move To...</a>
                                   <a class="item" {{action "rename" item}}><i class="write square icon"></i> Rename...</a>
                                   <!-- -->
-                                  <a class="item" {{action "share" item}}><i class="share icon"></i> Share</a>
+                                  {{!-- <a class="item" {{action "share" item}}><i class="share icon"></i> Share</a> --}}
                                   <a class="item" {{action "copy" item}}><i class="clone icon"></i> Copy</a>
-                                  <a class="item" {{action "download" item}}><i class="download icon"></i> Download</a>
+                                  <a class="item" href="{{apiUrl}}/item/{{item.id}}/download?contentDisposition=attachment"><i class="download icon"></i> Download</a>
                                   <!-- -->
                                   <a class="item" {{action "remove" item}}><i class="trash icon"></i> Remove</a>
                               </div>
@@ -89,15 +89,6 @@
     {{code-editor content=textData fileID=fileIdentifier}}
   {{/if}}
 
-  {{!-- {{ui/files/folder-chooser
-       id="mini-folder-browser"
-       class="hidden"
-       contextMenu=true
-       fileToMove=fileToMove
-       onClose=(action "closedMiniBrowser")
-       onClick=(action "moveFile")
-   }} --}}
-
   <div class="ui attached hidden warning message prompt" id="confirm-remove">
     <i class="close icon" {{action "closedPrompt" "#confirm-remove" on="click"}}></i>
     <div class="header">
@@ -114,3 +105,5 @@
   </div>
 
 </div>
+
+{{ui/files/destinate-folder-modal fileToMove=fileToMove onMoveFile=(action "moveFile")}}

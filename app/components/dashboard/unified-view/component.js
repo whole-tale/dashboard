@@ -30,13 +30,15 @@ export default Ember.Component.extend({
       this.set("leftModel", model);
     },
     taleLaunched: function () {
-      // TODO convert this interaction to use the wt-events service instead
       // Update right panel models
       let self = this;
       // NOTE: using store.query here as a work around to disable store.findAll caching
       this.get('store').query('instance', {})
         .then(models => {
-          self.set('rightModelTop', models);
+          // Ensure this component is not destroyed by way of route transition
+          if(!self.isDestroyed){
+            self.set('rightModelTop', models);
+          }
         });
     },
   }

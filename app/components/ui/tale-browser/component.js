@@ -258,10 +258,31 @@ export default Ember.Component.extend({
         //Add the new instance to the list of instances in the right panel
         component.get('taleLaunched')();
 
-        Ember.run.later((function () {
-          component.set("tale_instantiated", false);
-          component.set("tale_instantiating_id", 0);
-        }), 30000);
+        Ember.run.later(function () {
+          // Ensure this component is not destroyed by way of a route transition
+          if(!component.isDestroyed){
+            component.set("tale_instantiated", false);
+            component.set("tale_instantiating_id", 0);
+          }
+        }, 30000);
+
+        let currentLoop = null;
+        // Poll the status of the instance every second using recursive iteration
+        let startLooping = function(func){
+          return Ember.run.later(function(){
+            currentLoop = startLooping(func);
+            component.get('store').findRecord('instance', instance.get('_id'), { reload:true })
+              .then(model => {
+                if(model.get('status') === 1) {
+                  component.get('taleLaunched')();
+                  Ember.run.cancel(currentLoop);
+                }
+              });
+          }, 1000);
+        };
+
+        //Start polling
+        currentLoop = startLooping();
       };
 
       let onFail = function (item) {
@@ -272,10 +293,12 @@ export default Ember.Component.extend({
 
         component.set("error_msg", item.message);
 
-        Ember.run.later((function () {
-          component.set("tale_not_instantiated", false);
-          component.set("tale_instantiating_id", 0);
-        }), 10000);
+        Ember.run.later(function () {
+          if(!component.isDestroyed){
+            component.set("tale_not_instantiated", false);
+            component.set("tale_instantiating_id", 0);
+          }
+        }, 10000);
 
       };
 
