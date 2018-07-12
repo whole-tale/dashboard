@@ -72,6 +72,24 @@ export default Ember.Component.extend({
       const instance = Ember.Object.create(JSON.parse(item));
       const instanceId = instance._id;
       console.log(`Launching new instance with id: ${instanceId}`);
+
+      let currentLoop = null;
+      // Poll the status of the instance every second using recursive iteration
+      let startLooping = function(func){
+        return Ember.run.later(function(){
+          currentLoop = startLooping(func);
+          component.get('store').findRecord('instance', instance.get('_id'), { reload:true })
+            .then(model => {
+              if(model.get('status') === 1) {
+                component.get('taleLaunched')();
+                Ember.run.cancel(currentLoop);
+              }
+            });
+        }, 1000);
+      };
+      //Start polling
+      currentLoop = startLooping();
+
       Ember.run.later((function () {
         component.set('launchingInstance', false);
         component.get('router').transitionTo('run.view', instanceId);
@@ -93,7 +111,7 @@ export default Ember.Component.extend({
       null,
       onSuccess,
       onFail);
-    
+
     component.set('launchingInstance', true);
   },
 
