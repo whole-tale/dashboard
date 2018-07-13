@@ -37,13 +37,15 @@ export default Ember.Component.extend({
     didInsertElement() {
         this._super(...arguments);
 
-        $(".info.circle.grey.icon").hover(function() {
-                $("#info-data-content").removeClass("hidden");
-            },
-            function() {
-                $("#info-data-content").addClass("hidden");
-            }
-        );
+        $('.info.circle.grey.icon').popup({
+          position : 'right center',
+          target   : '.info.circle.grey.icon',
+          hoverable: true,
+          html: "The URL or DOI of \
+          the data object. Data packages can be imported into Whole Tale from <a href='https://dataone.org/' target='_blank'>DataONE</a> and select \
+          <a href='https://www.globus.org/' target='_blank'>Globus</a> repositories. For a full list of DataONE member nodes and supported Globus \
+         repositories, visit the <a href='http://wholetale.readthedocs.io/users_guide/manage.html' target='_blank'>data registration guide</a>."
+        });
     },
 
     disableRegister() {
