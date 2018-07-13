@@ -6,7 +6,12 @@ export default AuthenticateRoute.extend({
     this._super(...arguments);
     return RSVP.hash({
       instances: this.get('store').findAll('instance', {
-        reload: true
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
       }),
       tales: this.get('store').findAll('tale', {
         reload: true,

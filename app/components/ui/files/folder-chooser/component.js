@@ -12,9 +12,9 @@ export default Ember.Component.extend({
   folderNavs: service(),
   wtEvents: service(),
 
-  folders: Ember.A(),    //Array of folders in the directory
+  folders: Ember.A(), //Array of folders in the directory
   files: Ember.A(),
-  directory: null,       //The folder object currently browsed
+  directory: null, //The folder object currently browsed
 
   selectionTree: Ember.Object.create({}),
   inputData: Ember.A(),
@@ -27,46 +27,59 @@ export default Ember.Component.extend({
 
     let store = this.get('store');
     let userID = this.get('userAuth').getCurrentUserID();
-    
+
     let navs = folderNavs.getFolderNavs();
-    this.set('directory', {id: userID, type: "user", selected: false});
+    this.set('directory', {
+      id: userID,
+      type: "user",
+      selected: false
+    });
 
     this.set('loading', true);
 
-    let loadFolders = store.query('folder', { parentId: userID, parentType: "user"});
+    let loadFolders = store.query('folder', {
+      parentId: userID,
+      parentType: "user",
+      reload: true,
+      adapterOptions: {
+        queryParams: {
+          limit: "0"
+        }
+      }
+    });
 
     loadFolders
       .then(folderContents => {
-        self.set('directory', {id: userID, type: "user", })
+        self.set('directory', {
+          id: userID,
+          type: "user",
+        })
         folderContents = folderContents
-          .filter(f=>f.name!=='Workspace')
-          .map(f=>{
-            let idx = navs.findIndex(n=>n.name===f.name);
+          .filter(f => f.name !== 'Workspace')
+          .map(f => {
+            let idx = navs.findIndex(n => n.name === f.name);
             if (idx > -1) {
               f.set('icon', navs[idx].icon);
               f.set('disallowImport', navs[idx].disallowImport);
             }
             return f;
-          })
-        ;
+          });
         self.set('folders', folderContents);
-      })
-    ;
+      });
 
     loadFolders
       .finally(() => {
         self.set('loading', false);
-      })
-    ;
+      });
   },
 
   hasSiblingsChecked(item) {
     let selectionTree = this.get('selectionTree');
     let parentId = _.get(selectionTree, `${item.id}.parentId`);
     if (!parentId) return false;
-  
+
     let keys = Object.keys(selectionTree);
-    for(let i = 0; i < keys.length; i++) {
+    for (let i = 0; i < keys.length; i++) {
       let key = keys[i];
       if (key !== item.id && selectionTree[key].parentId === parentId) return true;
     }
@@ -84,52 +97,81 @@ export default Ember.Component.extend({
       let cwd = this.get('directory');
       let selectionTree = this.get('selectionTree');
       if (!_.get(selectionTree, folder.id)) {
-        _.set(selectionTree, folder.id, {check:false, partialCheck:false, parentId: cwd.id, type: 'folder'})
+        _.set(selectionTree, folder.id, {
+          check: false,
+          partialCheck: false,
+          parentId: cwd.id,
+          type: 'folder'
+        })
       }
 
       let store = this.get('store');
-      let options = { parentId: folder.id, parentType: "folder"};
+      let options = {
+        parentId: folder.id,
+        parentType: "folder",
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      };
       folder.set('type', folder._modelType)
       self.set('directory', folder);
 
       let loadFolders = store.query('folder', options);
-      let loadFiles = store.query('item', {folderId: folder.id});
-    
+      let loadFiles = store.query('item', {
+        folderId: folder.id,
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      });
+
       loadFolders
         .then(folders => {
           if (_.get(selectionTree, `${folder.id}.check`)) {
             folders.forEach(f => {
-              selectionTree[f.id] = {check:true, partialCheck:false, parentId: folder.id, type: 'folder'};
+              selectionTree[f.id] = {
+                check: true,
+                partialCheck: false,
+                parentId: folder.id,
+                type: 'folder'
+              };
             });
           }
           self.set('folders', folders);
         })
         .catch(e => {
           console.log(e);
-        })
-      ;
+        });
 
       loadFiles
         .then(files => {
           if (_.get(selectionTree, `${folder.id}.check`)) {
             files.forEach(f => {
-              selectionTree[f.id] = {check:true, partialCheck:false, parentId: folder.id, type:'item'};
+              selectionTree[f.id] = {
+                check: true,
+                partialCheck: false,
+                parentId: folder.id,
+                type: 'item'
+              };
             });
           }
           self.set('files', files);
         })
         .catch(e => {
           console.log(e);
-        })
-      ;
+        });
 
       loadFolders
-        .then(()=>loadFiles)
+        .then(() => loadFiles)
         .finally(() => {
           self.set('loading', false);
           self.set('selectionTree', Ember.Object.create(selectionTree));
-        })
-      ;
+        });
     },
 
     clickedLevelUp() {
@@ -143,23 +185,42 @@ export default Ember.Component.extend({
       let parentId = parent.get('parentId');
       let parentType = parent.get('parentCollection');
 
-      self.set('directory', {type: parentType, id: parentId});
+      self.set('directory', {
+        type: parentType,
+        id: parentId
+      });
 
-      let loadFiles = Promise.resolve([]),
-          loadFolders = store.query('folder', { parentId: parentId, parentType: parentType});
+      let loadFiles = Promise.resolve([]);
+      let loadFolders = store.query('folder', {
+        parentId: parentId,
+        parentType: parentType,
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      });
       if (parentType === 'folder') {
-        loadFiles = store.query('item', {folderId: parentId});
+        loadFiles = store.query('item', {
+          folderId: parentId,
+          reload: true,
+          adapterOptions: {
+            queryParams: {
+              limit: "0"
+            }
+          }
+        });
       }
 
       loadFolders
         .then(folders => {
-          folders = folders.reject(f=>f.name==='Workspace');
+          folders = folders.reject(f => f.name === 'Workspace');
           self.set('folders', folders);
         })
         .catch(e => {
           console.log(e);
-        })
-      ;
+        });
 
       loadFiles
         .then(files => {
@@ -167,21 +228,18 @@ export default Ember.Component.extend({
         })
         .catch(e => {
           console.log(e);
-        })
-      ;
+        });
 
-      loadFolders.then(()=>loadFiles)
+      loadFolders.then(() => loadFiles)
         .finally(() => {
-          if(parentType === "folder") {
+          if (parentType === "folder") {
             store.find('folder', parentId)
               .then(folder => {
                 self.set('directory', folder);
-              })
-            ;
+              });
           };
           self.set('loading', false);
-        })
-      ;
+        });
     },
 
     check(item) {
@@ -205,7 +263,12 @@ export default Ember.Component.extend({
       let inputData = this.get('inputData');
       let cwd = this.get('directory');
 
-      selectionTree[folder.id] = {check:true, partialCheck: false, parentId: cwd.id, type: 'folder'};
+      selectionTree[folder.id] = {
+        check: true,
+        partialCheck: false,
+        parentId: cwd.id,
+        type: 'folder'
+      };
 
       this.send('partialCheck', cwd);
 
@@ -221,11 +284,16 @@ export default Ember.Component.extend({
       let inputData = this.get('inputData');
       let cwd = this.get('directory');
 
-      selectionTree[item.id] = {check:true, partialCheck: false, parentId: cwd.id, type: 'item'};
+      selectionTree[item.id] = {
+        check: true,
+        partialCheck: false,
+        parentId: cwd.id,
+        type: 'item'
+      };
       _.set(selectionTree, `${cwd.id}.partialCheck`, true);
       _.set(selectionTree, `${cwd.id}.check`, false);
       inputData.addObject(item);
-      inputData = inputData.reject(i=>i.id===cwd.id);
+      inputData = inputData.reject(i => i.id === cwd.id);
 
       this.send('partialCheck', cwd);
 
@@ -241,7 +309,9 @@ export default Ember.Component.extend({
       this.set('selectionTree', Ember.Object.create(selectionTree));
       let parentId = _.get(selectionTree, `${folder.id}.parentId`);
       if (_.get(selectionTree, parentId)) {
-        this.send('partialCheck', {id:parentId});
+        this.send('partialCheck', {
+          id: parentId
+        });
       }
     },
 
@@ -252,7 +322,9 @@ export default Ember.Component.extend({
       this.set('selectionTree', Ember.Object.create(selectionTree));
       let parentId = _.get(selectionTree, `${folder.id}.parentId`);
       if (_.get(selectionTree, parentId)) {
-        this.send('uncheckParentFolders', {id:parentId});
+        this.send('uncheckParentFolders', {
+          id: parentId
+        });
       }
     },
 
@@ -263,11 +335,15 @@ export default Ember.Component.extend({
 
       let folderId = folder.id;
       let keys = Object.keys(selectionTree);
-      let removing = [{id:cwd.id}];
-      for(let i = 0; i < keys.length; i++) {
+      let removing = [{
+        id: cwd.id
+      }];
+      for (let i = 0; i < keys.length; i++) {
         let key = keys[i];
         if (_.get(selectionTree, `${key}.parentId`) === folderId || key === folderId) {
-          removing.push({id:key});
+          removing.push({
+            id: key
+          });
           _.set(selectionTree, `${key}.partialCheck`, false);
           _.set(selectionTree, `${key}.check`, false);
           if (selectionTree[key].type === 'folder' && key !== folderId) {
@@ -296,7 +372,7 @@ export default Ember.Component.extend({
         // _.set(selectionTree, `${cwd.id}.partialCheck`, false);
         // _.set(selectionTree, `${cwd.id}.check`, false);
       }
-      
+
       this.get('wtEvents').events.select(inputData);
 
       this.set('selectionTree', Ember.Object.create(selectionTree));
@@ -308,7 +384,11 @@ export default Ember.Component.extend({
       let cwd = this.get('directory');
 
       _.set(selectionTree, `${item.id}.check`, false);
-      let removing = [{id:cwd.id}, {id:item.id}];
+      let removing = [{
+        id: cwd.id
+      }, {
+        id: item.id
+      }];
       _.pullAllBy(inputData, removing, 'id');
       inputData.arrayContentDidChange();
       this.folders.forEach(f => {

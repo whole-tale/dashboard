@@ -188,7 +188,13 @@ export default Ember.Component.extend({
         model.set('name', model.get('title'));
         let taleId = model.get('_id');
         let instances = component.get('store').query('instance', {
-          taleId: taleId
+          taleId: taleId,
+          reload: true,
+          adapterOptions: {
+            queryParams: {
+              limit: "0"
+            }
+          }
         }).then((instances) => {
           if (instances && instances.length) {
             let message = `There ${instances.length === 1 ? "is" : "are"} ${instances.length} running instance${instances.length === 1 ? "" : "s"} associated to this tale.`;

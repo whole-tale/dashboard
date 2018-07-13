@@ -33,13 +33,19 @@ export default Ember.Component.extend({
       // Update right panel models
       let self = this;
       // NOTE: using store.query here as a work around to disable store.findAll caching
-      this.get('store').query('instance', {})
-        .then(models => {
-          // Ensure this component is not destroyed by way of route transition
-          if(!self.isDestroyed){
-            self.set('rightModelTop', models);
+      this.get('store').query('instance', {
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
           }
-        });
+        }
+      }).then(models => {
+        // Ensure this component is not destroyed by way of route transition
+        if (!self.isDestroyed) {
+          self.set('rightModelTop', models);
+        }
+      });
     },
   }
 });

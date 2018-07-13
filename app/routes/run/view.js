@@ -8,7 +8,14 @@ export default AuthenticateRoute.extend({
     this._super(params);
     this.get('internalState').set('currentInstanceId', params.instance_id);
     return RSVP.hash({
-      instances: this.get('store').findAll('instance', { reload: true }),
+      instances: this.get('store').findAll('instance', {
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      }),
       selected: this.get('store').findRecord('instance', params.instance_id, { reload: true })
     });
   }

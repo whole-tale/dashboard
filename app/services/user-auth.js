@@ -8,36 +8,34 @@ export default Ember.Service.extend({
 
   isAuthenticated: true,
 
-  getCurrentUserFromServer:function () {
+  getCurrentUserFromServer: function () {
     let self = this;
 
     let url = config.apiUrl + '/user/me';
     return this.get('authRequest').send(url)
-        .then(userJS => {
-            if ((userJS == null) || (userJS === "") || (userJS==="null")) {
-                // console.log("User is null in api call");
-                return null;
-            }
-            else {
-                let userRec = self.get('store').createRecord('user', userJS);   //BUG: this call returns an empty object
-                // console.log("User not is null in api call");
-                localStorage.currentUserID = userJS._id; // store logged in user locally
-                return userRec;
-            }
-        })
-        .catch(e => {
-            // console.log(e);
-            return null;
-        });
+      .then(userJS => {
+        if ((userJS == null) || (userJS === "") || (userJS === "null")) {
+          // console.log("User is null in api call");
+          return null;
+        } else {
+          let userRec = self.get('store').createRecord('user', userJS); //BUG: this call returns an empty object
+          localStorage.currentUserID = userJS._id; // store logged in user locally
+          return userRec;
+        }
+      })
+      .catch(e => {
+        // console.log(e);
+        return null;
+      });
   },
 
   resetCurrentUser() {
-      localStorage.currentUserID = null;
+    localStorage.currentUserID = null;
   },
 
   getCurrentUser() {
     var userID = localStorage.currentUserID;
-    if ((userID === "null") || (userID == null) || (userID === "") || (userID === "undefined")) {
+    if (!userID || (userID === "null") || (userID == null) || (userID === "") || (userID === "undefined")) {
       return null;
     }
 
@@ -49,23 +47,23 @@ export default Ember.Service.extend({
   },
 
   logoutCurrentUser() {
-    let self  = this;
+    let self = this;
 
     let url = config.apiUrl + '/token/session';
     let options = {
-        method: 'DELETE'
+      method: 'DELETE'
     };
 
     this.get('authRequest').send(url, options)
-        .catch(e => {
-            console.log("ERROR LOGGING OUT");
-            console.log(e);
-        })
-        .finally(() => {
-            self.get('tokenHandler').releaseWholeTaleCookie();
-            localStorage.currentUserID = null;
-            localStorage.clear();
-        });
+      .catch(e => {
+        console.log("ERROR LOGGING OUT");
+        console.log(e);
+      })
+      .finally(() => {
+        self.get('tokenHandler').releaseWholeTaleCookie();
+        localStorage.currentUserID = null;
+        localStorage.clear();
+      });
   }
 
 });

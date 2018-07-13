@@ -83,11 +83,17 @@ export default Ember.Controller.extend({
     refreshJobs: function () {
       const controller = this;
       controller.set('isLoadingJobs', true);
-      this.store.findAll('job')
-        .then(jobs => {
-          controller.set('jobs', jobs);
-          window.setTimeout(controller.set.bind(controller, 'isLoadingJobs', false), 2000);
-        });
+      this.store.findAll('job', {
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      }).then(jobs => {
+        controller.set('jobs', jobs);
+        window.setTimeout(controller.set.bind(controller, 'isLoadingJobs', false), 2000);
+      });
     },
     staticMenu: function () {
       this.set('staticMenu', true);
@@ -111,7 +117,7 @@ export default Ember.Controller.extend({
       this.set('currentPage', pageTitle);
       this.set('currentIcon', icon);
       // $('.sidebar').sidebar("toggle");
-      if($('.ember-burger-menu')) {
+      if ($('.ember-burger-menu')) {
         this.actions.toggleMobileMenu.call(this);
       }
 
