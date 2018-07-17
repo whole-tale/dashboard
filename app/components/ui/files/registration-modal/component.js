@@ -112,7 +112,9 @@ export default Ember.Component.extend({
 
     getEventStream() {
         let token = this.get('tokenHandler').getWholeTaleAuthToken();
-        let source = new EventStream.SSE(config.apiUrl+"/notification/stream?timeout=15000", {headers: {'Girder-Token': token}});
+        // Get a timestamp so that we can filter out any stale notifications. This needs to be Unix Epoch
+        let time = Math.round(+new Date()/1000)
+        let source = new EventStream.SSE(config.apiUrl+"/notification/stream?timeout=15000&since="+time, {headers: {'Girder-Token': token}});
 
         let self = this;
         source.addEventListener('message', function(evt) {
