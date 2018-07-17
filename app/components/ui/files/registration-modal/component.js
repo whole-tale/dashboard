@@ -33,8 +33,6 @@ export default Ember.Component.extend({
     devUrl: 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2',
     // URL to the DataONE production server
     prodUrl: 'https://cn.dataone.org/cn/v2',
-    // Flag that controls the grey background
-    showGrey: false,
 
     didInsertElement() {
         this._super(...arguments);
