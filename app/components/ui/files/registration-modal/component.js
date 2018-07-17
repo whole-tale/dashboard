@@ -33,19 +33,19 @@ export default Ember.Component.extend({
     devUrl: 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2',
     // URL to the DataONE production server
     prodUrl: 'https://cn.dataone.org/cn/v2',
+    // Flag that controls the grey background
+    showGrey: false,
 
     didInsertElement() {
         this._super(...arguments);
 
-        $('.info.circle.grey.icon').popup({
-          position : 'right center',
-          target   : '.info.circle.grey.icon',
-          hoverable: true,
-          html: "The URL or DOI of \
-          the data object. Data packages can be imported into Whole Tale from <a href='https://dataone.org/' target='_blank'>DataONE</a> and select \
-          <a href='https://www.globus.org/' target='_blank'>Globus</a> repositories. For a full list of DataONE member nodes and supported Globus \
-         repositories, visit the <a href='http://wholetale.readthedocs.io/users_guide/manage.html' target='_blank'>data registration guide</a>."
-        });
+        $(".info.circle.grey.icon").hover(function() {
+            $("#info-data-content").removeClass("hidden");
+        },
+        function() {
+            $("#info-data-content").addClass("hidden");
+        }
+    );
     },
 
     disableRegister() {
@@ -69,19 +69,34 @@ export default Ember.Component.extend({
     },
 
     clearModal() {
-        Ember.$('#harvester-dropdown').dropdown('clear');
-        this.set('showResults', false);
-        Ember.$('#searchbox').val('');
+        this.clearErrors();
+        this.clearSearch();
+        this.clearResults();
+        this.clearPackageResults();
+    },
 
-        this.set('datasources', Ember.A());
+    clearErrors() {
         this.set('error', false);
         this.set('errorMessage', '');
+    },
+    
+    clearResults() {
+        Ember.$('#harvester-dropdown').dropdown('clear');
+        this.set('showResults', false);
         this.set('num_results', -1);
+        this.set('datasources', Ember.A());
+    },
+
+    clearPackageResults() {
         this.set('dataId', '');
         this.set('doi', '');
         this.set('name', '');
         this.set('repository', '');
         this.set('size', '');
+    },
+
+    clearSearch() {
+        Ember.$('#searchbox').val('');
     },
 
     didRender() {
@@ -125,7 +140,7 @@ export default Ember.Component.extend({
         },
 
         register() {
-            this.set('error', false);
+            this.clearErrors();
             let self = this;
             let state = this.get('internalState');
             let userAuth = this.get('userAuth');
@@ -191,7 +206,9 @@ export default Ember.Component.extend({
         },
 
         search() {
-            this.clearModal();
+            this.clearResults();
+            this.clearErrors();
+            this.clearPackageResults()
             this.set('searching', true);
             this.set('showResults', true);
 
