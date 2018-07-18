@@ -13,7 +13,7 @@
             {{#each folders as |item|}} 
             <tr class="left aligned selectable" id={{item.id}}>
               <td>
-                {{#unless item.disallowImport}}
+                {{#unless (eq item.name disallowed)}}
                   {{#if (is-checked selectionTree item.id)}}
                   <i class="far fa-check-square clickable" {{action "uncheck" item on="click"}}></i>
                   {{else if (is-partial-checked selectionTree item.id)}}
@@ -21,9 +21,10 @@
                   {{else}}
                   <i class="far fa-square clickable" {{action "check" item on="click"}}></i>
                   {{/if}}
+                {{else}}
                 {{/unless}}
               </td>
-              <td {{action "clickFolder" item on="click"}}>
+              <td class="{{if (eq item.name disallowed) 'disabled'}}" {{action "clickFolder" item on="click"}}>
                 {{#if item.icon}}
                 <i class="{{item.icon}} icon black large"></i>
                 {{else}}

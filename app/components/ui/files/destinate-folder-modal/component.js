@@ -54,7 +54,7 @@ export default Ember.Component.extend({
     loadFolders
       .then(folderContents => {
         folderContents = folderContents
-          .filter(f => (f.name !== 'Workspace' && f.name !== 'Data'))
+          .filter(f => (f.name !== 'Workspace'))
           .map(f => {
             let idx = navs.findIndex(n => n.name === f.name);
             if (idx > -1) {
@@ -149,7 +149,7 @@ export default Ember.Component.extend({
         }
       }).then(folders => {
         if (fileToMove) folders = folders.reject(f => (f.id === fileToMove.id));
-        folders = folders.reject(f => (f.name === 'Workspace' || f.name === 'Data'));
+        folders = folders.reject(f => (f.name === 'Workspace'));
         self.set('folders', folders);
       })
       .catch(e => {

@@ -25,7 +25,7 @@
         <div class="eleven wide column">
             <div class="ui collapsable grid" style="margin-left: 10px">
                 <div class="sixteen wide right aligned column">
-                  {{ui/files/directory-browser folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
+                  {{ui/files/directory-browser currentNav=currentNav folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
                 </div>
                 <div class="sixteen wide column overlay">
                   {{#unless currentBreadCrumb.isCollection}}

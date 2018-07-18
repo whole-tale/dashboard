@@ -78,6 +78,8 @@ export default Ember.Component.extend({
         },
 
         move(file) {
+            let disallowed = this.get('currentNav').command === 'home' ? 'Data' : 'Home';
+            this.set('disallowed', disallowed);
             this.set('fileToMove', file);
             Ember.$('.ui.modal.destinate-folder').modal('show');
         },
