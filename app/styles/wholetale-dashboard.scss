@@ -677,13 +677,14 @@ ui.inverted.menu.wt.top {
       border-top-right-radius: 0;
       border: none;
       margin: 0;
-      height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + #{$wt-paddleboard-panel-height} + 3px));
+      height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + #{$wt-paddleboard-panel-height}));
       overflow-y: auto;
       overflow-x: hidden;
     }
 
     .composer-container {
       background-color: rgba(0, 0, 0, 0.05);
+      height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + #{$wt-paddleboard-panel-height} + 4px));
 
       .env-image {
         display: inline-block;
