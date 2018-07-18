@@ -46,19 +46,19 @@ export default Ember.Component.extend({
   init() {
     this._super(...arguments);
     let state = this.get('internalState');
+    
+    state.setCurrentBreadCrumb(null);
+    state.setCurrentFileBreadcrumbs([]); // new nav folder, reset crumbs
+    state.setCurrentFolderName("");
+    
+    this.set("currentBreadCrumb", null);
+    this.set("fileBreadCrumbs", []);
+
     this.set('fileData', this.model);
     this.set("currentFolderId", state.getCurrentFolderID());
     // console.log("Heading into browse upload controller" );
 
-    let currentNav = this.get("folderNavs").getCurrentFolderNavAndSetOn(this);
-    this.set('currentNav', currentNav);
-
-    // console.log(currentNav);
-
-    if (currentNav != null) {
-      this.set("currentNavCommand", currentNav.command);
-      this.set("currentNavTitle", currentNav.name);
-    }
+    this.get("folderNavs").getCurrentFolderNavAndSetOn(this);
 
     let fileBreadCrumbs = state.getCurrentFileBreadcrumbs();
     if (!fileBreadCrumbs) {

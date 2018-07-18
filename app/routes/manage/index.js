@@ -7,8 +7,13 @@ import RSVP from 'rsvp';
 export default AuthenticateRoute.extend({
   internalState: inject.service(),
   userAuth: inject.service(),
+  folderNavs: inject.service(),
+
   model: function () {
     this._super();
+
+    const self = this;
+
     var state = this.get('internalState');
 
     var thisUserID = this.get('userAuth').getCurrentUserID();
@@ -25,18 +30,42 @@ export default AuthenticateRoute.extend({
     var itemContents = null;
 
     if (!folderID || folderID === "null") {
+      let nav = this.get('folderNavs').getFolderNavFor('home');
       folderContents = this.get('store').query('folder', {
-        parentId: thisUserID,
-        parentType: "user",
+        parentId: nav.parentId,
+        parentType: nav.parentType,
+        name: nav.name,
         reload: true,
         adapterOptions: {
           queryParams: {
             limit: "0"
           }
         }
+      }).then(folders => {
+        if (folders.length) {
+          let folder_id = folders.content[0].id;
+
+          state.setCurrentFolderID(folder_id);
+          state.setCurrentParentId(nav.parentId);
+          state.setCurrentParentType(nav.parentType);
+          state.setCurrentFolderName(nav.name);
+
+          itemContents = self.store.query('item', {
+            folderId: folder_id,
+            reload: true,
+            adapterOptions: {
+              queryParams: {
+                limit: "0"
+              }
+            }
+          });
+
+          return self.store.query('folder', {
+            "parentId": folder_id,
+            "parentType": "folder"
+          });
+        }
       });
-      state.setCurrentParentId(thisUserID);
-      state.setCurrentParentType("user");
     } else {
       console.log("Folder != null, so loading folder and items");
       folderContents = this.get('store').query('folder', {
