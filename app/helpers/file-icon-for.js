@@ -19,7 +19,7 @@ export function fileIconFor(params/*, hash*/) {
 
   var res = filename.split(".");
 
-  if (res.length < 2 ) return '<i class="large file outline icon"></i>';
+  if (res.length < 2 ) return '<i class="fas fa-file fa-2x"></i>';
 
   var suffix = res[1].toLowerCase();
 
@@ -56,10 +56,7 @@ export function fileIconFor(params/*, hash*/) {
     color: white;
     position: absolute;
     left: 1px;
-    right: 0;
-    bottom: 0;
     top: 4px;
-    margin:auto;
     font-size: .8em;
     font-weight: bolder;">${res[1].substr(0,3)}</span>`;
 }
