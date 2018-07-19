@@ -2,7 +2,7 @@ import Ember from 'ember';
 import config from 'wholetale/config/environment';
 import EventStream from 'npm:sse.js';
 
-var inject = Ember.inject;
+const inject = Ember.inject;
 
 const {
   getOwner
@@ -10,24 +10,39 @@ const {
 
 export default Ember.Controller.extend({
   // requires the sessions controller
-  userAuth: Ember.inject.service('user-auth'),
-  internalState: Ember.inject.service('internal-state'),
-  notificationHandler: Ember.inject.service('notification-handler'),
-  tokenHandler: Ember.inject.service(),
+  session: inject.service(),
+  userAuth: inject.service('user-auth'),
+  internalState: inject.service('internal-state'),
+  notificationHandler: inject.service('notification-handler'),
+  tokenHandler: inject.service(),
 
-  user : {fullName :"John Winter"},
-  gravatarUrl : "/images/avatar.png",
-  currentPage : "Dashboard",
-  currentIcon : "browser",
-  routing: Ember.inject.service('-routing'),
-  loggedIn : false,
-  staticMenu : true,
+  user: {
+    fullName: "John Winter"
+  },
+  gravatarUrl: "/images/avatar.png",
+  currentPage: "Dashboard",
+  currentIcon: "browser",
+  routing: inject.service('-routing'),
+  loggedIn: false,
+  staticMenu: true,
   isLoadingJobs: true,
-  
+  newUIMode: true,
+  mobileMenuDisplay: false,
+
   init() {
     this._super();
     // this.set('staticMenu', this.get('internalState').getIsStaticMenu());
     this.set('staticMenu', true);
+    this.get('internalState').setNewUIMode(true);
+    this.get('userAuth').getCurrentUserFromServer().then(
+      (user) => {
+        this.set('user', user);
+      },
+      (error) => {
+        console.log(`There was an error loading the logged user: ${error}`);
+      }
+    );
+
     // this.set('eventStream', this.getEventStream.call(this));
   },
 
@@ -45,48 +60,66 @@ export default Ember.Controller.extend({
   //   return source;
   // },
 
-  checkMyRouteName: Ember.computed(function() {
+  checkMyRouteName: Ember.computed(function () {
     return this.get('routing.currentRouteName');
   }),
+  currentUserName: 'Hallo, Damian',
   actions: {
-    toggle: function(subSidebarName) {
+    toggle: function (subSidebarName) {
       console.log(subSidebarName);
-      $('#'+subSidebarName)
+      $('#' + subSidebarName)
         .sidebar('setting', 'transition', 'push')
-        .sidebar('toggle')
-      ;
+        .sidebar('toggle');
     },
-    logout : function() {
+    logout: function () {
 
-        this.get('userAuth').logoutCurrentUser();
-        this.set('loggedIn', false);
-//      var location = this.get('router.url');
-  //    window.location.href = location.split('?')[0];
+      this.get('userAuth').logoutCurrentUser();
+      this.set('loggedIn', false);
+      //      var location = this.get('router.url');
+      //    window.location.href = location.split('?')[0];
 
-        this.transitionToRoute('login');
+      this.transitionToRoute('login');
     },
-    refreshJobs: function() {
+    refreshJobs: function () {
       const controller = this;
       controller.set('isLoadingJobs', true);
-      this.store.findAll('job')
-        .then(jobs => {
-          controller.set('jobs', jobs);
-          window.setTimeout(controller.set.bind(controller, 'isLoadingJobs', false), 2000);
-        })
-      ;
+      this.store.findAll('job', {
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      }).then(jobs => {
+        controller.set('jobs', jobs);
+        window.setTimeout(controller.set.bind(controller, 'isLoadingJobs', false), 2000);
+      });
     },
-    staticMenu: function() {
+    staticMenu: function () {
       this.set('staticMenu', true);
       this.get('internalState').setStaticMenu(true);
     },
-    dynamicMenu: function() {
+    dynamicMenu: function () {
       this.set('staticMenu', false);
       this.get('internalState').setStaticMenu(false);
     },
-    closeMenu : function(pageTitle, icon) {
+    coolUI: function () {
+      this.set('newUIMode', true);
+      this.get('internalState').setNewUIMode(true);
+      this.transitionToRoute("browse");
+    },
+    boringUI: function () {
+      this.set('newUIMode', false);
+      this.get('internalState').setNewUIMode(false);
+      this.transitionToRoute("index");
+    },
+    closeMenu: function (pageTitle, icon) {
       this.set('currentPage', pageTitle);
       this.set('currentIcon', icon);
-      $('.sidebar').sidebar("toggle");
+      // $('.sidebar').sidebar("toggle");
+      if ($('.ember-burger-menu')) {
+        this.actions.toggleMobileMenu.call(this);
+      }
 
       if (pageTitle === "logout") {
         this.send("logout"); // call logout above.
@@ -94,6 +127,10 @@ export default Ember.Controller.extend({
     },
     openJobWatcher() {
       $('.message.job-watcher').removeClass('hidden');
+    },
+    toggleMobileMenu() {
+      let displayMobileMenu = !this.get('mobileMenuDisplay');
+      this.set('mobileMenuDisplay', displayMobileMenu);
     }
   }
 

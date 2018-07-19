@@ -1,76 +1,77 @@
 {{#if loggedIn}}
     <div class="ui left vertical inverted blue menu" style="height: 100%; width: 160px; border-top-left-radius: 0rem !important; border-top-right-radius: 0rem !important;">
 
-      {{#link-to 'index' class="item" invokeAction=(action 'closeMenu' 'Dashboard' 'home')}}
-          <i class="home icon"></i>
-          Home
-      {{/link-to}}
+        {{#link-to 'index' class="item" invokeAction=(action 'closeMenu' 'Dashboard' 'home')}}
+            <i class="home icon"></i>
+            Home
+        {{/link-to}}
 
-      {{#link-to 'tale' class="item" invokeAction=(action 'closeMenu' 'Tale' 'small white criss cross')}}
-          <i class="small white criss cross icon" ></i>
-          Tales
-      {{/link-to}}
+        {{#link-to 'tale' class="item" invokeAction=(action 'closeMenu' 'Tale' 'small white criss cross')}}
+            <i class="small white criss cross icon" ></i>
+            Tales
+        {{/link-to}}
 
-        <!--
-      {{#link-to 'explore' class="item" invokeAction=(action 'closeMenu' 'Explore' 'play')}}
-          <i class="video play icon"></i>
-          Explore
-      {{/link-to}}
+        
+        {{!-- {{#link-to 'explore' class="item" invokeAction=(action 'closeMenu' 'Explore' 'play')}}
+            <i class="video play icon"></i>
+            Explore
+        {{/link-to}}
 
-      {{#link-to 'search' class="item" invokeAction=(action 'closeMenu' 'Search' 'search')}}
-          <i class="search icon"></i>
-          Search
-      {{/link-to}}
--->
+        {{#link-to 'search' class="item" invokeAction=(action 'closeMenu' 'Search' 'search')}}
+            <i class="search icon"></i>
+            Search
+        {{/link-to}} --}}
 
-      {{#link-to 'catalog' class="item" invokeAction=(action 'closeMenu' 'Catalog' 'disk outline')}}
-          <i class="disk outline icon"></i>
-          Catalog
-      {{/link-to}}
+        {{#link-to 'catalog' class="item" invokeAction=(action 'closeMenu' 'Catalog' 'disk outline')}}
+            <i class="disk outline icon"></i>
+            Catalog
+        {{/link-to}}
 
-      {{#link-to 'upload' class="item" invokeAction=(action 'closeMenu' 'Data' 'upload')}}
-          <i class="upload icon"></i>
-          My Data
-      {{/link-to}}
+        {{#link-to 'upload' class="item" invokeAction=(action 'closeMenu' 'Data' 'upload')}}
+            <i class="upload icon"></i>
+            My Data
+        {{/link-to}}
 
-      {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
-          <i class="plus icon"></i>
-          Compose
-      {{/link-to}}
+        {{#link-to 'pcompose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
+            <i class="plus icon"></i>
+            Compose
+        {{/link-to}}
 
-      {{#link-to 'recipe-image' class="item" invokeAction=(action 'closeMenu' 'Recipe Image' 'cloud upload')}}
-          <i class="cloud upload icon"></i>
-          Recipe/Image
-      {{/link-to}}
+        {{#link-to 'recipe-image' class="item" invokeAction=(action 'closeMenu' 'Recipe Image' 'cloud upload')}}
+            <i class="cloud upload icon"></i>
+            Recipe/Image
+        {{/link-to}}
 
-      {{#link-to 'status' class="item" invokeAction=(action 'closeMenu' 'Status' 'line chart')}}
-          <i class="line chart icon"></i>
-          Status
-      {{/link-to}}
+        {{#link-to 'status' class="item" invokeAction=(action 'closeMenu' 'Status' 'line chart')}}
+            <i class="line chart icon"></i>
+            Status
+        {{/link-to}}
 
-      <a class="item" {{action 'openJobWatcher'}}>
-        <i class="tasks icon"></i>
-        Job Watcher
-      </a>
+        <a class="item" {{action 'openJobWatcher'}}>
+            <i class="tasks icon"></i>
+            Job Watcher
+        </a>
 
-<!--
-      {{#link-to 'collaborators' class="item" invokeAction=(action 'closeMenu' 'Collaborators' 'users')}}
-          <i class="users icon"></i>
-          Collaborate
-      {{/link-to}}
--->
+        {{!-- {{#link-to 'collaborators' class="item" invokeAction=(action 'closeMenu' 'Collaborators' 'users')}}
+            <i class="users icon"></i>
+            Collaborate
+        {{/link-to}} --}}
 
-      {{!-- <a class="item" {{action 'dynamicMenu'}}>
-          <i class="content icon"></i>
-          Floating Menu
-      </a> --}}
+        <a class="item" {{action 'coolUI'}}>
+            <i class="paint brush icon"></i>
+            New UI
+        </a>
 
-      <a class="item" {{action 'closeMenu' 'logout'}}>
+        {{!-- <a class="item" {{action 'dynamicMenu'}}>
+            <i class="content icon"></i>
+            Floating Menu
+        </a> --}}
+
+        <a class="item" {{action 'closeMenu' 'logout'}}>
               <i class="sign out icon"></i>
               Logout
         </a>
-
-
-    <div class="fluid item" style="min-height: 100vh;"></div>
-</div>
+        
+        <div class="fluid item" style="min-height: 100vh;"></div>
+    </div>
 {{/if}}

@@ -14,7 +14,8 @@ export default DS.Model.extend(FolderItemMixin, AccessControlMixin, {
   // }),
   // parentType: DS.attr('string'),
   items: DS.hasMany('item'),
-  folders: DS.hasMany('folder'),
+  folders: DS.hasMany('folder', { inverse: 'parent' }),
+  parent: DS.belongsTo('folder', { inverse: 'folders' }),
   name : DS.attr('string'),
   description: DS.attr('string'),
   created: DS.attr('date'),
@@ -27,5 +28,5 @@ export default DS.Model.extend(FolderItemMixin, AccessControlMixin, {
   parentId: DS.attr('string'),
   parentCollection: DS.attr('string'), // folder or item
   size: DS.attr('number'),
-  updated: DS.attr('date'),
+  updated: DS.attr('date')
 });

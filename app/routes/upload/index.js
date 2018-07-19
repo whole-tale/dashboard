@@ -29,13 +29,39 @@ export default AuthenticateRoute.extend({
 
 
     if (folderID === null || folderID === "null" ) {
-      folderContents = this.get('store').query('folder', {parentId: thisUserID, parentType : "user" });
+      folderContents = this.get('store').query('folder', {
+        parentId: thisUserID,
+        parentType : "user",
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      });
       state.setCurrentParentId(thisUserID);
       state.setCurrentParentType("user");
     } else {
       console.log("Folder != null, so loading folder and items");
-      folderContents = this.get('store').query('folder', { parentId: folderID, parentType: "folder"});
-      itemContents= this.get('store').query('item', { folderId: folderID});
+      folderContents = this.get('store').query('folder', {
+        parentId: folderID,
+        parentType: "folder",
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      });
+      itemContents= this.get('store').query('item', {
+        folderId: folderID,
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      });
       console.log("Folder != null, leaving");
     }
 

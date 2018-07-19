@@ -1,4 +1,4 @@
-<div class="login area">
+<div class="login area" style="margin-top: -1rem">
 
     <div class="ui huge white header" style="color: white">Reproducibility Simplified</div>
 
@@ -10,14 +10,14 @@
     <br>
     <br>
     <br>
-  {{#each-in model as |provider url|}}
-    {{#if (eq provider "Globus")}}
-        <a class="ui large blue button" {{action "login" url}}>
-            <div style="font-weight: 700; font-size: 150%; margin: 10px 10px 0 0; float:left">Access</div>
-            <img src="/images/whole_tale_logo_text_long_light_large.png" width="200px" style="width:200px">
-        </a>
-    {{/if}}
-  {{/each-in}}
+    {{#each-in model as |provider url|}}
+        {{#if (eq provider "Globus")}}
+            <a class="ui large blue button" {{action "login" url}}>
+                <div style="font-weight: 700; font-size: 150%; margin: 10px 10px 0 0; float:left">Access</div>
+                <img src="/images/whole_tale_logo_text_long_light_large.png" width="200px" style="width:200px">
+            </a>
+        {{/if}}
+    {{/each-in}}
     <br>
     <br>
     <br>
@@ -65,20 +65,20 @@
 
     <br>
     <br>
- <div style="text-align: left">
-  {{#ui-accordion as |execute|}}
-      <div class="title">
-          <i class="dropdown icon"></i>
-          <a class="ui header" style="color: white">Login questions?</a>
-      </div>
-      <div class="content">
-          <div class="ui raised segment">
-              <div class="ui header header">
-                  In order to use the Wholetale app, you need to be able to sign in using Globus. Click below to find out more.
-              </div>
-              <a class="ui button" target="_blank" href="https://docs.globus.org/how-to/get-started/">Globus Howto</a>
-          </div>
-      </div>
-  {{/ui-accordion}}
- </div>
+    <div style="text-align: left; padding: 1rem">
+        {{#ui-accordion as |execute|}}
+            <div class="title">
+                <i class="dropdown icon"></i>
+                <a class="ui header" style="color: white">Login questions?</a>
+            </div>
+            <div class="content">
+                <div class="ui raised segment">
+                    <div class="ui header header">
+                        In order to use the Wholetale app, you need to be able to sign in using Globus. Click below to find out more.
+                    </div>
+                    <a class="ui button" target="_blank" href="https://docs.globus.org/how-to/get-started/">Globus Howto</a>
+                </div>
+            </div>
+        {{/ui-accordion}}
+    </div>
 </div>

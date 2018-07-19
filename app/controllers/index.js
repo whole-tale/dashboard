@@ -1,6 +1,21 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
+  newUIMode : true,
+  internalState: Ember.inject.service('internal-state'),
+
+  init() {
+    this._super();
+
+    var uiMode = this.get('internalState').getNewUIMode();
+    this.set("newUIMode", uiMode);
+
+    if (uiMode)
+      this.transitionToRoute("browse");
+
+    // this.set('eventStream', this.getEventStream.call(this));
+  },
+
   actions: {
     gotoDataset : function(name) {
       if (name === "Browser Upload")

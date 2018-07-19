@@ -86,9 +86,9 @@
     <div class="ui divider"></div>
     <div class="field">
           <label>Description</label>
-          {{markdown-editor markdownValue=imageDescription}}
+          {{ui/markdown-editor markdownValue=imageDescription}}
       </div>
-      {{tags-widget tags=imageTags}}
+      {{ui/tags-widget tags=imageTags}}
       {{#if show_errors}}
         <div class="ui red message">
           <div class="content">

@@ -1,7 +1,7 @@
 
 
 <div class="ui segment">
-  {{tale-browser models=model.tales paginateOn=3 cardsPerRow="three" modelView="tale.view" showSearch=true showLink=true showDelete=true
+  {{ui/tale-browser models=model.tales paginateOn=3 cardsPerRow="three" modelView="tale.view" showSearch=true showLink=true showDelete=true
                  addButtonName="Compose and publish a new tale."
                  addButtonTagName="Compose New Tale"
                  addButtonLogo=""
@@ -16,7 +16,7 @@
         <i class="huge dashboard icon"></i><
         <div class="ui large header" style="padding: 0; margin: 0;">Compute</div>
 
-      {{wt-flix models=model.images paginateOn=3 cardsPerRow="one" modelView="image.view" showLink=true
+      {{ui/wt-flix models=model.images paginateOn=3 cardsPerRow="one" modelView="image.view" showLink=true
                 addButtonName=null
                 addButtonTagName=null
                 addButtonLogo=""
@@ -29,7 +29,7 @@
         <i class="huge disk outline icon"></i>
         <div class="ui large header" style="padding: 0; margin: 0;">Catalog</div>
         <div class="ui inverted grey segment">
-            {{catalog-browser catalogItems=model.catalogItems}}
+            {{ui/files/catalog-browser catalogItems=model.catalogItems}}
         </div>
 
     </div>

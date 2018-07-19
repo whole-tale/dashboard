@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
 import config from '../config/environment';
-import _ from 'lodash/lodash';
+import _ from 'lodash';
 
 export default Ember.Service.extend({
     tokenHandler: Ember.inject.service(),

@@ -1,0 +1,27 @@
+{{!
+  @module wholetale
+  @submodule list-drives
+~}}
+
+<div style="height:700px; overflow-y: auto;">
+
+  {{#each drives as |name|}}
+
+    <div class="ui inverted segment" style="margin:1px">
+        <div class="ui grid">
+            <div class="eleven wide column">
+                <p>
+                    {{name}}
+                </p>
+            </div>
+            <div class="five wide column">
+                <div class="ui fluid basic blue button" {{action "selectDrive" name}}>
+                    <i class="chekmark icon"></i>
+                    Select</div>
+            </div>
+        </div>
+    </div>
+
+  {{/each}}
+
+</div>

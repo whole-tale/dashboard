@@ -1,0 +1,25 @@
+<div class="wt panel manage">
+    <div class="wt paddleboard">
+        <h2>
+            {{!-- <img src="images/wholetale_logo_sm.png" /> --}}
+            Browse Tales <span class="subtitle">Launch to add to Launched Tales list</span> 
+            <i class="fas fa-expand right" style="cursor: pointer;" {{action 'toggleFullscreen'}}></i>
+        </h2>
+    </div>
+
+    <div class="ui grey inverted rounded-bottom">
+      {{ui/tale-browser models=model 
+                        paginateOn=6
+                        cardsPerRow="three"
+                        modelView="tale.view"
+                        showSearch=true
+                        showLink=true
+                        showDelete=true
+                        addButtonName="Compose and publish a new tale."
+                        addButtonTagName="Compose New Tale"
+                        addButtonLogo=""
+                        onAddNew=(action "gotoPublish")
+                        taleLaunched=(action taleLaunched)
+      }}
+    </div>
+</div>

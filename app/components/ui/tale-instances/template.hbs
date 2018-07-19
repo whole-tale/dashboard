@@ -1,0 +1,50 @@
+<div class="wt panel manage">
+    <div class="wt paddleboard">
+        <h2>
+            <i class="circle play icon"></i> Launched Tales
+        </h2>
+    </div>
+    {{#if showSearch}}
+        <div class="ui inverted grey">
+            <div class="ui secondary menu" style="display: block">
+                <div class="item">
+                    <div class="ui mini rounded icon search input">
+                        {{input class="prompt" placeholder="Search tale instances..." value=searchStr key-up="search"}}
+                        <i class="search icon"></i>
+                    </div>
+                    <div class="results">
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{/if}}
+    <div class="tales-list">
+        {{#each models as |instance index|}}
+          <div class="ui vertical menu fluid tales">
+              <a class="item {{if (and internalState.currentInstanceId (eq internalState.currentInstanceId instance._id)) 'active'}}" {{action 'transitionToRun' instance index}}>
+                  <img src="{{instance.tale.illustration}}" />
+                  <img src="{{instance.tale.icon}}" class="env" />
+                  {{#unless (eq instance.status 0)}}
+                    <i class="times icon" {{action 'openDeleteModal' instance}} ></i>
+                  {{/unless}}
+                  <p>{{truncate-name instance.name}}</p>
+                {{#if (eq instance.status 0)}}
+                  <span style="position: absolute; left: 45%; top: 20%; opacity: .7; z-index: 9999">
+                    <i class="fa fa-4x fa-circle-notch fa-spin" aria-hidden="true"></i>
+                  </span>
+                {{/if}}
+              </a>
+          </div>
+        {{else}}
+            <div class="ui vertical menu fluid tales">
+                <div class="ui grid">
+                    <div class="center aligned sixteen wide column">
+                        <div style="padding: 45% 0;font-style:italic;">No tales have been launched</div>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>
+
+{{ui/delete-modal model=selectedInstance modelType="instance" approveDelete=(action "approveDelete" selectedInstance) denyDelete=(action "denyDelete")}}

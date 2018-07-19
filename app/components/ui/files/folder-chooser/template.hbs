@@ -1,0 +1,27 @@
+{{!-- app/components/mini-directory-browser/template.hbs --}} 
+<div style="padding:1em;">
+  {{#unless loading}}
+    <div class="folder-list-container" style="max-height: 500px; overflow-y: auto">
+      {{#if directory.name}}
+        <i class="fas fa-arrow-left selectable" {{action 'clickedLevelUp'}}></i>
+      {{else}}
+        <i class="fas fa-arrow-left" style="color:gray;"></i>
+      {{/if}}
+      <span style="margin-left:1em">{{directory.name}}</span>
+      <table class="ui very basic single line table" style="margin:0;">
+        <tbody>
+          {{#each folders as |item|}} 
+            {{partial "compose/item-list"}}
+          {{/each}}
+          {{#each files as |item|}}
+            {{partial "compose/item-list"}}
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  {{else}} 
+    {{#ui-progress class="ui top attached progress" value=990 progress=990 total=1000}}
+      <div class="bar"></div>
+    {{/ui-progress}}
+  {{/unless}}
+</div>

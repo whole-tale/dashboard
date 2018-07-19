@@ -1,0 +1,20 @@
+{{#ui-modal name="newfolder" class="small newfolder" onApprove=(action 'createFolder') onDeny=(action 'cancel')}}
+    <div class="header">Create Folder</div>
+    <div class="content">
+        <div class="ui form">
+            <div class="inline ui fluid field">
+                <label>Name</label>
+                {{input type="text" name="folder-name" value=folderName}}
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui deny button">
+            Cancel
+        </div>
+        <div class="ui positive register right labeled icon button">
+            New
+            <i class="icon plus"></i>
+        </div>
+    </div>
+{{/ui-modal}}

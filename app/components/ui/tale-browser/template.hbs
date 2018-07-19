@@ -1,0 +1,419 @@
+<style>
+    .ui[class*="top attached"].label,
+    .ui.attached.label {
+        padding: 5px !important;
+    }
+
+    .item {
+        padding: 0 1em;
+    }
+    .secondary > .header.item {
+        width: 100%;
+    }
+    .secondary.menu.item > .right {
+        float: right;
+        padding-right: 0;
+    }
+    .inverted.large.icon {
+        text-shadow: -2px 0 rgba(72,72,74,1.0), 0 2px rgba(72,72,74,1.0), 2px 0 rgba(72,72,74,1.0), 0 -1px rgba(72,72,74,1.0);
+        cursor: pointer;
+    }
+    .inverted.large.icon:hover {
+        color: rgba(72,72,74,1.0);
+        cursor: pointer;
+    }
+    .filter-pill {
+        margin: 5px;
+        border-radius: 1rem;
+        min-width: 140px;
+        background-color: rgb(203,203,203);
+        color: rgb(121,121,121);
+        text-align: left;
+        font-size: 0.8rem;
+        vertical-align: bottom;
+        padding: 2px;
+    }
+    button:focus {
+        outline:0;
+    }
+    .filter-pill .filter-text {
+        float:left;
+        margin: 4px;
+    }
+
+    .filter-pill .icon.close {
+        vertical-align: bottom;
+        margin: 4px;
+        opacity: .7;
+        float: right;
+        cursor: pointer;
+    }
+
+    .filter-pill .icon.close:hover {
+        opacity: 1.0;
+        color: #fff;
+    }
+    .tales-table-wrapper {
+        height: calc(100vh - (2.5rem + 48px + 64px + 94px + 50px + 30px + 86px + 2em));
+        overflow-y: auto;
+    }
+    .tales-table-wrapper>.table-condensed>tbody>tr>td:first-of-type {
+        padding: 8px 4px;
+    }
+    .tales-table-wrapper>.table-condensed>tbody>tr>td:nth-of-type(4) {
+        max-width: 30vw;
+    }
+    .ui.button.tertiary {
+        padding: 0;
+        box-shadow: none !important;
+        background: none !important;
+        -webkit-font-smoothing: antialiased;
+        font-weight: 500;
+    }
+    .ui.button.tertiary:hover {
+        color: #2185d0;
+        text-decoration: underline;
+    }
+    .ui.button.tertiary:not(:hover) {
+        color: rgb(94, 139, 188);
+    }
+    .ui.icon.input > i.icon {
+        right: 1em;
+    }
+    .ui.search {
+        font-size: 1em;
+        width: 100%;
+    }
+
+    img {
+        display: block;
+        height: auto;
+        margin: auto;
+    }
+
+    .text-block.card h2 {
+        position: absolute;
+        width: 100%;
+        height: 140px;
+        margin-top: 0%;
+        background: rgba(40, 59, 73, 0.5);
+    }
+
+    .text-block.card h2 i {
+        padding-left: 32%;
+        padding-top: 20%;
+        position: absolute;
+        font-size: 3em;
+        font-weight: 100;
+    }
+
+    .text-block.card img {
+        opacity: .4;
+    }
+
+    .pic {
+        object-fit: cover;
+    }
+
+    span.zoom-icon {
+        position: absolute;
+        right: 0;
+        top: 0;
+        filter: alpha(opacity=50);
+        -moz-opacity: 0.8;
+        -khtml-opacity: 0.8;
+        opacity: 0.8;
+        width: 80px;
+    }
+
+    .middle.text {
+        color: #666666;
+        text-wrap: normal;
+        text-align: justify
+    }
+</style>
+
+<div class="ui inverted grey">
+    {{#if showSearch}}
+        <div class="item">
+            <div class="ui mini rounded icon search input">
+                {{input class="prompt" placeholder="Search tales..." value=searchStr key-up="searchFilter"}}
+                <i class="search icon"></i>
+            </div>
+            <div class="results"></div>
+        </div>
+        <div class="ui secondary stackable menu" style="margin: 0 10px;">
+            <div class="header item">
+                <i class="filter inverted large icon" {{action "toggleFiltersVisibility"}}></i>
+                {{#if showFilter}}
+                    {{#ui-dropdown class="selection" selected=filter onChange=(action (mut filter))}}
+                        <div class="default text">Apply Filter</div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            {{#each filters as |_filter|}}
+                                <div class="item" data-value="{{_filter}}">
+                                    {{_filter}}
+                                </div>
+                            {{/each}}
+                        </div>
+                    {{/ui-dropdown}}
+                {{else}}
+                    <div class="filter-option">
+                        <button class="btn btn-info filter-pill" type="button" data-dismiss="alert">
+                            <span class="filter-text">{{filter}}</span> <i class="icon close" aria-hidden="true" {{action "removeCurrentFilter"}}></i>
+                        </button>
+                    </div>
+                {{/if}}
+                <span class="item aligned right">
+                    <button class="ui button tertiary" {{action "toggleListView"}}>Switch to {{#if (eq listView true)}}cards{{else}}list{{/if}} view</button>
+                </span>
+            </div>
+        </div>
+    {{/if}}
+    {{#unless modelsInView.length}}
+        <div class="ui center aligned segment" style="color: black;">
+            There are no tales to display for applied filter: {{filter}}
+        </div>
+    {{/unless}}
+    {{#if loadingTales}}
+        <div style="display: inline">
+            <div class="creating-tale-message">
+                {{message}}
+                <div class="centered"><i class="fa fa-4x fa-circle-notch fa-spin" aria-hidden="true"></i></div>
+            </div>
+        </div>
+    {{else}}
+        {{#if (and modelsInView.length (eq listView true))}}
+            <div class="ui selectable {{guid}} doubling selectable cards tales-table-wrapper">
+                <table class="table table-striped table-bordered table-condensed">
+                    <thead>
+                        <tr>
+                            <th style="color: #515151; text-align: center;">Research</th>
+                            <th style="color: #515151; text-align: center;"><div>Category</div></th>
+                            <th style="color: #515151">Title</th>
+                            <th style="color: #515151">Description</th>
+                            <th style="color: #515151">Author</th>
+                            <th style="color: #515151; text-align: center;">Launch</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each modelsInView as |model|}}
+                            <tr>
+                                <td>
+                                    <div class="card">
+                                        <div class="content" style="color: #515151">
+                                            <div class="blurring dimmable fluid image" style="min-height: 48px;">
+                                                <div class="ui dimmer">
+                                                    <div class="content">
+                                                        <div class="center">
+                                                            {{#if showLink}}
+                                                                {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
+                                                            {{/if}}
+                                                            {{#if showSelect}}
+                                                                <div class="ui inverted button" {{action 'select' model}}>Select</div>
+                                                            {{/if}}
+                                                            {{#if showDelete}}
+                                                                <a class="ui tiny bottom right attached label" {{action 'attemptDeletion' model}}>
+                                                                    <i class="red remove icon"></i>
+                                                                </a>
+                                                            {{/if}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <img src="{{model.illustration}}" height="48" style="height: 48px; width: 48px" class="pic" />
+                                                <span class="zoom-icon">
+                                                    <img src="{{model.icon}}" width="32" height="32" style="height: 32px;width: 32px;margin: -0.5rem 1rem;">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="text-align: center">
+                                    <div style="text-transform:uppercase;color:#ba975e;font-weight: 500;font-size:75%;">
+                                        {{model.category}}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="font-weight:500;padding: 0 0 5px 0;color:#515151;font-size:75%;"> {{truncate-name model.title}} </div>
+                                </td>
+                                <td>
+                                    <div style="max-height:120px; overflow: auto; color: #515151;">
+                                        {{convert-markdown model.description}}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="color: #67c096; font-size: 75%">{{model.authors}}</div>
+                                </td>
+                                <td style="text-align: center;">
+                                    {{#if (eq tale_instantiating_id model.id)}}
+                                        {{#if tale_instantiating}}
+                                            <div class="ui segment" style="height:75%;">
+                                                <div class="ui active inverted dimmer">
+                                                    <div class="ui text loader" style="font-size:1rem;">Launching Tale {{truncate-name model.title}}</div>
+                                                </div>
+                                            </div>
+                                        {{/if}}
+                                        {{#if tale_instantiated}}
+                                            <div class="ui green icon message">
+                                                <div class="content">
+                                                    <div class="header">
+                                                        <i class="checkmark icon"></i>
+                                                        <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
+                                                    </div>
+                                                    <div class="ui buttons">
+                                                      {{#link-to 'run.view' instance._id}}
+                                                        <div class="ui mini green icon button" style="margin-right: 10px">
+                                                          <i class="play icon"></i>
+                                                          Go to Tale
+                                                        </div>
+                                                      {{/link-to}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {{/if}}
+                                        {{#if tale_not_instantiated}}
+                                            <div class="ui red icon message">
+                                                <i class="remove circle icon"></i>
+                                                <div class="content">
+                                                    <div class="header">
+                                                        The Tale '{{truncate-name model.name}}' could not be launched !
+                                                        <br> {{error_msg}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {{/if}}
+                                    {{else}}
+                                        <div class="ui mini green icon button" {{action 'launchTale' model}}>
+                                            <i class="play round icon"></i>
+                                        </div>
+                                    {{/if}}
+                                </td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        {{else}}
+            <div class="ui {{cardsPerRow}} doubling selectable cards {{guid}}" style="padding: 5px 20px 5px 20px; margin-bottom: 1em;">
+                {{#each modelsInView as |model|}}
+                    <div class="card">
+                        <div class="blurring dimmable fluid image" style="min-height: 250px;">
+                            <div class="ui dimmer">
+                                <div class="content">
+                                    <div class="center">
+                                        {{#if showLink}}
+                                            {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
+                                        {{/if}}
+                                        {{#if showSelect}}
+                                            <div class="ui inverted button" {{action 'select' model}}>Select</div>
+                                        {{/if}}
+                                        {{#if showDelete}}
+                                            <a class="ui tiny bottom right attached label" {{action 'attemptDeletion' model}}>
+                                                <i class="red remove icon"></i>
+                                            </a>
+                                        {{/if}}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <img src="{{model.illustration}}" height="400" style="height: 400px;" alt="Research Image" class="pic" />
+                            <span class="zoom-icon">
+                                <img src="{{model.icon}}" width="80" style="width: 80px;" alt="Compute Icon">
+                            </span>
+
+                        </div>
+
+                        <div class="content" style="color: #515151">
+                            <div style="text-transform: uppercase; color: #ba975e;font-weight: 700;">{{model.category}}</div>
+                            <div style="font-weight: 700; font-size: 120%; padding: 0 0 5px 0"> {{truncate-name model.title}} </div>
+
+                            <div style="height:120px; overflow: scroll;">
+                                {{convert-markdown model.description}}
+                            </div>
+                            <div style="padding: 4px"></div>
+                            <div style="color: #67c096">
+                                {{#if model.authors}}
+                                    {{model.authors}}
+                                {{else}}
+                                    &nbsp;
+                                {{/if}}
+                            </div>
+                            <div style="padding: 8px"></div>
+                            <div class="ui right aligned grid" style="padding: 0; float: right;">
+                                <div class="right aligned row" style="padding: 0">
+                                    <div class="ui right aligned mini green labeled icon button" {{action 'launchTale' model}}>
+                                        <i class="play icon"></i>
+                                        Launch
+                                    </div>
+                                </div>
+                            </div>
+                            {{#if (eq tale_instantiating_id model.id)}}
+                                {{#if tale_instantiating}}
+                                    <div class="ui segment" style="height:100px">
+                                        <div class="ui active inverted dimmer">
+                                            <div class="ui text loader">Launching Tale {{truncate-name model.title}}</div>
+                                        </div>
+                                    </div>
+                                {{/if}}
+                                {{#if tale_instantiated}}
+                                    <div class="ui green icon message">
+                                        <i class="checkmark icon"></i>
+                                        <div class="content">
+                                            <div class="header">
+                                                <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
+
+                                                <div class="ui buttons">
+                                                    {{#link-to 'run.view' instance._id}}
+                                                      <div class="ui mini green icon button" style="margin-right: 10px">
+                                                        <i class="play icon"></i>
+                                                        Go to Tale
+                                                      </div>
+                                                    {{/link-to}}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                {{/if}}
+                                {{#if tale_not_instantiated}}
+                                    <div class="ui red icon message">
+                                        <i class="remove circle icon"></i>
+                                        <div class="content">
+                                            <div class="header">
+                                                The Tale '{{truncate-name model.name}}' could not be launched !
+                                                <br> {{error_msg}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {{/if}}
+                            {{/if}}
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        {{/if}}
+    {{/if}}
+</div>
+
+{{ui/delete-modal
+    model=selectedTale
+    modelType="tale"
+    approveDelete=(action "approveDelete" selectedTale)
+    denyDelete=(action "denyDelete" selectedTale)}}
+
+<div class="ui warning-modal modal" style="display: none">
+    <div class="header">
+        Cannot Delete Tale
+    </div>
+    <div class="image content">
+        <div class="description">
+            <p>{{cannotDeleteMessage}}</p>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button" {{action 'denyDelete'}}>
+            Close
+        </div>
+    </div>
+</div>

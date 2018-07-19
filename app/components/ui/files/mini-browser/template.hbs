@@ -1,0 +1,18 @@
+<div class="wt panel manage second">
+    <div class="wt paddleboard">
+        <h2>
+            <i class="disk icon"></i> Data
+            {{!-- <span class="quota"><i class="circle plus large icon"></i></span> --}}
+        </h2>
+    </div>
+    <div class="ui stackable grid autoheight">
+        <div class="sixteen wide column folder-navigator-container">
+            <div class="ui collapsable grid folder-grid">
+              {{!-- {{ui/files/folder-navigator currentNavCommand=currentNavCommand openCreateFolderModal="openCreateFolderModal" navClicked="navClicked"}} --}}
+              {{ui/files/folder-chooser
+                onSelectedFolder=(action "selectedFolder")
+              }}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,40 +1,41 @@
+/*eslint no-unused-vars: ["error", { "vars": "local" }]*/
 import { faker } from 'ember-cli-mirage';
 
-export default function() {
-    // this.namespace = "";
+export default function () {
+  // this.namespace = "";
 
-    this.get('api/image', (schema, request) => {
-        let fakeImages = schema.image.all();
-        return (fakeImages) ? fakeImages.models : [];
-    });
+  this.get('api/image', (schema, request) => {
+    let fakeImages = schema.image.all();
+    return (fakeImages) ? fakeImages.models : [];
+  });
 
-    this.get('api/folder/registered', (schema, request) => {
-        let fakeRegistered = schema.folder.all();
-        return (fakeRegistered) ? fakeRegistered.models : [];
-    });
+  this.get('api/folder/registered', (schema, request) => {
+    let fakeRegistered = schema.folder.all();
+    return (fakeRegistered) ? fakeRegistered.models : [];
+  });
 
-    this.get('api/tale', (schema, request) => {
-        let fakeTale = schema.tale.all();
-        return (fakeTale) ? fakeTale.models : [];
-    });
+  this.get('api/tale', (schema, request) => {
+    let fakeTale = schema.tale.all();
+    return (fakeTale) ? fakeTale.models : [];
+  });
 
-    this.get('user/me', (schema, request) => {
-        let user = schema.user.find(1);
-        return (user) ? user.attrs : null;
-    });
+  this.get('user/me', (schema, request) => {
+    let user = schema.user.find(1);
+    return (user) ? user.attrs : null;
+  });
 
-    this.get('api/user/:id', (schema, request) => {
-        let user = schema.user.find(1);
-        return (user) ? user.attrs : null;
-    });
+  this.get('api/user/:id', (schema, request) => {
+    let user = schema.user.find(1);
+    return (user) ? user.attrs : null;
+  });
 
-    this.get('oauth/provider', (schema, request) => {
-        return {
-            "Bitbucket": "https://bitbucket.org/blah",
-            "GitHub": "https://github.com/blah",
-            "Globus": "https://auth.globus.org/blah"
-        };
-    });
+  this.get('oauth/provider', (schema, request) => {
+    return {
+      "Bitbucket": "https://bitbucket.org/blah",
+      "GitHub": "https://github.com/blah",
+      "Globus": "https://auth.globus.org/blah"
+    };
+  });
 
   // this.get('/frontends', function() {
   //   return {
@@ -106,27 +107,26 @@ export default function() {
   // });
 
 }
-
 // These comments are here to help you get started. Feel free to delete them.
 
 /*
- Config (with defaults).
+  Config (with defaults).
 
- Note: these only affect routes defined *after* them!
- */
+  Note: these only affect routes defined *after* them!
+*/
 
 // this.urlPrefix = '';    // make this `http://localhost:8080`, for example, if your API is on a different server
-// this.namespace = '';    // make this `api`, for example, if your API is namespaced
+// this.namespace = '';    // make this `/api`, for example, if your API is namespaced
 // this.timing = 400;      // delay for each request, automatically set to 0 during testing
 
 /*
- Shorthand cheatsheet:
+  Shorthand cheatsheet:
 
- this.get('/posts');
- this.post('/posts');
- this.get('/posts/:id');
- this.put('/posts/:id'); // or this.patch
- this.del('/posts/:id');
+  this.get('/posts');
+  this.post('/posts');
+  this.get('/posts/:id');
+  this.put('/posts/:id'); // or this.patch
+  this.del('/posts/:id');
 
- http://www.ember-cli-mirage.com/docs/v0.2.x/shorthands/
- */
+  http://www.ember-cli-mirage.com/docs/v0.3.x/shorthands/
+*/

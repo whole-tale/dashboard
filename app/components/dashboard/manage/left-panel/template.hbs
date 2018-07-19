@@ -1,0 +1,41 @@
+<div class="wt panel manage">
+    <div class="wt paddleboard">
+        <h2><i class="far fa-hdd"></i> Data <span style="font-style:italic;">Import or link data to use in Tales</span></h2>
+    </div>
+
+    <div class="main-row">
+        <div class="ui grid">
+            <div class="five wide column">
+                {{#if currentFolderId}}
+                    {{input type="file" value=file class="nice upload hidden" multiple=true}}
+                {{/if}}
+            </div>
+            <div class="eleven wide column">
+                {{ui/files/bread-crumbs currentNav=currentNav currentBreadCrumb=currentBreadCrumb fileBreadCrumbs=fileBreadCrumbs isMain=true navClicked="navClicked" bcClicked="breadcrumbClicked"}}
+            </div>
+        </div>
+    </div>
+
+    <div class="ui grid">
+        <div class="five wide column folder-navigator-container">
+            <div class="ui collapsable grid folder-grid">
+              {{ui/files/folder-navigator currentNavCommand=currentNavCommand openUploadDialog="openUploadDialog" openCreateFolderModal="openCreateFolderModal" onRegisterDataset="openRegisterModal" navClicked="navClicked"}}
+            </div>
+        </div>
+        <div class="eleven wide column">
+            <div class="ui collapsable grid" style="margin-left: 10px">
+                <div class="sixteen wide right aligned column">
+                  {{ui/files/directory-browser currentNav=currentNav folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
+                </div>
+                <div class="sixteen wide column overlay">
+                  {{#unless currentBreadCrumb.isCollection}}
+                    {{ui/files/nice-dropzone folderId=currentFolderId refresh=(action 'refresh')}}
+                  {{/unless}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ui/files/create-folder-modal onNewFolder=(action "insertNewFolder")}}
+{{ui/files/registration-modal}}
