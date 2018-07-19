@@ -81,6 +81,7 @@ export default Ember.Component.extend({
           component.get('store').findRecord('instance', instance.get('_id'), { reload:true })
             .then(model => {
               if(model.get('status') === 1) {
+                component.set('launchingInstance', false);
                 component.get('taleLaunched')();
                 Ember.run.cancel(currentLoop);
               }
@@ -91,7 +92,6 @@ export default Ember.Component.extend({
       currentLoop = startLooping();
 
       Ember.run.later((function () {
-        component.set('launchingInstance', false);
         component.get('router').transitionTo('run.view', instanceId);
       }), 1000);
     };
@@ -99,6 +99,7 @@ export default Ember.Component.extend({
     let onFail = function (item) {
       // deal with the failure here
       item = JSON.parse(item);
+      component.set('launchingInstance', false);
       console.log(`Launching new instance ${item} threw some errors`);
     };
 
@@ -111,8 +112,6 @@ export default Ember.Component.extend({
       null,
       onSuccess,
       onFail);
-
-    component.set('launchingInstance', true);
   },
 
   actions: {
@@ -126,12 +125,17 @@ export default Ember.Component.extend({
     createTale() {
       let component = this;
 
+      if (component.launchingInstance) return;
+
+      component.set('launchingInstance', true);
+
       let onSuccess = function (item) {
         component.launchTale(item);
       };
 
       let onFail = function (e) {
         // deal with the failure here
+        component.set('launchingInstance', false);
         console.log(e);
       };
 

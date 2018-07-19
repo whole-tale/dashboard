@@ -17,8 +17,7 @@
             {{partial "forms/new-tale-input"}}
             <div class="ui secondary menu">
                 <div style="text-align: center">
-                    <button class="ui big icon button {{if invalidNewTale 'grey'}} {{unless invalidNewTale 'blue'}}"
-                            disabled={{invalidNewTale}}
+                    <button class="{{if (or invalidNewTale launchingTale) 'disabled'}} ui big icon button {{if invalidNewTale 'grey'}} {{unless invalidNewTale 'blue'}}"
                             {{action "createTale"}}>
                         Launch New Tale
                     </button>
