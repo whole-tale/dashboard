@@ -29,13 +29,13 @@ export default Ember.Service.extend({
     notify() {
         let notifs = this.getNotifications();
 
-        let eventNotifier = Ember.$('#event-notifier');
+        let eventNotifier = Ember.$('#add-notify');
         let next = notifs.shift();
 
         if(next) {
             try {
                 this.setNotification(next);
-                if(Ember.$('.notifier').hasClass('visible')) eventNotifier.click();
+                // if(Ember.$('.notifier').hasClass('visible')) eventNotifier.click();
                 eventNotifier.click();
                 this.setNotifications(notifs);
             }

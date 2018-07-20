@@ -48,7 +48,6 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
 
             let id = snapshot.id;
             let url = this.buildURL(type.modelName, id, snapshot, 'updateRecord');
-
             return this.get('authRequest').send(url, { method: "PUT", headers: { 'Content-Type': 'application/json' }, data: JSON.stringify(data) });
         }
         return this._super(...arguments);

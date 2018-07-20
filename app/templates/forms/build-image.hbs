@@ -1,0 +1,93 @@
+<div class="ui form">
+  <div class="ui twelve wide field">
+    <label>Select Image</label>
+    {{#ui-dropdown class="image selection" selected=imageId onChange=(action (mut imageId))}}
+      <div class="default text">No Image Chosen</div>
+      <i class="dropdown icon"></i>
+      <div class="menu">
+      {{#each model.images as |image|}}
+          <div class="item" data-value="{{image.id}}">
+              {{image.name}}
+          </div>
+      {{/each}}
+      </div>
+    {{/ui-dropdown}}
+  </div>
+  <div class="ui divider"></div>
+  {{#if imageId}}
+    <div class="ui yellow message">
+      <div class="content">
+        <div class="header">
+          Please confirm details before building image ...
+        </div>
+      </div>
+    </div>
+    <img width=64 height=64 src="{{imageDetails.icon}}"/>
+    <div class="field">
+      <label>Recipe Name</label>
+      <input readonly value="{{recipeDetails.name}}"/>
+    </div>
+    <div class="field">
+      <label>Recipe Description</label>
+      {{convert-markdown recipeDetails.description}}
+    </div>
+    <div class="field">
+      <label>Recipe URL</label>
+      <input readonly value="{{recipeDetails.url}}/commits/{{recipeDetails.commitId}}"/>
+    </div>
+    <div class="field">
+      <label>Image Name</label>
+      <input readonly value={{imageDetails.name}}/>
+    </div>
+    <div class="field">
+      <label>Image Description</label>
+      {{convert-markdown imageDetails.description}}
+    </div>
+    <div class="field">
+      <label>Docker Name</label>
+      <input readonly value={{imageDetails.fullName}}/>
+    </div>
+    <div class="field">
+      <label>Docker Configuration</label>
+      {{!-- <textarea readonly> --}}
+        <pre>{{prettify-json imageDetails.config}}</pre>
+      {{!-- </textarea> --}}
+    </div>
+  {{/if}}
+  {{#if show_errors}}
+    <div class="ui red message">
+      <div class="content">
+        {{error_message}}
+      </div>
+    </div>
+  {{/if}}
+</div>
+{{#if creating}}
+    <div class="ui segment" style="height:100px">
+        <div class="ui active inverted dimmer">
+            <div class="ui text loader">Building Image...</div>
+        </div>
+    </div>
+{{/if}}
+
+{{#if created}}
+    <div class="ui green icon message">
+        <i class="checkmark icon"></i>
+        <div class="content">
+            <div class="header">
+                The Image has been built.
+            </div>
+        </div>
+    </div>
+{{/if}}
+
+{{#if not_created}}
+    <div class="ui red icon message">
+        <i class="remove circle icon"></i>
+        <div class="content">
+            <div class="header">
+                The Image could not be built !
+            </div>
+        </div>
+    </div>
+{{/if}}

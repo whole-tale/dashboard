@@ -46,7 +46,12 @@ export default Ember.Controller.extend({
   }),
   actions: {
 
-    openDeleteModal: function(id) {
+    playTale: function(id) {
+      this.set("tale_to_show_url", id);
+      this.set("showTale", true);
+    },
+
+      openDeleteModal: function(id) {
       var selector = '.ui.' + id + '.modal';
       console.log("Selector: " +  selector);
       $(selector).modal('show');

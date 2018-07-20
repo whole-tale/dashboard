@@ -1,0 +1,129 @@
+
+
+<div class="ui form">
+    <div class="ui fifteen wide field">
+        <label style="display:inline;">Using Recipe</label>
+        <i class="recipes grey circle help icon"></i>
+        <div class="floating ui basic blue label hidden" style="left:1em !important; top: -2em !important; padding:8px;" id="recipe-info-data-content">Either create a new recipe in the previous step or search for existing ones.</div>
+    </div>
+    <div class="ui fifteen wide field">
+        {{#ui-dropdown class="recipe selection" selected=recipeId onChange=(action (mut recipeId))}}
+            <div class="default text">No Recipe Chosen</div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+            {{#each model.recipes as |recipe|}}
+                <div class="item" data-value="{{recipe.id}}">
+                    {{recipe.name}}
+                </div>
+            {{/each}}
+            </div>
+        {{/ui-dropdown}}
+    </div>
+    <div class="ui fields">
+        <div class="ui fourteen wide field">
+            <label>Image Name</label>
+            {{input value=imageName type="text" placeholder="Name Displayed in Wholetale Dashboard"}}
+        </div>
+         <div class="ui two wide field">
+                <label>Public</label>
+              {{ui-checkbox class="toggle"  label="" checked=public_checked onChange=(action (mut public_checked))}}
+        </div>
+    </div>
+    <div class="ui fifteen wide field">
+        <label>Icon URL</label>
+        {{input value=imageIconURL type="text" placeholder=""}}
+    </div>
+    <div class="ui divider"></div>
+    <div class="two fields">
+        <div class="ui twelve wide field">
+            <label>Docker Image Name</label>
+            Image name must be consistent with docker's standard naming rules:
+            <ol class="ui list">
+                <li>An image name is made up of slash-separated name components in the format: <pre>fedora/httpd</pre>
+                    <ol>
+                        <li>Where <b>fedora</b> is the <b>hostname</b> and <b>httpd</b> is the <b>image name</b>.</li>
+                    </ol>
+                </li>
+                <li>If the hostname is excluded, the docker registry will be assumed as the host for the image.</li>
+                <li>The hostname must comply with standard DNS rules, but may not contain underscores.</li>
+                <li>If a hostname is present, it may optionally be followed by a port number in the format :8080</li>
+                <li>Name components may contain lowercase letters, digits, a period, one or two underscores, and one or more dashes</li>
+            </ol>
+
+            {{input value=imageDockerName type="text" placeholder="Type image name consistent with docker standards (example: myregistryhost:5000/fedora/httpd)"}}
+        </div>
+    </div>
+    <div class="ui divider"></div>
+    <div class="field">
+      <div class="ui sixteen wide field">
+        <label>Configuration</label>
+      </div>
+    </div>
+    <div class="three fields">
+      <div class="ui twelve wide field">
+        <label>Command</label>
+        {{input value=imageCommand type="text" placeholder="Command to run when the container starts"}}
+      </div>
+      <div class="ui twelve wide field">
+        <label>User</label>
+        {{input value=imageUser type="text" placeholder="Username used inside the running container"}}
+      </div>
+      <div class="ui twelve wide field">
+        <label>Mount Work Directory</label>
+        {{input value=imageWorkDirectory type="text" placeholder="Path where the Whole Tale filesystem will be mounted"}}
+      </div>
+    </div>
+    <div class="two fields">
+      <div class="ui twelve wide field">
+        <label>URL Path</label>
+        {{input value=imageUrlPath type="text" placeholder="Subpath appended to the randomly generated container URL"}}
+      </div>
+      <div class="ui twelve wide field">
+        <label>Port</label>
+        {{input value=imagePort type="text" placeholder="The exposed internal port that is going to be accessbile through HTTP(S)"}}
+      </div>
+    </div>
+    <div class="ui divider"></div>
+    <div class="field">
+          <label>Description</label>
+          {{ui/markdown-editor markdownValue=imageDescription}}
+      </div>
+      {{ui/tags-widget tags=imageTags}}
+      {{#if show_errors}}
+        <div class="ui red message">
+          <div class="content">
+            {{error_message}}
+          </div>
+        </div>
+      {{/if}}
+</div>
+
+{{#if creating}}
+    <div class="ui segment" style="height:100px">
+        <div class="ui active inverted dimmer">
+            <div class="ui text loader">Saving Image...</div>
+        </div>
+    </div>
+{{/if}}
+
+{{#if created}}
+    <div class="ui green icon message">
+        <i class="checkmark icon"></i>
+        <div class="content">
+            <div class="header">
+                The Image has been saved, you will be redirected to its view shortly !
+            </div>
+        </div>
+    </div>
+{{/if}}
+
+{{#if not_created}}
+    <div class="ui red icon message">
+        <i class="remove circle icon"></i>
+        <div class="content">
+            <div class="header">
+                The Image could not be saved !
+            </div>
+        </div>
+    </div>
+{{/if}}

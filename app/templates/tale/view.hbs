@@ -1,182 +1,261 @@
-<div class="ui tool segment">
-    <div class="ui small blue button" {{action 'back'}}><i class="caret left icon"></i> Back </div>
+<div class="ui stretched stackable grid">
+    <div class="row panel container">
+        <div class="sixteen wide column">
+            <div class="wt panel manage">
+                <div class="wt paddleboard">        
+                    <div class="tool segment">
+                        <div class="ui small blue button" {{action 'back'}}><i class="caret left icon"></i> Back </div>
 
-    {{#if canDelete }}
-      <div class="ui small red icon button" {{action 'openDeleteModal' model._id}} style="float: right">
-        <i class="remove icon"></i>
-        Delete Tale
-      </div>
-    {{/if}}
+                        {{#if isOwner }}
+                            <div class="ui small red icon button" {{action 'openDeleteModal' model._id}} style="float: right">
+                                <i class="remove icon"></i>
+                                Delete Tale
+                            </div>
+{{!--                             <div class="ui small blue icon button" {{action 'shareTale' model}} style="float: right;">
+                                <i class="share alternate icon"></i>
+                                Share Tale
+                            </div> --}}
+                        {{/if}}
 
-</div>
-<div class="card">
-    <div class="content">
-        <div class="ui grid">
-            <div class="eight wide column">
-                <div class="ui huge header" style="margin: 0 0 5px 0"> {{model.title}} </div>
-                <div class="ui header" style="margin: 0 0 5px 0">
-                    By <span style="color: #67c096">{{model.authors}} </span>
+                        {{!-- <div class="ui small blue icon button" {{action 'launchTale'}} style="float: right;">
+                            <i class="play icon"></i>
+                            Launch Tale
+                        </div> --}}
+
+                        {{#if tale_instantiating}}
+                            <div class="ui segment" style="height:100px">
+                                <div class="ui active inverted dimmer">
+                                    <div class="ui text loader">Launching Tale {{model.name}}</div>
+                                </div>
+                            </div>
+                        {{/if}}
+                        
+                        {{#if tale_instantiated}}
+                            <div class="ui green icon message">
+                                <i class="checkmark icon"></i>
+                                <div class="content">
+                                    <div class="header">
+                                        <p>The Tale '{{model.name}}' has been launched !</p>
+
+                                        <div class="ui buttons">
+                                            <a href="{{instance.url}}" target="_blank">
+                                                <div class="ui green icon button" style="margin-right: 10px">
+                                                    <i class="play icon"></i>
+                                                    Go to Tale
+                                                </div>
+                                            </a>
+                                            {{#link-to 'status' class="ui blue icon button"}}
+                                                <i class="line chart icon"></i>
+                                                Check Status 
+                                            {{/link-to}}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        {{/if}}
+                        
+                        {{#if tale_not_instantiated}}
+                            <div class="ui red icon message">
+                                <i class="remove circle icon"></i>
+                                <div class="content">
+                                    <div class="header">
+                                        The Tale '{{model.name}}' could not be launched !<br>
+                                        {{error_msg}}
+                                    </div>
+                                </div>
+                            </div>
+                        {{/if}}
+
+                    </div>
+                </div>
+                <div class="ui rounded-bottom" style="background-color: #f3f3f3;">
+                    <div class="card">
+                        <div class="content">
+                            <div class="ui grid">
+                                <div class="eight wide column">
+                                    <div class="ui huge header" style="margin: 0 0 5px 0"> {{model.title}} </div>
+                                    <div class="ui header" style="margin: 0 0 5px 0">
+                                        By <span style="color: #67c096">{{model.authors}} </span>
+                                    </div>
+                                </div>
+                                <div class="eight wide right aligned column">
+                                    <img src="{{model.icon}}" width="80" style="width: 80px;" alt="Compute Icon">
+                                </div>
+                            </div>
+
+                            <div class="ui center aligned basic segment" style="margin:5px">
+                                <img src="{{model.illustration}}" height="400" style="height: 400px;" alt="Research Image" class="pic" />
+                            </div>
+
+                            <div class="ui header" style="margin: 0 0 5px 0">Category:  <span style="text-transform: uppercase; color: #ba975e;font-weight: 700;">{{model.category}}</span></div>
+
+                            <div class="ui header" style="margin: 0 0 5px 0">Description</div>
+                            <div>
+                                {{convert-markdown model.description}}
+                            </div>
+                            <div style="padding: 4px"></div>
+                        </div>
+                    </div>
+
+                    <div class="ui {{model._id}} modal" style="display: none">
+                        <i class="close icon"></i>
+                        <div class="header">
+                            Really Delete Tale?
+                        </div>
+                        <div class="image content">
+                            <div class="description">
+                                <p>This will permanently delete the '{{model.name}}' Tale. Continue?</p>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <div class="ui black deny button" {{action 'denyDelete'}}>
+                                No
+                            </div>
+                            <div class="ui positive right labeled icon button" {{action 'approveDelete' model}}>
+                                Yes
+                                <i class="checkmark icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui huge header">Tale Tools</div>
+                    {{#ui-accordion class="fluid styled"}}
+                        {{!-- <div class="active title">
+                            Instantiate Tale
+                        </div>
+                        <div class="active content">
+                            <div class="ui header">Launch Tale</div>
+                            <div class="ui form">
+                                <div class="ui field">
+                                    <label>Instantiation Name</label>
+                                    {{input value=taleInstanceName type="text" placeholder="Tale Name (optional)"}}
+                                </div>
+                                <div class="ui field">
+                                    <div class="ui large blue labeled icon button" {{action 'launchTale'}}>
+                                        <i class="play icon"></i>
+                                        Launch Tale
+                                    </div>
+                                </div>
+                            </div>
+                        </div> --}}
+                        {{#if canEditTale}}
+                            <div class="title">
+                                Edit Tale
+                            </div>
+                            <div class="content">
+                                {{partial "forms/tale-edit"}}
+                                <div class="ui blue submit button" {{action 'updateTale'}}>Update</div>
+                            </div>
+                        {{/if}}
+                        <div class="active title">
+                            View Tale Properties
+                        </div>
+                        <div class="content {{unless canEditTale 'active'}}">
+                            <div class="ui header">
+                                <i class="tasks icon"></i> Tale Properties
+                            </div>
+                            <div class="ui form">
+                                <br>
+                                <div class="field">
+                                    <label>Tale ID</label>
+                                    <input type="text" name="file-id" placeholder="File ID" value="{{model._id}}" disabled>
+                                </div>
+
+
+                                <div class="field">
+                                    <label>Tale Created</label>
+                                    <input type="text" name="date-created" placeholder="Date Created" value="{{from-now model.created}}" disabled>
+                                </div>
+
+                                <div class="field">
+                                    <label>Tale Updated</label>
+                                    <input type="text" name="last-updated" placeholder="Last Updated" value="{{from-now model.updated}}" disabled>
+                                </div>
+
+                                <div class="field">
+                                    <style type="text/css">
+                                        .unhide.icon:hover {
+                                            cursor: pointer;
+                                        }
+                                    </style>
+                                    <label style="margin-right:.5em; display:inline-block;">Involatile Data</label>
+                                    <i class="inline unhide icon" {{action 'gotoFolderView' on='click' }} data-content="View details"></i>
+                                    <input type="text" name="folder" placeholder="Folder Id" value="{{folder.name}}" disabled>
+                                </div>
+
+                                <div class="field">
+                                    <style type="text/css">
+                                        .unhide.icon:hover {
+                                            cursor: pointer;
+                                        }
+                                    </style>
+                                    <label style="margin-right:.5em; display:inline-block;">Image</label>
+                                    <i class="inline unhide icon" {{action 'gotoImageView' on='click' }} data-content="View image details"></i>
+                                    <input type="text" name="image" placeholder="Image Name" value="{{image.name}}" disabled>
+                                </div>
+
+                                <div class="field">
+                                    <style type="text/css">
+                                        .edit.icon:hover {
+                                            cursor: pointer;
+                                        }
+                                    </style>
+                                    <label style="margin-right:.5em; display:inline-block;">Tale Illustration</label>
+                                    <i class="inline edit icon" {{action 'enableEditIcon' on="click" }}></i>
+                                    <input type="text" id="tale-icon" placeholder="Tale Icon" value="{{model.illustration}}" disabled>
+
+                                </div>
+                            </div>
+                        </div>
+                    {{/ui-accordion}}
+
+
+                    {{#if tale_instantiating}}
+                        <div class="ui segment" style="height:100px">
+                            <div class="ui active inverted dimmer">
+                                <div class="ui text loader">Launching Tale {{model.name}}</div>
+                            </div>
+                        </div>
+                    {{/if}}
+
+                    {{#if tale_instantiated}}
+                        <div class="ui green icon message">
+                            <i class="checkmark icon"></i>
+                            <div class="content">
+                                <div class="header">
+                                    <p>The Tale '{{model.name}}' has been launched !</p>
+
+                                    <div class="ui buttons">
+                                        <a href="{{instance.url}}" target="_blank">
+                                            <div class="ui green icon button" style="margin-right: 10px">
+                                                <i class="play icon"></i>
+                                                Go to Tale
+                                            </div>
+                                        </a>
+                                        {{#link-to 'status' class="ui blue icon button"}}
+                                            <i class="line chart icon"></i>
+                                            Check Status
+                                        {{/link-to}}
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    {{/if}}
+                    {{#if tale_not_instantiated}}
+                        <div class="ui red icon message">
+                            <i class="remove circle icon"></i>
+                            <div class="content">
+                                <div class="header">
+                                    The Tale '{{model.name}}' could not be launched !<br>
+                                    {{error_msg}}
+                                </div>
+                            </div>
+                        </div>
+                    {{/if}}
                 </div>
             </div>
-            <div class="eight wide right aligned column">
-                <img src="{{model.icon}}" width="80" style="width: 80px;" alt="Compute Icon">
-            </div>
-        </div>
-
-        <div class="ui center aligned basic segment" style="margin:5px">
-            <img src="{{model.illustration}}" height="400" style="height: 400px;" alt="Research Image" class="pic" />
-        </div>
-
-        <div class="ui header" style="margin: 0 0 5px 0">Category:  <span style="text-transform: uppercase; color: #ba975e;font-weight: 700;">{{model.category}}</span></div>
-
-        <div class="ui header" style="margin: 0 0 5px 0">Description</div>
-        <div>
-          {{convert-markdown model.description}}
-        </div>
-        <div style="padding: 4px"></div>
-      </div>
-  </div>
-
-
-<div class="ui {{model._id}} modal" style="display: none">
-    <i class="close icon"></i>
-    <div class="header">
-        Really Delete Tale?
-    </div>
-    <div class="image content">
-        <div class="description">
-            <p>This will permanently delete the '{{model.name}}' Tale. Continue?</p>
-        </div>
-    </div>
-    <div class="actions">
-        <div class="ui black deny button" {{action 'denyDelete'}}>
-            No
-        </div>
-        <div class="ui positive right labeled icon button" {{action 'approveDelete' model}}>
-            Yes
-            <i class="checkmark icon"></i>
         </div>
     </div>
 </div>
-
-<div class="ui huge header">Tale Tools</div>
-{{#ui-accordion class="fluid styled"}}
-    <div class="active title">
-        Instantiate Tale
-    </div>
-    <div class="active content">
-        <div class="ui header">Launch Tale</div>
-        <div class="ui form">
-            <div class="ui field">
-                <label>Instantiation Name</label>
-              {{input value=taleInstanceName type="text" placeholder="Tale Name (optional)"}}
-            </div>
-            <div class="ui field">
-                <div class="ui large blue labeled icon button" {{action 'launchTale'}}>
-                    <i class="play icon"></i>
-                    Launch Tale
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="title">
-        Edit Tale
-    </div>
-    <div class="content">
-      {{partial "forms/tale-edit"}}
-        <div class="ui blue submit button" {{action 'updateTale'}}>Update</div>
-    </div>
-    <div class="title">
-        View Tale Properties
-    </div>
-    <div class="content">
-        <div class="ui header">
-            <i class="tasks icon"></i> Tale Properties
-        </div>
-        <div class="ui form">
-            <br>
-            <div class="field">
-                <label>Tale ID</label>
-                <input type="text" name="file-id" placeholder="File ID" value="{{model._id}}" disabled>
-            </div>
-
-
-            <div class="field">
-                <label>Tale Created</label>
-                <input type="text" name="date-created" placeholder="Date Created" value="{{from-now model.created}}" disabled>
-            </div>
-
-            <div class="field">
-                <label>Tale Updated</label>
-                <input type="text" name="last-updated" placeholder="Last Updated" value="{{from-now model.updated}}" disabled>
-            </div>
-
-            <div class="field">
-                <style type="text/css">.unhide.icon:hover{cursor:pointer;}</style>
-                <label style="margin-right:.5em; display:inline-block;">Folder</label>
-                <i class="inline unhide icon" {{action 'gotoFolderView' on='click'}} data-content="View folder details"></i>
-                <input type="text" name="folder" placeholder="Folder" value="{{folder.name}}" disabled>
-            </div>
-
-            <div class="field">
-                <style type="text/css">.unhide.icon:hover{cursor:pointer;}</style>
-                <label style="margin-right:.5em; display:inline-block;">Image</label>
-                <i class="inline unhide icon" {{action 'gotoImageView' on='click'}} data-content="View image details"></i>
-                <input type="text" name="image" placeholder="Image Name" value="{{image.name}}" disabled>
-            </div>
-
-            <div class="field">
-                <style type="text/css">.edit.icon:hover{cursor:pointer;}</style>
-                <label style="margin-right:.5em; display:inline-block;">Tale Illustration</label>
-                <i class="inline edit icon" {{action 'enableEditIcon' on="click"}}></i>
-                <input type="text" id="tale-icon" placeholder="Tale Icon" value="{{model.illustration}}" disabled>
-
-            </div>
-        </div>
-    </div>
-{{/ui-accordion}}
-
-
-{{#if tale_instantiating}}
-    <div class="ui segment" style="height:100px">
-        <div class="ui active inverted dimmer">
-            <div class="ui text loader">Launching Tale {{model.name}}</div>
-        </div>
-    </div>
-{{/if}}
-
-{{#if tale_instantiated}}
-    <div class="ui green icon message">
-        <i class="checkmark icon"></i>
-        <div class="content">
-            <div class="header">
-                <p>The Tale '{{model.name}}' has been launched !</p>
-
-              <div class="ui buttons">
-                <a href="{{instance.url}}" target="_blank">
-                    <div class="ui green icon button" style="margin-right: 10px">
-                        <i class="play icon"></i>
-                        Go to Tale
-                    </div></a>
-              {{#link-to 'status' class="ui blue icon button"}}
-                  <i class="line chart icon"></i>
-                  Check Status
-              {{/link-to}}
-              </div>
-
-            </div>
-        </div>
-    </div>
-{{/if}}
-
-{{#if tale_not_instantiated}}
-    <div class="ui red icon message">
-        <i class="remove circle icon"></i>
-        <div class="content">
-            <div class="header">
-                The Tale '{{model.name}}' could not be launched !<br>
-                {{error_msg}}
-            </div>
-        </div>
-    </div>
-{{/if}}

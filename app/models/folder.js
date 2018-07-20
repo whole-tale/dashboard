@@ -1,8 +1,9 @@
 import DS from 'ember-data';
 import Ember from 'ember';
 import FolderItemMixin from 'wholetale/mixins/folder-item';
+import AccessControlMixin from 'wholetale/mixins/access-control';
 
-export default DS.Model.extend(FolderItemMixin, {
+export default DS.Model.extend(FolderItemMixin, AccessControlMixin, {
   _accessLevel: DS.attr(),
   _id: DS.attr(),
   _modelType: DS.attr('string'),
@@ -13,7 +14,8 @@ export default DS.Model.extend(FolderItemMixin, {
   // }),
   // parentType: DS.attr('string'),
   items: DS.hasMany('item'),
-  folders: DS.hasMany('folder'),
+  folders: DS.hasMany('folder', { inverse: 'parent' }),
+  parent: DS.belongsTo('folder', { inverse: 'folders' }),
   name : DS.attr('string'),
   description: DS.attr('string'),
   created: DS.attr('date'),

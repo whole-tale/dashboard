@@ -1,0 +1,70 @@
+{{!-- app/components/user-access-control/template.hbs --}}
+
+<table class="ui compact unstackable table">
+    <thead>
+        <th>Permissions</th>
+        <th></th>
+    </thead>
+    <tbody>
+        {{#each acl.users as |user|}}
+        <tr>
+            <td>
+                <div class="ui list">
+                    <div class="ui list item">
+                        <div class="content">
+                            <div class="header">{{user.name}}</div>
+                            <div class="description">{{user.login}}</div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="right aligned">
+                <i class="small privacy icon"></i>
+                {{#ui-dropdown class="selection" selected=user.level onChange=(action (mut user.level))}}
+                    <div class="default text"></div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                    {{#each levels as |level|}}
+                        <div class="item" data-value="{{level.id}}">
+                        {{level.text}}
+                        </div>
+                    {{/each}}
+                    </div>
+                {{/ui-dropdown}}
+                <i class="small red remove icon" style="cursor:pointer;" {{action 'removeUserOrGroup' user on='click'}}></i>
+            </td>
+        </tr>
+        {{/each}}
+        {{#each acl.groups as |user|}}
+        <tr>
+            <td>
+                <div class="ui list">
+                    <div class="ui list item">
+                        <div class="content">
+                            <div class="header">{{user.name}}</div>
+                            <div class="description">{{user.login}}</div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="right aligned">
+                <i class="small privacy icon"></i>
+                {{#ui-dropdown class="selection" selected=user.level onChange=(action (mut user.level))}}
+                    <div class="default text"></div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                    {{#each levels as |level|}}
+                        <div class="item" data-value="{{level.id}}">
+                        {{level.text}}
+                        </div>
+                    {{/each}}
+                    </div>
+                {{/ui-dropdown}}
+                <i class="small red remove icon" style="cursor:pointer;" {{action 'removeUserOrGroup' user on='click'}}></i>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+  {{!-- <input type="text" name="first-name" placeholder="First Name"> --}}

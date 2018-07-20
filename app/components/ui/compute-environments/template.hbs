@@ -1,0 +1,40 @@
+<div class="wt panel manage">
+    <div class="wt paddleboard">
+        <h2>
+            <i class="fas fa-desktop"></i> Environments
+        </h2>
+    </div>
+    <div class="ui inverted grey">
+        {{#if showSearch}}
+            <div class="ui secondary menu" style="display: block;">
+                <div class="item">
+                    <div class="ui mini rounded icon search input">
+                        {{input class="prompt" placeholder="Search compute environments..." value=searchStr key-up="search"}}
+                        <i class="search icon"></i>
+                    </div>
+                    <div class="results"></div>
+                </div>
+                {{!-- {{#if (and selectedEnvironment selectedEnvironment.name)}}
+                    <div class="header item" style="font-size: 120%; position: relative;">
+                        <span class="ui blue label" style="margin-right: 10px; margin-left: 0;">Currently Selected</span> 
+                        <span>{{selectedEnvironment.name}}</span>
+                        <i class="times icon" {{action 'deselectEnvironment'}}></i>
+                    </div>
+                {{/if}} --}}
+            </div>
+        {{/if}}
+    </div>
+    {{!-- {{if (and showSearch selectedEnvironment selectedEnvironment.name) 'has-selected-item'}} --}}
+    <div class="environments-list">
+        {{#each modelsInView as |model index|}}
+            <div class="ui vertical menu fluid tales">
+                <a class="item {{if (eq model.id selectedEnvironment.id) 'active-class'}}" {{action 'selectEnvironment' model index}}>
+                    <img src="{{model.icon}}" />
+                    <i class="fas fa-info blue" onclick={{action "openDetailsModal" model preventDefault=true cancelBubble=true}}></i>
+                    <p>{{model.name}}</p>
+                </a>
+            </div>
+        {{/each}}
+    </div>
+</div>
+{{ui/compute-environments/environment-details-modal model=detailsModel}}

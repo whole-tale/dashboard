@@ -1,0 +1,41 @@
+<div class="ui grid form">
+    <div class="row panel container">
+        <div class="five wide column field">
+            <label class="input-label">Tale name:</label>
+        </div>
+        <div class="eleven wide column field">
+            {{input value=newTaleName type="text" placeholder="Tale Name"}}
+        </div>
+    </div>
+    <div class="row panel container">
+        <div class="five wide column field">
+            <label>Compute environment:</label>
+        </div>
+        {{#if (and selectedEnvironment selectedEnvironment.name)}}
+            <div class="eleven wide column field">
+                <span class="item">
+                    <img src="{{selectedEnvironment.icon}}" class="env-image"/>
+                    <span class="env-name">{{selectedEnvironment.name}}</span>
+                </span>
+            </div>
+        {{else}}
+            <div class="eleven wide column field">
+                <label class="muted-text">Select from compute Environments panel</label>
+            </div>
+        {{/if}}
+    </div>
+    <div class="row panel container">
+        <div class="five wide column field">
+            <label>Input data:</label>
+        </div>
+        <div class="eleven wide column field">
+            {{#each inputData as |item|}}
+                <div>
+                    {{item.name}}
+                </div>
+            {{else}}
+                <label class="muted-text">Select from Data panel</label>
+            {{/each}}
+        </div>
+    </div>
+</div>

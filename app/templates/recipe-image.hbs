@@ -1,0 +1,82 @@
+
+
+<div class="ui large header">
+    Import Recipe and Build Image
+</div>
+
+<div class="ui segment">
+  <div class="ui fluid stackable steps">
+      <a class="{{stepsActive.[0]}} step" {{action "gotoStep" 0 }}>
+          <div class="content">
+              <div class="title">Import Recipe</div>
+              <div class="description">Image Recipe Information</div>
+          </div>
+      </a>
+      <a class="{{stepsActive.[1]}} step" {{action "gotoStep" 1 }}>
+          <div class="content">
+              <div class="title">Create Image</div>
+              <div class="description">Docker Image Information</div>
+          </div>
+      </a>
+      <a class="{{stepsActive.[2]}} step" {{action "gotoStep" 2 }}>
+          <div class="content">
+              <div class="title">Build</div>
+              <div class="description">Confirm</div>
+          </div>
+      </a>
+  </div>
+
+    <div style="display: {{showStep.[0]}}">
+      {{partial "forms/recipe-edit"}}
+    </div>
+
+    <div style="display: {{showStep.[1]}}">
+      {{partial "forms/image-edit"}}
+    </div>
+
+
+    <div style="display: {{showStep.[2]}}">
+      {{partial "forms/build-image"}}
+    </div>
+
+
+    <div class="ui secondary menu" >
+        <a class="item" style="padding-left: 0;">
+            <div class="large ui blue labeled icon button" {{action "moveLeft"}}>
+                <i class="caret left icon"></i> Previous
+            </div>
+        </a>
+      <div class="right menu">
+        {{#if (and showSkipButton (not (eq currentStep 2)))}}
+          <a class="item">
+            <div class="large ui blue right labeled icon button" {{action "skip"}}>
+              Skip
+              <i class="caret right icon"></i>
+            </div>
+          </a>
+        {{/if}}
+          <a class="item">
+            {{#if (eq currentStep 0) }}
+              <div class="large ui blue right labeled icon button 
+                {{if (or importButtonDisabled creating) 'disabled'}}" {{action "moveRight"}}>
+                Import Recipe
+                <i class="caret right icon"></i>
+              </div>
+            {{else if (eq currentStep 1)}}
+              <div class="large ui blue right labeled icon button 
+                {{if (or (not (and recipeId imageDockerName)) creating) 'disabled'}}" {{action "moveRight"}}>
+                Create Image
+                <i class="caret right icon"></i>
+              </div>
+            {{else}}
+              <div class="large ui blue right labeled icon button 
+                {{if (or (not imageId) creating) 'disabled'}}" {{action "moveRight"}}>
+                Build
+                <i class="power icon"></i>
+              </div>
+            {{/if}}
+          </a>
+      </div>
+    </div>
+
+</div>

@@ -1,66 +1,26 @@
-{{#if loggedIn}}
-  {{#ui-sidebar class="ui left vertical inverted thin blue menu" context=".component.context" id="sub-sidebar"
-    style="border-top-left-radius: 0rem !important; border-top-right-radius: 0rem !important;"}}
+<div class="ui menu wt dash">
+  <div class="header item wt brand">WHOLE<span>TALE</span> <span> Dashboard</span></div>
 
-      {{#link-to 'index' class="item" invokeAction=(action 'closeMenu' 'Dashboard' 'home')}}
-          <i class="home icon"></i>
-          Home
-      {{/link-to}}
-
-      {{#link-to 'tale' class="item" invokeAction=(action 'closeMenu' 'Tale' 'small white criss cross')}}
-          <i class="small white criss cross icon" ></i>
-          Tales
-      {{/link-to}}
-
-<!--
-      {{#link-to 'explore' class="item" invokeAction=(action 'closeMenu' 'Explore' 'play')}}
-          <i class="video play icon"></i>
-          Explore
-      {{/link-to}}
-
-      {{#link-to 'search' class="item" invokeAction=(action 'closeMenu' 'Search' 'search')}}
-          <i class="search icon"></i>
-          Search
-      {{/link-to}}
--->
-
-      {{#link-to 'catalog' class="item" invokeAction=(action 'closeMenu' 'Catalog' 'disk outline')}}
-          <i class="disk outline icon"></i>
-          Catalog
+  {{#link-to 'browse' class="item" invokeAction=(action 'closeMenu' 'Browse' 'upload')}}
+      Browse
   {{/link-to}}
 
-      {{#link-to 'upload' class="item" invokeAction=(action 'closeMenu' 'Data' 'upload')}}
-          <i class="upload icon"></i>
-          My Data
-      {{/link-to}}
+  {{#if internalState.currentInstanceId }}
+    {{#link-to 'run.view' internalState.currentInstanceId class="item" invokeAction=(action 'closeMenu' 'Run' 'play')}}
+      Run
+    {{/link-to}}
+  {{else}}
+    {{#link-to 'run' class="item" invokeAction=(action 'closeMenu' 'Run' 'play')}}
+      Run
+    {{/link-to}}
+  {{/if}}
 
-      {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'add circle')}}
-          <i class="add circle icon"></i>
-          Compose
-      {{/link-to}}
+  {{#link-to 'manage' class="item" invokeAction=(action 'closeMenu' 'Manage' 'upload')}}
+      Manage
+  {{/link-to}}
 
-      {{#link-to 'status' class="item" invokeAction=(action 'closeMenu' 'Status' 'line chart')}}
-          <i class="line chart icon"></i>
-          Status
-      {{/link-to}}
+  {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
+      Compose
+  {{/link-to}}
 
-<!--
-      {{#link-to 'collaborators' class="item" invokeAction=(action 'closeMenu' 'Collaborators' 'users')}}
-          <i class="users icon"></i>
-          Collaborate
-      {{/link-to}}
--->
-
-      <a class="item" {{action 'staticMenu'}}>
-          <i class="external icon"></i>
-          Fixed Menu
-      </a>
-
-      <a class="item" {{action 'closeMenu' 'logout'}}>
-              <i class="sign out icon"></i>
-              Logout
-        </a>
-
-
-{{/ui-sidebar}}
-{{/if}}
+</div>

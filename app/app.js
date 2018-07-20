@@ -1,15 +1,16 @@
+/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 import Ember from 'ember';
+import DS from 'ember-data';
+import Application from '@ember/application';
 import Resolver from './resolver';
 import loadInitializers from 'ember-load-initializers';
 import config from './config/environment';
 import './models/custom-inflector-rules';
 import moment from 'moment';
 
-let App;
+// Ember.MODEL_FACTORY_INJECTIONS = true;
 
-Ember.MODEL_FACTORY_INJECTIONS = true;
-
-App = Ember.Application.extend({
+const App = Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
   Resolver
