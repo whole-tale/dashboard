@@ -78,7 +78,7 @@ export default Ember.Component.extend({
   actions: {
     //----------------------------------------------------------------------------
     refresh() {
-      // console.log("refreshed");
+      console.log("refreshed");
       let state = this.get('internalState');
       let myController = this;
       let itemID = state.getCurrentFolderID();
