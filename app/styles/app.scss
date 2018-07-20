@@ -401,7 +401,7 @@ p,
   margin: auto;
   text-align: center;
   color: white;
-  max-height: calc(100vh - #{$footer-height} - #{$main-menu-height} - #{$inverted-menu-height} + 1rem);
+  height: calc(100vh - #{$footer-height} - #{$main-menu-height} - #{$inverted-menu-height} + 1rem);
   overflow-y: auto;
 }
 
