@@ -34,16 +34,6 @@ export default Ember.Service.extend({
         allowRegister: true,
         disallowImport: true
       },
-<<<<<<< HEAD
-      // {
-      //   name : "Workspace",
-      //   command : "workspace",
-      //   parentId : thisUserID,          //TODO: Find out what the parent is
-      //   parentType : "user",
-      //   icon : "folder",
-      //   isFolder :  true                //TODO: Find out whether this is an actual folder
-      // },
-=======
       /*
       {
         name : "Results",
@@ -55,7 +45,6 @@ export default Ember.Service.extend({
         instructions: 'Output from Tales',
         allowUpload: true
       },
->>>>>>> master
       {
         name : "Recent",
         command : "recent",
