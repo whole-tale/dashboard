@@ -561,12 +561,11 @@ ui.inverted.menu.wt.top {
   .wt.panel.manage > .environments-list,
   .wt.panel.manage > .tales-list {
     overflow-y: auto;
-    height: calc(100% - #{$wt-main-row-height} - 1rem - 40px);
-    border-bottom-left-radius: 1rem;
-    border-bottom-right-radius: 1rem;
+    height: calc(100% - #{$wt-main-row-height} - 0.5rem - 40px);
+    border-radius: 0;
 
     &.has-selected-item {
-      height: calc(100% - #{$wt-main-row-height} - 1rem - 40px - 46px);
+      height: calc(100% - #{$wt-main-row-height} - 0.5rem - 40px - 46px);
     }
 
     .fluid.menu {
@@ -585,12 +584,12 @@ ui.inverted.menu.wt.top {
     .wt.panel.manage > .environments-list,
     .wt.panel.manage > .tales-list {
       overflow-y: auto;
-      height: calc(100% - #{$wt-main-row-height} - 1rem - 40px);
+      height: calc(100% - #{$wt-main-row-height} - 0.5rem - 40px);
       border-bottom-left-radius: 1rem;
       border-bottom-right-radius: 1rem;
 
       &.has-selected-item {
-        height: calc(100% - #{$wt-main-row-height} - 1rem - 40px - 46px);
+        height: calc(100% - #{$wt-main-row-height} - 0.5rem - 40px - 46px);
       }
 
       .fluid.menu {
@@ -624,8 +623,7 @@ ui.inverted.menu.wt.top {
     .tales-list {
       overflow-y: auto;
       height: calc(100% - #{$wt-main-row-height} - 1rem);
-      border-bottom-left-radius: 1rem;
-      border-bottom-right-radius: 1rem;
+      border-radius: 0;
       &.has-selected-item {
         height: calc(100% - #{$wt-main-row-height} - 46px - 1rem);
       }
