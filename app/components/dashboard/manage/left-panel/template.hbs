@@ -4,10 +4,10 @@
     </div>
 
     <div class="main-row">
-        <div class="ui stackable grid">
+        <div class="ui grid">
             <div class="five wide column">
                 {{#if currentFolderId}}
-                {{input type="file" value=file class="nice upload hidden" multiple=true}}
+                    {{input type="file" value=file class="nice upload hidden" multiple=true}}
                 {{/if}}
             </div>
             <div class="eleven wide column">
@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <div class="ui stackable grid">
+    <div class="ui grid">
         <div class="five wide column folder-navigator-container">
             <div class="ui collapsable grid folder-grid">
               {{ui/files/folder-navigator currentNavCommand=currentNavCommand openUploadDialog="openUploadDialog" openCreateFolderModal="openCreateFolderModal" onRegisterDataset="openRegisterModal" navClicked="navClicked"}}
@@ -25,7 +25,7 @@
         <div class="eleven wide column">
             <div class="ui collapsable grid" style="margin-left: 10px">
                 <div class="sixteen wide right aligned column">
-                  {{ui/files/directory-browser folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
+                  {{ui/files/directory-browser currentNav=currentNav folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
                 </div>
                 <div class="sixteen wide column overlay">
                   {{#unless currentBreadCrumb.isCollection}}
@@ -38,4 +38,4 @@
 </div>
 
 {{ui/files/create-folder-modal onNewFolder=(action "insertNewFolder")}}
-{{ui/files/registration-modal}}
+{{ui/files/registration-modal onRegisterData=(action "refresh")}}

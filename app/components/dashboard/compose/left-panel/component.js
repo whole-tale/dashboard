@@ -2,12 +2,13 @@ import Ember from 'ember';
 import {
   computed
 } from '@ember/object';
+const service = Ember.inject.service.bind(Ember);
 
 export default Ember.Component.extend({
-  apiCall: Ember.inject.service('api-call'),
-  wtEvents: Ember.inject.service(),
-  store: Ember.inject.service(),
-  router: Ember.inject.service(),
+  apiCall: service('api-call'),
+  wtEvents: service(),
+  store: service(),
+  router: service(),
 
   inputData: Ember.A(),
   selectedEnvironment: Ember.Object.create({}),
@@ -16,7 +17,8 @@ export default Ember.Component.extend({
   launchingInstance: false,
 
   invalidNewTale: computed('inputData', 'selectedEnvironment', 'newTaleName', 'inputData.length', function () {
-    let hasName = Boolean(this.get('newTaleName') && this.get('newTaleName').length);
+    let name = this.get('newTaleName');
+    let hasName = Boolean(name && name.trim().length);
     let hasEnvironment = Boolean(this.get('selectedEnvironment') && this.get('selectedEnvironment').id);
     if(!this.get('inputData')) {
       this.set('inputData', Ember.A());
@@ -70,8 +72,26 @@ export default Ember.Component.extend({
       const instance = Ember.Object.create(JSON.parse(item));
       const instanceId = instance._id;
       console.log(`Launching new instance with id: ${instanceId}`);
+
+      let currentLoop = null;
+      // Poll the status of the instance every second using recursive iteration
+      let startLooping = function(func){
+        return Ember.run.later(function(){
+          currentLoop = startLooping(func);
+          component.get('store').findRecord('instance', instance.get('_id'), { reload:true })
+            .then(model => {
+              if(model.get('status') === 1) {
+                component.set('launchingInstance', false);
+                component.get('taleLaunched')();
+                Ember.run.cancel(currentLoop);
+              }
+            });
+        }, 1000);
+      };
+      //Start polling
+      currentLoop = startLooping();
+
       Ember.run.later((function () {
-        component.set('launchingInstance', false);
         component.get('router').transitionTo('run.view', instanceId);
       }), 1000);
     };
@@ -79,6 +99,7 @@ export default Ember.Component.extend({
     let onFail = function (item) {
       // deal with the failure here
       item = JSON.parse(item);
+      component.set('launchingInstance', false);
       console.log(`Launching new instance ${item} threw some errors`);
     };
 
@@ -91,8 +112,6 @@ export default Ember.Component.extend({
       null,
       onSuccess,
       onFail);
-    
-    component.set('launchingInstance', true);
   },
 
   actions: {
@@ -106,12 +125,17 @@ export default Ember.Component.extend({
     createTale() {
       let component = this;
 
+      if (component.launchingInstance) return;
+
+      component.set('launchingInstance', true);
+
       let onSuccess = function (item) {
         component.launchTale(item);
       };
 
       let onFail = function (e) {
         // deal with the failure here
+        component.set('launchingInstance', false);
         console.log(e);
       };
 
@@ -124,11 +148,12 @@ export default Ember.Component.extend({
         });
       });
 
+      let name = this.get('newTaleName').trim();
       let new_tale = this.get('store').createRecord('tale', {
         "config": {}, //TODO: Implement configuration editor
         "involatileData": formattedData,
         "imageId": this.get('selectedEnvironment').get('_id'),
-        "title": this.get('newTaleName')
+        "title": name
       });
 
       new_tale.save().then(onSuccess).catch(onFail);

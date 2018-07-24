@@ -7,7 +7,9 @@
                     <label>
                         Reference URI
                         <i class="info circle grey icon"></i>
-                        <div class="floating ui basic blue label hidden" style="left:1em !important; top: -2em !important; padding:8px;" id="info-data-content">The HTTP URL, DOI, or dataId</div>
+                        <div class="floating ui basic blue label hidden" 
+                             style="left:1em !important; top: -2em !important; padding:8px; background: none !important; background-color: transparent !important;"
+                             id="info-data-content">The HTTP URL, DOI, or dataId</div>
                     </label>
                     {{input type="text" id="searchbox" value=searchDataId}}
                     <div class="ui inline button" {{action 'search' on='click'}}>Search</div>
@@ -17,9 +19,18 @@
                                 <label>Register from dev.nceas</label>
                             </div>
                         {{/if}}
-                </div> 
+                </div>
+                <div class="info-block">
+                    <p style="padding:8px; font-style:italic;">
+                        The URL or DOI of the data object. Data packages can be imported into Whole Tale from
+                         <a href='https://dataone.org/' target='_blank'>DataONE</a> and select 
+                         <a href='https://www.globus.org/' target='_blank'>Globus</a> repositories. For a full list of
+                          DataONE member nodes and supported Globus repositories, visit
+                           the <a href='http://wholetale.readthedocs.io/users_guide/manage.html' target='_blank'>data registration guide</a>.
+                    </p>
+                </div>
                 {{#if showResults}}
-                <div class="ui secondary segment" id="results">
+                <div class="ui secondary segment" id="results" style="background-color: white">
                     {{#if (gt num_results -1)}}
                     <p>Found {{num_results}} result(s)</p>
                     {{#unless dataId}}
@@ -46,7 +57,7 @@
                     {{/if}}
                 </div>
                 {{/if}}
-                <div class="ui tertiary segment">
+                <div class="ui tertiary segment" style="background-color:white">
                     <div class="inline field">
                         <label>Folder Name</label>
                         {{input type="text" classNameBindings="ui fluid" value=name}}

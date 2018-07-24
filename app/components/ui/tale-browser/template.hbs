@@ -137,7 +137,7 @@
     {{#if showSearch}}
         <div class="item">
             <div class="ui mini rounded icon search input">
-                {{input class="prompt" placeholder="Search..." value=searchStr key-up="searchFilter"}}
+                {{input class="prompt" placeholder="Search tales..." value=searchStr key-up="searchFilter"}}
                 <i class="search icon"></i>
             </div>
             <div class="results"></div>
@@ -145,7 +145,7 @@
         <div class="ui secondary stackable menu" style="margin: 0 10px;">
             <div class="header item">
                 <i class="filter inverted large icon" {{action "toggleFiltersVisibility"}}></i>
-                {{#if (eq showFilter true)}}
+                {{#if showFilter}}
                     {{#ui-dropdown class="selection" selected=filter onChange=(action (mut filter))}}
                         <div class="default text">Apply Filter</div>
                         <i class="dropdown icon"></i>
@@ -262,15 +262,12 @@
                                                         <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
                                                     </div>
                                                     <div class="ui buttons">
-                                                        <a href="{{instance.url}}" target="_blank">
-                                                            <div class="ui mini green icon button" style="margin-right: 10px">
-                                                                <i class="play icon"></i>
-                                                                Go to Tale
-                                                            </div>
-                                                        </a>
-                                                        {{#link-to 'status' class="ui mini blue icon button"}}
-                                                        <i class="line chart icon"></i>
-                                                        Check Status {{/link-to}}
+                                                      {{#link-to 'run.view' instance._id}}
+                                                        <div class="ui mini green icon button" style="margin-right: 10px">
+                                                          <i class="play icon"></i>
+                                                          Go to Tale
+                                                        </div>
+                                                      {{/link-to}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -367,15 +364,12 @@
                                                 <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
 
                                                 <div class="ui buttons">
-                                                    <a href="{{instance.url}}" target="_blank">
-                                                        <div class="ui mini green icon button" style="margin-right: 10px">
-                                                            <i class="play icon"></i>
-                                                            Go to Tale
-                                                        </div>
-                                                    </a>
-                                                    {{#link-to 'status' class="ui mini blue icon button"}}
-                                                    <i class="line chart icon"></i>
-                                                    Check Status {{/link-to}}
+                                                    {{#link-to 'run.view' instance._id}}
+                                                      <div class="ui mini green icon button" style="margin-right: 10px">
+                                                        <i class="play icon"></i>
+                                                        Go to Tale
+                                                      </div>
+                                                    {{/link-to}}
                                                 </div>
 
                                             </div>
@@ -402,15 +396,15 @@
     {{/if}}
 </div>
 
-{{ui/delete-modal 
+{{ui/delete-modal
     model=selectedTale
-    modelType="tale" 
+    modelType="tale"
     approveDelete=(action "approveDelete" selectedTale)
     denyDelete=(action "denyDelete" selectedTale)}}
 
 <div class="ui warning-modal modal" style="display: none">
     <div class="header">
-        Cannot Delete Tale {{!-- <i class="close icon" onclick={{action 'denyDelete' preventDefault=false bubble=false}}></i> --}}
+        Cannot Delete Tale
     </div>
     <div class="image content">
         <div class="description">

@@ -1,16 +1,34 @@
 import Ember from 'ember';
 
 import AuthenticateRoute from 'wholetale/routes/authenticate';
+import RSVP from 'rsvp';
 
 export default AuthenticateRoute.extend({
   internalState: Ember.inject.service(),
 
   model() {
-    var state = this.get('internalState');
-    var thisUserID = this.get('userAuth').getCurrentUserID();
-    var data = this.get('store').query('folder', {parentId: thisUserID, parentType : "user" });
-    var registered = this.get('store').query('folder', {adapterOptions:{registered: true}});
-    var allData = [];
+    let state = this.get('internalState');
+    let thisUserID = this.get('userAuth').getCurrentUserID();
+    let data = this.get('store').query('folder', {
+      parentId: thisUserID,
+      parentType : "user",
+      reload: true,
+      adapterOptions: {
+        queryParams: {
+          limit: "0"
+        }
+      }
+    });
+    let registered = this.get('store').query('folder', {
+      reload: true,
+      adapterOptions: {
+        registered: true,
+        queryParams: {
+          limit: "0"
+        }
+      }
+    });
+    let allData = [];
 
     data.forEach(function(model) {
       allData.push(model);
@@ -19,13 +37,27 @@ export default AuthenticateRoute.extend({
       allData.push(model);
     });
 
-    return {
+    return RSVP.hash({
       data: data,
-      images: this.get('store').findAll('image'),
-      tales: this.get('store').findAll('tale'),
+      images: this.get('store').findAll('image', {
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      }),
+      tales: this.get('store').findAll('tale', {
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      }),
       dataRegistered: registered,
       allData: registered
-    };
+    });
   }
 
 });

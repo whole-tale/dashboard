@@ -26,9 +26,32 @@
   }
 }
 
+.destinate-folder {
+  left: 0 !important;
+  margin: auto !important;
+  height: fit-content !important;
+  width: fit-content !important;
+} 
+
 .ui.modal.envdetails {
-  height: 50%; //calc(100vh - 64px - 60px - 2em);
+  height: 50%;
   width: 70%;
+
+  .content {
+    height: calc(100% - 64px - 60px);
+    overflow-y: auto;
+  }
+}
+
+.scrolling.undetached.dimmable .ui.modal.acl-component.scrolling,
+.scrolling.undetached.dimmable .ui.modal.harvester.scrolling {
+  min-height: 50vh;
+  height: auto;
+  max-height: 70%;
+  min-width: 50vw;
+  position: fixed;
+  left: 0 !important;
+  margin: 0 auto;
 
   .content {
     height: calc(100% - 64px - 60px);

@@ -1,27 +1,27 @@
 // @import "./dropzone";
 // @import "./basic";
 // @import "./contextmenu";
-@import "./modals.scss";
-@import "./wholetale-dashboard";
-@import "./fontawesome-all.min";
-@import "./floating-action-button";
-@import "./tables";
+@import './modals.scss';
+@import './wholetale-dashboard';
+@import './fontawesome-all.min';
+@import './floating-action-button';
+@import './tables';
+@import './ember-burger-menu';
 
-html, body {
+html,
+body {
   margin: 0px;
 }
 
 body {
-  background-color: $main-menu-bg;//#f4f4f4;
+  background-color: $main-menu-bg; //#f4f4f4;
   -webkit-font-smoothing: antialiased;
   font-family: 'Open Sans', 'Helvetica Neue', sans-serif !important;
-
   .ui.inverted.menu {
     background: $inverted-menu-bg;
     border-radius: 0;
     height: $inverted-menu-height;
     padding: 0 2rem;
-
     .item {
       font-size: 1.2rem;
     }
@@ -51,13 +51,11 @@ body {
   margin: 0 10px 0 10px;
 }
 
-
-
 i.icon.dataone:after {
   background-size: 20px 20px;
   background-image: url(/icons/DataONE_icon.jpg);
   display: inline-block;
-  content:"";
+  content: "";
   width: 20px;
   height: 20px;
 }
@@ -66,54 +64,53 @@ i.icon.globus:after {
   background-size: 24px 16px;
   background-image: url(/icons/Globus_icon.png);
   display: inline-block;
-  content:"";
+  content: "";
   width: 24px;
   height: 16px;
 }
 
 .globusblue {
-  background-color:#3560A0 !important;
+  background-color: #3560A0 !important;
 }
 
 i.icon.criss.cross {
   background-size: 60px 60px;
   background-image: url(/icons/criss-cross.png);
   display: inline-block;
-  content:"";
+  content: "";
   width: 60px;
   height: 60px;
-  margin:auto;
+  margin: auto;
 }
 
 i.icon.small.criss.cross {
   background-size: 30px 30px;
   background-image: url(/icons/criss-cross.png);
   display: inline-block;
-  content:"";
+  content: "";
   width: 30px;
   height: 30px;
-  margin:auto;
+  margin: auto;
 }
-
 
 i.icon.white.criss.cross {
   background-size: 60px 60px;
   background-image: url(/icons/white-criss-cross.png);
   display: inline-block;
-  content:"";
+  content: "";
   width: 60px;
   height: 60px;
-  margin:auto;
+  margin: auto;
 }
 
 i.icon.small.white.criss.cross {
   background-size: 15px 20px;
   background-image: url(/icons/white-criss-cross.png);
   display: inline-block;
-  content:"";
+  content: "";
   width: 15px;
   height: 20px;
-  margin:auto;
+  margin: auto;
 }
 
 i.icon.clickable:before {
@@ -128,25 +125,25 @@ i.icon.clickable:hover:before {
 }
 
 i.icon.clickable:hover {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .hidden {
-  display:none !important;
+  display: none !important;
 }
 
 div.overlay {
-    position:absolute !important;
+  position: absolute !important;
 }
 
 div.upload.progress {
-  width:50%;
-  z-index:100;
-  opacity:.9;
-  padding:20px 20px;
-  position:fixed;
-  top:85vh;
-  right:0;
+  width: 50%;
+  z-index: 100;
+  opacity: .9;
+  padding: 20px 20px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
   font-size: 120%;
 }
 
@@ -159,13 +156,14 @@ div.upload.progress {
 .ui.blue.button {
   box-shadow: 5px 5em 5px 5px rgba(0, 139, 221, 0.15) inset;
 }
-.ui.blue.buttons .button, .ui.blue.button {
+
+.ui.blue.buttons .button,
+.ui.blue.button {
   background-color: #0075d8;
   color: #FFFFFF;
   text-shadow: none;
   background-image: none;
 }
-
 
 .ui.blue.buttons .button:hover,
 .ui.blue.button:hover {
@@ -173,18 +171,21 @@ div.upload.progress {
   color: #FFFFFF;
   text-shadow: none;
 }
+
 .ui.blue.buttons .button:focus,
 .ui.blue.button:focus {
   background-color: #0062bb;
   color: #FFFFFF;
   text-shadow: none;
 }
+
 .ui.blue.buttons .button:active,
 .ui.blue.button:active {
   background-color: #0062bb;
   color: #FFFFFF;
   text-shadow: none;
 }
+
 .ui.blue.buttons .active.button,
 .ui.blue.buttons .active.button:active,
 .ui.blue.active.button,
@@ -193,7 +194,9 @@ div.upload.progress {
   color: #FFFFFF;
   text-shadow: none;
 }
+
 /* Basic */
+
 .ui.basic.blue.buttons .button,
 .ui.basic.blue.button {
   box-shadow: 0px 0px 0px 1px #0062bb inset !important;
@@ -201,9 +204,11 @@ div.upload.progress {
 }
 
 /* Blue */
+
 .ui.blue.segment:not(.inverted) {
   border-top: 2px solid #283b49;
 }
+
 .ui.inverted.blue.segment {
   background-color: #283b49 !important;
   color: #FFFFFF !important;
@@ -212,7 +217,7 @@ div.upload.progress {
 
 .ui.card {
   background: #FFFFFF;
-  color : #283b49;
+  color: #283b49;
   padding: 0em;
   border: none;
   border-radius: 0.22222222rem;
@@ -220,17 +225,18 @@ div.upload.progress {
   transition: box-shadow 0.1s ease, transform 0.1s ease;
 }
 
-.ui.white.labels .label, .ui.white.label {
+.ui.white.labels .label,
+.ui.white.label {
   background-color: #ffffff !important;
   border-color: #ffffff !important;
   color: #283b49 !important;
 }
 
 .ui.breadcrumb {
-  color: #1B1C1D;// #283b49;
+  color: #1B1C1D; // #283b49;
   // background-color: #efefef;
   padding: 8px 4px 8px 10px;
-  width :100%;
+  width: 100%;
   margin: 0 0 5px 0 !important;
 }
 
@@ -238,38 +244,37 @@ div.upload.progress {
   color: #a5a5a5;
 }
 
-.ui.breadcrumb > a {
-  color: #1B1C1D;// #21a6f6;
-
+.ui.breadcrumb>a {
+  color: #1B1C1D; // #21a6f6;
 }
 
 .ui.breadcrumb .divider {
   display: inline-block;
   opacity: 0.7;
   margin: 0em 0.21428571rem 0em;
-  font-size: 0.92857143em;
-  // color: #283649;
+  font-size: 0.92857143em; // color: #283649;
   vertical-align: baseline;
 }
 
 /* This removes all padding from any grid configuration */
 
 .ui.grid {
-  margin :0;
-  padding: 0;
-}
-
-.ui.grid > * {
   margin: 0;
   padding: 0;
 }
 
-.ui.grid > .column:not(.row), .ui.grid > .row > .column {
+.ui.grid>* {
+  margin: 0;
+  padding: 0;
+}
+
+.ui.grid>.column:not(.row),
+.ui.grid>.row>.column {
   padding: 0;
   margin: 0;
 }
 
-.ui.grid > .column:not(.row) {
+.ui.grid>.column:not(.row) {
   margin: 0;
   padding: 0;
 }
@@ -285,17 +290,19 @@ a {
   text-decoration: none;
 }
 
-p, .description, .item {
+p,
+.description,
+.item {
   font-size: 1.0em;
 }
 
 .main.screen.left {
-  float:left;
+  float: left;
   width: 330px;
 }
 
 .main.screen.right {
-  overflow:hidden;
+  overflow: hidden;
   background-color: #efefef;
 }
 
@@ -311,25 +318,25 @@ p, .description, .item {
 }
 
 .ui.vertical.compact.menu .item {
-  font-size: 1.1rem;
-  //margin: 3px 0 3px 0;
+  font-size: 1.1rem; //margin: 3px 0 3px 0;
   margin: 0;
 }
 
 .current.page.item {
   color: white;
   font-size: 1.5rem;
-  min-width:60%;
+  min-width: 60%;
   border: none;
   margin: 0;
   padding: 0;
 }
 
 .current.page.item .text {
-  margin:auto;
+  margin: auto;
   width: 200px;
   text-align: center;
 }
+
 .ui.info.segment {
   position: relative;
   /*  background-image: url("../images/metallic-button.jpg");  */
@@ -365,7 +372,7 @@ p, .description, .item {
   border: 1px solid rgba(34, 36, 38, 0.15);
 }
 
-.ui.form .field > label {
+.ui.form .field>label {
   color: black;
 }
 
@@ -385,9 +392,11 @@ p, .description, .item {
 
 .login.area {
   background-image: url("../images/login-backdrop.png");
-  background-size:     cover;                      /* <------ */
-  background-repeat:   no-repeat;
-  background-position: center center;              /* optional, center the image */
+  background-size: cover;
+  /* <------ */
+  background-repeat: no-repeat;
+  background-position: center center;
+  /* optional, center the image */
   padding: 100px 0 100px 0;
   margin: auto;
   text-align: center;
@@ -401,12 +410,12 @@ p, .description, .item {
 }
 
 .skinny {
-  padding:0;
-  margin:0;
+  padding: 0;
+  margin: 0;
 }
 
 .white {
-  color :whitesmoke;
+  color: whitesmoke;
 }
 
 /* Ace Editor */
@@ -430,10 +439,10 @@ pre {
 }
 
 .full.screen.style {
-    width: 200% !important;
-    height: 200% !important;
-    margin: 0 0 0 0 !important;
-    border-radius: 0;
+  width: 200% !important;
+  height: 200% !important;
+  margin: 0 0 0 0 !important;
+  border-radius: 0;
 }
 
 // blockquote {
@@ -448,7 +457,6 @@ pre {
 //   -webkit-margin-start: 40px;
 //   -webkit-margin-end: 40px;
 // }
-
 .ui.tool.segment {
   margin-top: 8px;
   margin-bottom: 8px;
@@ -463,10 +471,14 @@ pre {
 .truncate {
   color: #515151;
   white-space: nowrap;
-  width: 100%;                   /* IE6 needs any width */
-  overflow: hidden;              /* "overflow" value must be different from  visible"*/
-  -o-text-overflow: ellipsis;    /* Opera < 11*/
-  text-overflow:    ellipsis;    /* IE, Safari (WebKit), Opera >= 11, FF > 6 */
+  width: 100%;
+  /* IE6 needs any width */
+  overflow: hidden;
+  /* "overflow" value must be different from  visible"*/
+  -o-text-overflow: ellipsis;
+  /* Opera < 11*/
+  text-overflow: ellipsis;
+  /* IE, Safari (WebKit), Opera >= 11, FF > 6 */
 }
 
 /*------------------
@@ -479,7 +491,8 @@ pre {
   padding-left: 16px;
 }
 
-.catalog .ui.search, .ui.search>div {
+.catalog .ui.search,
+.ui.search>div {
   width: 100% !important;
 }
 
@@ -491,12 +504,12 @@ pre {
 }
 
 .catalog .icon.dataone {
-  background-color: rgba(0,0,0,0) !important;
+  background-color: rgba(0, 0, 0, 0) !important;
 }
 
 .catalog .icon.dataone:after {
   background-repeat: no-repeat !important;
-  margin-left:8px;
+  margin-left: 8px;
 }
 
 .catalog .ui.basic.maroon.button {
@@ -507,33 +520,38 @@ pre {
 .catalog .ui.basic.maroon.button:hover {
   box-shadow: 0px 0px 0px 1px rgba(66, 00, 33, 1) inset !important;
 }
+
 .catalog .middle.text {
-  color: #666666; text-wrap: normal; text-align: justify
+  color: #666666;
+  text-wrap: normal;
+  text-align: justify
 }
 
 /*--------------
   Blurring
 ---------------*/
 
-.catalog .blurring.dimmable > :not(.dimmer) {
+.catalog .blurring.dimmable> :not(.dimmer) {
   -webkit-filter: blur(0px) grayscale(0);
-          filter: blur(0px) grayscale(0);
+  filter: blur(0px) grayscale(0);
   -webkit-transition: 100ms filter ease;
   transition: 100ms filter ease;
 }
-.catalog .blurring.dimmed.dimmable > :not(.dimmer) {
+
+.catalog .blurring.dimmed.dimmable> :not(.dimmer) {
   -webkit-filter: blur(0.5px) grayscale(0.7);
-      filter: blur(0.5px) grayscale(0.7);
+  filter: blur(0.5px) grayscale(0.7);
 }
 
-.catalog .blurring.dimmable > .dimmer {
+.catalog .blurring.dimmable>.dimmer {
   background-color: rgba(14, 27, 68, 0.1);
 }
 
-.card .blurring.dimmable > :not(.dimmer) {
+.card .blurring.dimmable> :not(.dimmer) {
   -webkit-transition: 0ms filter !important;
   transition: 0ms filter !important;
 }
-.card .blurring.dimmable > .dimmer {
+
+.card .blurring.dimmable>.dimmer {
   animation-duration: 100ms !important;
 }

@@ -19,23 +19,48 @@ export default AuthenticateRoute.extend({
     if (!folderID || folderID === "null") {
       folderContents = this.get('store').query('folder', {
         parentId: thisUserID,
-        parentType: "user"
+        parentType: "user",
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
       });
       state.setCurrentParentId(thisUserID);
       state.setCurrentParentType("user");
     } else {
       folderContents = this.get('store').query('folder', {
         parentId: folderID,
-        parentType: 'folder'
+        parentType: 'folder',
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
       });
       itemContents = this.get('store').query('item', {
-        folderId: folderID
+        folderId: folderID,
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
       });
     }
     return RSVP.hash({
       folderContents: folderContents,
       itemContents: itemContents,
-      allImages: this.get('store').findAll('image', { reload: true }),
+      allImages: this.get('store').findAll('image', {
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      }),
       selectedImage: this.get('store').findRecord('image', params.image_id, { reload: true })
     });
   },

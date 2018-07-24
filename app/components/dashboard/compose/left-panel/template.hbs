@@ -1,8 +1,8 @@
-<div class="wt panel manage">
+<div class="wt panel manage composer">
     <div class="wt paddleboard">
         <h2>
             <i class="fas fa-edit left"></i> Compose
-            <span style="font-style:italic;">Create a new Tale by pairing a compute environment with a dataset</span>
+            <span class="subtitle">Create a new Tale by pairing a compute environment with a dataset</span>
         </h2>
     </div>
     <div class="ui segment rounded-bottom composer-container">
@@ -16,9 +16,8 @@
         {{else}}
             {{partial "forms/new-tale-input"}}
             <div class="ui secondary menu">
-                <div style="margin: 0 auto">
-                    <button class="ui big icon button {{if invalidNewTale 'grey'}} {{unless invalidNewTale 'blue'}}"
-                            disabled={{invalidNewTale}}
+                <div style="text-align: center">
+                    <button class="{{if (or invalidNewTale launchingTale) 'disabled'}} ui big icon button {{if invalidNewTale 'grey'}} {{unless invalidNewTale 'blue'}}"
                             {{action "createTale"}}>
                         Launch New Tale
                     </button>

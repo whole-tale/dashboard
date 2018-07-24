@@ -38,12 +38,12 @@ export default Ember.Component.extend({
         this._super(...arguments);
 
         $(".info.circle.grey.icon").hover(function() {
-                $("#info-data-content").removeClass("hidden");
-            },
-            function() {
-                $("#info-data-content").addClass("hidden");
-            }
-        );
+            $("#info-data-content").removeClass("hidden");
+        },
+        function() {
+            $("#info-data-content").addClass("hidden");
+        }
+    );
     },
 
     disableRegister() {
@@ -67,19 +67,34 @@ export default Ember.Component.extend({
     },
 
     clearModal() {
-        Ember.$('#harvester-dropdown').dropdown('clear');
-        this.set('showResults', false);
-        Ember.$('#searchbox').val('');
+        this.clearErrors();
+        this.clearSearch();
+        this.clearResults();
+        this.clearPackageResults();
+    },
 
-        this.set('datasources', Ember.A());
+    clearErrors() {
         this.set('error', false);
         this.set('errorMessage', '');
+    },
+    
+    clearResults() {
+        Ember.$('#harvester-dropdown').dropdown('clear');
+        this.set('showResults', false);
         this.set('num_results', -1);
+        this.set('datasources', Ember.A());
+    },
+
+    clearPackageResults() {
         this.set('dataId', '');
         this.set('doi', '');
         this.set('name', '');
         this.set('repository', '');
         this.set('size', '');
+    },
+
+    clearSearch() {
+        Ember.$('#searchbox').val('');
     },
 
     didRender() {
@@ -97,7 +112,9 @@ export default Ember.Component.extend({
 
     getEventStream() {
         let token = this.get('tokenHandler').getWholeTaleAuthToken();
-        let source = new EventStream.SSE(config.apiUrl+"/notification/stream?timeout=15000", {headers: {'Girder-Token': token}});
+        // Get a timestamp so that we can filter out any stale notifications. This needs to be Unix Epoch
+        let time = Math.round(+new Date()/1000)
+        let source = new EventStream.SSE(config.apiUrl+"/notification/stream?timeout=15000&since="+time, {headers: {'Girder-Token': token}});
 
         let self = this;
         source.addEventListener('message', function(evt) {
@@ -108,6 +125,8 @@ export default Ember.Component.extend({
                 message: payload.data.message,
                 header: payload.data.title
             });
+
+            self.sendAction('onRegisterData');
         });
 
         source.stream();
@@ -123,7 +142,7 @@ export default Ember.Component.extend({
         },
 
         register() {
-            this.set('error', false);
+            this.clearErrors();
             let self = this;
             let state = this.get('internalState');
             let userAuth = this.get('userAuth');
@@ -165,19 +184,19 @@ export default Ember.Component.extend({
             let source = this.getEventStream();
 
             this.get('authRequest').send(url, options)
-                .then(rep => {
-                })
-                .catch(e => {
-                    let notifier = self.get('notificationHandler');
+              .catch(e => {
+                let notifier = self.get('notificationHandler');
 
-                    notifier.pushNotification({
-                        header: "Error Registering Dataset",
-                        message: e
-                    });
-                })
-                .finally(_ => {
-                    source.close();
+                notifier.pushNotification({
+                  header: "Error Registering Dataset",
+                  message: e.message
                 });
+              })
+              .finally(_ => {
+                self.sendAction('onRegisterData');
+                source.close();
+              })
+            ;
 
             this.clearModal();
             this.disableRegister();
@@ -189,7 +208,9 @@ export default Ember.Component.extend({
         },
 
         search() {
-            this.clearModal();
+            this.clearResults();
+            this.clearErrors();
+            this.clearPackageResults()
             this.set('searching', true);
             this.set('showResults', true);
 

@@ -1,12 +1,14 @@
 import Ember from 'ember';
+import config from '../../../../config/environment';
 import layout from './template';
-
 
 export default Ember.Component.extend({
     layout,
 
     store: Ember.inject.service(),
     internalState: Ember.inject.service(),
+
+    apiUrl: config.apiUrl,
 
     showEditor : false,
 
@@ -49,11 +51,6 @@ export default Ember.Component.extend({
             this.sendAction('action', item, "false");
         },
 
-        closedMiniBrowser: function() {
-             let mini = Ember.$('#mini-folder-browser');
-             mini.addClass('hidden');
-        },
-
         updateModel(file) {
             let attrs = file.changedAttributes();
             let keys = Object.keys(attrs);
@@ -71,26 +68,24 @@ export default Ember.Component.extend({
         share(file) {
             const state = this.get('internalState');
             state.setACLObject(file);
-            Ember.$('.acl-component').modal('show');
+            let modalElem = $('.acl-component');
+            if(modalElem) {
+                modalElem.modal('show');
+                if(modalElem.hasClass("scrolling")) {
+                  modalElem.removeClass("scrolling");
+                }
+            }
         },
 
         move(file) {
+            let disallowed = this.get('currentNav').command === 'home' ? 'Data' : 'Home';
+            this.set('disallowed', disallowed);
             this.set('fileToMove', file);
-            let mini = Ember.$('#mini-folder-browser');
-
-            mini.css({
-                // top: event.layerY+"px",
-                // left: event.layerX+"px",
-                // position: "absolute"
-                margin: "auto"
-            });
-            mini.removeClass('hidden');
+            Ember.$('.ui.modal.destinate-folder').modal('show');
         },
 
         moveFile(fileToMove, moveTo) {
             let self = this;
-
-            Ember.$('#mini-folder-browser').addClass('hidden');
 
             // let queryParams = {folderId: moveTo.get('id')};
             let queryParams = {};
@@ -132,27 +127,9 @@ export default Ember.Component.extend({
                 });
         },
 
-        download(file) {
-            console.log("download "+file.get('name'));
-        },
-
         remove(file) {
             this.get('internalState').removeFolderFromRecentFolders(file.id);
             file.destroyRecord();
-
-            // this.set('fileToRemove', file);
-            // this.set("confirmValue", "");
-            // this.set("confirmDisabled", "disabled");
-
-            // let prompt = Ember.$('#confirm-remove');
-            // prompt.css({
-            //     // position:"absolute",
-            //     // top:event.layerY+"px",
-            //     // left:event.layerX+"px"
-            //     margin: 'auto',
-            //     maxWidth: '400px'
-            // });
-            // prompt.removeClass("hidden");
         },
 
         confirmedRemove() {

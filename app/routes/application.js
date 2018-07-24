@@ -1,5 +1,7 @@
 import config from '../config/environment';
-import { inject as service } from '@ember/service';
+import {
+  inject as service
+} from '@ember/service';
 import AuthenticateRoute from 'wholetale/routes/authenticate';
 
 export default AuthenticateRoute.extend({
@@ -20,11 +22,17 @@ export default AuthenticateRoute.extend({
       controller.set('loggedIn', true);
       controller.set('user', model);
       controller.set('gravatarUrl', config.apiUrl + "/user/" + model.get('_id') + "/gravatar?size=64");
-      this.store.findAll('job')
-        .then(jobs => {
-          controller.set('jobs', jobs);
-          controller.set('isLoadingJobs', false);
-        });
+      this.store.findAll('job', {
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      }).then(jobs => {
+        controller.set('jobs', jobs);
+        controller.set('isLoadingJobs', false);
+      });
     }
   },
   actions: {

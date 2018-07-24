@@ -48,7 +48,13 @@ export default Ember.Controller.extend({
     shareTale(tale) {
       const state = this.get('internalState');
       state.setACLObject(tale);
-      Ember.$('.acl-component').modal('show');
+      let modalElem = $('.acl-component');
+      if(modalElem) {
+        modalElem.modal('show');
+        if(modalElem.hasClass("scrolling")) {
+          modalElem.removeClass("scrolling");
+        }
+      }
     },
     updateTale: function () {
       let component = this;

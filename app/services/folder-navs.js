@@ -68,13 +68,14 @@ export default Ember.Service.extend({
       return null;
     },
     getCurrentFolderNavAndSetOn: function (obj) {
-      var navCommand  = this.get('internalState').getCurrentNavCommand();
+      var navCommand  = this.get('internalState').getCurrentNavCommand() || 'home';
       console.log("Nav Command = " + navCommand);
       var currentNav = this.getFolderNavFor(navCommand);
       obj.set("currentNavCommand", navCommand);
+      obj.set("currentNavTitle", currentNav.name);
+      obj.set("currentNav", currentNav);
       return currentNav;
     }
-
 
   });
 
