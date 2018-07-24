@@ -401,6 +401,8 @@ p,
   margin: auto;
   text-align: center;
   color: white;
+  height: calc(100vh - #{$footer-height} - #{$main-menu-height} - #{$inverted-menu-height} + 1rem);
+  overflow-y: auto;
 }
 
 .login.icon.backdrop {
