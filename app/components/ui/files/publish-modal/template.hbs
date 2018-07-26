@@ -1,4 +1,4 @@
-{{#ui-modal name="publisher" class="small publisher" onApprove=(action 'publishTale') onDeny=(action 'cancelPublish')}}
+{{#ui-modal name="publisher" class="small publisher" onApprove=(action 'publishedClicked') onDeny=(action 'cancelPublish')}}
 <div class="header">
     <h2>Publish Tale
         <span><p style="font-style:italic;">Create an immutable copy of your Tale with a DOI <i class="info circle blue icon" style="text-align: right"></i></p> </span>
@@ -55,7 +55,6 @@
 </div>
 
 <div class="title">
-
     <h2>
         <i class="desktop icon"></i>Environment
         <span style="font-style:italic;">Everything required to recreate chosen compute environment - view only</span>
@@ -81,7 +80,6 @@
                 <div class="ui radio checkbox" style="left:3%; font-size:medium">
                     <input type="radio" name="example2" checked="checked">
                     <label>Creative Commons Public Domain CCO <i class="info circle blue icon" ></i> </label> 
-                    
                 </div>
             </div>
             <div class="field">

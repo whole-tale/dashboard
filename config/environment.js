@@ -22,7 +22,9 @@ module.exports = function (environment) {
     rootURL: '/',
     locationType: 'auto',
     torii: {
-      providers: { /*....*/ }
+      providers: { 
+          
+      }
     },
     EmberENV: {
       FEATURES: {
@@ -80,10 +82,13 @@ module.exports = function (environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
-    ENV.apiHost = 'https://girder.dev.wholetale.org';
+/*     ENV.apiHost = 'https://girder.dev.wholetale.org'; */
     ENV.apiPath = 'api/v1';
-    ENV.apiUrl = 'https://girder.dev.wholetale.org/api/v1';
+/*     ENV.apiUrl = 'https://girder.dev.wholetale.org/api/v1'; */
+    ENV.apiHost = 'http://128.111.220.40:8080'
+    ENV.apiUrl = 'http://128.111.220.40:8080/api/v1'
     ENV.dev = true;
+
   }
 
   if (environment === 'production') {

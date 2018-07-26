@@ -21,6 +21,7 @@ export default Ember.Controller.extend({
   accessControl: inject.service(),
   internalState: inject.service(),
   taleInstanceName: "",
+  authRequest: Ember.inject.service(),
 
   init() {
     this.set("tale_instantiated", false);
@@ -133,8 +134,9 @@ export default Ember.Controller.extend({
         onFail);
     },
 
+
+
     publishTale: function(id) {
-           
         let modalDlg = Ember.$('.ui.publisher.modal');
         modalDlg.parent().prependTo(Ember.$(document.body));
         modalDlg.modal('show');

@@ -22,7 +22,9 @@ export default Ember.Component.extend({
     fileList: [],
     repositoryMapping: {'Development': 'https://dev.nceas.ucsb.edu/knb/d1/mn/'},
     packageUrl: '',
+    jwt: '',
     
+
     setPublishBtnState(state) {
         console.debug(state)
         this.set('enablePublish', state);
@@ -165,36 +167,128 @@ export default Ember.Component.extend({
         return itemIdList;
     },
 
-    actions: {
-        publishTale: function() {
+    getJWT() {
+        /* 
+        Queries the DataONE `token` endpoint for the jwt. When a user signs into
+        DataONE a cookie is created, which is checked by `token`. If the cookie wasn't
+        found, then the response will be empty. Otherwise the jwt is returned.
+        */
 
-            if (this.get('publishingFinish') == true) {
-                var win = window.open(this.get('packageUrl'), '_blank');
-                win.focus();
-            }
+        // Use the XMLHttpRequest to handle the request
+        var xmlHttp = new XMLHttpRequest();
+        // Open the request to the the token endpoint, which will return the jwt if logged in
+        if(config.dev) {
+            xmlHttp.open("GET", 'https://cn-stage-2.test.dataone.org/portal/token', false );
+        }
+        else {
+        xmlHttp.open("GET", 'https://cn.dataone.org/portal/token', false );
+        }
+        // Set the response content type
+        xmlHttp.setRequestHeader("Content-Type", "text/xml")
+        // Let XMLHttpRequest know to use cookies
+        xmlHttp.withCredentials = true;
+        xmlHttp.send(null);
+        
+        return xmlHttp.responseText;
+    },
 
-            this.set('enablePublish', false)
-            this.set('publishing', true)
-            let self = this;
-            console.log('Publishing Tale');
-            let queryParams = "?"+[
-                "itemIds=" + "["+(self.prepareItemIds().join(','))+"]",
-                "taleId=" + self.get('taleId'),
-                "repository=" + self.get('repositoryMapping')[self.get('selectedRepository')]
-            ].join('&');
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      },
+
+      
+    dataoneLogin() {
+        /*
+        Responsible for opening the login dialog for the user. Ideally, we could
+        tell when the user finishes logging in so that we know when to fetch the token
+        */
+       let url = 'https://cn.dataone.org/portal/oauth?action=start&target=https://search.dataone.org/#data'
+       if (config.dev) {
+        url = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=https://search.dataone.org/#data'
+       }
+
+        let newwindow=window.open(url,'auth','height=400,width=450');
+        if (window.focus) {newwindow.focus()}
+    },
+
+    loggedIntoDataONE() {
+        if (this.get('jwt')) {
+            return true;
+        }
+        return false;
+    },
+
+    setJWT() {
+        this.set('jwt', this.getJWT());
+
+    },
+
+    publish: function(){
+        let self = this;
+        let queryParams = "?"+[
+            "itemIds=" + "["+(self.prepareItemIds().join(','))+"]",
+            "taleId=" + self.get('taleId'),
+            "repository=" + self.get('repositoryMapping')[self.get('selectedRepository')],
+            "jwt=" + self.get('jwt')
+        ].join('&');
+        
+        let url = config.apiUrl + '/repository/createPackage' + queryParams;
+
+        this.get('authRequest').send(url)
+            .then(rep => {
+                self.set('enablePublish', false);
+                this.set('publishingFinish', true);
+                self.set('packageUrl', rep);
+                self.set('publishing', false);
+            })
+    },
+
+    openPackage: function() {
             
-            let url = config.apiUrl + '/repository/createPackage' + queryParams;
+        var win = window.open(this.get('packageUrl'), '_blank');
+        win.focus();
+        return;
+},
 
-            console.log(queryParams);
+    actions: {
+        publishedClicked(){
+            /* 
+            Called when the `Publish` button is clicked. It controls the flow
+            of logging in and communicating with the `createPackage` endpoint.
 
-            this.get('authRequest').send(url)
-                .then(rep => {
-                    self.set('enablePublish', false);
-                    this.set('publishingFinish', true)
-                    self.set('packageUrl', rep)
-                    self.set('publishing', false)
-                })
-                return false
+            */
+           let self = this;
+           if (self.get('publishingFinish') == true) {
+            self.openPackage();
+           }
+           // Disable the button so that it isn't accidentally clicked multiple times
+           self.set('enablePublish', false);
+
+           // Let the UI know that the user clicked the `Publish` button. 
+           self.set('publishing', true);
+
+           self.setJWT();
+           self.sleep(500);
+           console.log(self.get('jwt'))
+            // Check to see if the user is currently logged into DataONE
+           let loggedIn = self.loggedIntoDataONE();
+
+           if (loggedIn) {
+               // If they are, go ahead and publish
+               self.publish();
+           }
+           else {
+               // If they aren't logged in, prompt them to do so
+               self.dataoneLogin();
+               self.sleep(100000);
+               self.publish();
+               self.set('enablePublish', false);
+               self.set('publishing', false);
+         
+           }
+
+            // Return false so the dlg stays open
+           return false;
         },
 
         cancelPublish: function() {
