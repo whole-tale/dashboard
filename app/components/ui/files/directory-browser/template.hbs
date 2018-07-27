@@ -9,79 +9,73 @@
         </tr>
       </thead>
       <tbody>
-      {{#each folderList as |item|}}
-          <tr class="left aligned contextmenu" id={{item.id}}>
-              <td>
-                  {{#if (eq renaming item.id)}}
-                      <div class="ui form">
-                          <div class="inline field">
-                              <i class="large folder icon"></i>
-                              {{input type="text" value=item.name}}
-                              <button class="ui button" {{action "updateModel" item}}>Rename</button>
-                          </div>
-                      </div>
-                  {{else}}
-                      <i class="large grey folder icon"> </i>
-                          {{#ui-dropdown}}
-                              <a href="#" {{action "clickedFolder" item}} style="font-weight: 900">
-                                   {{truncate-name item.name}}
-                              </a>
-                              <i class="dropdown icon"></i>
-                              <div class="menu">
-                                  <a class="item" {{action "move" item}}><i class="folder icon"></i> Move To...</a>
-                                  <a class="item" {{action "rename" item}}><i class="write square icon"></i> Rename...</a>
-                                  <!-- -->
-                                  {{!-- <a class="item" {{action "share" item}}><i class="share icon"></i> Share</a> --}}
-                                  <a class="item" {{action "copy" item}}><i class="clone icon"></i> Copy</a>
-                                  <a class="item" href="{{apiUrl}}/folder/{{item.id}}/download?contentDisposition=attachment"><i class="download icon"></i> Download</a>
-                                  <!-- -->
-                                  <a class="item" {{action "remove" item}}><i class="trash icon"></i> Remove</a>
-                              </div>
-                           {{/ui-dropdown}}
-                  {{/if}}
-              </td>
-              <td >
-                {{bytes-to-readable item.size}}
-              </td>
-          </tr>
-      {{/each}}
-      {{#each fileList as |item|}}
-          <tr class="left aligned contextmenu" id={{item.id}}>
-              <td>
-                  {{#if (eq renaming item.id)}}
-                      <div class="ui form">
-                          <div class="inline field">
-                              {{{file-icon-for item.name}}}
-                              {{input type="text" id="txt-renaming" value=item.name}}
-                              <button class="ui button" {{action "updateModel" item}}>Rename</button>
-                          </div>
-                      </div>
-                  {{else}}
-                      <!-- <div class="ui vertical menu"> -->
+        {{#each folderList as |item|}}
+            <tr class="left aligned contextmenu" id={{item.id}}>
+                <td>
+                    {{#if (eq renaming item.id)}}
+                        <div class="ui form">
+                            <div class="inline field">
+                                <i class="large folder icon"></i>
+                                {{input type="text" value=item.name}}
+                                <button class="ui button" {{action "updateModel" item}}>Rename</button>
+                            </div>
+                        </div>
+                    {{else}}
+                        <i class="large grey folder icon"> </i>
                         {{#ui-dropdown}}
-                              <a href="#" {{action "clickedFile" item}}>
-                                  {{{file-icon-for item.name}}} {{truncate-name item.name}}
-                              </a>
-                              <i class="dropdown icon"></i>
-                              <div class="menu">
-                                  <a class="item" {{action "move" item}}><i class="folder icon"></i> Move To...</a>
-                                  <a class="item" {{action "rename" item}}><i class="write square icon"></i> Rename...</a>
-                                  <!-- -->
-                                  {{!-- <a class="item" {{action "share" item}}><i class="share icon"></i> Share</a> --}}
-                                  <a class="item" {{action "copy" item}}><i class="clone icon"></i> Copy</a>
-                                  <a class="item" href="{{apiUrl}}/item/{{item.id}}/download?contentDisposition=attachment"><i class="download icon"></i> Download</a>
-                                  <!-- -->
-                                  <a class="item" {{action "remove" item}}><i class="trash icon"></i> Remove</a>
-                              </div>
-                         {{/ui-dropdown}}
-                      <!-- </div> -->
-                  {{/if}}
-              </td>
-              <td >
-                {{bytes-to-readable item.size}}
-              </td>
-          </tr>
-      {{/each}}
+                            <a href="#" onclick={{action 'clickedFolder' item}} style="font-weight: 900">
+                                {{truncate-name item.name}}
+                            </a>
+                            <i class="dropdown icon"></i>
+                            <div class="menu">
+                                <a class="item" {{action "move" item}}><i class="folder icon"></i> Move To...</a>
+                                <a class="item" {{action "rename" item}}><i class="write square icon"></i> Rename...</a>
+                                {{!-- <a class="item" {{action "share" item}}><i class="share icon"></i> Share</a> --}}
+                                <a class="item" {{action "copy" item}}><i class="clone icon"></i> Copy</a>
+                                <a class="item" href="{{apiUrl}}/folder/{{item.id}}/download?contentDisposition=attachment"><i class="download icon"></i> Download</a>
+                                <a class="item" {{action "remove" item}}><i class="trash icon"></i> Remove</a>
+                            </div>
+                        {{/ui-dropdown}}
+                    {{/if}}
+                </td>
+                <td >
+                    {{bytes-to-readable item.size}}
+                </td>
+            </tr>
+        {{/each}}
+        {{#each fileList as |item|}}
+            <tr class="left aligned contextmenu" id={{item.id}}>
+                <td>
+                    {{#if (eq renaming item.id)}}
+                        <div class="ui form">
+                            <div class="inline field">
+                                {{{file-icon-for item.name}}}
+                                {{input type="text" id="txt-renaming" value=item.name}}
+                                <button class="ui button" {{action "updateModel" item}}>Rename</button>
+                            </div>
+                        </div>
+                    {{else}}
+                        {{#ui-dropdown}}
+                            <a href="#" {{action "clickedFile" item}}>
+                                {{{file-icon-for item.name}}} {{truncate-name item.name}}
+                            </a>
+                            <i class="dropdown icon"></i>
+                            <div class="menu">
+                                <a class="item" {{action "move" item}}><i class="folder icon"></i> Move To...</a>
+                                <a class="item" {{action "rename" item}}><i class="write square icon"></i> Rename...</a>
+                                {{!-- <a class="item" {{action "share" item}}><i class="share icon"></i> Share</a> --}}
+                                <a class="item" {{action "copy" item}}><i class="clone icon"></i> Copy</a>
+                                <a class="item" href="{{apiUrl}}/item/{{item.id}}/download?contentDisposition=attachment"><i class="download icon"></i> Download</a>
+                                <a class="item" {{action "remove" item}}><i class="trash icon"></i> Remove</a>
+                            </div>
+                        {{/ui-dropdown}}
+                    {{/if}}
+                </td>
+                <td >
+                    {{bytes-to-readable item.size}}
+                </td>
+            </tr>
+        {{/each}}
       </tbody>
   </table>
 

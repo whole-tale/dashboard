@@ -1,10 +1,11 @@
-import Ember from 'ember';
 import config from '../config/environment';
+import Service from '@ember/service';
+import { inject as service } from '@ember/service';
 
-export default Ember.Service.extend({
-  tokenHandler: Ember.inject.service('token-handler'),
-  store: Ember.inject.service('store'),
-  authRequest: Ember.inject.service(),
+export default Service.extend({
+  tokenHandler: service('token-handler'),
+  store: service(),
+  authRequest: service(),
 
   isAuthenticated: true,
 
@@ -23,7 +24,7 @@ export default Ember.Service.extend({
           return userRec;
         }
       })
-      .catch(e => {
+      .catch(() => {
         // console.log(e);
         return null;
       });
@@ -34,8 +35,8 @@ export default Ember.Service.extend({
   },
 
   getCurrentUser() {
-    var userID = localStorage.currentUserID;
-    if (!userID || (userID === "null") || (userID == null) || (userID === "") || (userID === "undefined")) {
+    let userID = localStorage.currentUserID;
+    if (!userID || (userID === "null") || (userID === "") || (userID === "undefined")) {
       return null;
     }
 
@@ -55,9 +56,9 @@ export default Ember.Service.extend({
     };
 
     this.get('authRequest').send(url, options)
-      .catch(e => {
-        console.log("ERROR LOGGING OUT");
-        console.log(e);
+      .catch(() => {
+        // console.log("ERROR LOGGING OUT");
+        // console.log(e);
       })
       .finally(() => {
         self.get('tokenHandler').releaseWholeTaleCookie();

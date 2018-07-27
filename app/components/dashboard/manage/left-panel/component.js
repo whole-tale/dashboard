@@ -1,6 +1,9 @@
-import Ember from 'ember';
-import _ from 'lodash';
-const inject = Ember.inject;
+import TextField from '@ember/component/text-field';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
+import { observer, computed } from '@ember/object';
+import Object from '@ember/object';
+import $ from 'jquery';
 
 function wrapFolder(folderID, folderName) {
   return {
@@ -16,31 +19,39 @@ function wrapFolder(folderID, folderName) {
   };
 }
 
-Ember.TextField.reopen({
+TextField.reopen({
   attributeBindings: ['multiple']
 });
 
-export default Ember.Component.extend({
-  internalState: inject.service(),
-  store: inject.service(),
-  folderNavs: inject.service(),
-  fileBreadCrumbs: {},
-  currentBreadCrumb: [],
-  currentNav: {},
+export default Component.extend({
+  internalState: service(),
+  store: service(),
+  folderNavs: service(),
+  router: service(),
+  
+  fileBreadCrumbs: computed(function() {
+    return {};
+  }),
+  currentBreadCrumb: computed(function() {
+    return [];
+  }),
+  currentNav: computed(function() {
+    return {};
+  }),
   currentNavCommand: "home",
   currentNavTitle: "Home",
   parentId: null,
   file: "",
 
-  fileChosen: Ember.observer('file', function () {
+  fileChosen: observer('file', function () {
     if (this.get('file') === "") return;
-    let uploader = Ember.$('.nice.upload.hidden');
+    let uploader = $('.nice.upload.hidden');
     let files = uploader[0].files;
     let dz = window.Dropzone.forElement(".dropzone");
     for (let i = 0; i < files.length; i++) {
       dz.addFile(files[i]);
     }
-    this.set('file', "");
+    this.set('file', '');
   }),
 
   init() {
@@ -78,7 +89,7 @@ export default Ember.Component.extend({
   actions: {
     //----------------------------------------------------------------------------
     refresh() {
-      console.log("refreshed");
+      // console.log("refreshed");
       let state = this.get('internalState');
       let myController = this;
       let itemID = state.getCurrentFolderID();
@@ -132,7 +143,7 @@ export default Ember.Component.extend({
       this.set("currentNavTitle", nav.name);
 
       if (nav.command === "home" || nav.command === "user_data" || nav.command === "workspace") {
-        console.log(nav);
+        // console.log(nav);
         folderContents = controller.get('store').query('folder', {
             parentId: nav.parentId,
             parentType: nav.parentType,
@@ -169,8 +180,8 @@ export default Ember.Component.extend({
             }
             throw new Error(nav.name + " folder not found.");
           })
-          .catch(e => {
-            console.log(["Failed to fetch contents of folder", e]);
+          .catch(() => {
+            // console.log(["Failed to fetch contents of folder", e]);
           });
       } else if (nav.command === "recent") {
         let uniqueSetOfRecentFolders = [];
@@ -205,7 +216,7 @@ export default Ember.Component.extend({
         .then(_itemContents => {
           newModel.itemContents = _itemContents;
         })
-        .finally(_ => {
+        .finally(() => {
           controller.set("fileData", newModel);
         });
 
@@ -226,7 +237,7 @@ export default Ember.Component.extend({
       let itemName = item.get('name');
 
       if (isFolder === "true") {
-        console.log("Item ID is " + itemID);
+        // console.log("Item ID is " + itemID);
 
         this.store.find('folder', itemID).then(function (folder) {
           // console.log(JSON.stringify(folder));
@@ -254,7 +265,7 @@ export default Ember.Component.extend({
             myController.set("fileData", newModel);
           } catch (e) {
             // TODO(Adam): better handle this somehow. for now I just log a message
-            console.log("could not load the folder's contents... " + e.message);
+            // console.log("could not load the folder's contents... " + e.message);
           }
 
           // console.log("State toString " + state.toString());
@@ -286,7 +297,7 @@ export default Ember.Component.extend({
         });
 
       } else {
-        myController.transitionToRoute('upload.view', item);
+        // myController.get('router').transitionTo('upload.view', item.get('id'));
       }
     },
 
@@ -309,7 +320,7 @@ export default Ember.Component.extend({
         }
       }
 
-      //      console.log(newCrumbs);
+      // console.log(newCrumbs);
 
       state.setCurrentFileBreadcrumbs(newCrumbs);
       state.setCurrentFolderID(item._id);
@@ -318,18 +329,18 @@ export default Ember.Component.extend({
 
       this.set('currentFolderId', item._id);
 
-      this.send('itemClicked', Ember.Object.create(item), "true");
+      this.send('itemClicked', Object.create(item), "true");
     },
 
     //----------------------------------------------------------------------------
     openUploadDialog() {
-      Ember.$('.nice.upload.hidden').click();
+      $('.nice.upload.hidden').click();
     },
 
     //----------------------------------------------------------------------------
     openModal(modalName) {
-      let modal = Ember.$('.ui.' + modalName + '.modal');
-      modal.parent().prependTo(Ember.$(document.body));
+      let modal = $('.ui.' + modalName + '.modal');
+      modal.parent().prependTo($(document.body));
       modal.modal('show');
     },
 
@@ -359,12 +370,12 @@ export default Ember.Component.extend({
       //             replace Semantic UI Modals with something else.
       // (see: https://semantic-org.github.io/Semantic-UI-Ember/#/modules/modal)
 
-      Ember.$('.ui.modal.newfolder').modal('show');
+      $('.ui.modal.newfolder').modal('show');
     },
 
     //-----------------------------------------------------------------------------
     openRegisterModal() {
-      Ember.$('.ui.modal.harvester').modal('show');
+      $('.ui.modal.harvester').modal('show');
     }
 
   }

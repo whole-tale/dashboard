@@ -1,44 +1,50 @@
-import Ember from 'ember';
 import RSVP from 'rsvp';
 import config from '../config/environment';
 import _ from 'lodash';
+import $ from 'jquery';
+import Service from '@ember/service';
+import {
+  inject as service
+} from '@ember/service';
+import {
+  merge
+} from '@ember/polyfills';
 
-export default Ember.Service.extend({
-    tokenHandler: Ember.inject.service(),
+export default Service.extend({
+  tokenHandler: service(),
 
-    ////////////////////////////////////////////////////////////////////////////
-    authenticatedAJAX: function(options) {
-        if(config.authorizationType === 'cookie') {
-            Ember.merge(options, {
-                xhrFields: {
-                    withCredentials: true
-                }
-            });
+  ////////////////////////////////////////////////////////////////////////////
+  authenticatedAJAX(options) {
+    if (config.authorizationType === 'cookie') {
+      merge(options, {
+        xhrFields: {
+          withCredentials: true
         }
-        else {
-            let token = this.get('tokenHandler').getWholeTaleAuthToken();
+      });
+    } else {
+      let token = this.get('tokenHandler').getWholeTaleAuthToken();
 
-            options.headers = Ember.merge(options.headers, {
-                'Girder-Token': token
-            });
-        }
-
-        return Ember.$.ajax(options);
-    },
-
-    ////////////////////////////////////////////////////////////////////////////
-    send: function(url, options) {
-        let self = this;
-        options = options || {};
-        let headers = {};
-
-        options.headers = _.merge(options.headers || {}, headers);
-
-        return new RSVP.Promise((resolve, reject) => {
-            options.url = url;
-            let deferred = self.authenticatedAJAX(options);
-            deferred.done(rep => resolve(rep));
-            deferred.fail(error => reject(error));
-        });
+      options.headers = merge(options.headers, {
+        'Girder-Token': token
+      });
     }
+
+    return $.ajax(options);
+  },
+
+  ////////////////////////////////////////////////////////////////////////////
+  send: function (url, options) {
+    let self = this;
+    options = options || {};
+    let headers = {};
+
+    options.headers = _.merge(options.headers || {}, headers);
+
+    return new RSVP.Promise((resolve, reject) => {
+      options.url = url;
+      let deferred = self.authenticatedAJAX(options);
+      deferred.done(rep => resolve(rep));
+      deferred.fail(error => reject(error));
+    });
+  }
 });
