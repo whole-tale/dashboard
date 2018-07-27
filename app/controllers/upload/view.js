@@ -20,8 +20,8 @@ export default Ember.Controller.extend({
     var model = this.get('model');
     console.log(model);
 
-    this.set('filePreviewURL', this.get('apiCall').getPreviewLink(model.get('._id')));
-    this.set('fileDownloadURL', this.get('apiCall').getDownloadLink(model.get('._id')));
+    this.set('filePreviewURL', this.get('apiCall').getPreviewLink(model.get('id')));
+    this.set('fileDownloadURL', this.get('apiCall').getDownloadLink(model.get('id')));
   }),
 
 actions: {

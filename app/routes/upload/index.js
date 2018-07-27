@@ -1,37 +1,32 @@
-import Ember from 'ember';
-var inject = Ember.inject;
-
-// for dev:
-
-
+import { inject as service } from '@ember/service';
 import AuthenticateRoute from 'wholetale/routes/authenticate';
 
 export default AuthenticateRoute.extend({
-  internalState: inject.service(),
-  userAuth: inject.service(),
-  model: function() {
+  internalState: service(),
+  userAuth: service(),
+
+  model() {
     this._super();
-    var state = this.get('internalState');
+    let state = this.get('internalState');
 
-    var thisUserID = this.get('userAuth').getCurrentUserID();
+    let  thisUserID = this.get('userAuth').getCurrentUserID();
 
-    console.log("The user id is = " + thisUserID);
+    // console.log("The user id is = " + thisUserID);
 
-    console.log(thisUserID);
+    // console.log(thisUserID);
 
-    var folderID = state.getCurrentFolderID();
+    let  folderID = state.getCurrentFolderID();
 
-    console.log("loading the route for the index again");
-    console.log("Folder ID: " + folderID);
+    // console.log("loading the route for the index again");
+    // console.log("Folder ID: " + folderID);
 
-    var folderContents=null;
-    var itemContents=null;
+    let  folderContents = null;
+    let  itemContents = null;
 
-
-    if (folderID === null || folderID === "null" ) {
+    if (folderID === null || folderID === "null") {
       folderContents = this.get('store').query('folder', {
         parentId: thisUserID,
-        parentType : "user",
+        parentType: "user",
         reload: true,
         adapterOptions: {
           queryParams: {
@@ -42,7 +37,7 @@ export default AuthenticateRoute.extend({
       state.setCurrentParentId(thisUserID);
       state.setCurrentParentType("user");
     } else {
-      console.log("Folder != null, so loading folder and items");
+      // console.log("Folder != null, so loading folder and items");
       folderContents = this.get('store').query('folder', {
         parentId: folderID,
         parentType: "folder",
@@ -53,7 +48,7 @@ export default AuthenticateRoute.extend({
           }
         }
       });
-      itemContents= this.get('store').query('item', {
+      itemContents = this.get('store').query('item', {
         folderId: folderID,
         reload: true,
         adapterOptions: {
@@ -62,13 +57,16 @@ export default AuthenticateRoute.extend({
           }
         }
       });
-      console.log("Folder != null, leaving");
+      // console.log("Folder != null, leaving");
     }
 
-    return { 'folderContents' : folderContents, 'itemContents' : itemContents};
+    return {
+      'folderContents': folderContents,
+      'itemContents': itemContents
+    };
   },
 
-  setupController: function(controller, model) {
+  setupController: function (controller, model) {
     this._super(controller, model);
     controller.set('fileData', model);
   }

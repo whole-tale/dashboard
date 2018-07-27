@@ -1,12 +1,16 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import config from '../../../../config/environment';
 import layout from './template';
+import {
+  inject as service
+} from '@ember/service';
+import $ from 'jquery';
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
-  store: Ember.inject.service(),
-  internalState: Ember.inject.service(),
+  store: service(),
+  internalState: service(),
 
   apiUrl: config.apiUrl,
 
@@ -26,7 +30,7 @@ export default Ember.Component.extend({
         self.selectedItem.rollbackAttributes();
       };
 
-      let input = Ember.$('#txt-renaming');
+      let input = $('#txt-renaming');
 
       input.focus();
 
@@ -39,17 +43,15 @@ export default Ember.Component.extend({
   },
 
   actions: {
-    clickedFolder: function (event, item) {
+    clickedFolder(item, event) {
       let evt = event || window.event;
-      if (evt.ctrlKey) {
-        this.send('openedContextMenu', item);
-      } else {
-        this.sendAction('action', item, "true");
+      if (!evt.ctrlKey) {
+        this.onItemClicked(item, "true");
       }
     },
 
-    clickedFile: function (item) {
-      this.sendAction('action', item, "false");
+    clickedFile(item) {
+      this.onItemClicked(item, "false");
     },
 
     updateModel(file) {
@@ -84,7 +86,7 @@ export default Ember.Component.extend({
 
     move(file) {
       this.set('fileToMove', file);
-      Ember.$('.ui.modal.destinate-folder').modal('show');
+      $('.ui.modal.destinate-folder').modal('show');
     },
 
     moveFile(fileToMove, moveTo) {
@@ -100,18 +102,17 @@ export default Ember.Component.extend({
       }
 
       this.fileToMove.save({
-          adapterOptions: {
-            queryParams: queryParams
-          }
-        })
-        .then(_ => {
-          if (self.fileList) self.set('fileList', self.fileList.reject(item => {
-            return item.id === fileToMove.id;
-          }));
-          if (self.folderList) self.set('folderList', self.folderList.reject(item => {
-            return item.id === fileToMove.id;
-          }));
-        });
+        adapterOptions: {
+          queryParams: queryParams
+        }
+      }).then(() => {
+        if (self.fileList) self.set('fileList', self.fileList.reject(item => {
+          return item.id === fileToMove.id;
+        }));
+        if (self.folderList) self.set('folderList', self.folderList.reject(item => {
+          return item.id === fileToMove.id;
+        }));
+      });
     },
 
     rename(file) {
@@ -146,14 +147,14 @@ export default Ember.Component.extend({
     },
 
     confirmedRemove() {
-      Ember.$("#confirm-remove").addClass("hidden");
+      $("#confirm-remove").addClass("hidden");
       let state = this.get('internalState');
       state.removeFolderFromRecentFolders(this.fileToRemove.id);
       this.fileToRemove.destroyRecord();
     },
 
     closedPrompt(prompt) {
-      Ember.$(prompt).addClass("hidden");
+      $(prompt).addClass("hidden");
     },
 
     confirmValueEquals(value) {
