@@ -145,10 +145,11 @@ export default Ember.Component.extend({
 
     transitionToRun: function (instance, index) {
       this.actions.selectInstance.call(this, instance, index);
+      // console.log('transitionToRun');
       // if clicked outside of delete icon
-      if (event && event.target && !$(event.target).hasClass('times')) {
-        this.get('router').transitionTo('run.view', instance._id);
-      }
+      // if (event && event.target && !$(event.target).hasClass('times')) {
+      this.get('router').transitionTo('run.view', instance._id);
+      // }
     }
 
   }
