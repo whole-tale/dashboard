@@ -1,29 +1,24 @@
 import Ember from 'ember';
-import layout from './template';
 import RSVP from 'rsvp';
 
 import config from '../../../../config/environment';
 
 export default Ember.Component.extend({
-    layout,
     authRequest: Ember.inject.service(),
-    // Holds an object that represents files that can be excluded from publishing
-    mutableFiles: Ember.A(),
-    // Holds an array of objects that cannot be excluded from publishing
-    immutableFiles: Ember.A(),
-    publishingLocations: Ember.A(),
+    internalState: Ember.inject.service(),
     enablePublish: true,
     selectedRepository: 'Development',
-    taleId: '5afc8629bb335720d60252bb',
+    taleId: '5b5b9a4d9de633056d436adf',
     // Flag set to show the spinner
     publishing: false,
     publishingFinish: false,
     // An array that holds a pair, (fileName, fileSize)
     fileList: [],
+    // Holds an array of objects that cannot be excluded from publishing
+    immutaleFile: ['tale.yaml', 'environment.zip'],
     repositoryMapping: {'Development': 'https://dev.nceas.ucsb.edu/knb/d1/mn/'},
     packageUrl: '',
     jwt: '',
-    
 
     setPublishBtnState(state) {
         console.debug(state)
@@ -57,7 +52,7 @@ export default Ember.Component.extend({
                 let fileList2 = []
                 rep.forEach(function(item)
                 {
-                    let path = item.name //self.getPath(item.name)
+                    let path = item.name
                     fileList2.push({'name': path, 'size':item.size, 'id': item._id})
                 })
                 self.set('fileList', fileList2)
@@ -128,25 +123,6 @@ export default Ember.Component.extend({
           html: "Place this tale in the public domain and opt out of copyright protection. \
           For more information, visit the <a href='https://spdx.org/licenses/CC0-1.0.html' target='_blank'>CC0 reference page</a>."
         }); */
-
-
-        $('.info.circle.grey.icon').popup({
-          position : 'right center',
-          target   : '.info.circle.grey.icon',
-          hoverable: true,
-          html: "The URL or DOI of \
-          the data object. Data packages can be imported into Whole Tale from <a href='https://dataone.org/' target='_blank'>DataONE</a> and select \
-          <a href='https://www.globus.org/' target='_blank'>Globus</a> repositories. For a full list of DataONE member nodes and supported Globus \
-         repositories, visit the <a href='http://wholetale.readthedocs.io/users_guide/manage.html' target='_blank'>data registration guide</a>."
-        });
-
-/*         $('.info.circle.blue.icon.ccby').popup({
-            position : 'right center',
-            target   : '.info.circle.blue.icon.ccby',
-            hoverable: true,
-            html: "The URL or DOI of \
-           repositories, visit the <a href='https://spdx.org/licenses/CC-BY-4.0.html' target='_blank'>CC-BY reference page</a>."
-          }); */
     },
 
     joinArray(arr) {
@@ -202,13 +178,12 @@ export default Ember.Component.extend({
         Responsible for opening the login dialog for the user. Ideally, we could
         tell when the user finishes logging in so that we know when to fetch the token
         */
-       let url = 'https://cn.dataone.org/portal/oauth?action=start&target=https://search.dataone.org/#data'
+       let url = 'https://cn.dataone.org/portal/oauth?action=start&target=http://probable-cattle.nceas.ucsb.edu:4200/redirect'
        if (config.dev) {
-        url = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=https://search.dataone.org/#data'
+        url = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=http://probable-cattle.nceas.ucsb.edu:4200/redirect'
        }
 
         let newwindow=window.open(url,'auth','height=400,width=450');
-        if (window.focus) {newwindow.focus()}
     },
 
     loggedIntoDataONE() {
@@ -255,8 +230,8 @@ export default Ember.Component.extend({
             /* 
             Called when the `Publish` button is clicked. It controls the flow
             of logging in and communicating with the `createPackage` endpoint.
-
             */
+
            let self = this;
            if (self.get('publishingFinish') == true) {
             self.openPackage();
@@ -268,8 +243,6 @@ export default Ember.Component.extend({
            self.set('publishing', true);
 
            self.setJWT();
-           self.sleep(500);
-           console.log(self.get('jwt'))
             // Check to see if the user is currently logged into DataONE
            let loggedIn = self.loggedIntoDataONE();
 
@@ -280,7 +253,7 @@ export default Ember.Component.extend({
            else {
                // If they aren't logged in, prompt them to do so
                self.dataoneLogin();
-               self.sleep(100000);
+               self.setJWT()
                self.publish();
                self.set('enablePublish', false);
                self.set('publishing', false);
