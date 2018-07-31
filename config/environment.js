@@ -22,7 +22,9 @@ module.exports = function (environment) {
     rootURL: '/',
     locationType: 'auto',
     torii: {
-      providers: { /*....*/ }
+      providers: { 
+          
+      }
     },
     EmberENV: {
       FEATURES: {
@@ -84,6 +86,7 @@ module.exports = function (environment) {
     ENV.apiPath = 'api/v1';
     ENV.apiUrl = 'https://girder.dev.wholetale.org/api/v1';
     ENV.dev = true;
+
   }
 
   if (environment === 'production') {

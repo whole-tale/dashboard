@@ -21,6 +21,7 @@ export default Ember.Controller.extend({
   accessControl: inject.service(),
   internalState: inject.service(),
   taleInstanceName: "",
+  authRequest: Ember.inject.service(),
 
   init() {
     this.set("tale_instantiated", false);
@@ -132,6 +133,16 @@ export default Ember.Controller.extend({
         onSuccess,
         onFail);
     },
+
+
+
+    publishTale: function(id) {
+        let modalDlg = Ember.$('.ui.publisher.modal');
+        modalDlg.parent().prependTo(Ember.$(document.body));
+        modalDlg.modal('show');
+        console.log('asdf')
+    },
+    
     /*
     exportTale: function() {
         var tale = this.get('model');
