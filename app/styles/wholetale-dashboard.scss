@@ -118,6 +118,9 @@ ui.inverted.menu.wt.top {
     border-radius: 50%;
   }
 }
+.item.wt.thin {
+  padding: 0 0;
+}
 
 /* Temporary styling to merge both header menus BEGINS */
 .ui.inverted.menu.wt.top .item:not(.not-nav) {
