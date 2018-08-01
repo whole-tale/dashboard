@@ -204,7 +204,8 @@ export default Ember.Component.extend({
             "itemIds=" + "["+(self.prepareItemIds().join(','))+"]",
             "taleId=" + self.get('taleId'),
             "repository=" + self.get('repositoryMapping')[self.get('selectedRepository')],
-            "jwt=" + self.get('jwt')
+            "jwt=" + self.get('jwt'),
+            "licenseId=0"
         ].join('&');
         
         let url = config.apiUrl + '/repository/createPackage' + queryParams;
