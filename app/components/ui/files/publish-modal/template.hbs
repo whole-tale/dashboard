@@ -5,7 +5,7 @@
         <span><p style="font-style:italic;">Create an immutable copy of your Tale with a DOI <i class="info circle blue icon" style="text-align: right"></i></p> </span>
     </h2>
 </div>
-
+<hr>
 {{#ui-accordion as |execute|}}
 <div class="title">
     <h2>
@@ -70,8 +70,6 @@
                     <div class="list">
                         {{#each immutaleFile as |file|}}
                         <div class="item">
-                            <div class ="ui checked checkbox">
-                                <input type="checkbox" checked="">
                                 <label>
                                     <div class="content">
                                         <i class="file icon"></i>
@@ -79,7 +77,6 @@
                                     </div>
                                 </label>
                             </div>
-                        </div>
                         {{/each}}
                     </div>
             </div>
@@ -119,7 +116,7 @@
         </div>
     </div>
 {{/ui-accordion}}
-
+<hr>
 <div class="actions">
     {{#ui-dropdown class="search selection dropdown" allowAdditions=false selected=selectedRepository onChange=(action 'onNodeChange')
     as |execute mapper|}}
@@ -136,19 +133,19 @@
     {{/ui-dropdown}}
     
     {{#if enablePublish}}
-    <div class="ui positive blue enabled right labeled icon button" {{action "publishedClicked"}}>
+    <div class="ui positive blue enabled right labeled icon button" style="position:absolute; right:0px;" {{action "publishedClicked"}}>
         Publish Tale
     </div>
     {{else if publishing}}
-        <div class="ui positive blue disabled loading right labeled icon button">
+        <div class="ui positive blue disabled loading right labeled icon button" style="position:absolute; right:0px;">
             Publishing
         </div>
     {{else}}
-                <div class="ui positive green right labeled icon button">
+        <div class="ui positive green right labeled icon button" style="position:absolute; right:0px;">
             View Package
         </div>
     {{/if}}
-    <div class="ui deny blue inverted button" {{action "cancelPublish"}} style="right:0px;">
+    <div class="ui deny blue inverted button" {{action "cancelPublish"}} style="position:absolute; right:0px;">
         Cancel
         <i class="icon register"></i>
     </div>
