@@ -6,18 +6,23 @@ import config from '../../../../config/environment';
 export default Ember.Component.extend({
     authRequest: Ember.inject.service(),
     internalState: Ember.inject.service(),
+    // Controls the state of the publish button
     enablePublish: true,
+    // Set the default repository to dev
     selectedRepository: 'Development',
-    taleId: '5b5b9a4d9de633056d436adf',
     // Flag set to show the spinner
     publishing: false,
+    // Set when publishing has finished
     publishingFinish: false,
     // An array that holds a pair, (fileName, fileSize)
     fileList: [],
     // Holds an array of objects that cannot be excluded from publishing
     immutaleFile: ['tale.yaml', 'environment.zip'],
+    // A map that connects the repository dropdown to a url
     repositoryMapping: {'Development': 'https://dev.nceas.ucsb.edu/knb/d1/mn/'},
+    // The url for the published tale. This is set after publication succeeds
     packageUrl: '',
+    // The jwt token that allows the user to interact with DataONE
     jwt: '',
 
     setPublishBtnState(state) {
@@ -26,7 +31,7 @@ export default Ember.Component.extend({
     },
 
     getTaleFiles() {
-        let url = config.apiUrl + '/tale/'+ this.get('taleId') 
+        let url = config.apiUrl + '/tale/'+ this.get('modalContext') 
         let self = this;
         this.get('authRequest').send(url)
         .then(rep => {
@@ -167,26 +172,23 @@ export default Ember.Component.extend({
         
         return xmlHttp.responseText;
     },
-
-    sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-      },
-
       
     dataoneLogin() {
         /*
         Responsible for opening the login dialog for the user. Ideally, we could
         tell when the user finishes logging in so that we know when to fetch the token
         */
-       let url = 'https://cn.dataone.org/portal/oauth?action=start&target=http://probable-cattle.nceas.ucsb.edu:4200/redirect'
+       let url = 'https://cn.dataone.org/portal/oauth?action=start&target=http://dashboard.dev.wholetale.org/redirect'
        if (config.dev) {
-        url = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=http://probable-cattle.nceas.ucsb.edu:4200/redirect'
+        url = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=http://dashboard.dev.wholetale.org/redirect'
        }
 
         let newwindow=window.open(url,'auth','height=400,width=450');
     },
 
     loggedIntoDataONE() {
+        // Returns true/false if the user is logged into DataONE.
+        // Note that this resets the jwt
         if (this.get('jwt')) {
             return true;
         }
@@ -195,14 +197,15 @@ export default Ember.Component.extend({
 
     setJWT() {
         this.set('jwt', this.getJWT());
-
     },
 
     publish: function(){
         let self = this;
+
+        // Set the url parameters for the endpoint
         let queryParams = "?"+[
             "itemIds=" + "["+(self.prepareItemIds().join(','))+"]",
-            "taleId=" + self.get('taleId'),
+            "taleId=" + self.get('modalContext'),
             "repository=" + self.get('repositoryMapping')[self.get('selectedRepository')],
             "jwt=" + self.get('jwt'),
             "licenseId=0"
@@ -212,6 +215,7 @@ export default Ember.Component.extend({
 
         this.get('authRequest').send(url)
             .then(rep => {
+                // Update the UI state
                 self.set('enablePublish', false);
                 this.set('publishingFinish', true);
                 self.set('packageUrl', rep);
@@ -220,7 +224,6 @@ export default Ember.Component.extend({
     },
 
     openPackage: function() {
-            
         var win = window.open(this.get('packageUrl'), '_blank');
         win.focus();
         return;
@@ -232,7 +235,6 @@ export default Ember.Component.extend({
             Called when the `Publish` button is clicked. It controls the flow
             of logging in and communicating with the `createPackage` endpoint.
             */
-
            let self = this;
            if (self.get('publishingFinish') == true) {
             self.openPackage();
@@ -258,7 +260,6 @@ export default Ember.Component.extend({
                self.publish();
                self.set('enablePublish', false);
                self.set('publishing', false);
-         
            }
 
             // Return false so the dlg stays open

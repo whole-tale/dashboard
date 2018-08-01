@@ -1,4 +1,5 @@
-{{#ui-modal name="publisher" class="small publisher" onApprove=(action 'publishedClicked') onDeny=(action 'cancelPublish')}}
+<div name="publisher" class="small publisher" >
+
 <div class="header">
     <h2>Publish Tale
         <span><p style="font-style:italic;">Create an immutable copy of your Tale with a DOI <i class="info circle blue icon" style="text-align: right"></i></p> </span>
@@ -103,9 +104,9 @@
                     <label>Creative Commons Public Domain CCO <i class="info circle blue icon" ></i> </label> 
                 </div>
             </div>
-                        <div class="field">
+            <div class="field">
                 <div class="ui radio checkbox" style="left:3%; font-size:medium">
-                    <input type="radio" name="CCBY3" checked="checked">
+                    <input type="radio" name="CCBY3">
                     <label>Attribution CC-BY 3.0 <i class="info circle blue icon" ></i> </label> 
                 </div>
             </div>
@@ -135,7 +136,7 @@
     {{/ui-dropdown}}
     
     {{#if enablePublish}}
-    <div class="ui positive blue enabled right labeled icon button">
+    <div class="ui positive blue enabled right labeled icon button" {{action "publishedClicked"}}>
         Publish Tale
     </div>
     {{else if publishing}}
@@ -147,9 +148,9 @@
             View Package
         </div>
     {{/if}}
-    <div class="ui deny blue inverted button">
+    <div class="ui deny blue inverted button" {{action "cancelPublish"}} style="right:0px;">
         Cancel
         <i class="icon register"></i>
     </div>
 </div>
-{{/ui-modal}}
+</div>

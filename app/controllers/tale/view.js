@@ -133,15 +133,6 @@ export default Ember.Controller.extend({
         onSuccess,
         onFail);
     },
-
-
-
-    publishTale: function(id) {
-        let modalDlg = Ember.$('.ui.publisher.modal');
-        modalDlg.parent().prependTo(Ember.$(document.body));
-        modalDlg.modal('show');
-        console.log('asdf')
-    },
     
     /*
     exportTale: function() {

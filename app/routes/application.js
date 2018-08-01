@@ -39,6 +39,22 @@ export default AuthenticateRoute.extend({
     toRoute() {
       this.transitionTo.call(this, ...arguments);
       return true;
-    }
+    },
+
+    showModal(modalDialogName, modalContext) {
+        const applicationController = this.controller;
+    
+        Ember.setProperties(applicationController, {
+          modalDialogName,
+          modalContext,
+          isModalVisible: true
+        });
+      },
+    
+    closeModal() {
+        debugger;
+        const applicationController = this.controller;
+        Ember.set(applicationController, 'isModalVisible', false);
+      }
   }
 });
