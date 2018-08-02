@@ -173,11 +173,7 @@ export default Ember.Component.extend({
         Responsible for opening the login dialog for the user. Ideally, we could
         tell when the user finishes logging in so that we know when to fetch the token
         */
-       let url = 'https://cn.dataone.org/portal/oauth?action=start&target=http://dashboard.dev.wholetale.org/redirect';
-       if (config.dev) {
-        url = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=http://dashboard.dev.wholetale.org/redirect';
-       }
-
+       let url = 'https://cn.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect;
         let newwindow=window.open(url,'auth','height=400,width=450');
     },
 
