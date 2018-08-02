@@ -52,7 +52,6 @@ export default AuthenticateRoute.extend({
       },
     
     closeModal() {
-        debugger;
         const applicationController = this.controller;
         Ember.set(applicationController, 'isModalVisible', false);
       }
