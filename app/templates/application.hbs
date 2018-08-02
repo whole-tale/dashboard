@@ -2,6 +2,12 @@
   {{partial "common/header"}}
   {{!-- {{partial "common/menu"}} --}}
 
+{{#if isModalVisible}}
+  {{#modal-dialog onClose=(action (mut isModalVisible) false) translucentOverlay=true}}
+   {{component modalDialogName modalContext=modalContext}}
+  {{/modal-dialog}}
+{{/if}}
+
   {{outlet}}
   {{partial "common/footer"}}
 {{else}}
@@ -45,7 +51,6 @@
     </div>
 {{/if}}
 
-{{ui/files/publish-modal}}
 {{ui/files/share-access-modal}}
 {{ui/event-notifier}}
 {{ui/job-watcher isLoading=isLoadingJobs jobs=jobs refreshJobs=(action "refreshJobs")}}
