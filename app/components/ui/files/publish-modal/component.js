@@ -16,17 +16,16 @@ export default Ember.Component.extend({
     publishingFinish: false,
     // An array that holds a pair, (fileName, fileSize)
     fileList: [],
-    // Holds an array of objects that cannot be excluded from publishing
-    immutaleFile: ['tale.yaml', 'environment.zip'],
+    // Holds an array of objects that the user cannot be exclude from their package
+    nonOptionalFile: ['tale.yaml', 'environment.zip'],
     // A map that connects the repository dropdown to a url
     repositoryMapping: {'Development': 'https://dev.nceas.ucsb.edu/knb/d1/mn/'},
     // The url for the published tale. This is set after publication succeeds
     packageUrl: '',
     // The jwt token that allows the user to interact with DataONE
-    jwt: '',
+    dataoneJWT: '',
 
     setPublishBtnState(state) {
-        console.debug(state)
         this.set('enablePublish', state);
     },
 
@@ -51,30 +50,28 @@ export default Ember.Component.extend({
                     limit: 0,
                     sort: 'lowerName',
                     sortdir: 1
-                }}
+                }};
             self.get('authRequest').send(url) 
             .then(rep => {
                 let fileList2 = []
                 rep.forEach(function(item)
                 {
-                    let path = item.name
-                    fileList2.push({'name': path, 'size':item.size, 'id': item._id})
+                    let path = item.name;
+                    fileList2.push({'name': path, 'size':item.size, 'id': item._id});
                 })
-                self.set('fileList', fileList2)
+                self.set('fileList', fileList2);
             })
         })
-        console.log(self.get('fileList'))
     },
 
     getPath(id) {
-            let url = config.apiUrl + '/item/'+ id + '/rootpath'
+            let url = config.apiUrl + '/item/'+ id + '/rootpath';
             let self = this;
             let path = '';
             let hasRoot = false;
 
             this.get('authRequest').send(url)
                 .then(rep => {
-                    console.log(rep);
                     rep.forEach(function(folder) {
                         let folderName = folder.object['name'];
                         if (folderName == 'Data' | folderName == "Home") {
@@ -85,13 +82,11 @@ export default Ember.Component.extend({
                             path += folderName;
                         }
                     })
-                    console.log(path)
                 });
     },
 
     getFileParent(file) {
         let self = this;
-    
         let promisedParentMeta;
     
         if(file.get('_modelType') === "folder") {
@@ -131,11 +126,11 @@ export default Ember.Component.extend({
     },
 
     joinArray(arr) {
-        let joined = String()
+        let joined = String();
         arr.forEach(function(item) {
-            joined += "'" +item+"'"
+            joined += "'" +item+"'";
         })
-        return joined
+        return joined;
     },
 
     prepareItemIds() {
@@ -144,11 +139,11 @@ export default Ember.Component.extend({
             itemIdList.push(JSON.stringify(item.id));
         })
         
-        console.log(itemIdList)
+        console.log(itemIdList);
         return itemIdList;
     },
 
-    getJWT() {
+    getDataONEJWT() {
         /* 
         Queries the DataONE `token` endpoint for the jwt. When a user signs into
         DataONE a cookie is created, which is checked by `token`. If the cookie wasn't
@@ -156,7 +151,7 @@ export default Ember.Component.extend({
         */
 
         // Use the XMLHttpRequest to handle the request
-        var xmlHttp = new XMLHttpRequest();
+        let xmlHttp = new XMLHttpRequest();
         // Open the request to the the token endpoint, which will return the jwt if logged in
         if(config.dev) {
             xmlHttp.open("GET", 'https://cn-stage-2.test.dataone.org/portal/token', false );
@@ -165,7 +160,7 @@ export default Ember.Component.extend({
         xmlHttp.open("GET", 'https://cn.dataone.org/portal/token', false );
         }
         // Set the response content type
-        xmlHttp.setRequestHeader("Content-Type", "text/xml")
+        xmlHttp.setRequestHeader("Content-Type", "text/xml");
         // Let XMLHttpRequest know to use cookies
         xmlHttp.withCredentials = true;
         xmlHttp.send(null);
@@ -178,9 +173,9 @@ export default Ember.Component.extend({
         Responsible for opening the login dialog for the user. Ideally, we could
         tell when the user finishes logging in so that we know when to fetch the token
         */
-       let url = 'https://cn.dataone.org/portal/oauth?action=start&target=http://dashboard.dev.wholetale.org/redirect'
+       let url = 'https://cn.dataone.org/portal/oauth?action=start&target=http://dashboard.dev.wholetale.org/redirect';
        if (config.dev) {
-        url = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=http://dashboard.dev.wholetale.org/redirect'
+        url = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=http://dashboard.dev.wholetale.org/redirect';
        }
 
         let newwindow=window.open(url,'auth','height=400,width=450');
@@ -189,14 +184,23 @@ export default Ember.Component.extend({
     loggedIntoDataONE() {
         // Returns true/false if the user is logged into DataONE.
         // Note that this resets the jwt
-        if (this.get('jwt')) {
+        if (this.get('dataoneJWT')) {
             return true;
         }
         return false;
     },
 
-    setJWT() {
-        this.set('jwt', this.getJWT());
+    attemptLogin() {
+        let jwt = this.getDataONEJWT();
+        if (!jwt) {
+            return false;
+        }
+        this.setDataONEJWT(jwt);
+        return true;
+    },
+
+    setDataONEJWT(dataoneJWT) {
+        this.set('dataoneJWT', dataoneJWT);
     },
 
     publish: function(){
@@ -207,7 +211,7 @@ export default Ember.Component.extend({
             "itemIds=" + "["+(self.prepareItemIds().join(','))+"]",
             "taleId=" + self.get('modalContext'),
             "repository=" + self.get('repositoryMapping')[self.get('selectedRepository')],
-            "jwt=" + self.get('jwt'),
+            "jwt=" + self.get('dataoneJWT'),
             "licenseId=0"
         ].join('&');
         
@@ -220,11 +224,11 @@ export default Ember.Component.extend({
                 this.set('publishingFinish', true);
                 self.set('packageUrl', rep);
                 self.set('publishing', false);
-            })
+            });
     },
 
     openPackage: function() {
-        var win = window.open(this.get('packageUrl'), '_blank');
+        let win = window.open(this.get('packageUrl'), '_blank');
         win.focus();
         return;
 },
@@ -236,7 +240,7 @@ export default Ember.Component.extend({
             of logging in and communicating with the `createPackage` endpoint.
             */
            let self = this;
-           if (self.get('publishingFinish') == true) {
+           if (self.get('publishingFinish')) {
             self.openPackage();
            }
            // Disable the button so that it isn't accidentally clicked multiple times
@@ -245,9 +249,7 @@ export default Ember.Component.extend({
            // Let the UI know that the user clicked the `Publish` button. 
            self.set('publishing', true);
 
-           self.setJWT();
-            // Check to see if the user is currently logged into DataONE
-           let loggedIn = self.loggedIntoDataONE();
+           let loggedIn = self.attemptLogin()
 
            if (loggedIn) {
                // If they are, go ahead and publish
@@ -256,7 +258,7 @@ export default Ember.Component.extend({
            else {
                // If they aren't logged in, prompt them to do so
                self.dataoneLogin();
-               self.setJWT()
+               self.setDataONEJWT();
                self.publish();
                self.set('enablePublish', false);
                self.set('publishing', false);

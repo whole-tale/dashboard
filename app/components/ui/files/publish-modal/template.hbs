@@ -2,15 +2,17 @@
 
 <div class="header">
     <h2>Publish Tale
-        <span><p style="font-style:italic;">Create an immutable copy of your Tale with a DOI <i class="info circle blue icon" style="text-align: right"></i></p> </span>
+        <span><p>Create an immutable copy of your Tale with a DOI <i class="info circle blue icon"></i></p> </span>
     </h2>
 </div>
 <hr>
 {{#ui-accordion as |execute|}}
+
+{{!-- Accordion menu that lists tale files which can be (de)selected by the user --}}
 <div class="title">
     <h2>
         <i class="far fa-hdd"></i> Data
-        <span style="font-style:italic;">Select the files fully needed to reproduce your work</span>
+        <span>Select the files fully needed to reproduce your work</span>
     </h2>
     <i class="dropdown icon"></i>
 </div>
@@ -20,7 +22,7 @@
         <div class="ui list">
             <div class="item">
                 <i class="folder icon"></i>
-                <div class="content" style="height:100px;">
+                <div class="content">
                     <div class="header">Home Directory</div>
                     <div class="description">Files stored in your home directory</div>
                     <div class="list">
@@ -55,10 +57,11 @@
 </div>
 </div>
 
+{{!-- Accordion menu that lists the files which cannot be removed by the user --}}
 <div class="title">
     <h2>
         <i class="desktop icon"></i>Environment
-        <span style="font-style:italic;">Everything required to recreate chosen compute environment - view only</span>
+        <span>Everything required to recreate chosen compute environment - view only</span>
     </h2>
     <i class="dropdown icon"></i>
 </div>
@@ -68,7 +71,7 @@
         <div class="ui list">
             <div class="item">
                     <div class="list">
-                        {{#each immutaleFile as |file|}}
+                        {{#each nonOptionalFile as |file|}}
                         <div class="item">
                                 <label>
                                     <div class="content">
@@ -84,10 +87,11 @@
 </div>
 </div>
 
+{{!-- Accordion menu that lets the user select a license --}}
 <div class="title">
     <h2>
         <i class="creative commons icon"></i>Usage Rights
-        <span style="font-style:italic;">Choose how you wish your Tale to be stored and reused</span>
+        <span>Choose how you wish your Tale to be stored and reused</span>
     </h2>
     <i class="dropdown icon"></i>
 </div>
@@ -96,19 +100,19 @@
     <div class="ui form"></div>
         <div class="grouped fields">
             <div class="field">
-                <div class="ui radio checkbox" style="left:3%; font-size:medium">
+                <div class="ui radio checkbox">
                     <input type="radio" name="CC0" checked="checked">
                     <label>Creative Commons Public Domain CCO <i class="info circle blue icon" ></i> </label> 
                 </div>
             </div>
             <div class="field">
-                <div class="ui radio checkbox" style="left:3%; font-size:medium">
+                <div class="ui radio checkbox">
                     <input type="radio" name="CCBY3">
                     <label>Attribution CC-BY 3.0 <i class="info circle blue icon" ></i> </label> 
                 </div>
             </div>
             <div class="field">
-                <div class="ui radio checkbox" style="left:3%; font-size:medium">
+                <div class="ui radio checkbox">
                     <input type="radio" name="CCBY4">
                         <label>Creative Commons Attribution CC-BY 4.0<i class="info circle blue icon" ></i> </label>
                 </div>
@@ -118,6 +122,7 @@
 {{/ui-accordion}}
 <hr>
 <div class="actions">
+    {{!-- Dropdown where the user can select which member node to put the package in --}}
     {{#ui-dropdown class="search selection dropdown" allowAdditions=false selected=selectedRepository onChange=(action 'onNodeChange')
     as |execute mapper|}}
     <div class="default text">Target Repository</div>
@@ -132,20 +137,23 @@
     </div>
     {{/ui-dropdown}}
     
+    {{!-- Button that is shown when the user can publish the tale --}}
     {{#if enablePublish}}
-    <div class="ui positive blue enabled right labeled icon button" style="position:absolute; right:0px;" {{action "publishedClicked"}}>
+    <div class="ui positive blue enabled right labeled icon button" {{action "publishedClicked"}}>
         Publish Tale
     </div>
     {{else if publishing}}
-        <div class="ui positive blue disabled loading right labeled icon button" style="position:absolute; right:0px;">
+    {{!-- Button that has a loader on top --}}
+        <div class="ui positive blue disabled loading right labeled icon button">
             Publishing
         </div>
     {{else}}
-        <div class="ui positive green right labeled icon button" style="position:absolute; right:0px;">
+    {{!-- Button that is shown after publishing completes --}}
+        <div class="ui positive green right labeled icon button">
             View Package
         </div>
     {{/if}}
-    <div class="ui deny blue inverted button" {{action "cancelPublish"}} style="position:absolute; right:0px;">
+    <div class="ui deny blue inverted button" {{action "cancelPublish"}}>
         Cancel
         <i class="icon register"></i>
     </div>
