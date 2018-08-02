@@ -35,11 +35,11 @@ export default Ember.Component.extend({
         this.get('authRequest').send(url)
         .then(rep => {
             let folderId = rep['folderId'];
-            let queryParams = "?"+[
-                "folderId="+folderId,
-                "limit=0",
-                "sort=lowerName",
-                "sortdir=1"
+            let queryParams = '?'+[
+                'folderId='+folderId,
+                'limit=0',
+                'sort=lowerName',
+                'sortdir=1'
             ].join('&');
 
             url = config.apiUrl + '/item' + queryParams;
@@ -74,7 +74,7 @@ export default Ember.Component.extend({
                 .then(rep => {
                     rep.forEach(function(folder) {
                         let folderName = folder.object['name'];
-                        if (folderName == 'Data' | folderName == "Home") {
+                        if (folderName === 'Data' || folderName === 'Home') {
                             path += folderName;
                             hasRoot = true;
                         }
@@ -89,7 +89,7 @@ export default Ember.Component.extend({
         let self = this;
         let promisedParentMeta;
     
-        if(file.get('_modelType') === "folder") {
+        if(file.get('_modelType') === 'folder') {
           promisedParentMeta = new RSVP.Promise(resolve => {
             resolve({
               id:   file.get('parentId'),
@@ -98,7 +98,7 @@ export default Ember.Component.extend({
           });
         }
         else {
-          let url = config.apiUrl + "/item/" + file.get('id') + "/rootpath";
+          let url = config.apiUrl + '/item/' + file.get('id') + '/rootpath';
           promisedParentMeta = this.get('authRequest').send(url)
             .then(response => {
               let parent = response.pop();
@@ -203,12 +203,12 @@ export default Ember.Component.extend({
         let self = this;
 
         // Set the url parameters for the endpoint
-        let queryParams = "?"+[
-            "itemIds=" + "["+(self.prepareItemIds().join(','))+"]",
-            "taleId=" + self.get('modalContext'),
-            "repository=" + self.get('repositoryMapping')[self.get('selectedRepository')],
-            "jwt=" + self.get('dataoneJWT'),
-            "licenseId=0"
+        let queryParams = '?'+[
+            'itemIds=' + '["+(self.prepareItemIds().join(','))+"]',
+            'taleId=' + self.get('modalContext'),
+            'repository=' + self.get('repositoryMapping')[self.get('selectedRepository')],
+            'jwt=' + self.get('dataoneJWT'),
+            'licenseId=0'
         ].join('&');
         
         let url = config.apiUrl + '/repository/createPackage' + queryParams;
