@@ -115,14 +115,54 @@ export default Ember.Component.extend({
 
     didInsertElement() {
         this._super(...arguments);
+
         this.getTaleFiles();
-/*         $('.info.circle.blue.icon').popup({
-          position : 'right center',
-          target   : '.info.circle.blue.icon',
-          hoverable: true,
-          html: "Place this tale in the public domain and opt out of copyright protection. \
-          For more information, visit the <a href='https://spdx.org/licenses/CC0-1.0.html' target='_blank'>CC0 reference page</a>."
-        }); */
+    },
+
+    didRender () {
+        // Create the tooltips after the template has been rendered
+        this.create_tooltips();
+    },
+
+    create_tooltips() {
+        // Creates the popup balloons for the info tooltips
+
+        // Create the popup in the main title
+        $('.info.circle.blue.icon.main').popup({
+            position : 'right center',
+            target   : '.info.circle.blue.icon.main',
+            hoverable: true,
+            html: "Get a citeable DOI by publishing your Tale on <a href='https://www.dataone.org/' target='_blank'>DataONE.</a> \
+            For more information on how to publish and cite your tale, visit the \
+            <a href='http://wholetale.readthedocs.io/users_guide/publish.html' target='_blank'>publishing guide</a>."
+          });
+
+        // Create the CC0 popup
+        $('.info.circle.blue.icon.cc0').popup({
+            position : 'right center',
+            target   : '.info.circle.blue.icon.cc0',
+            hoverable: true,
+            html: "Place this tale in the public domain and opt out of copyright protection. \
+            For more information, visit the <a href='https://spdx.org/licenses/CC0-1.0.html' target='_blank'>CC0 reference page</a>."
+          });
+
+        // Create the CCBY3 popup
+        $('.info.circle.blue.icon.ccby3').popup({
+            position : 'right center',
+            target   : '.info.circle.blue.icon.ccby3',
+            hoverable: true,
+            html: "Require that users properly attribute the authors of this tale with the CCBY 3.0 standards. \
+            For more information, visit the <a href='https://spdx.org/licenses/CC-BY-3.0.html' target='_blank'>CCBY3 reference page</a>."
+          });
+
+        // Create the CCBY4 popup
+        $('.info.circle.blue.icon.ccby4').popup({
+            position : 'right center',
+            target   : '.info.circle.blue.icon.ccby4',
+            hoverable: true,
+            html: "Require that users properly attribute the authors of this tale with the CCBY 4.0 standards. \
+            For more information, visit the <a href='https://spdx.org/licenses/CC-BY-4.0.html' target='_blank'>CCBY4 reference page</a>."
+          });
     },
 
     joinArray(arr) {
