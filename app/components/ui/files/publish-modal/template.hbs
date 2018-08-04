@@ -97,28 +97,30 @@
 </div>
 
 <div class="content">
-    <div class="ui form"></div>
+    <div class="ui form">
         <div class="grouped fields">
             <div class="field">
-                <div class="ui radio checkbox">
-                    <input type="radio" name="CC0" checked="checked">
+                <div class="ui radio checkbox cc0" id='0'>
+                    <input type="radio" name="license-radio" checked="checked">
                     <label>Creative Commons Public Domain CCO <i class="info circle blue icon" ></i> </label> 
                 </div>
             </div>
             <div class="field">
-                <div class="ui radio checkbox">
-                    <input type="radio" name="CCBY3">
-                    <label>Attribution CC-BY 3.0 <i class="info circle blue icon" ></i> </label> 
+                <div class="ui radio checkbox ccby3" id='1'>
+                    <input type="radio" name="license-radio">
+                    <label>Creative Commons Attribution CC-BY 3.0 <i class="info circle blue icon" ></i> </label> 
                 </div>
             </div>
             <div class="field">
-                <div class="ui radio checkbox">
-                    <input type="radio" name="CCBY4">
-                        <label>Creative Commons Attribution CC-BY 4.0<i class="info circle blue icon" ></i> </label>
+                <div class="ui radio checkbox ccby4" id='2'>
+                    <input type="radio" name="license-radio">
+                    <label>Creative Commons Attribution CC-BY 4.0<i class="info circle blue icon" ></i> </label>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
 {{/ui-accordion}}
 <hr>
 <div class="actions">

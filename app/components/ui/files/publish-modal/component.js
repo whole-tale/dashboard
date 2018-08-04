@@ -173,8 +173,8 @@ export default Ember.Component.extend({
         Responsible for opening the login dialog for the user. Ideally, we could
         tell when the user finishes logging in so that we know when to fetch the token
         */
-       let url = 'https://cn.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect;
-        let newwindow=window.open(url,'auth','height=400,width=450');
+       let url = 'http://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+config.authRedirect;
+       let newwindow=window.open(url,'auth','height=400,width=450');
     },
 
     loggedIntoDataONE() {
@@ -208,7 +208,7 @@ export default Ember.Component.extend({
             'taleId=' + self.get('modalContext'),
             'repository=' + self.get('repositoryMapping')[self.get('selectedRepository')],
             'jwt=' + self.get('dataoneJWT'),
-            'licenseId=0'
+            'licenseId='+self.getSelectedLicense()
         ].join('&');
         
         let url = config.apiUrl + '/repository/createPackage' + queryParams;
@@ -229,6 +229,16 @@ export default Ember.Component.extend({
         return;
 },
 
+getSelectedLicense() {
+    // Returns the id of the selected license
+    let selected_radio = $('input[name=license-radio]:checked').parent();
+    if (selected_radio.length) {
+        return selected_radio[0].id;
+    }
+    //If we can't find a checked radio, default to 0
+    return '0';
+  },
+
     actions: {
         publishedClicked(){
             /* 
@@ -239,6 +249,7 @@ export default Ember.Component.extend({
            if (self.get('publishingFinish')) {
             self.openPackage();
            }
+           
            // Disable the button so that it isn't accidentally clicked multiple times
            self.set('enablePublish', false);
 
