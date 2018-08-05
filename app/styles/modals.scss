@@ -74,12 +74,12 @@
     -moz-border-top-right-radius: 1rem;
     border-top-right-radius: 1rem;
 }
-.publisher .header img {
+.publisher .main.header img {
     height: 2.25rem;
     margin: 0 .75rem 0 0;
     float:left;
 }
-.publisher .header span {
+.publisher .main.header span {
     font-size: 1.2rem;
     color: rgba(0,0,0,0.4);
     font-weight: 300;
@@ -88,11 +88,7 @@
     padding-left: .4rem;
 }
 
-.publisher.header p {
-    font-style:italic;
-}
-
-.publisher.header .info.circle.blue.icon {
+.publisher.main.header .info.circle.blue.icon {
     text-align: right
 }
 
@@ -110,9 +106,13 @@
     margin: 0 .75rem 0 0;
     float:left;
 }
+
+.publisher .title {
+    color: rgb(74, 74, 74)
+}
 .publisher .title span {
     font-size: 1.2rem;
-    color: rgba(0,0,0,0.4);
+    color: rgb(107, 104, 104);
     font-weight: 300;
     font-style: italic;
     letter-spacing: .05rem;
@@ -155,4 +155,8 @@
 
 .publisher .creative.commons.icon {
     margin-left:10px;
+}
+
+.publisher .ui.accordion .title .dropdown.icon {
+    float: right;
 }
