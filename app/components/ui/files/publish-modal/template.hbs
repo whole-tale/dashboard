@@ -2,7 +2,7 @@
 
 <div class="header">
     <h2>Publish Tale
-        <span><p>Create an immutable copy of your Tale with a DOI <i class="info circle blue icon"></i></p> </span>
+        <span><p>Create an immutable copy of your Tale with a DOI <i class="info circle blue icon main"></i></p> </span>
     </h2>
 </div>
 <hr>
@@ -57,6 +57,7 @@
 </div>
 </div>
 
+<hr>
 {{!-- Accordion menu that lists the files which cannot be removed by the user --}}
 <div class="title">
     <h2>
@@ -66,27 +67,32 @@
     <i class="dropdown icon"></i>
 </div>
 
-<div class="content">
-        <div class="ui basic segment">
+<div class="content environment">
+    <div class="ui basic segment">
         <div class="ui list">
             <div class="item">
+                <i class="environment folder icon"></i>
+                <div class="content">
+                    <div class="environment name header">{{taleName}}</div>
                     <div class="list">
                         {{#each nonOptionalFile as |file|}}
-                        <div class="item">
+                            <div class="item">
                                 <label>
                                     <div class="content">
                                         <i class="file icon"></i>
-                                        {{file}} <i class="info circle blue icon" ></i> 
+                                        {{file}} <i class="info circle blue icon {{file}}"></i> 
                                     </div>
                                 </label>
                             </div>
                         {{/each}}
                     </div>
+                </div>
             </div>
+        </div>
     </div>
 </div>
-</div>
 
+<hr>
 {{!-- Accordion menu that lets the user select a license --}}
 <div class="title">
     <h2>
@@ -97,28 +103,37 @@
 </div>
 
 <div class="content">
-    <div class="ui form"></div>
+    <div class="ui form">
         <div class="grouped fields">
             <div class="field">
-                <div class="ui radio checkbox">
-                    <input type="radio" name="CC0" checked="checked">
-                    <label>Creative Commons Public Domain CCO <i class="info circle blue icon" ></i> </label> 
+                <div class="ui radio checkbox cc0" id='0'>
+                    <input type="radio" name="license-radio" checked="checked">
+                    <label><img class="ui small image left floated" src="https://d15omoko64skxi.cloudfront.net/wp-content/uploads/2014/01/cc-zero.png">
+                     Creative Commons Public Domain CCO <i class="info circle blue icon cc0"></i></label> 
                 </div>
             </div>
             <div class="field">
-                <div class="ui radio checkbox">
-                    <input type="radio" name="CCBY3">
-                    <label>Attribution CC-BY 3.0 <i class="info circle blue icon" ></i> </label> 
+                <div class="ui radio checkbox ccby3" id='1'>
+                    <input type="radio" name="license-radio">
+                    <label>
+                        <img class="ui small image left floated" src="https://upload.wikimedia.org/wikipedia/commons/1/16/CC-BY_icon.svg">
+                        Creative Commons Attribution CC-BY 3.0 <i class="info circle blue icon ccby3" ></i>
+                    </label> 
                 </div>
             </div>
             <div class="field">
-                <div class="ui radio checkbox">
-                    <input type="radio" name="CCBY4">
-                        <label>Creative Commons Attribution CC-BY 4.0<i class="info circle blue icon" ></i> </label>
+                <div class="ui radio checkbox ccby4" id='2'>
+                    <input type="radio" name="license-radio">
+                    <label>
+                        <img class="ui small image left floated" src="https://upload.wikimedia.org/wikipedia/commons/1/16/CC-BY_icon.svg">
+                        Creative Commons Attribution CC-BY 4.0 <i class="info circle blue icon ccby4" ></i> 
+                    </label>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
 {{/ui-accordion}}
 <hr>
 <div class="actions">
