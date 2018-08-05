@@ -124,10 +124,6 @@
     float: right;
 }
 
-.publisher .ui.button {
-    float: right;
-}
-
 .publisher .ui.radio.checkbox {
     left:3%;
     font-size:medium;
@@ -158,5 +154,17 @@
 }
 
 .publisher .ui.accordion .title .dropdown.icon {
+    float: right;
+    font-size: 2em;
+}
+
+.publisher .actions {
+    position: fixed;
+    bottom: 0;
+    width: 95%;
+    margin-bottom: 1em;
+}
+
+.publisher .actions .button {
     float: right;
 }
