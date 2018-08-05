@@ -9,12 +9,15 @@
 {{#ui-accordion as |execute|}}
 
 {{!-- Accordion menu that lists tale files which can be (de)selected by the user --}}
-<div class="title">
+<div class="data title">
     <h2>
         <i class="far fa-hdd"></i> Data
-        <span>Select the files fully needed to reproduce your work</span>
+        <span>
+            Select the files fully needed to reproduce your work
+            <i class="dropdown icon"></i>
+        </span>
     </h2>
-    <i class="dropdown icon"></i>
+   
 </div>
 
 <div class="content">
@@ -59,12 +62,14 @@
 
 <hr>
 {{!-- Accordion menu that lists the files which cannot be removed by the user --}}
-<div class="title">
+<div class="environment title">
     <h2>
         <i class="desktop icon"></i>Environment
-        <span>Everything required to recreate chosen compute environment - view only</span>
+        <span>
+            Everything required to recreate chosen compute environment - view only 
+            <i class="dropdown icon"></i>
+        </span>
     </h2>
-    <i class="dropdown icon"></i>
 </div>
 
 <div class="content environment">
@@ -95,11 +100,14 @@
 <hr>
 {{!-- Accordion menu that lets the user select a license --}}
 <div class="title">
-    <h2>
+    <h2 class="license header">
         <i class="creative commons icon"></i>Usage Rights
-        <span>Choose how you wish your Tale to be stored and reused</span>
+        <span>
+            Choose how you wish your Tale to be stored and reused
+            <i class="dropdown icon"></i>
+        </span>
     </h2>
-    <i class="dropdown icon"></i>
+
 </div>
 
 <div class="content">
