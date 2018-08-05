@@ -176,7 +176,8 @@ export default Ember.Component.extend({
             For more information, visit the <a href='https://spdx.org/licenses/CC-BY-4.0.html' target='_blank'>CCBY4 reference page</a>."
         });
 
-        // Create the popups for the environment files
+        // Create the popups for the environment files. Files with an extension
+        // need to have the period escaped with a double backslash when referencing.
         // Create the tale.yaml popup
         $('.info.circle.blue.icon.tale\\.yaml').popup({
             position : 'right center',
