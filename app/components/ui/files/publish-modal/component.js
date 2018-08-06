@@ -214,7 +214,7 @@ export default Ember.Component.extend({
         tell when the user finishes logging in so that we know when to fetch the token
         */
        let url = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+config.authRedirect;
-       let newwindow = window.open(url,'auth','height=400,width=450');
+       let newwindow = window.open(config.orcidLogin,'auth','height=500,width=550');
     },
 
     loggedIntoDataONE() {

@@ -89,7 +89,7 @@ module.exports = function (environment) {
     ENV.apiUrl = 'https://girder.dev.wholetale.org/api/v1';
     ENV.dev = true;
     ENV.authRedirect = 'http://dashboard.dev.wholetale.org/redirect';
-
+    ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
   }
 
   if (environment === 'production') {
@@ -98,6 +98,7 @@ module.exports = function (environment) {
     ENV.apiUrl = ENV.apiHost + '/' + ENV.apiPath;
     ENV.dev = false;
     ENV.authRedirect = 'http://dashboard.wholetale.org/redirect';
+    ENV.orcidLogin = 'https://cn.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
   }
 
   return ENV;
