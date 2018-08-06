@@ -1,10 +1,12 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
-
+import EventStream from 'npm:sse.js';
 import config from '../../../../config/environment';
 
 export default Ember.Component.extend({
     authRequest: Ember.inject.service(),
+    tokenHandler: Ember.inject.service(),
+    notificationHandler: Ember.inject.service(),
     internalState: Ember.inject.service(),
     // Controls the state of the publish button
     enablePublish: true,
@@ -17,7 +19,10 @@ export default Ember.Component.extend({
     // An array that holds a pair, (fileName, fileSize)
     fileList: [],
     // Holds an array of objects that the user cannot be exclude from their package
-    nonOptionalFile: ['tale.yaml', 'environment.tar', 'license.txt'],
+    nonOptionalFile: ['tale.yaml',
+     'environment.tar',
+      'license.txt',
+      'science_metadata.xml'],
     // A map that connects the repository dropdown to a url
     repositoryMapping: {'Development': 'https://dev.nceas.ucsb.edu/knb/d1/mn/'},
     // The url for the published tale. This is set after publication succeeds
@@ -201,6 +206,18 @@ export default Ember.Component.extend({
             hoverable: true,
             html: "Each package is created with a license, which can be selected below."
         });
+
+        // Create the science_metadata popup
+        $('.info.circle.blue.icon.science_metadata\\.xml').popup({
+            position : 'right center',
+            target   : '.info.circle.blue.icon.science_metadata\\.xml',
+            hoverable: true,
+            html: "The contents of each package are described using the Ecological Metadata Language (EML). \
+             To learn more about EML, visit the \
+             <a href='https://esajournals.onlinelibrary.wiley.com/doi/abs/10.1890/0012-9623%282005%2986%5B158%3AMTVOED%5D2.0.CO%3B2' \
+              target='_blank'>EML primer</a>."
+        });
+
     },
 
     joinArray(arr) {
@@ -291,13 +308,25 @@ export default Ember.Component.extend({
         
         let url = config.apiUrl + '/repository/createPackage' + queryParams;
 
+        let source = self.getEventStream();
         this.get('authRequest').send(url)
+            .catch (e=> {
+                let notifier = self.get('notificationHandler');
+
+                notifier.pushNotification({
+                header: "Error Retrieving Publishing Status",
+                message: e.message
+                });
+            })
             .then(rep => {
                 // Update the UI state
                 self.set('enablePublish', false);
                 this.set('publishingFinish', true);
                 self.set('packageUrl', rep);
                 self.set('publishing', false);
+            })
+            .finally(_ => {
+                source.close();
             });
     },
 
@@ -316,6 +345,29 @@ getSelectedLicense() {
     //If we can't find a checked radio, default to 0
     return '0';
   },
+
+  getEventStream() {
+    let self = this;
+    let token = self.get('tokenHandler').getWholeTaleAuthToken();
+
+    // Get a timestamp so that we can filter out any stale notifications. This needs to be Unix Epoch
+    let time = Math.round(+new Date()/1000)
+    let source = new EventStream.SSE(config.apiUrl+"/notification/stream?timeout=15000&since="+time,
+     {headers: {'Girder-Token': token}});
+
+    source.addEventListener('message', function(evt) {
+        let payload = JSON.parse(evt.data);
+        let notifier = self.get('notificationHandler');
+
+        notifier.pushNotification({
+            message: payload.data.message,
+            header: payload.data.title
+        });
+    });
+
+    source.stream();
+    return source;
+},
 
     actions: {
         publishedClicked(){
@@ -349,7 +401,7 @@ getSelectedLicense() {
                self.set('publishing', false);
            }
 
-            // Return false so the dlg stays open
+           // Return false so the dialog stays open
            return false;
         },
 
