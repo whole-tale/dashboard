@@ -2,28 +2,87 @@ import Ember from 'ember';
 import RSVP from 'rsvp';
 
 import config from '../../../../config/environment';
+import EventStream from 'npm:sse.js';
 
 export default Ember.Component.extend({
     authRequest: Ember.inject.service(),
     internalState: Ember.inject.service(),
+    userAuth: Ember.inject.service(),
+    tokenHandler: Ember.inject.service("token-handler"),
+    notificationHandler: Ember.inject.service(),
     // Controls the state of the publish button
     enablePublish: true,
-    // Set the default repository to dev
-    selectedRepository: 'Development',
-    // Flag set to show the spinner
+    // The repository that the user has selected
+    selectedRepository: '',
+    // Flag that sets/unsets the spinner on the publish button
     publishing: false,
     // Set when publishing has finished
     publishingFinish: false,
     // An array that holds a pair, (fileName, fileSize)
     fileList: [],
     // Holds an array of objects that the user cannot be exclude from their package
-    nonOptionalFile: ['tale.yaml', 'environment.zip'],
+    nonOptionalFile: ['tale.yaml',
+    'environment.tar.gz',
+     'license.txt',
+     'science_metadata.xml'],
     // A map that connects the repository dropdown to a url
-    repositoryMapping: {'Development': 'https://dev.nceas.ucsb.edu/knb/d1/mn/'},
+    repositories: [{
+        name: 'NCEAS Development',
+        url: 'https://dev.nceas.ucsb.edu/knb/d1/mn/',
+        licenses: ['cc0', 'ccby4']}],
     // The url for the published tale. This is set after publication succeeds
     packageUrl: '',
     // The jwt token that allows the user to interact with DataONE
     dataoneJWT: '',
+    // The licenses that the user can potentially select
+    licenses: {
+        'cc0': {
+            'name': 'Creative Commons Public Domain CCO',
+            'spdx': 'CC0-1.0',
+            'short': 'CC0'},
+        'ccby3': {
+            'name': 'Creative Commons Attribution CC-BY 3.0',
+            'spdx': 'CC-BY-3.0',
+            'short': 'CC-BY3'},
+        'ccby4': {
+            'name': 'Creative Commons Attribution CC-BY 4.0',
+            'spdx': 'CC-BY-4.0',
+            'short': 'CC-BY4'},
+        },
+    // Filtered list of licenses that are available for selection. This changes when the user
+    // changes the selected repository.
+    availableLicenses: [],
+    // The name of the tale
+    taleName: '',
+
+
+    didInsertElement() {
+
+            this.set('selectedRepository', this.get('repositories')[0].name);
+            this.setLicenses();
+            this.setTaleName();
+            this.getTaleFiles()
+    },
+
+    didRender () {
+        // Create the tooltips after the template has been rendered
+        this.create_tooltips();
+       
+       // Set the default repository
+
+    },
+
+    setTaleName() {
+        let url = config.apiUrl + '/tale/'+ this.get('modalContext') 
+        let self = this;
+        this.get('authRequest').send(url)
+        .catch (e=> {
+            self.set('taleName', '');
+        })
+        .then(rep => {
+            self.set('taleName', rep['title'])
+        });
+    },
 
     setPublishBtnState(state) {
         this.set('enablePublish', state);
@@ -73,7 +132,7 @@ export default Ember.Component.extend({
             this.get('authRequest').send(url)
                 .then(rep => {
                     rep.forEach(function(folder) {
-                        let folderName = folder.object['name'];
+                        let folderName = folder.object.name;
                         if (folderName === 'Data' || folderName === 'Home') {
                             path += folderName;
                             hasRoot = true;
@@ -113,17 +172,6 @@ export default Ember.Component.extend({
         return promisedParentMeta;
       },
 
-    didInsertElement() {
-        this._super(...arguments);
-
-        this.getTaleFiles();
-    },
-
-    didRender () {
-        // Create the tooltips after the template has been rendered
-        this.create_tooltips();
-    },
-
     create_tooltips() {
         // Creates the popup balloons for the info tooltips
 
@@ -138,46 +186,80 @@ export default Ember.Component.extend({
           });
 
         // Create the CC0 popup
-        $('.info.circle.blue.icon.cc0').popup({
+        $('.info.circle.blue.icon.CC0').popup({
             position : 'right center',
-            target   : '.info.circle.blue.icon.cc0',
+            target   : '.info.circle.blue.icon.CC0',
             hoverable: true,
             html: "Place this tale in the public domain and opt out of copyright protection. \
             For more information, visit the <a href='https://spdx.org/licenses/CC0-1.0.html' target='_blank'>CC0 reference page</a>."
           });
 
         // Create the CCBY3 popup
-        $('.info.circle.blue.icon.ccby3').popup({
+        $('.info.circle.blue.icon.CC-BY3').popup({
             position : 'right center',
-            target   : '.info.circle.blue.icon.ccby3',
+            target   : '.info.circle.blue.icon.CC-BY3',
             hoverable: true,
             html: "Require that users properly attribute the authors of this tale with the CCBY 3.0 standards. \
             For more information, visit the <a href='https://spdx.org/licenses/CC-BY-3.0.html' target='_blank'>CCBY3 reference page</a>."
           });
 
         // Create the CCBY4 popup
-        $('.info.circle.blue.icon.ccby4').popup({
+        $('.info.circle.blue.icon.CC-BY4').popup({
             position : 'right center',
-            target   : '.info.circle.blue.icon.ccby4',
+            target   : '.info.circle.blue.icon.CC-BY4',
             hoverable: true,
             html: "Require that users properly attribute the authors of this tale with the CCBY 4.0 standards. \
             For more information, visit the <a href='https://spdx.org/licenses/CC-BY-4.0.html' target='_blank'>CCBY4 reference page</a>."
           });
+
+        // Create the popups for the environment files. Files with an extension
+        // need to have the period escaped with a double backslash when referencing.
+        // Create the tale.yaml popup
+        $('.info.circle.blue.icon.tale\\.yaml').popup({
+            position : 'right center',
+            target   : '.info.circle.blue.icon.tale\\.yaml',
+            hoverable: true,
+            html: "This file holds metadata about the tale, such as script execution order and file structure."
+        });
+        // Create the environment.tar popup
+        $('.info.circle.blue.icon.environment\\.tar\\.gz').popup({
+            position : 'right center',
+            target   : '.info.circle.blue.icon.environment\\.tar\\.gz',
+            hoverable: true,
+            html: "The environment archive holds the information needed to re-create the tale's base virtual machine."
+        });
+         // Create the LICENSE popup
+        $('.info.circle.blue.icon.license\\.txt').popup({
+            position : 'right center',
+            target   : '.info.circle.blue.icon.license\\.txt',
+            hoverable: true,
+            html: "Each package is created with a license, which can be selected below."
+        });
+         // Create the science_metadata popup
+        $('.info.circle.blue.icon.science_metadata\\.xml').popup({
+            position : 'right center',
+            target   : '.info.circle.blue.icon.science_metadata\\.xml',
+            hoverable: true,
+            html: "The contents of each package are described using the Ecological Metadata Language (EML). \
+             To learn more about EML, visit the \
+             <a href='https://esajournals.onlinelibrary.wiley.com/doi/abs/10.1890/0012-9623%282005%2986%5B158%3AMTVOED%5D2.0.CO%3B2' \
+              target='_blank'>EML primer</a>."
+        });
     },
 
     joinArray(arr) {
         let joined = String();
         arr.forEach(function(item) {
             joined += "'" +item+"'";
-        })
+        });
         return joined;
     },
 
     prepareItemIds() {
-        let itemIdList = []
+        let itemIdList = [];
         this.get('fileList').forEach(function(item) {
             itemIdList.push(JSON.stringify(item.id));
-        })
+        });
         
         console.log(itemIdList);
         return itemIdList;
@@ -239,29 +321,49 @@ export default Ember.Component.extend({
         this.set('dataoneJWT', dataoneJWT);
     },
 
+    getRepositoryPathFromName(name) {
+        // Given a repository name, find the membernode URL
+        let repostoryList = this.get('repositories')
+        for (var i=0; i < repostoryList.length; i++) {
+            if (repostoryList[i].name === name) {
+                return repostoryList[i].url;
+            }
+        }
+    },
+
     publish: function(){
         let self = this;
-
+        
         // Set the url parameters for the endpoint
         let queryParams = '?'+[
-            'itemIds=' + '["+(self.prepareItemIds().join(','))+"]',
+            'itemIds=' + '['+self.prepareItemIds()+']',
             'taleId=' + self.get('modalContext'),
-            'repository=' + self.get('repositoryMapping')[self.get('selectedRepository')],
+            'repository=' + self.getRepositoryPathFromName(self.get('selectedRepository')),
             'jwt=' + self.get('dataoneJWT'),
             'licenseId='+self.getSelectedLicense()
         ].join('&');
         
         let url = config.apiUrl + '/repository/createPackage' + queryParams;
-
+        let source = self.getEventStream();
         this.get('authRequest').send(url)
+        .catch (e=> {
+            let notifier = self.get('notificationHandler');
+             notifier.pushNotification({
+            header: "Error Retrieving Publishing Status",
+            message: e.message
+            });
+        })
             .then(rep => {
                 // Update the UI state
                 self.set('enablePublish', false);
                 this.set('publishingFinish', true);
                 self.set('packageUrl', rep);
                 self.set('publishing', false);
+            })
+            .finally(_ => {
+                source.close();
             });
-    },
+        },
 
     openPackage: function() {
         let win = window.open(this.get('packageUrl'), '_blank');
@@ -272,12 +374,51 @@ export default Ember.Component.extend({
 getSelectedLicense() {
     // Returns the id of the selected license
     let selected_radio = $('input[name=license-radio]:checked').parent();
+    debugger;
     if (selected_radio.length) {
         return selected_radio[0].id;
     }
     //If we can't find a checked radio, default to 0
     return '0';
   },
+
+  setLicenses() {
+    // Sets the licenses that the user can choose from, based on the selected repository
+    let self=this;
+      if (self.get('selectedRepository') === 'NCEAS Development') {
+            let availableLicenses = []
+
+            self.get('repositories')[0].licenses.forEach(function(entry) {
+                let licenses = self.get('licenses')
+                availableLicenses.push(licenses[entry])
+        });
+        console.log(availableLicenses)
+        self.set('availableLicenses', availableLicenses);
+      }
+      else {
+          // If for some reason the dropdown isn't set, default to CC0
+          self.set('availableLicenses', [self.get('licenses').cc0]);
+      }
+  },
+
+  getEventStream() {
+    let self = this;
+    let token = self.get('tokenHandler').getWholeTaleAuthToken();
+     // Get a timestamp so that we can filter out any stale notifications. This needs to be Unix Epoch
+    let time = Math.round(+new Date()/1000)
+    let source = new EventStream.SSE(config.apiUrl+"/notification/stream?timeout=15000&since="+time,
+     {headers: {'Girder-Token': token}});
+     source.addEventListener('message', function(evt) {
+        let payload = JSON.parse(evt.data);
+        let notifier = self.get('notificationHandler');
+         notifier.pushNotification({
+            message: payload.data.message,
+            header: payload.data.title
+        });
+    });
+     source.stream();
+    return source;
+},
 
     actions: {
         publishedClicked(){
@@ -319,16 +460,10 @@ getSelectedLicense() {
             console.log('Canceling');
         },
 
-        onNodeChange: function() {
-            if(this.get('selectedRepository') != '')
-            {
-               // setPublishBtnState(true)
-            }
-            else
-            {
-                //setPublishBtnState(false)
-            }
-            
+
+        onRepositoryChange: function() {
+            // Called when the user changes the repository
+               this.setLicenses()
         }
     },
 });
