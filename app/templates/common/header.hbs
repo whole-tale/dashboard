@@ -43,6 +43,10 @@
                 <img src="{{gravatarUrl}}" class="gravatar" />
             </div>
             <label class="item small font not-nav">{{user.firstName}} {{user.lastName}}</label>
+            <a class="item wt thin not-nav" data-tooltip="View running tasks."
+                data-position="bottom right" {{action 'openJobWatcher'}}>
+                    <i class="tasks icon white"></i>
+            </a>    
             <a class="item wt thin not-nav" target="_blank"
               href="https://wholetale.readthedocs.io/users_guide/index.html"
               data-tooltip="Read the Whole Tale User Guide." data-position="bottom right">

@@ -182,7 +182,7 @@ export default Ember.Component.extend({
             hoverable: true,
             html: "Get a citeable DOI by publishing your Tale on <a href='https://www.dataone.org/' target='_blank'>DataONE.</a> \
             For more information on how to publish and cite your tale, visit the \
-            <a href='http://wholetale.readthedocs.io/users_guide/publish.html' target='_blank'>publishing guide</a>."
+            <a href='http://wholetale.readthedocs.io/users_guide/publishing.html' target='_blank'>publishing guide</a>."
           });
 
         // Create the CC0 popup
@@ -374,12 +374,11 @@ export default Ember.Component.extend({
 getSelectedLicense() {
     // Returns the id of the selected license
     let selected_radio = $('input[name=license-radio]:checked').parent();
-    debugger;
     if (selected_radio.length) {
         return selected_radio[0].id;
     }
-    //If we can't find a checked radio, default to 0
-    return '0';
+    //If we can't find a checked radio, default to cc0
+    return this.get('licenses').cc0.spdx;
   },
 
   setLicenses() {
