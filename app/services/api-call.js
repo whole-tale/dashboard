@@ -1,12 +1,14 @@
-import Ember from 'ember';
 import config from '../config/environment';
+import Service from '@ember/service';
+import {
+  inject as service
+} from '@ember/service';
 
-export default Ember.Service.extend({
-  tokenHandler: Ember.inject.service('token-handler'),
+export default Service.extend({
+  tokenHandler: service('token-handler'),
   isAuthenticated: true,
 
-
-  getFileContents: function (itemID, callback) {
+  getFileContents(itemID, callback) {
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/item/' + itemID + '/download?contentDisposition=attachment';
     var client = new XMLHttpRequest();
@@ -18,19 +20,18 @@ export default Ember.Service.extend({
     client.send();
   },
 
-  getPreviewLink: function (itemID) {
+  getPreviewLink(itemID) {
     return config.apiUrl + '/item/' + itemID + '/download?contentDisposition=inline';
 
     // https://girder.wholetale.org/api/v1/file/584ed73a548a6f00017d7504/download?contentDisposition=inline
 
   },
 
-  getDownloadLink: function (itemID) {
+  getDownloadLink(itemID) {
     return config.apiUrl + '/item/' + itemID + '/download?contentDisposition=attachment';
   },
 
-
-  putItemDetails: function (itemID, name, description, success, fail) {
+  putItemDetails(itemID, name, description, success, fail) {
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/item/' + itemID;
     var queryPars = "";
@@ -182,7 +183,7 @@ export default Ember.Service.extend({
     client.send();
   },
 
-  exportTale : function (taleId, success, fail) {
+  exportTale: function (taleId, success, fail) {
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/tale/' + taleId + '/export?contentDisposition=attachment';
 
@@ -196,7 +197,7 @@ export default Ember.Service.extend({
     // yet
     // TODO: Set filename argument in success callback to use the filename
     // provided by the backend
-    client.addEventListener("load", function() {
+    client.addEventListener("load", function () {
       if (client.status === 200) {
         success(client, "tale-export-" + taleId + '.zip')
       } else {
@@ -207,4 +208,4 @@ export default Ember.Service.extend({
     client.send();
   },
 
-  });
+});
