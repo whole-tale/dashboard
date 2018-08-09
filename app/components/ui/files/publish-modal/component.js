@@ -296,7 +296,7 @@ export default Ember.Component.extend({
         tell when the user finishes logging in so that we know when to fetch the token
         */
 
-       window.open(config.orcidLogin,'auth','height=600,width=550');
+       window.open(config.orcidLogin,'auth','height=600,width=550').focus();
     },
 
     loggedIntoDataONE() {
@@ -424,7 +424,7 @@ getSelectedLicense() {
         closeModal() {
             return this.closeModal();
         },
-        
+
         publishedClicked(){
             /* 
             Called when the `Publish` button is clicked. It controls the flow
