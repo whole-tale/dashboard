@@ -295,8 +295,8 @@ export default Ember.Component.extend({
         Responsible for opening the login dialog for the user. Ideally, we could
         tell when the user finishes logging in so that we know when to fetch the token
         */
-       let url = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+config.authRedirect;
-       let newwindow = window.open(config.orcidLogin,'auth','height=500,width=550');
+
+       window.open(config.orcidLogin,'auth','height=600,width=550');
     },
 
     loggedIntoDataONE() {
@@ -356,7 +356,7 @@ export default Ember.Component.extend({
             .then(rep => {
                 // Update the UI state
                 self.set('enablePublish', false);
-                this.set('publishingFinish', true);
+                self.set('publishingFinish', true);
                 self.set('packageUrl', rep);
                 self.set('publishing', false);
             })
@@ -445,7 +445,11 @@ getSelectedLicense() {
            else {
                // If they aren't logged in, prompt them to do so
                self.dataoneLogin();
-               self.setDataONEJWT();
+
+               loggedIn = self.attemptLogin()
+               if (!loggedIn) {
+                   return false
+               }
                self.publish();
                self.set('enablePublish', false);
                self.set('publishing', false);
@@ -453,10 +457,6 @@ getSelectedLicense() {
 
             // Return false so the dlg stays open
            return false;
-        },
-
-        cancelPublish: function() {
-            console.log('Canceling');
         },
 
 
