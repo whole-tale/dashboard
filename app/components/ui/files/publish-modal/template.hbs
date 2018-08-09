@@ -13,7 +13,7 @@
     <h2>
         <i class="far fa-hdd"></i> Data
         <span>
-            Select the files fully needed to reproduce your work
+            Select the files needed to fully reproduce your work
             <i class="dropdown icon"></i>
         </span>
     </h2>
@@ -124,9 +124,10 @@
             View Package
         </div>
     {{/if}}
-    <div class="ui deny blue inverted button">
+
+    <div class="ui deny blue inverted button" {{action 'closeModal'}}>
         Cancel
-        <i class="icon register"></i>
     </div>
+
 </div>
 </div>

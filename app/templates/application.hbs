@@ -4,7 +4,7 @@
 
 {{#if isModalVisible}}
   {{#modal-dialog onClose=(action (mut isModalVisible) false) translucentOverlay=true}}
-   {{component modalDialogName modalContext=modalContext}}
+   {{component modalDialogName modalContext=modalContext closeModal=(action 'closeModal')}}
   {{/modal-dialog}}
 {{/if}}
 

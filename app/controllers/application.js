@@ -65,6 +65,11 @@ export default Ember.Controller.extend({
   }),
   currentUserName: 'Hallo, Damian',
   actions: {
+
+    closeModal() {
+        this.set('isModalVisible', false);
+      },
+
     toggle: function (subSidebarName) {
       console.log(subSidebarName);
       $('#' + subSidebarName)
