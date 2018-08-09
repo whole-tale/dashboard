@@ -420,6 +420,11 @@ getSelectedLicense() {
 },
 
     actions: {
+
+        closeModal() {
+            return this.closeModal();
+        },
+        
         publishedClicked(){
             /* 
             Called when the `Publish` button is clicked. It controls the flow
