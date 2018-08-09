@@ -106,6 +106,7 @@ Router.map(function () {
   // this.resource("search", { path: "/search" }, function() {
   //   this.route(':query');
   // });
+  this.route('login-success');
 });
 
 export default Router;
