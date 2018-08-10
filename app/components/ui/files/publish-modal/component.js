@@ -61,7 +61,7 @@ export default Ember.Component.extend({
             this.set('selectedRepository', this.get('repositories')[0].name);
             this.setLicenses();
             this.setTaleName();
-            this.getTaleFiles()
+            
     },
 
     didRender () {
@@ -69,7 +69,7 @@ export default Ember.Component.extend({
         this.create_tooltips();
        
        // Set the default repository
-
+       this.getTaleFiles()
     },
 
     setTaleName() {
@@ -91,7 +91,7 @@ export default Ember.Component.extend({
     getTaleFiles() {
         let url = config.apiUrl + '/tale/'+ this.get('modalContext') 
         let self = this;
-        this.get('authRequest').send(url)
+        self.get('authRequest').send(url)
         .then(rep => {
             let folderId = rep['folderId'];
             let queryParams = '?'+[
@@ -112,6 +112,7 @@ export default Ember.Component.extend({
                 }};
             self.get('authRequest').send(url) 
             .then(rep => {
+                debugger;
                 let fileList2 = []
                 rep.forEach(function(item)
                 {
@@ -120,57 +121,8 @@ export default Ember.Component.extend({
                 })
                 self.set('fileList', fileList2);
             })
-        })
-    },
-
-    getPath(id) {
-            let url = config.apiUrl + '/item/'+ id + '/rootpath';
-            let self = this;
-            let path = '';
-            let hasRoot = false;
-
-            this.get('authRequest').send(url)
-                .then(rep => {
-                    rep.forEach(function(folder) {
-                        let folderName = folder.object.name;
-                        if (folderName === 'Data' || folderName === 'Home') {
-                            path += folderName;
-                            hasRoot = true;
-                        }
-                        if (hasRoot) {
-                            path += folderName;
-                        }
-                    })
-                });
-    },
-
-    getFileParent(file) {
-        let self = this;
-        let promisedParentMeta;
-    
-        if(file.get('_modelType') === 'folder') {
-          promisedParentMeta = new RSVP.Promise(resolve => {
-            resolve({
-              id:   file.get('parentId'),
-              type: file.get('parentCollection')
-            });
-          });
-        }
-        else {
-          let url = config.apiUrl + '/item/' + file.get('id') + '/rootpath';
-          promisedParentMeta = this.get('authRequest').send(url)
-            .then(response => {
-              let parent = response.pop();
-              return {
-                id:   parent.object._id,
-                type: parent.type
-              };
-            })
-          ;
-        }
-    
-        return promisedParentMeta;
-      },
+    })
+},
 
     create_tooltips() {
         // Creates the popup balloons for the info tooltips
@@ -355,12 +307,21 @@ export default Ember.Component.extend({
         })
             .then(rep => {
                 // Update the UI state
-                self.set('enablePublish', false);
-                self.set('publishingFinish', true);
-                self.set('packageUrl', rep);
+                if (self.isURL(rep)) {
+                    self.set('enablePublish', false);
+                    self.set('publishingFinish', true);
+                    self.set('packageUrl', rep);
+                    self.set('publishing', false);
+                }
+                else {
+                    alert('There was an error registering your Tale ' + String(rep))
+                self.set('enablePublish', true);
+                self.set('publishingFinish', false);
                 self.set('publishing', false);
+                }
             })
             .finally(_ => {
+                console.log('Closing source')
                 source.close();
             });
         },
@@ -419,6 +380,19 @@ getSelectedLicense() {
     return source;
 },
 
+isURL(str)
+{
+    let regexp =  /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)\(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+        if (regexp.test(str))
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+},
+
     actions: {
 
         closeModal() {
@@ -433,6 +407,7 @@ getSelectedLicense() {
            let self = this;
            if (self.get('publishingFinish')) {
             self.openPackage();
+            return;
            }
            
            // Disable the button so that it isn't accidentally clicked multiple times

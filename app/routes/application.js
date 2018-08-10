@@ -49,11 +49,7 @@ export default AuthenticateRoute.extend({
           modalContext,
           isModalVisible: true
         });
-      },
-    
-    closeModal() {
-        const applicationController = this.controller;
-        Ember.set(applicationController, 'isModalVisible', false);
       }
+
   }
 });
