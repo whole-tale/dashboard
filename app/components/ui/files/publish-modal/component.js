@@ -22,7 +22,7 @@ export default Ember.Component.extend({
     fileList: [],
     // Holds an array of objects that the user cannot be exclude from their package
     nonOptionalFile: ['tale.yaml',
-    'environment.tar.gz',
+    'docker-environment.tar.gz',
      'license.txt',
      'science_metadata.xml'],
     // A map that connects the repository dropdown to a url
@@ -54,7 +54,6 @@ export default Ember.Component.extend({
     availableLicenses: [],
     // The name of the tale
     taleName: '',
-
 
     didInsertElement() {
 
@@ -102,24 +101,14 @@ export default Ember.Component.extend({
             ].join('&');
 
             url = config.apiUrl + '/item' + queryParams;
-            let options = {
-                method: 'GET',
-                data: {
-                    folderId: folderId,
-                    limit: 0,
-                    sort: 'lowerName',
-                    sortdir: 1
-                }};
             self.get('authRequest').send(url) 
             .then(rep => {
-                debugger;
-                let fileList2 = []
+                let taleFiles = []
                 rep.forEach(function(item)
                 {
-                    let path = item.name;
-                    fileList2.push({'name': path, 'size':item.size, 'id': item._id});
+                    taleFiles.push({'name': item.name, 'size':item.size, 'id': item._id});
                 })
-                self.set('fileList', fileList2);
+                self.set('fileList', taleFiles);
             })
     })
 },
@@ -174,7 +163,7 @@ export default Ember.Component.extend({
             html: "This file holds metadata about the tale, such as script execution order and file structure."
         });
         // Create the environment.tar popup
-        $('.info.circle.blue.icon.environment\\.tar\\.gz').popup({
+        $('.info.circle.blue.icon.docker-environment\\.tar\\.gz').popup({
             position : 'right center',
             target   : '.info.circle.blue.icon.environment\\.tar\\.gz',
             hoverable: true,
@@ -290,12 +279,12 @@ export default Ember.Component.extend({
         let queryParams = '?'+[
             'itemIds=' + '['+self.prepareItemIds()+']',
             'taleId=' + self.get('modalContext'),
-            'repository=' + self.getRepositoryPathFromName(self.get('selectedRepository')),
-            'jwt=' + self.get('dataoneJWT'),
-            'licenseId='+self.getSelectedLicense()
+            'remoteMemberNode=' + self.getRepositoryPathFromName(self.get('selectedRepository')),
+            'authToken=' + self.get('dataoneJWT'),
+            'licenseSPDX='+self.getSelectedLicense()
         ].join('&');
         
-        let url = config.apiUrl + '/repository/createPackage' + queryParams;
+        let url = config.apiUrl + '/publish/dataone' + queryParams;
         let source = self.getEventStream();
         this.get('authRequest').send(url)
         .catch (e=> {
@@ -307,7 +296,7 @@ export default Ember.Component.extend({
         })
             .then(rep => {
                 // Update the UI state
-                if (self.isURL(rep)) {
+                if (self.isUrl(rep)) {
                     self.set('enablePublish', false);
                     self.set('publishingFinish', true);
                     self.set('packageUrl', rep);
@@ -380,18 +369,10 @@ getSelectedLicense() {
     return source;
 },
 
-isURL(str)
-{
-    let regexp =  /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)\(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
-        if (regexp.test(str))
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-},
+    isUrl(s) {
+    var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+    return regexp.test(s);
+    },
 
     actions: {
 
