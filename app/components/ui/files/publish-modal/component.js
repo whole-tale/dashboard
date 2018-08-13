@@ -22,7 +22,7 @@ export default Ember.Component.extend({
     fileList: [],
     // Holds an array of objects that the user cannot be exclude from their package
     nonOptionalFile: ['tale.yaml',
-    'environment.tar.gz',
+    'docker-environment.tar.gz',
      'license.txt',
      'science_metadata.xml'],
     // A map that connects the repository dropdown to a url
@@ -55,13 +55,12 @@ export default Ember.Component.extend({
     // The name of the tale
     taleName: '',
 
-
     didInsertElement() {
 
             this.set('selectedRepository', this.get('repositories')[0].name);
             this.setLicenses();
             this.setTaleName();
-            this.getTaleFiles()
+            
     },
 
     didRender () {
@@ -69,7 +68,7 @@ export default Ember.Component.extend({
         this.create_tooltips();
        
        // Set the default repository
-
+       this.getTaleFiles()
     },
 
     setTaleName() {
@@ -91,7 +90,7 @@ export default Ember.Component.extend({
     getTaleFiles() {
         let url = config.apiUrl + '/tale/'+ this.get('modalContext') 
         let self = this;
-        this.get('authRequest').send(url)
+        self.get('authRequest').send(url)
         .then(rep => {
             let folderId = rep['folderId'];
             let queryParams = '?'+[
@@ -102,75 +101,17 @@ export default Ember.Component.extend({
             ].join('&');
 
             url = config.apiUrl + '/item' + queryParams;
-            let options = {
-                method: 'GET',
-                data: {
-                    folderId: folderId,
-                    limit: 0,
-                    sort: 'lowerName',
-                    sortdir: 1
-                }};
             self.get('authRequest').send(url) 
             .then(rep => {
-                let fileList2 = []
+                let taleFiles = []
                 rep.forEach(function(item)
                 {
-                    let path = item.name;
-                    fileList2.push({'name': path, 'size':item.size, 'id': item._id});
+                    taleFiles.push({'name': item.name, 'size':item.size, 'id': item._id});
                 })
-                self.set('fileList', fileList2);
+                self.set('fileList', taleFiles);
             })
-        })
-    },
-
-    getPath(id) {
-            let url = config.apiUrl + '/item/'+ id + '/rootpath';
-            let self = this;
-            let path = '';
-            let hasRoot = false;
-
-            this.get('authRequest').send(url)
-                .then(rep => {
-                    rep.forEach(function(folder) {
-                        let folderName = folder.object.name;
-                        if (folderName === 'Data' || folderName === 'Home') {
-                            path += folderName;
-                            hasRoot = true;
-                        }
-                        if (hasRoot) {
-                            path += folderName;
-                        }
-                    })
-                });
-    },
-
-    getFileParent(file) {
-        let self = this;
-        let promisedParentMeta;
-    
-        if(file.get('_modelType') === 'folder') {
-          promisedParentMeta = new RSVP.Promise(resolve => {
-            resolve({
-              id:   file.get('parentId'),
-              type: file.get('parentCollection')
-            });
-          });
-        }
-        else {
-          let url = config.apiUrl + '/item/' + file.get('id') + '/rootpath';
-          promisedParentMeta = this.get('authRequest').send(url)
-            .then(response => {
-              let parent = response.pop();
-              return {
-                id:   parent.object._id,
-                type: parent.type
-              };
-            })
-          ;
-        }
-    
-        return promisedParentMeta;
-      },
+    })
+},
 
     create_tooltips() {
         // Creates the popup balloons for the info tooltips
@@ -222,7 +163,7 @@ export default Ember.Component.extend({
             html: "This file holds metadata about the tale, such as script execution order and file structure."
         });
         // Create the environment.tar popup
-        $('.info.circle.blue.icon.environment\\.tar\\.gz').popup({
+        $('.info.circle.blue.icon.docker-environment\\.tar\\.gz').popup({
             position : 'right center',
             target   : '.info.circle.blue.icon.environment\\.tar\\.gz',
             hoverable: true,
@@ -338,12 +279,12 @@ export default Ember.Component.extend({
         let queryParams = '?'+[
             'itemIds=' + '['+self.prepareItemIds()+']',
             'taleId=' + self.get('modalContext'),
-            'repository=' + self.getRepositoryPathFromName(self.get('selectedRepository')),
-            'jwt=' + self.get('dataoneJWT'),
-            'licenseId='+self.getSelectedLicense()
+            'remoteMemberNode=' + self.getRepositoryPathFromName(self.get('selectedRepository')),
+            'authToken=' + self.get('dataoneJWT'),
+            'licenseSPDX='+self.getSelectedLicense()
         ].join('&');
         
-        let url = config.apiUrl + '/repository/createPackage' + queryParams;
+        let url = config.apiUrl + '/publish/dataone' + queryParams;
         let source = self.getEventStream();
         this.get('authRequest').send(url)
         .catch (e=> {
@@ -355,12 +296,21 @@ export default Ember.Component.extend({
         })
             .then(rep => {
                 // Update the UI state
-                self.set('enablePublish', false);
-                self.set('publishingFinish', true);
-                self.set('packageUrl', rep);
+                if (self.isUrl(rep)) {
+                    self.set('enablePublish', false);
+                    self.set('publishingFinish', true);
+                    self.set('packageUrl', rep);
+                    self.set('publishing', false);
+                }
+                else {
+                    alert('There was an error registering your Tale ' + String(rep))
+                self.set('enablePublish', true);
+                self.set('publishingFinish', false);
                 self.set('publishing', false);
+                }
             })
             .finally(_ => {
+                console.log('Closing source')
                 source.close();
             });
         },
@@ -419,6 +369,11 @@ getSelectedLicense() {
     return source;
 },
 
+    isUrl(s) {
+    var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+    return regexp.test(s);
+    },
+
     actions: {
 
         closeModal() {
@@ -433,6 +388,7 @@ getSelectedLicense() {
            let self = this;
            if (self.get('publishingFinish')) {
             self.openPackage();
+            return;
            }
            
            // Disable the button so that it isn't accidentally clicked multiple times

@@ -1,6 +1,7 @@
 import Service from '@ember/service';
 import { computed } from '@ember/object';
 import { A } from '@ember/array';
+import { loc } from '@ember/string';
 
 // a set of methods dedicated to certain state maintenance on the front end.
 // these methods use localStorage so they persist beyond sessions ...
@@ -207,8 +208,17 @@ export default Service.extend({
   setSearchString(searchStr) {
     localStorage.lastSearchStr = searchStr;
   },
+
   getSearchString() {
     return localStorage.searchStr;
-  }
+  },
 
+  setDataOneAuthenticated: function (authenticated) {
+    localStorage.dataOneAuthenticated = authenticated
+  },
+
+  getDataOneAuthenticated: function() {
+      return localStorage.dataOneAuthenticated;
+  }
+  
 });
