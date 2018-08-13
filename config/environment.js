@@ -98,7 +98,7 @@ module.exports = function (environment) {
     ENV.apiUrl = ENV.apiHost + '/' + ENV.apiPath;
     ENV.dev = false;
     ENV.authRedirect = 'http://dashboard.wholetale.org/login-success';
-    ENV.orcidLogin = 'https://cn.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
+    ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
   }
 
   return ENV;
