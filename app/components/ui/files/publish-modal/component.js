@@ -220,7 +220,7 @@ export default Ember.Component.extend({
             xmlHttp.open("GET", 'https://cn-stage-2.test.dataone.org/portal/token', false );
         }
         else {
-        xmlHttp.open("GET", 'https://cn.dataone.org/portal/token', false );
+        xmlHttp.open("GET", 'https://cn-stage-2.test.dataone.org/portal/token', false );
         }
         // Set the response content type
         xmlHttp.setRequestHeader("Content-Type", "text/xml");
