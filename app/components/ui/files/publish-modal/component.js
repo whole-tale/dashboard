@@ -39,15 +39,21 @@ export default Ember.Component.extend({
         'cc0': {
             'name': 'Creative Commons Public Domain CCO',
             'spdx': 'CC0-1.0',
-            'short': 'CC0'},
+            'short': 'CC0',
+            'imageName': '/images/CC0.png'
+        },
         'ccby3': {
             'name': 'Creative Commons Attribution CC-BY 3.0',
             'spdx': 'CC-BY-3.0',
-            'short': 'CC-BY3'},
+            'short': 'CC-BY3',
+            'imageName': '/images/CC-BY3.png'
+        },
         'ccby4': {
             'name': 'Creative Commons Attribution CC-BY 4.0',
             'spdx': 'CC-BY-4.0',
-            'short': 'CC-BY4'},
+            'short': 'CC-BY4',
+            'imageName': '/images/CC-BY4.png'
+        }
         },
     // Filtered list of licenses that are available for selection. This changes when the user
     // changes the selected repository.
