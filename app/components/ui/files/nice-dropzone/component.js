@@ -31,7 +31,7 @@ export default Ember.Component.extend({
 
   init() {
     this._super(...arguments);
-    window.Dropzone.autodiscover = false;
+    window.Dropzone.autoDiscover = false;
   },
 
   didRender() {
@@ -63,8 +63,16 @@ export default Ember.Component.extend({
     };
     dz.options.autoProcessQueue = false;
     dz.options.parallelUploads = 1;
+    dz.options.chunking = true;
+    // Upload files larger than 100MB in 10MB chunks
+    dz.options.chunkSize = 10485760;
+    dz.options.params = function(files, xhr, chunk){
+      return {
+        uploadId: files[0].id,
+        offset: (chunk !== null) ? chunk.index * dz.options.chunkSize : 0
+      }
+    };
     dz.on("addedfile", this.debounceAddedFile.bind(this));
-    dz.on("sending", this.sending.bind(this));
     dz.on("uploadprogress", this.uploadProgress.bind(this));
     dz.on("success", this.uploadProgress.bind(this));
     dz.on("queuecomplete", this.queueComplete.bind(this));
@@ -144,11 +152,6 @@ export default Ember.Component.extend({
       resolve(true);
     }));
     return p_create_files;
-  },
-
-  sending(file, xhr, formData) {
-    formData.append("uploadId", file.id);
-    formData.append("offset", 0);
   },
 
   uploadProgress(file) {
