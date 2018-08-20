@@ -64,6 +64,7 @@ export default Ember.Component.extend({
     dz.options.autoProcessQueue = false;
     dz.options.parallelUploads = 1;
     dz.options.chunking = true;
+    dz.options.maxFilesize = 1024;
     // Upload files larger than 100MB in 10MB chunks
     dz.options.chunkSize = 10485760;
     dz.options.params = function(files, xhr, chunk){
@@ -180,8 +181,8 @@ export default Ember.Component.extend({
     this.deferredQueueComplete.resolve(true);
   },
 
-  error(file) {
-    file.error = file.xhr.statusText;
+  error(file, errorMessage) {
+    file.error = errorMessage;
     this.uploadProgress(file);
   },
 
