@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
-
+import { A } from '@ember/array';
 import config from '../../../../config/environment';
 import EventStream from 'npm:sse.js';
 
@@ -10,6 +10,10 @@ export default Ember.Component.extend({
     userAuth: Ember.inject.service(),
     tokenHandler: Ember.inject.service("token-handler"),
     notificationHandler: Ember.inject.service(),
+
+    inputData: A(),
+
+    showingFilePicker: false,
     // Controls the state of the publish button
     enablePublish: true,
     // The repository that the user has selected
@@ -381,6 +385,9 @@ getSelectedLicense() {
     },
 
     actions: {
+        toggleFilePicker() {
+          this.set('showingFilePicker', !this.get('showingFilePicker'));
+        },
 
         closeModal() {
             return this.closeModal();

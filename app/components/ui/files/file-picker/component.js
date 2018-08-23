@@ -26,7 +26,8 @@ export default Component.extend({
   // ------------------------------------------------------------------------------------------------------------------------------
   getTaleFiles() {
     let self = this;
-    this.store.findRecord('tale', this.taleId)
+    let selectionTree = this.get('selectionTree');
+    return this.store.findRecord('tale', this.taleId)
       .then(tale => {
         let folderId = tale['folderId'];
         let queryParams = {
@@ -38,6 +39,15 @@ export default Component.extend({
         return this.store.findAll('item', {adapterOptions: {queryParams: queryParams}});
       })
       .then(items => {
+        items.forEach(i => {
+          selectionTree[i.id] = {
+            check: true,
+            partialCheck: false,
+            // parent: i.get('folderId'),
+            type: 'item'
+          };
+        });
+        self.set('selectionTree', O(selectionTree));
         self.set('fileList', items);
       })
     ;
@@ -82,6 +92,7 @@ export default Component.extend({
   // ------------------------------------------------------------------------------------------------------------------------------
   loadFiles(folder) {
     const store = this.get('store');
+    const self = this;
     let loadFiles = store.query('item', {
       folderId: folder.id,
       reload: true,
@@ -91,12 +102,16 @@ export default Component.extend({
         }
       }
     });
-
+    let selectionTree = this.get('selectionTree');
     return loadFiles
       .then(files => {
         files.forEach(file => {
+          if (selectionTree[file.id]) {
+            selectionTree[file.id].parentId = folder.id;
+          }
           file.set('_parent', folder);
         });
+        self.set('selectionTree', O(selectionTree));
         folder.set('files', files);
       })
     ;
@@ -121,17 +136,6 @@ export default Component.extend({
   },
 
   // ------------------------------------------------------------------------------------------------------------------------------
-  fetchParentFolder(item) {
-    return this.get('authRequest')
-      .send(`${config.apiUrl}/${item._modelType}/${item.id}/rootpath`)
-      .then(paths => {
-        let parent = paths.pop().object;
-        parent.id = parent._id;
-        return parent;
-      })
-    ;
-  },
-
   removeParentsFromInputData(item) {
     let parent = item._parent;
     if (!parent) return;
@@ -161,17 +165,20 @@ export default Component.extend({
   // ------------------------------------------------------------------------------------------------------------------------------
   init() {
     this._super(...arguments);
-    this.getTaleFiles();
-
-    let userID = this.get('userAuth').getCurrentUserID();
-    this.set('root', O({
-      id : userID,
-      _modelType: "user",
-      folders: A(),
-      files: A()
-    }));
-
-    this.loadAllRelationships(this.root);
+    const self = this;
+    this.getTaleFiles().then(() => {
+      let selectionTree = self.get('selectionTree');
+      console.log("here", selectionTree);
+      let userID = self.get('userAuth').getCurrentUserID();
+      self.set('root', O({
+        id : userID,
+        _modelType: "user",
+        folders: A(),
+        files: A()
+      }));
+  
+      self.loadAllRelationships.call(self, self.root);
+    })
   },
 
   // ------------------------------------------------------------------------------------------------------------------------------
@@ -181,8 +188,9 @@ export default Component.extend({
 
   // ------------------------------------------------------------------------------------------------------------------------------
   actions: {
-    expandFolder(folder) {
-
+    toggleExpandFolder(folder) {
+      let expanded = !!folder.get('expanded');
+      folder.set('expanded', !expanded);
     },
 
     // ------------------------------------------------------------------------------------------------------------------------------

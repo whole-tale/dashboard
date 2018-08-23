@@ -27,7 +27,7 @@
         {{/if}}
       {{/unless}}
     </td>
-    <td {{action "expandFolder" folder on="click"}}>
+    <td {{action toggleExpandFolder folder on="click"}}>
       {{#if folder.icon}}
       <i class="{{folder.icon}} icon black large"></i>
       {{else}}
@@ -36,11 +36,11 @@
       {{truncate-name folder.name}}
     </td>
   </tr>
-  {{#if (or folder.folders.length folder.files.length)}}
+  {{#if (and (or folder.folders.length folder.files.length) folder.expanded)}}
   <tr>
     <td></td>
     <td style="padding-left:1em;">
-      {{ui/files/file-picker/folder-contents parent=folder selectionTree=selectionTree uncheck=(action uncheck) check=(action check)}}
+      {{ui/files/file-picker/folder-contents parent=folder selectionTree=selectionTree toggleExpandFolder=(action toggleExpandFolder) uncheck=(action uncheck) check=(action check)}}
     </td>
   </tr>
   {{/if}}
