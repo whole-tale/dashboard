@@ -1,0 +1,68 @@
+{{!-- <ul>
+{{#each parent.folders as |folder|}}
+  <li>{{folder.name}}</li>
+  {{#if (or folder.folders.length folder.files.length)}}
+    {{ui/files/file-picker/folder-contents parent=folder}}
+  {{/if}}
+{{/each}}
+</ul>
+
+<ul>
+{{#each parent.files as |file|}}
+  <li>{{file.name}}</li>
+{{/each}}
+</ul> --}}
+
+<table>
+  {{#each parent.folders as |folder|}}
+  <tr class="left aligned selectable" id={{folder.id}}>
+    <td>
+      {{#unless folder.disallowImport}}
+        {{#if (is-checked selectionTree folder.id)}}
+        <i class="far fa-check-square clickable" {{action uncheck folder on="click"}}></i>
+        {{else if (is-partial-checked selectionTree folder.id)}}
+        <i class="far fa-minus-square clickable" {{action uncheck folder on="click"}}></i>
+        {{else}}
+        <i class="far fa-square clickable" {{action check folder on="click"}}></i>
+        {{/if}}
+      {{/unless}}
+    </td>
+    <td {{action "expandFolder" folder on="click"}}>
+      {{#if folder.icon}}
+      <i class="{{folder.icon}} icon black large"></i>
+      {{else}}
+        <i class="fas fa-folder icon black large"></i> 
+      {{/if}}
+      {{truncate-name folder.name}}
+    </td>
+  </tr>
+  {{#if (or folder.folders.length folder.files.length)}}
+  <tr>
+    <td></td>
+    <td style="padding-left:1em;">
+      {{ui/files/file-picker/folder-contents parent=folder selectionTree=selectionTree uncheck=(action uncheck) check=(action check)}}
+    </td>
+  </tr>
+  {{/if}}
+  {{/each}}
+
+  {{#each parent.files as |file|}}
+  <tr class="left aligned selectable" id={{file.id}}>
+    <td>
+      {{#unless file.disallowImport}}
+        {{#if (is-checked selectionTree file.id)}}
+        <i class="far fa-check-square clickable" {{action uncheck file on="click"}}></i>
+        {{else if (is-partial-checked selectionTree file.id)}}
+        <i class="far fa-minus-square clickable" {{action uncheck file on="click"}}></i>
+        {{else}}
+        <i class="far fa-square clickable" {{action check file on="click"}}></i>
+        {{/if}}
+      {{/unless}}
+    </td>
+    <td>
+      <i class="fas fa-file icon black large"></i> 
+      {{truncate-name file.name}}
+    </td>
+  </tr>
+  {{/each}}
+</table>
