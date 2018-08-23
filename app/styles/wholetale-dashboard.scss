@@ -776,11 +776,53 @@ div:-webkit-full-screen > .wt.panel.manage > .rounded-bottom {
   -moz-border-top-right-radius: 1rem;
   border-top-right-radius: 1rem;
 }
+
+wt.panel .wt.paddleboard.header {
+    padding-right: 0rem;
+    padding-left: 0rem;
+}
+
+.wt.panel .wt.paddleboard.header .menu {
+    border: none;
+    box-shadow: none;
+}
+
+.wt.panel .wt.paddleboard.header .menu .item {
+    border: none;
+    box-shadow: none;
+}
+
+.wt.panel .wt.paddleboard.header .menu .item:before {
+    background: none;
+}
+
+.wt.panel .wt.paddleboard.header .name {
+    margin-left: 5.5rem;
+}
+
 .wt.panel .wt.paddleboard img {
   height: 2.25rem;
   margin: 0 .75rem 0 0;
-  float:left;
+  float: left;
 }
+
+ .wt.panel .wt.paddleboard img.env {
+  position: absolute;
+  width: 2.5rem;
+  height: 2.5rem;
+ }
+
+ .wt.panel .wt.paddleboard img.illustration { 
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    width: 4rem;
+}
+
+.wt.panel .wt.paddleboard h3 {
+    margin-bottom: 0rem;
+}
+
 .wt.panel .wt.paddleboard span {
   font-size: 1.2rem;
   color: rgba(0,0,0,0.4);
@@ -789,15 +831,30 @@ div:-webkit-full-screen > .wt.panel.manage > .rounded-bottom {
   letter-spacing: .05rem;
   padding-left: .4rem;
 }
+
+.wt.panel .wt.paddleboard.header span {
+    color: rgba(0,0,0,1);
+    font-size: 1rem;
+    font-weight: normal;
+    font-style: italic;
+    padding-left: 0rem;
+  }
+
 .wt.panel .wt.paddleboard span.quota {
   color: rgba(0,0,0,0.4);
   float: right;
   position: relative;
   font-size: 1rem;
 }
+
 .wt.panel .wt.paddleboard i {
   padding-right: .75rem;
 }
+
+wt.panel .wt.paddleboard.header i {
+    color: #0075d8;
+}
+
 .wt.panel .wt.paddleboard i.right {
   color: rgba(0,0,0,0.6);
   float: right;
@@ -805,6 +862,7 @@ div:-webkit-full-screen > .wt.panel.manage > .rounded-bottom {
   padding-right: 0;
   padding-top: .35rem;
 }
+
 .wt.panel .wt.paddleboard .subtitle {
   font-style: italic;
 }
