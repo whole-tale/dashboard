@@ -1,4 +1,4 @@
-<table>
+<table class="ui striped table file-picker">
   {{#unless parent._parent}}
   <tr>
     <th>Entry Point</th>
@@ -44,11 +44,11 @@
 
   {{#each parent.files as |file|}}
   <tr class="left aligned selectable" id={{file.id}}>
-    <td style="position:absolute; left:0;">
+    <td style="position:absolute; left:3%;">
       {{#if (eq entryPoint.id file.id)}}
-      <i class="far fa-check-square clickable" {{action uncheckEntry file on="click"}}></i>
+      <i class="far fa-dot-circle clickable" {{action uncheckEntry file on="click"}}></i>
       {{else}}
-      <i class="far fa-square clickable" {{action checkEntry file on="click"}}></i>
+      <i class="far fa-circle clickable" {{action checkEntry file on="click"}}></i>
       {{/if}}
     </td>
     <td>

@@ -60,8 +60,8 @@
   }
   
   .ember-modal-dialog {
-      width: 50%;
-      height: 80%;
+      width: 70%;
+      height: 90%;
   }
   
   /* Publishing Modal */
@@ -168,3 +168,17 @@
   .publisher .actions .button {
       float: right;
   }
+
+  .ui.basic.segment.file-picker {
+    height:300px;
+    overflow-x: hidden;
+  }
+
+.file-picker.table{
+    border-collapse: collapse;
+    border:none;
+ }
+
+ .table.file-picker tr td {
+    border: none;
+ }

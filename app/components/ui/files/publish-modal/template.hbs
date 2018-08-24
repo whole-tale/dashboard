@@ -14,14 +14,14 @@
         <i class="far fa-hdd"></i> Data
         <span>
             Select the files needed to fully reproduce your work
-            {{ui/files/file-picker inputData=inputData entryPoint=entryPoint taleId=modalContext}}
+             <i class="dropdown icon"></i>
         </span>
     </h2>
 </div>
 
 <div class="content">
-    <div class="ui basic segment">
-
+    <div class="ui basic segment file-picker">
+            {{ui/files/file-picker inputData=inputData taleId=modalContext}}
     </div>
 </div>
 
