@@ -1,21 +1,15 @@
-{{!-- <ul>
-{{#each parent.folders as |folder|}}
-  <li>{{folder.name}}</li>
-  {{#if (or folder.folders.length folder.files.length)}}
-    {{ui/files/file-picker/folder-contents parent=folder}}
-  {{/if}}
-{{/each}}
-</ul>
-
-<ul>
-{{#each parent.files as |file|}}
-  <li>{{file.name}}</li>
-{{/each}}
-</ul> --}}
-
 <table>
+  {{#unless parent._parent}}
+  <tr>
+    <th>Entry Point</th>
+    <th></th>
+    <th>Name</th>
+  </tr>
+  {{/unless}}
   {{#each parent.folders as |folder|}}
   <tr class="left aligned selectable" id={{folder.id}}>
+    <td style="position:absolute; left:0;">
+    </td>
     <td>
       {{#unless folder.disallowImport}}
         {{#if (is-checked selectionTree folder.id)}}
@@ -39,8 +33,10 @@
   {{#if (and (or folder.folders.length folder.files.length) folder.expanded)}}
   <tr>
     <td></td>
+    <td></td>
     <td style="padding-left:1em;">
-      {{ui/files/file-picker/folder-contents parent=folder selectionTree=selectionTree toggleExpandFolder=(action toggleExpandFolder) uncheck=(action uncheck) check=(action check)}}
+      {{ui/files/file-picker/folder-contents parent=folder selectionTree=selectionTree toggleExpandFolder=(action toggleExpandFolder) 
+        uncheck=(action uncheck) check=(action check) checkEntry=(action checkEntry) uncheckEntry=(action uncheckEntry) entryPoint=entryPoint}}
     </td>
   </tr>
   {{/if}}
@@ -48,6 +44,13 @@
 
   {{#each parent.files as |file|}}
   <tr class="left aligned selectable" id={{file.id}}>
+    <td style="position:absolute; left:0;">
+      {{#if (eq entryPoint.id file.id)}}
+      <i class="far fa-check-square clickable" {{action uncheckEntry file on="click"}}></i>
+      {{else}}
+      <i class="far fa-square clickable" {{action checkEntry file on="click"}}></i>
+      {{/if}}
+    </td>
     <td>
       {{#unless file.disallowImport}}
         {{#if (is-checked selectionTree file.id)}}

@@ -1,8 +1,11 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
 import { A } from '@ember/array';
+import EmberObject from '@ember/object';
 import config from '../../../../config/environment';
 import EventStream from 'npm:sse.js';
+
+const O = EmberObject.create.bind(EmberObject);
 
 export default Ember.Component.extend({
     authRequest: Ember.inject.service(),
@@ -12,6 +15,8 @@ export default Ember.Component.extend({
     notificationHandler: Ember.inject.service(),
 
     inputData: A(),
+    entryPoint: O({}),
+    
 
     showingFilePicker: false,
     // Controls the state of the publish button

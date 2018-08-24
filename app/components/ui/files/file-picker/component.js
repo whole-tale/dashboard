@@ -1,12 +1,11 @@
 import Component from '@ember/component';
-import config from '../../../../config/environment';
-import _ from 'lodash';
 import EmberObject from '@ember/object';
 import { A } from '@ember/array'; 
 import layout from './template';
 import {
   inject as service
 } from '@ember/service';
+import _ from 'lodash';
 
 const O = EmberObject.create.bind(EmberObject);
 
@@ -19,9 +18,28 @@ export default Component.extend({
 
   selectionTree: O({}),
   inputData: A(),
+  entryPoint: O({}),
 
   loading: false,
   root: O({}),
+
+  // ------------------------------------------------------------------------------------------------------------------------------
+  init() {
+    this._super(...arguments);
+    const self = this;
+    this.getTaleFiles().then(() => {
+      let selectionTree = self.get('selectionTree');
+      let userID = self.get('userAuth').getCurrentUserID();
+      self.set('root', O({
+        id : userID,
+        _modelType: "user",
+        folders: A(),
+        files: A()
+      }));
+  
+      self.loadAllRelationships.call(self, self.root);
+    })
+  },
 
   // ------------------------------------------------------------------------------------------------------------------------------
   getTaleFiles() {
@@ -103,14 +121,17 @@ export default Component.extend({
       }
     });
     let selectionTree = this.get('selectionTree');
+    let inputData = this.get('inputData');
     return loadFiles
       .then(files => {
         files.forEach(file => {
           if (selectionTree[file.id]) {
             selectionTree[file.id].parentId = folder.id;
+            inputData.addObject(file);
           }
           file.set('_parent', folder);
         });
+        self.set('inputData', A(inputData));
         self.set('selectionTree', O(selectionTree));
         folder.set('files', files);
       })
@@ -140,7 +161,6 @@ export default Component.extend({
     let parent = item._parent;
     if (!parent) return;
     let inputData = this.get('inputData');
-    console.log(inputData);
     inputData = inputData.reject(i => i.id === parent._id);
     this.set('inputData', A(inputData));
     if (parent._parent) {
@@ -163,34 +183,20 @@ export default Component.extend({
   },
 
   // ------------------------------------------------------------------------------------------------------------------------------
-  init() {
-    this._super(...arguments);
-    const self = this;
-    this.getTaleFiles().then(() => {
-      let selectionTree = self.get('selectionTree');
-      console.log("here", selectionTree);
-      let userID = self.get('userAuth').getCurrentUserID();
-      self.set('root', O({
-        id : userID,
-        _modelType: "user",
-        folders: A(),
-        files: A()
-      }));
-  
-      self.loadAllRelationships.call(self, self.root);
-    })
-  },
-
-  // ------------------------------------------------------------------------------------------------------------------------------
-  didRender() {
-    
-  },
-
-  // ------------------------------------------------------------------------------------------------------------------------------
   actions: {
     toggleExpandFolder(folder) {
       let expanded = !!folder.get('expanded');
       folder.set('expanded', !expanded);
+    },
+
+    // ------------------------------------------------------------------------------------------------------------------------------
+    checkEntry(file) {
+      this.set('entryPoint', file);
+    },
+
+    // ------------------------------------------------------------------------------------------------------------------------------
+    uncheckEntry() {
+      this.set('entryPoint', O({}));
     },
 
     // ------------------------------------------------------------------------------------------------------------------------------
