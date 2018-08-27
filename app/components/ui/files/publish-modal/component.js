@@ -12,11 +12,10 @@ export default Ember.Component.extend({
     userAuth: Ember.inject.service(),
     tokenHandler: Ember.inject.service("token-handler"),
     notificationHandler: Ember.inject.service(),
-
+    store: Ember.inject.service(),
     inputData: A(),
     entryPoint: O({}),
     
-
     showingFilePicker: false,
     // Controls the state of the publish button
     enablePublish: true,
@@ -26,8 +25,6 @@ export default Ember.Component.extend({
     publishing: false,
     // Set when publishing has finished
     publishingFinish: false,
-    // An array that holds a pair, (fileName, fileSize)
-    fileList: [],
     // Holds an array of objects that the user cannot be exclude from their package
     nonOptionalFile: ['tale.yaml',
     'docker-environment.tar.gz',
@@ -74,58 +71,24 @@ export default Ember.Component.extend({
             this.set('selectedRepository', this.get('repositories')[0].name);
             this.setLicenses();
             this.setTaleName();
-            
     },
 
     didRender () {
         // Create the tooltips after the template has been rendered
         this.create_tooltips();
-       
-       // Set the default repository
-       this.getTaleFiles()
     },
 
     setTaleName() {
-        let url = config.apiUrl + '/tale/'+ this.get('modalContext') 
         let self = this;
-        this.get('authRequest').send(url)
-        .catch (e=> {
-            self.set('taleName', '');
-        })
-        .then(rep => {
-            self.set('taleName', rep['title'])
+        this.get('store').findRecord('tale', this.get('modalContext') , { reload:false })
+        .then(resp => {
+            self.set('taleName', resp['title']);
         });
     },
 
     setPublishBtnState(state) {
         this.set('enablePublish', state);
     },
-
-    getTaleFiles() {
-        let url = config.apiUrl + '/tale/'+ this.get('modalContext') 
-        let self = this;
-        self.get('authRequest').send(url)
-        .then(rep => {
-            let folderId = rep['folderId'];
-            let queryParams = '?'+[
-                'folderId='+folderId,
-                'limit=0',
-                'sort=lowerName',
-                'sortdir=1'
-            ].join('&');
-
-            url = config.apiUrl + '/item' + queryParams;
-            self.get('authRequest').send(url) 
-            .then(rep => {
-                let taleFiles = []
-                rep.forEach(function(item)
-                {
-                    taleFiles.push({'name': item.name, 'size':item.size, 'id': item._id});
-                })
-                self.set('fileList', taleFiles);
-            })
-    })
-},
 
     create_tooltips() {
         // Creates the popup balloons for the info tooltips
@@ -211,69 +174,13 @@ export default Ember.Component.extend({
     },
 
     prepareItemIds() {
-        let itemIdList = [];
+        /* let itemIdList = [];
         this.get('fileList').forEach(function(item) {
             itemIdList.push(JSON.stringify(item.id));
         });
         
-        console.log(itemIdList);
-        return itemIdList;
-    },
-
-    getDataONEJWT() {
-        /* 
-        Queries the DataONE `token` endpoint for the jwt. When a user signs into
-        DataONE a cookie is created, which is checked by `token`. If the cookie wasn't
-        found, then the response will be empty. Otherwise the jwt is returned.
-        */
-
-        // Use the XMLHttpRequest to handle the request
-        let xmlHttp = new XMLHttpRequest();
-        // Open the request to the the token endpoint, which will return the jwt if logged in
-        if(config.dev) {
-            xmlHttp.open("GET", 'https://cn-stage-2.test.dataone.org/portal/token', false );
-        }
-        else {
-        xmlHttp.open("GET", 'https://cn-stage-2.test.dataone.org/portal/token', false );
-        }
-        // Set the response content type
-        xmlHttp.setRequestHeader("Content-Type", "text/xml");
-        // Let XMLHttpRequest know to use cookies
-        xmlHttp.withCredentials = true;
-        xmlHttp.send(null);
-        
-        return xmlHttp.responseText;
-    },
-      
-    dataoneLogin() {
-        /*
-        Responsible for opening the login dialog for the user. Ideally, we could
-        tell when the user finishes logging in so that we know when to fetch the token
-        */
-
-       window.open(config.orcidLogin,'auth','height=600,width=550').focus();
-    },
-
-    loggedIntoDataONE() {
-        // Returns true/false if the user is logged into DataONE.
-        // Note that this resets the jwt
-        if (this.get('dataoneJWT')) {
-            return true;
-        }
-        return false;
-    },
-
-    attemptLogin() {
-        let jwt = this.getDataONEJWT();
-        if (!jwt) {
-            return false;
-        }
-        this.setDataONEJWT(jwt);
-        return true;
-    },
-
-    setDataONEJWT(dataoneJWT) {
-        this.set('dataoneJWT', dataoneJWT);
+        console.log(itemIdList); */
+        return this.get('inputData');
     },
 
     getRepositoryPathFromName(name) {

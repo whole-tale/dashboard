@@ -74,7 +74,7 @@ export default Component.extend(FullScreenMixin, {
     return xmlHttp.responseText;
   },
 
-  hasD1JWT: computed('model._id', function () {
+  hasD1JWT: computed('model.taleId', function () {
     let jwt = this.getDataONEJWT();
     return jwt ? true : false;
   }),
@@ -84,8 +84,8 @@ export default Component.extend(FullScreenMixin, {
     this.sendAction('publishTale', modalDialogName, modalContext);
   },
 
-  publishModalContext: computed('model._id', function() {
-    return { taleId: this.get('model._id'), hasD1JWT: this.hasD1JWT };
+  publishModalContext: computed('model.taleId', function() {
+    return { taleId: this.get('model.taleId'), hasD1JWT: this.hasD1JWT };
   }),
 
   actions: {
@@ -103,7 +103,7 @@ export default Component.extend(FullScreenMixin, {
     },
 
     authenticateD1(taleId) {
-      let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`; //'http://probable-cattle.nceas.ucsb.edu:4200/run/' + taleId + '?auth=true';
+      let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
       let orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=';
       window.location.replace(orcidLogin + callback);
     },
