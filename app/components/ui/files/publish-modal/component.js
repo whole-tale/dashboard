@@ -1,7 +1,10 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
-
+import { A } from '@ember/array';
+import EmberObject from '@ember/object';
 import config from '../../../../config/environment';
+
+const O = EmberObject.create.bind(EmberObject);
 
 export default Ember.Component.extend({
     authRequest: Ember.inject.service(),
@@ -9,6 +12,12 @@ export default Ember.Component.extend({
     userAuth: Ember.inject.service(),
     tokenHandler: Ember.inject.service("token-handler"),
     notificationHandler: Ember.inject.service(),
+
+    inputData: A(),
+    entryPoint: O({}),
+    
+
+    showingFilePicker: false,
     // Controls the state of the publish button
     enablePublish: true,
     // The repository that the user has selected
@@ -353,6 +362,9 @@ getSelectedLicense() {
     },
 
     actions: {
+        toggleFilePicker() {
+          this.set('showingFilePicker', !this.get('showingFilePicker'));
+        },
 
         closeModal() {
             return this.closeModal();

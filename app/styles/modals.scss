@@ -27,14 +27,14 @@
     }
   }
   
-  .destinate-folder {
+.destinate-folder {
     left: 0 !important;
     margin: auto !important;
     height: fit-content !important;
     width: fit-content !important;
-  } 
+} 
   
-  .ui.modal.envdetails {
+.ui.modal.envdetails {
     height: 50%;
     width: 70%;
   
@@ -42,7 +42,7 @@
       height: calc(100% - 64px - 60px);
       overflow-y: auto;
     }
-  }
+}
   
   .scrolling.undetached.dimmable .ui.modal.acl-component.scrolling,
   .scrolling.undetached.dimmable .ui.modal.harvester.scrolling {
@@ -61,8 +61,8 @@
   }
   
   .ember-modal-dialog {
-      width: 50%;
-      height: 80%;
+      width: 70%;
+      height: 90%;
   }
   
   /* Publishing Modal */
@@ -154,18 +154,45 @@
       margin-left:10px;
   }
   
-  .publisher .ui.accordion .title .dropdown.icon {
-      float: right;
-      font-size: 2em;
-  }
+.publisher .ui.accordion .title .dropdown.icon {
+    float: right;
+    font-size: 2em;
+}
+
+.publisher .ui.accordion .content.files {
+    height: 25em;
+} 
   
-  .publisher .actions {
-      position: fixed;
-      bottom: 0;
-      width: 95%;
-      margin-bottom: 1em;
-  }
+.publisher .actions {
+    position: fixed;
+    bottom: 0;
+    width: 95%;
+    margin-bottom: 1em;
+}
   
-  .publisher .actions .button {
-      float: right;
-  }
+.publisher .actions .button {
+    float: right;
+}
+
+.ui.basic.segment.file-picker {
+    height:25em;
+    overflow-x: hidden;
+}
+
+.file-picker.table{
+    border-collapse: collapse;
+    border:none;
+ }
+
+.file-picker.table entry-head {
+     width:0%;
+ }
+
+ .table.file-picker td {
+    padding: 0.6em;
+    border: none;
+ }
+
+ .table.file-picker tr td {
+    border: none;
+ }

@@ -14,14 +14,14 @@
         <i class="far fa-hdd"></i> Data
         <span>
             Select the files needed to fully reproduce your work
-            <i class="dropdown icon"></i>
+             <i class="dropdown icon"></i>
         </span>
     </h2>
 </div>
 
-<div class="content">
-    <div class="ui basic segment">
-
+<div class="content files">
+    <div class="ui basic segment file-picker">
+            {{ui/files/file-picker inputData=inputData taleId=modalContext}}
     </div>
 </div>
 
@@ -90,9 +90,9 @@
         </div>
     </div>
 </div>
-
-{{/ui-accordion}}
 <hr>
+{{/ui-accordion}}
+
 <div class="actions">
     {{!-- Dropdown where the user can select which member node to put the package in --}}
     {{#ui-dropdown class="search selection dropdown" allowAdditions=false selected=selectedRepository onChange=(action 'onRepositoryChange')
