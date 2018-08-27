@@ -24,7 +24,7 @@
             </div>
             <div class="right borderless menu">
                 <div class="item">
-                    <div class="ui basic blue button" {{action "publishTale" model._id}}>
+                    <div class="ui basic blue button" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
                         Publish Tale
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                 Cancel
             </div>
             <div class="ui positive right labeled icon button" {{action 'authenticateD1' model._id}}>
-                Continue
+                Continue to DataOne Login
                 <i class="checkmark icon"></i>
             </div>
         </div>
