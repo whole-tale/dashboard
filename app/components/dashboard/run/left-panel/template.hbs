@@ -9,11 +9,37 @@
                     </a>
                 {{/if}}
             </span>
-            <i class="fas fa-expand" style="cursor: pointer;" {{action 'toggleFullscreen'}}></i>
-            <a href="https://wholetale.readthedocs.io/users_guide/run.html">
-              <i class="fas fa-info-circle right" style="cursor: pointer; padding-right: 0.3em"></i>
-            </a>
+            <i class="fas fa-expand right floated" style="cursor: pointer;" {{action 'toggleFullscreen'}}></i>
         </h2>
+    </div>
+     <div class="wt paddleboard tall header">
+        <div class="ui bordlerless menu">
+            <div class="item">
+                <img class="illustration" src="{{model.tale.illustration}}" />
+                <img class="env" src="{{model.tale.icon}}" />
+                <div class="header name">
+                    <h3>{{model.name}}</h3>
+                    <span>{{model.tale.authors}}</span>
+                </div>
+            </div>
+            <div class="right borderless menu">
+                <div class="item">
+                    <div class="ui basic blue button" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
+                        Publish Tale
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="ui blue button" {{action "editTaleInfo" model._id}}>
+                        Edit Tale Info
+                    </div>
+                </div>
+                <div class="item">
+                    <a href="https://wholetale.readthedocs.io/users_guide/run.html">
+                        <i class="fas fa-info" style="cursor: pointer;"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
     {{#if (eq internalState.currentInstanceId model._id)}}
       {{#if (not-eq model.status 0)}}
@@ -61,6 +87,29 @@
             </div>
             <div class="ui positive right labeled icon button" {{action 'approveDelete' model}}>
                 Yes
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui dataone modal" style="display: none">
+        <i class="close icon"></i>
+        <div class="header">
+            Log into DataONE
+        </div>
+        <div class="image content">
+            <div class="description">
+                <p>In order to publish your Tale, you must first log into DataONE. Continuing will 
+                    redirect you to the DataONE login page.
+                </p>
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui black deny button" {{action 'denyDataONE'}}>
+                Cancel
+            </div>
+            <div class="ui positive right labeled icon button" {{action 'authenticateD1' model._id}}>
+                Continue to DataOne Login
                 <i class="checkmark icon"></i>
             </div>
         </div>

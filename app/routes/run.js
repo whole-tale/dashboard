@@ -9,16 +9,19 @@ export default AuthenticateRoute.extend({
       reload: true,
       adapterOptions: {
         queryParams: {
-          limit: "0"
+          limit: "0",
         }
       }
     });
   },
 
-  setupController (controller, model) {
-    this._super(controller, model);
-    controller.set('model', model);
+  afterModel(model, transition) {
+    let queryParams = transition['queryParams'];
+    if (queryParams['auth']) {
+        model.set('auth', queryParams['auth'])
+    }
   },
+
   actions: {
     onShowInstance (model) {
       // alert("In Run Route !!");

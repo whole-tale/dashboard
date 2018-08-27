@@ -3,7 +3,6 @@ import RSVP from 'rsvp';
 import { A } from '@ember/array';
 import EmberObject from '@ember/object';
 import config from '../../../../config/environment';
-import EventStream from 'npm:sse.js';
 
 const O = EmberObject.create.bind(EmberObject);
 
@@ -300,7 +299,6 @@ export default Ember.Component.extend({
         ].join('&');
         
         let url = config.apiUrl + '/publish/dataone' + queryParams;
-        let source = self.getEventStream();
         this.get('authRequest').send(url)
         .catch (e=> {
             let notifier = self.get('notificationHandler');
@@ -317,16 +315,9 @@ export default Ember.Component.extend({
                     self.set('packageUrl', rep);
                     self.set('publishing', false);
                 }
-                else {
-                    alert('There was an error registering your Tale ' + String(rep))
-                self.set('enablePublish', true);
-                self.set('publishingFinish', false);
-                self.set('publishing', false);
-                }
             })
             .finally(_ => {
-                console.log('Closing source')
-                source.close();
+                return true;
             });
         },
 
@@ -365,25 +356,6 @@ getSelectedLicense() {
       }
   },
 
-  getEventStream() {
-    let self = this;
-    let token = self.get('tokenHandler').getWholeTaleAuthToken();
-     // Get a timestamp so that we can filter out any stale notifications. This needs to be Unix Epoch
-    let time = Math.round(+new Date()/1000)
-    let source = new EventStream.SSE(config.apiUrl+"/notification/stream?timeout=15000&since="+time,
-     {headers: {'Girder-Token': token}});
-     source.addEventListener('message', function(evt) {
-        let payload = JSON.parse(evt.data);
-        let notifier = self.get('notificationHandler');
-         notifier.pushNotification({
-            message: payload.data.message,
-            header: payload.data.title
-        });
-    });
-     source.stream();
-    return source;
-},
-
     isUrl(s) {
     var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
     return regexp.test(s);
@@ -404,11 +376,7 @@ getSelectedLicense() {
             of logging in and communicating with the `createPackage` endpoint.
             */
            let self = this;
-           if (self.get('publishingFinish')) {
-            self.openPackage();
-            return;
-           }
-           
+
            // Disable the button so that it isn't accidentally clicked multiple times
            self.set('enablePublish', false);
 
@@ -419,6 +387,7 @@ getSelectedLicense() {
 
            if (loggedIn) {
                // If they are, go ahead and publish
+               self.closeModal();
                self.publish();
            }
            else {
@@ -427,15 +396,14 @@ getSelectedLicense() {
 
                loggedIn = self.attemptLogin()
                if (!loggedIn) {
-                   return false
+                   // Don't close the modal if they aren't logged in
+                   return false;
                }
+               self.closeModal();
                self.publish();
                self.set('enablePublish', false);
                self.set('publishing', false);
            }
-
-            // Return false so the dlg stays open
-           return false;
         },
 
 

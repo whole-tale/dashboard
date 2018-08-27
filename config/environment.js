@@ -89,7 +89,8 @@ module.exports = function (environment) {
     ENV.apiUrl = 'https://girder.dev.wholetale.org/api/v1';
     ENV.dev = true;
     ENV.authRedirect = 'http://dashboard.dev.wholetale.org/login-success';
-    ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
+    ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect;
+    ENV.wholeTaleHost = 'http://dashboard.dev.wholetale.org';
   }
 
   if (environment === 'production') {
@@ -99,6 +100,7 @@ module.exports = function (environment) {
     ENV.dev = false;
     ENV.authRedirect = 'http://dashboard.wholetale.org/login-success';
     ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
+    ENV.wholeTaleHost = 'http://dashboard.wholetale.org';
   }
 
   return ENV;
