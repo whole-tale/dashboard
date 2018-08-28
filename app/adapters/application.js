@@ -57,6 +57,10 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
 
   urlForFindAll(modelName, snapshot) {
     let url = this._super(...arguments);
+    let appendPath = _.get(snapshot, 'adapterOptions.appendPath');
+    if (appendPath) {
+      url += "/" + snapshot.adapterOptions.appendPath;
+    }
     let queryParams = _.get(snapshot, 'adapterOptions.queryParams');
     if (queryParams) {
       let q = this.buildQueryParams(queryParams);
