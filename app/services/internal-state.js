@@ -1,7 +1,6 @@
 import Service from '@ember/service';
 import { computed } from '@ember/object';
 import { A } from '@ember/array';
-import { loc } from '@ember/string';
 
 // a set of methods dedicated to certain state maintenance on the front end.
 // these methods use localStorage so they persist beyond sessions ...
@@ -85,17 +84,6 @@ export default Service.extend({
 
   getIsStaticMenu: function () {
     return (localStorage.staticMenu != 0);
-  },
-
-  setNewUIMode: function (val) {
-    if (val)
-      localStorage.newUIMode = 1;
-    else
-      localStorage.newUIMode = 0;
-  },
-
-  getNewUIMode: function () {
-    return (localStorage.newUIMode != 0);
   },
 
   addFolderToRecentFolders: function (folderId) {
