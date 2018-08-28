@@ -1,39 +1,37 @@
-import Ember from 'ember';
+import Controller from '@ember/controller';
 import config from 'wholetale/config/environment';
 import EventStream from 'npm:sse.js';
+import { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
+import $ from 'jquery';
+import { getOwner } from '@ember/application';
 
-const inject = Ember.inject;
-
-const {
-  getOwner
-} = Ember;
-
-export default Ember.Controller.extend({
+export default Controller.extend({
   // requires the sessions controller
-  session: inject.service(),
-  userAuth: inject.service('user-auth'),
-  internalState: inject.service('internal-state'),
-  notificationHandler: inject.service('notification-handler'),
-  tokenHandler: inject.service(),
+  session: service(),
+  userAuth: service('user-auth'),
+  internalState: service('internal-state'),
+  notificationHandler: service('notification-handler'),
+  tokenHandler: service(),
 
-  user: {
-    fullName: "John Winter"
-  },
+  user: computed(function() {
+    return {
+      fullName: "John Winter"
+    }
+  }),
   gravatarUrl: "/images/avatar.png",
   currentPage: "Dashboard",
   currentIcon: "browser",
-  routing: inject.service('-routing'),
+  routing: service('-routing'),
   loggedIn: false,
   staticMenu: true,
   isLoadingJobs: true,
-  newUIMode: true,
   mobileMenuDisplay: false,
 
   init() {
     this._super();
     // this.set('staticMenu', this.get('internalState').getIsStaticMenu());
     this.set('staticMenu', true);
-    this.get('internalState').setNewUIMode(true);
     this.get('userAuth').getCurrentUserFromServer().then(
       (user) => {
         this.set('user', user);
@@ -60,10 +58,10 @@ export default Ember.Controller.extend({
   //   return source;
   // },
 
-  checkMyRouteName: Ember.computed(function () {
+  checkMyRouteName: computed(function () {
     return this.get('routing.currentRouteName');
   }),
-  currentUserName: 'Hallo, Damian',
+  currentUserName: 'Hallo!',
   actions: {
 
     closeModal() {
@@ -71,7 +69,6 @@ export default Ember.Controller.extend({
       },
 
     toggle: function (subSidebarName) {
-      console.log(subSidebarName);
       $('#' + subSidebarName)
         .sidebar('setting', 'transition', 'push')
         .sidebar('toggle');
@@ -80,9 +77,8 @@ export default Ember.Controller.extend({
 
       this.get('userAuth').logoutCurrentUser();
       this.set('loggedIn', false);
-      //      var location = this.get('router.url');
-      //    window.location.href = location.split('?')[0];
-
+      // let location = this.get('router.url');
+      // window.location.href = location.split('?')[0];
       this.transitionToRoute('login');
     },
     refreshJobs: function () {
@@ -107,16 +103,6 @@ export default Ember.Controller.extend({
     dynamicMenu: function () {
       this.set('staticMenu', false);
       this.get('internalState').setStaticMenu(false);
-    },
-    coolUI: function () {
-      this.set('newUIMode', true);
-      this.get('internalState').setNewUIMode(true);
-      this.transitionToRoute("browse");
-    },
-    boringUI: function () {
-      this.set('newUIMode', false);
-      this.get('internalState').setNewUIMode(false);
-      this.transitionToRoute("index");
     },
     closeMenu: function (pageTitle, icon) {
       this.set('currentPage', pageTitle);

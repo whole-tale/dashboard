@@ -1,55 +1,14 @@
-{{#if newUIMode}}
-  {{partial "common/header"}}
-  {{!-- {{partial "common/menu"}} --}}
+{{partial "common/header"}}
+{{!-- {{partial "common/menu"}} --}}
 
-  {{#if isModalVisible}}
-    {{#modal-dialog onClose=(action (mut isModalVisible) false) translucentOverlay=true}}
-      {{component modalDialogName modalContext=modalContext closeModal=(action 'closeModal')}}
-    {{/modal-dialog}}
-  {{/if}}
-
-  {{outlet}}
-  {{partial "common/footer"}}
-{{else}}
-    <div class="ui pushable component context">
-      {{#if staticMenu}}
-        {{partial "common/header-static"}}
-          <div style="overflow: hidden; height: 100%">
-            <div style="float: left; margin-top:-2px; width: 160px; padding-bottom: 500em; margin-bottom: -500em;">
-              {{partial "common/menu-static"}}
-            </div>
-            <div class="main page" style="overflow:hidden; padding-bottom: 500em; margin-bottom: -500em;">
-              {{#if loggedIn}}
-                  <div class="page border">
-                    {{outlet}}
-                  </div>
-              {{/if}}
-              {{#unless loggedIn}}
-                {{outlet}}
-              {{/unless}}
-            </div>
-          </div>
-      {{else}}
-        {{partial "common/menu"}}
-          <div class="wholetale view pusher">
-            {{partial "common/header"}}
-              <div class="main page">
-                {{#if loggedIn}}
-                  <div class="page border">
-                    {{outlet}}
-                  </div>
-                {{/if}}
-
-                {{#unless loggedIn}}
-                  {{outlet}}
-                {{/unless}}
-              </div>
-          </div>
-      {{/if}}
-      {{partial "common/footer"}}
-
-    </div>
+{{#if isModalVisible}}
+  {{#modal-dialog onClose=(action (mut isModalVisible) false) translucentOverlay=true}}
+    {{component modalDialogName modalContext=modalContext closeModal=(action 'closeModal')}}
+  {{/modal-dialog}}
 {{/if}}
+
+{{outlet}}
+{{partial "common/footer"}}
 
 {{ui/files/share-access-modal}}
 {{ui/event-notifier}}
