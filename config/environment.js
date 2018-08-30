@@ -100,7 +100,7 @@ module.exports = function (environment) {
     ENV.dev = false;
     ENV.authRedirect = 'http://dashboard.wholetale.org/login-success';
     ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
-    ENV.wholeTaleHost = 'http://dashboard.wholetale.org';
+    ENV.wholeTaleHost = 'dashboardHOST';
   }
 
   return ENV;
