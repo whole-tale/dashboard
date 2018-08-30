@@ -99,9 +99,9 @@ module.exports = function (environment) {
     ENV.apiPath = 'api/v1';
     ENV.apiUrl = ENV.apiHost + '/' + ENV.apiPath;
     ENV.dev = false;
-    ENV.authRedirect = 'http://dashboardHOST/login-success';
+    ENV.authRedirect = 'https://dashboardHOST/login-success';
     ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
-    ENV.wholeTaleHost = 'dashboardHOST';
+    ENV.wholeTaleHost = 'https://dashboardHOST';
     ENV.dataOneHost = 'dataOneHOST';
   }
 
