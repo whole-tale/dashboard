@@ -196,3 +196,11 @@
  .table.file-picker tr td {
     border: none;
  }
+
+ .table.file-picker td:nth-child(1) {
+    width: 1rem;
+ }
+
+ .table.file-picker td:nth-child(2) {
+    width: 1rem;
+}
