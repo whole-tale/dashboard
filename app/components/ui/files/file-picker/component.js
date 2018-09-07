@@ -27,8 +27,8 @@ export default Component.extend({
   init() {
     this._super(...arguments);
     const self = this;
-    this.getTaleFiles().then(() => {
       let selectionTree = self.get('selectionTree');
+    this.getAndSelectTaleFiles().then(() => {
       let userID = self.get('userAuth').getCurrentUserID();
       self.set('root', O({
         id : userID,
@@ -42,31 +42,23 @@ export default Component.extend({
   },
 
   // ------------------------------------------------------------------------------------------------------------------------------
-  getTaleFiles() {
+  getAndSelectTaleFiles() {
     let self = this;
     let selectionTree = this.get('selectionTree');
     return this.store.findRecord('tale', this.taleId)
       .then(tale => {
-        let folderId = tale['folderId'];
-        let queryParams = {
-          'folderId': folderId,
-          'limit': 0,
-          'sort': 'lowerName',
-          'sortdir': 1        
-        };
-        return this.store.findAll('item', {adapterOptions: {queryParams: queryParams}});
+        return tale['involatileData'];
       })
-      .then(items => {
-        items.forEach(i => {
+      .then(involatileData => {
+        involatileData.forEach(i => {
           selectionTree[i.id] = {
             check: true,
             partialCheck: false,
-            // parent: i.get('folderId'),
-            type: 'item'
+            type: i.type
           };
         });
         self.set('selectionTree', O(selectionTree));
-        self.set('fileList', items);
+        self.set('fileList', involatileData);
       })
     ;
   },
