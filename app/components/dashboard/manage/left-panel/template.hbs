@@ -1,6 +1,11 @@
 <div class="wt panel manage">
     <div class="wt paddleboard">
-        <h2><i class="far fa-hdd"></i> Data <span style="font-style:italic;">Import or link data to use in Tales</span></h2>
+        <h2>
+          <i class="far fa-hdd"></i> Data <span style="font-style:italic;">Import or link data to use in Tales</span>
+          <a href="https://wholetale.readthedocs.io/users_guide/manage.html">
+            <i class="fas fa-info-circle right" style="cursor: pointer; padding-right: 0.3em"></i>
+          </a>
+        </h2>
     </div>
 
     <div class="main-row">
@@ -25,7 +30,7 @@
         <div class="eleven wide column">
             <div class="ui collapsable grid" style="margin-left: 10px">
                 <div class="sixteen wide right aligned column">
-                  {{ui/files/directory-browser currentNav=currentNav folderList=fileData.folderContents fileList=fileData.itemContents action="itemClicked"}}
+                  {{ui/files/directory-browser currentNav=currentNav folderList=fileData.folderContents fileList=fileData.itemContents onItemClicked=(action 'itemClicked')}}
                 </div>
                 <div class="sixteen wide column overlay">
                   {{#unless currentBreadCrumb.isCollection}}
@@ -38,4 +43,4 @@
 </div>
 
 {{ui/files/create-folder-modal onNewFolder=(action "insertNewFolder")}}
-{{ui/files/registration-modal}}
+{{ui/files/registration-modal onRegisterData=(action "refresh")}}

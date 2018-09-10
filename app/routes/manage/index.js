@@ -4,6 +4,22 @@ var inject = Ember.inject;
 import AuthenticateRoute from 'wholetale/routes/authenticate';
 import RSVP from 'rsvp';
 
+const Deferred = function() {
+  let resolve = null;
+  let reject = null;
+
+  let promise = new RSVP.Promise((_resolve, _reject) => {
+      resolve = _resolve;
+      reject = _reject;
+  });
+
+  return {
+      resolve: resolve,
+      reject: reject,
+      promise: promise
+  };
+};
+
 export default AuthenticateRoute.extend({
   internalState: inject.service(),
   userAuth: inject.service(),
@@ -26,8 +42,8 @@ export default AuthenticateRoute.extend({
     console.log("loading the route for the index again");
     console.log("Folder ID: " + folderID);
 
-    var folderContents = null;
-    var itemContents = null;
+    var folderContents = {};
+    var itemContents = Deferred();
 
     if (!folderID || folderID === "null") {
       let nav = this.get('folderNavs').getFolderNavFor('home');
@@ -50,7 +66,7 @@ export default AuthenticateRoute.extend({
           state.setCurrentParentType(nav.parentType);
           state.setCurrentFolderName(nav.name);
 
-          itemContents = self.store.query('item', {
+          itemContents.resolve(self.store.query('item', {
             folderId: folder_id,
             reload: true,
             adapterOptions: {
@@ -58,7 +74,7 @@ export default AuthenticateRoute.extend({
                 limit: "0"
               }
             }
-          });
+          }));
 
           return self.store.query('folder', {
             "parentId": folder_id,
@@ -78,7 +94,7 @@ export default AuthenticateRoute.extend({
           }
         }
       });
-      itemContents = this.get('store').query('item', {
+      itemContents.resolve(this.get('store').query('item', {
         folderId: folderID,
         reload: true,
         adapterOptions: {
@@ -86,13 +102,12 @@ export default AuthenticateRoute.extend({
             limit: "0"
           }
         }
-      });
+      }));
       console.log("Folder != null, leaving");
     }
-
     return RSVP.hash({
       folderContents: folderContents,
-      itemContents: itemContents,
+      itemContents: itemContents.promise,
       images: this.get('store').findAll('image', {
         reload: true,
         adapterOptions: {

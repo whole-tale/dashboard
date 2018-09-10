@@ -1,12 +1,14 @@
-import Ember from 'ember';
+import Service from '@ember/service';
+import { computed } from '@ember/object';
+import { A } from '@ember/array';
 
 // a set of methods dedicated to certain state maintenance on the front end.
 // these methods use localStorage so they persist beyond sessions ...
 
-export default Ember.Service.extend({
+export default Service.extend({
   isAuthenticated: true,
-  currentInstanceId: Ember.computed({
-    get(key) {
+  currentInstanceId: computed({
+    get() {
       return localStorage.currentInstanceId ? JSON.parse(localStorage.currentInstanceId) : undefined;
     },
     set(key, value) {
@@ -84,17 +86,6 @@ export default Ember.Service.extend({
     return (localStorage.staticMenu != 0);
   },
 
-  setNewUIMode: function (val) {
-    if (val)
-      localStorage.newUIMode = 1;
-    else
-      localStorage.newUIMode = 0;
-  },
-
-  getNewUIMode: function () {
-    return (localStorage.newUIMode != 0);
-  },
-
   addFolderToRecentFolders: function (folderId) {
     var recentFolders = this.getRecentFolders();
 
@@ -138,7 +129,7 @@ export default Ember.Service.extend({
   getRecentTales() {
     let recent = localStorage.recentTales;
     if (!recent) {
-      return Ember.A();
+      return A();
     }
     return JSON.parse(recent);
   },
@@ -173,12 +164,12 @@ export default Ember.Service.extend({
   getRecentEnvironments() {
     let recent = localStorage.recentEnvironments;
     if (!recent) {
-      return Ember.A();
+      return A();
     }
     return JSON.parse(recent);
   },
   setRecentEnvironments(environments) {
-    environments = environments || Ember.A();
+    environments = environments || A();
     localStorage.recentEnvironments = JSON.stringify(environments);
   },
 

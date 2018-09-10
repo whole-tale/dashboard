@@ -15,6 +15,7 @@ $wt-main-row-height: 52px;
 $bottom-separation: 2.5rem;
 $footer-height: 94px;
 $left-panel-padding: 38px;
+$wt-paddleboard-panel-tall-height: 63px;
 
 $mobile-screen: 690px;
 $tablet-screen: 995px;
@@ -117,6 +118,9 @@ ui.inverted.menu.wt.top {
     margin-right: 0;
     border-radius: 50%;
   }
+}
+.item.wt.thin {
+  padding: 0 0;
 }
 
 /* Temporary styling to merge both header menus BEGINS */
@@ -663,6 +667,10 @@ ui.inverted.menu.wt.top {
   &.manage {
     height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height}));
 
+    .wt.paddleboard.header.tall {
+      padding: 0;
+    }
+
     .rounded-bottom {
       position: relative;
       background: #FFFFFF;
@@ -678,6 +686,10 @@ ui.inverted.menu.wt.top {
       height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + #{$wt-paddleboard-panel-height}));
       overflow-y: auto;
       overflow-x: hidden;
+    }
+
+    .wt.paddleboard.header.tall + .rounded-bottom {
+      height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height} + #{$wt-paddleboard-panel-height} + #{$wt-paddleboard-panel-tall-height}));
     }
 
     .composer-container {

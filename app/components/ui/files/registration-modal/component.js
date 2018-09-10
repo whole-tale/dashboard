@@ -125,6 +125,8 @@ export default Ember.Component.extend({
                 message: payload.data.message,
                 header: payload.data.title
             });
+
+            self.sendAction('onRegisterData');
         });
 
         source.stream();
@@ -182,19 +184,19 @@ export default Ember.Component.extend({
             let source = this.getEventStream();
 
             this.get('authRequest').send(url, options)
-                .then(rep => {
-                })
-                .catch(e => {
-                    let notifier = self.get('notificationHandler');
+              .catch(e => {
+                let notifier = self.get('notificationHandler');
 
-                    notifier.pushNotification({
-                        header: "Error Registering Dataset",
-                        message: e
-                    });
-                })
-                .finally(_ => {
-                    source.close();
+                notifier.pushNotification({
+                  header: "Error Registering Dataset",
+                  message: e.message
                 });
+              })
+              .finally(_ => {
+                self.sendAction('onRegisterData');
+                source.close();
+              })
+            ;
 
             this.clearModal();
             this.disableRegister();

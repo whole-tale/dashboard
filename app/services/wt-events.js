@@ -1,7 +1,8 @@
 import EmberObject from '@ember/object';
 import Evented from '@ember/object/evented';
+import Service from '@ember/service';
 
-export default Ember.Service.extend({
+export default Service.extend({
   events: function() {
     let Events = EmberObject.extend(Evented, {
       select(allSelected) {
