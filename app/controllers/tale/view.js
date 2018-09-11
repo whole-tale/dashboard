@@ -1,8 +1,13 @@
-import Ember from 'ember';
-import EmberUploader from 'ember-uploader';
-//import FileSaver from 'file-saver';
-const inject = Ember.inject;
-const taleStatus = Ember.Object.create({
+// import EmberUploader from 'ember-uploader';
+// import FileSaver from 'file-saver';
+import { inject as service } from '@ember/service';
+import Object, { computed, observer } from '@ember/object';
+import { run } from '@ember/runloop';
+import Controller from '@ember/controller';
+import $ from 'jquery';
+import TextField from '@ember/component/text-field';
+
+const taleStatus = Object.create({
   NONE: -1,
   READ: 0,
   WRITE: 1,
@@ -10,40 +15,40 @@ const taleStatus = Ember.Object.create({
   SITE_ADMIN: 100
 });
 
-Ember.TextField.reopen({
-  attributes: ['data-content']
+TextField.reopen({
+  attributes: computed(function() {
+    return ['data-content'];
+  })
 });
 
-export default Ember.Controller.extend({
-  store: inject.service(),
-  apiCall: inject.service('api-call'),
-  userAuth: inject.service(),
-  accessControl: inject.service(),
-  internalState: inject.service(),
-  taleInstanceName: "",
-  authRequest: Ember.inject.service(),
+export default Controller.extend({
+  store: service(),
+  apiCall: service('api-call'),
+  userAuth: service(),
+  accessControl: service(),
+  internalState: service(),
+  taleInstanceName: '',
+  authRequest: service(),
 
   init() {
-    this.set("tale_instantiated", false);
+    this._super(...arguments);
+    this.set('tale_instantiated', false);
     this.set('user_id', this.get('userAuth').getCurrentUserID());
     scroll(0, 0);
   },
   didInsertElement() {
     console.log("Controller didUpdate hook is called from nested tale 'view'");
   },
-  modelObserver: Ember.observer("model", function (sender, key, value) {
+  modelObserver: observer("model", function (sender, key, value) {
     console.log("Controller model hook is called from nested tale 'view'");
-    let model = this.get('model');
-    // convert config json to a string for editing.
-    // model.set('config', JSON.stringify(model.get('config')));
-    console.log(model.get('config'));
+    let model = this.get('model'); // this is assigned but never used!
   }),
-  isOwner: Ember.computed('model.creatorId', 'user_id', function () {
+  isOwner: computed('model.creatorId', 'user_id', function () {
     const user_id = this.get("user_id");
     const creator_id = this.get("model").get("creatorId");
     return creator_id === user_id;
   }),
-  canEditTale: Ember.computed('model._accessLevel', function () {
+  canEditTale: computed('model._accessLevel', function () {
     return this.get('model') && this.get('model').get('_accessLevel') >= taleStatus.WRITE;
   }),
   actions: {
@@ -62,11 +67,11 @@ export default Ember.Controller.extend({
       let component = this;
       component.set("tale_creating", true);
 
-      let onSuccess = function (item) {
+      let onSuccess = (item) => {
         component.set("tale_creating", false);
         component.set("tale_created", true);
 
-        Ember.run.later((function () {
+        run.later((function () {
           component.set("tale_created", false);
           // component.transitionToRoute('upload.view', item);
         }), 10000);
@@ -77,9 +82,8 @@ export default Ember.Controller.extend({
         component.set("tale_creating", false);
         component.set("tale_not_created", true);
         component.set("error_msg", e.message);
-        console.log(e);
 
-        Ember.run.later((function () {
+        run.later((function () {
           component.set("tale_not_created", false);
         }), 10000);
 
@@ -89,19 +93,18 @@ export default Ember.Controller.extend({
       tale.save().then(onSuccess).catch(onFail);
     },
     launchTale: function () {
+      debugger;
       let component = this;
       component.set("tale_instantiating", true);
 
       let onSuccess = function (item) {
-        console.log(item);
         component.set("tale_instantiating", false);
         component.set("tale_instantiated", true);
 
-        let instance = Ember.Object.create(JSON.parse(item));
-
+        let instance = Object.create(JSON.parse(item));
         component.set("instance", instance);
 
-        Ember.run.later((function () {
+        run.later((function () {
           component.set("tale_instantiated", false);
         }), 30000);
       };
@@ -115,7 +118,7 @@ export default Ember.Controller.extend({
         console.log(item);
         component.set("error_msg", item.message);
 
-        Ember.run.later((function () {
+        run.later((function () {
           component.set("tale_not_instantiated", false);
         }), 10000);
 
@@ -163,7 +166,7 @@ export default Ember.Controller.extend({
     },
     */
     textUpdated: function (text) {
-      // do something with
+      // do something with text, but what????
       console.log(this.get('model').get('description'));
     },
     back: function () {
@@ -171,12 +174,10 @@ export default Ember.Controller.extend({
     },
     openDeleteModal: function (id) {
       const selector = '.ui.' + id + '.modal';
-      console.log("Selector: " + selector);
       $(selector).modal('show');
     },
 
     approveDelete: function (model) {
-      console.log("Deleting model " + model.name);
       let component = this;
 
       model.destroyRecord({
@@ -193,7 +194,7 @@ export default Ember.Controller.extend({
     },
 
     enableEditIcon() {
-      let icon_uri_txt = Ember.$('#tale-icon');
+      let icon_uri_txt = $('#tale-icon');
       icon_uri_txt.prop("disabled", false);
       icon_uri_txt.focus();
     },
