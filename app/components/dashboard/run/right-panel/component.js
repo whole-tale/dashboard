@@ -12,7 +12,6 @@ export default Ember.Component.extend({
   actions: {
     onLeftModelChange : function (model) {
       // this.sendAction('onLeftModelChange', model); // sends to parent component
-      debugger;
       this.get('router').transitionTo('run.view', model.get('id'));
     }
   }
