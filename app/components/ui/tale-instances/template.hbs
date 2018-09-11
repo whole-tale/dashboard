@@ -25,7 +25,7 @@
                   <img src="{{instance.tale.illustration}}" />
                   <img src="{{instance.tale.icon}}" class="env" />
                   {{#unless (eq instance.status 0)}}
-                    <i class="times icon" {{action 'openDeleteModal' instance bubbles=false}} ></i>
+                    <i class="times icon" {{action 'openDeleteModal' instance bubbles=false}}></i>
                   {{/unless}}
                   <p>{{truncate-name instance.name}}</p>
                 {{#if (eq instance.status 0)}}

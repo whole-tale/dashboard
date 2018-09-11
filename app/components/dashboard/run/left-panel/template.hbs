@@ -1,47 +1,50 @@
 <div class="wt panel manage">
     <div class="wt paddleboard">
         <h2>
-            <img src="/images/wholetale_logo_sm.png" />Current Tale
-            <span style="float: right">
-                {{#if (and (not-eq model.status 0) (and model.iframe (eq internalState.currentInstanceId model._id)))}}
-                    <a href="{{model.url}}" target="_blank">
-                        <i class="external alternate icon"></i>
-                    </a>
-                {{/if}}
-            </span>
-            <i class="fas fa-expand right floated" style="cursor: pointer;" {{action 'toggleFullscreen'}}></i>
+            <img src="/images/wholetale_logo_sm.png" />{{#if hasSelectedTaleInstance}}Current Tale{{else}}No Tale Selected{{/if}}
+            {{#if hasSelectedTaleInstance}}
+                <i class="fas fa-expand right floated" style="cursor: pointer;" {{action 'toggleFullscreen'}}></i>
+            {{/if}}
+            {{#if (and (not-eq model.status 0) (and model.iframe (eq internalState.currentInstanceId model._id)))}}
+                <a href="{{model.url}}" target="_blank">
+                    <i class="external alternate right icon" style="cursor: pointer; padding-right: 0.3em; bottom: 4px"></i>
+                </a>
+            {{/if}}
         </h2>
     </div>
-     <div class="wt paddleboard tall header">
-        <div class="ui bordlerless menu">
-            <div class="item">
-                <img class="illustration" src="{{model.tale.illustration}}" />
-                <img class="env" src="{{model.tale.icon}}" />
-                <div class="header name">
-                    <h3>{{model.name}}</h3>
-                    <span>{{model.tale.authors}}</span>
-                </div>
-            </div>
-            <div class="right borderless menu">
+    {{#unless noInstanceSelected}}
+        <div class="wt paddleboard tall header">
+            <div class="ui bordlerless menu">
                 <div class="item">
-                    <div class="ui basic blue button" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
-                        Publish Tale
+                    <img class="illustration" src="{{model.tale.illustration}}" />
+                    <img class="env" src="{{model.tale.icon}}" />
+                    <div class="header name">
+                        <h3>{{model.name}}</h3>
+                        <span>{{model.tale.authors}}</span>
                     </div>
                 </div>
-                <div class="item">
-                    <div class="ui blue button" {{action "editTaleInfo" model._id}}>
-                        Edit Tale Info
+                <div class="right borderless menu">
+                    <div class="item">
+                        <div class="ui basic blue button" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
+                            Publish Tale
+                        </div>
                     </div>
-                </div>
-                <div class="item">
-                    <a href="https://wholetale.readthedocs.io/users_guide/run.html">
-                        <i class="fas fa-info" style="cursor: pointer;"></i>
-                    </a>
+                    <div class="item">
+                        <div class="ui blue button" {{action "editTaleInfo" model._id}}>
+                            Edit Tale Info
+                        </div>
+                    </div>
+                    <div class="item">
+                        <a href="https://wholetale.readthedocs.io/users_guide/run.html">
+                            <i class="fas fa-info" style="cursor: pointer;"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    {{#if (eq internalState.currentInstanceId model._id)}}
+    {{/unless}}
+    {{!-- {{#if (eq internalState.currentInstanceId model._id)}} --}}
+    {{#if hasSelectedTaleInstance}}
       {{#if (not-eq model.status 0)}}
           {{#unless model.iframe}}
               <div class="placeholder message">
@@ -114,5 +117,4 @@
             </div>
         </div>
     </div>
-
 </div>

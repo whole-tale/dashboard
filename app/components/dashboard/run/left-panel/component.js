@@ -4,6 +4,7 @@ import FullScreenMixin from 'ember-cli-full-screen/mixins/full-screen';
 import config from '../../../../config/environment';
 import { scheduleOnce } from '@ember/runloop';
 import { computed } from '@ember/object';
+import { not } from '@ember/object/computed';
 import $ from 'jquery';
 
 export default Component.extend(FullScreenMixin, {
@@ -12,9 +13,16 @@ export default Component.extend(FullScreenMixin, {
   loadError: false,
   model: null,
   wholeTaleHost: config.wholeTaleHost,
+  hasSelectedTaleInstance: false,
 
   init() {
     this._super(...arguments);
+    let shouldButtonsAppear = this.get('internalState').currentInstanceId;
+    if(shouldButtonsAppear) {
+      this.set('hasSelectedTaleInstance', true);
+    } else {
+      this.set('hasSelectedTaleInstance', false);
+    }
     this.result = {
       CouldNotLoadUrl: 1,
       UrlLoadedButContentCannotBeAccessed: 2,
@@ -42,7 +50,6 @@ export default Component.extend(FullScreenMixin, {
         iframeWindow.parent.postMessage('message sent', window.location.origin);
       };
     }
-
   },
 
   didInsertElement() {
@@ -74,9 +81,21 @@ export default Component.extend(FullScreenMixin, {
     return xmlHttp.responseText;
   },
 
+  shouldShowButtons: computed('internalState', 'internalState.currentInstanceId', function(internalState) {
+    let shouldButtonsAppear = this.get('internalState').currentInstanceId;
+    if(shouldButtonsAppear) {
+      this.set('hasSelectedTaleInstance', true);
+    } else {
+      this.set('hasSelectedTaleInstance', false);
+    }
+    return this.get('hasSelectedTaleInstance');
+  }),
+
+  noInstanceSelected: not('hasSelectedTaleInstance'),
+
   hasD1JWT: computed('model.taleId', function () {
     let jwt = this.getDataONEJWT();
-    return jwt ? true : false;
+    return (jwt && jwt.length) ? true : false;
   }),
 
   showModal(modalDialogName, modalContext) {
@@ -123,6 +142,5 @@ export default Component.extend(FullScreenMixin, {
     denyDelete() {
       return true;
     }
-
   }
 });
