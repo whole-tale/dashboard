@@ -164,6 +164,5 @@ export default Component.extend({
         router.transitionTo('run.view', instance._id);
       }
     }
-
   }
 });

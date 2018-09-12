@@ -1,34 +1,26 @@
-import Ember from 'ember';
 import ResetScroll from 'wholetale/mixins/reset-scroll';
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 
-export default Ember.Route.extend({
-  internalState: Ember.inject.service(),
+export default Route.extend(ResetScroll, {
+  internalState: service(),
   activate: function () {
-    // this mixin moves the page up to the top - removes the current scroll
+    // this ResetScroll mixin moves the page up to the top - removes the current scroll
     // but doesn't work sometimes ... argh ...
     this._super.apply(this, arguments);
   },
   init() {
-    console.log("In the route for the view in tale");
+    this._super(...arguments);
   },
 
   model(params, transition) {
-    var taleId;
-
-    console.log("In the tale view routes and params is");
-    console.log(params);
-    console.log(transition.params);
-
-    if (params.hasOwnProperty("tale_id"))
+    let taleId;
+    if (params.hasOwnProperty("tale_id")) {
       taleId = params.tale_id;
-    else
+    } else {
       taleId = transition.params['tale.view'].tale_id;
-
-    console.log("The tale ID " + taleId);
-
-    var taleObj = this.store.findRecord('tale', taleId);
-
-    console.log(taleObj);
+    }
+    let taleObj = this.store.findRecord('tale', taleId);
     return taleObj;
   },
 
