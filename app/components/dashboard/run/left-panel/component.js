@@ -4,6 +4,7 @@ import FullScreenMixin from 'ember-cli-full-screen/mixins/full-screen';
 import config from '../../../../config/environment';
 import { scheduleOnce } from '@ember/runloop';
 import { computed } from '@ember/object';
+import { not } from '@ember/object/computed';
 import $ from 'jquery';
 
 export default Component.extend(FullScreenMixin, {
@@ -12,9 +13,16 @@ export default Component.extend(FullScreenMixin, {
   loadError: false,
   model: null,
   wholeTaleHost: config.wholeTaleHost,
+  hasSelectedTaleInstance: false,
 
   init() {
     this._super(...arguments);
+    let shouldButtonsAppear = this.get('internalState').currentInstanceId;
+    if(shouldButtonsAppear) {
+      this.set('hasSelectedTaleInstance', true);
+    } else {
+      this.set('hasSelectedTaleInstance', false);
+    }
     this.result = {
       CouldNotLoadUrl: 1,
       UrlLoadedButContentCannotBeAccessed: 2,
@@ -42,7 +50,6 @@ export default Component.extend(FullScreenMixin, {
         iframeWindow.parent.postMessage('message sent', window.location.origin);
       };
     }
-
   },
 
   didInsertElement() {
@@ -74,9 +81,21 @@ export default Component.extend(FullScreenMixin, {
     return xmlHttp.responseText;
   },
 
-  hasD1JWT: computed('model._id', function () {
+  shouldShowButtons: computed('internalState', 'internalState.currentInstanceId', function(internalState) {
+    let shouldButtonsAppear = this.get('internalState').currentInstanceId;
+    if(shouldButtonsAppear) {
+      this.set('hasSelectedTaleInstance', true);
+    } else {
+      this.set('hasSelectedTaleInstance', false);
+    }
+    return this.get('hasSelectedTaleInstance');
+  }),
+
+  noInstanceSelected: not('hasSelectedTaleInstance'),
+
+  hasD1JWT: computed('model.taleId', function () {
     let jwt = this.getDataONEJWT();
-    return jwt ? true : false;
+    return (jwt && jwt.length) ? true : false;
   }),
 
   showModal(modalDialogName, modalContext) {
@@ -84,8 +103,8 @@ export default Component.extend(FullScreenMixin, {
     this.sendAction('publishTale', modalDialogName, modalContext);
   },
 
-  publishModalContext: computed('model._id', function() {
-    return { taleId: this.get('model._id'), hasD1JWT: this.hasD1JWT };
+  publishModalContext: computed('model.taleId', function() {
+    return { taleId: this.get('model.taleId'), hasD1JWT: this.hasD1JWT };
   }),
 
   actions: {
@@ -103,7 +122,7 @@ export default Component.extend(FullScreenMixin, {
     },
 
     authenticateD1(taleId) {
-      let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`; //'http://probable-cattle.nceas.ucsb.edu:4200/run/' + taleId + '?auth=true';
+      let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
       let orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=';
       window.location.replace(orcidLogin + callback);
     },
@@ -123,6 +142,5 @@ export default Component.extend(FullScreenMixin, {
     denyDelete() {
       return true;
     }
-
   }
 });

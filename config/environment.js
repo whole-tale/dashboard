@@ -66,7 +66,6 @@ module.exports = function (environment) {
     ENV.apiPath = '/api';
     ENV.apiUrl = '';
     ENV.dev = true;
-    ENV.authRedirect = 'http://dashboard.dev.wholetale.org/login-success';
     // ENV.APP.autoboot = false;
   }
 
@@ -75,7 +74,6 @@ module.exports = function (environment) {
     ENV.apiPath = 'api/v1';
     ENV.apiUrl = 'https://girdertest.wholetale.org/api/v1';
     ENV.dev = true;
-    ENV.authRedirect = 'http://dashboard.dev.wholetale.org/login-success';
   }
 
   if (environment === 'development') {
@@ -88,9 +86,9 @@ module.exports = function (environment) {
     ENV.apiPath = 'api/v1';
     ENV.apiUrl = 'https://girder.dev.wholetale.org/api/v1';
     ENV.dev = true;
-    ENV.authRedirect = 'http://dashboard.dev.wholetale.org/login-success';
     ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect;
     ENV.wholeTaleHost = 'http://dashboard.dev.wholetale.org';
+    ENV.dataOneHost = 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2';
   }
 
   if (environment === 'production') {
@@ -98,9 +96,10 @@ module.exports = function (environment) {
     ENV.apiPath = 'api/v1';
     ENV.apiUrl = ENV.apiHost + '/' + ENV.apiPath;
     ENV.dev = false;
-    ENV.authRedirect = 'http://dashboard.wholetale.org/login-success';
+    ENV.authRedirect = 'https://dashboardHOST/login-success';
     ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
-    ENV.wholeTaleHost = 'http://dashboard.wholetale.org';
+    ENV.wholeTaleHost = 'https://dashboardHOST';
+    ENV.dataOneHost = 'dataOneHOST';
   }
 
   return ENV;

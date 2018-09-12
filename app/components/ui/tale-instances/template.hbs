@@ -25,11 +25,11 @@
                   <img src="{{instance.tale.illustration}}" />
                   <img src="{{instance.tale.icon}}" class="env" />
                   {{#unless (eq instance.status 0)}}
-                    <i class="times icon" {{action 'openDeleteModal' instance bubbles=false}} ></i>
+                    <i class="times icon" {{action 'openDeleteModal' instance bubbles=false}}></i>
                   {{/unless}}
                   <p>{{truncate-name instance.name}}</p>
                 {{#if (eq instance.status 0)}}
-                  <span style="position: absolute; left: 45%; top: 20%; opacity: .7; z-index: 9999">
+                  <span style="position: absolute; left: 45%; top: 20%; opacity: .7; z-index: 1">
                     <i class="fa fa-4x fa-circle-notch fa-spin" aria-hidden="true"></i>
                   </span>
                 {{/if}}

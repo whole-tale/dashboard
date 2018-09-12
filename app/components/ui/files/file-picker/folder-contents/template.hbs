@@ -1,14 +1,14 @@
 <table class="ui striped table file-picker">
   {{#unless parent._parent}}
   <tr>
-    <th style="position:absolute; left:0%;">Entry Point</th>
-    <th></th>
+    <th style="width: 1rem;">Entry Point</th>
+    <th style="width: 1rem;"></th>
     <th>Name</th>
   </tr>
   {{/unless}}
   {{#each parent.folders as |folder|}}
   <tr class="left aligned selectable" id={{folder.id}}>
-    <td style="position:absolute; left:0;">
+    <td style="">
     </td>
     <td>
       {{#unless folder.disallowImport}}
@@ -44,7 +44,7 @@
 
   {{#each parent.files as |file|}}
   <tr class="left aligned selectable" id={{file.id}}>
-    <td style="position:absolute; left:3%;">
+    <td style="position: absolute; left: 1rem;">
       {{#if (eq entryPoint.id file.id)}}
       <i class="far fa-dot-circle clickable" {{action uncheckEntry file on="click"}}></i>
       {{else}}

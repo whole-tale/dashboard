@@ -1,11 +1,12 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import layout from './template';
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
-  store: Ember.inject.service(),
-  internalState: Ember.inject.service(),
+  store: service(),
+  internalState: service(),
 
   leftTitle: null,
   leftView: null,
@@ -20,8 +21,6 @@ export default Ember.Component.extend({
 
   init() {
     this._super(...arguments);
-    console.log("Left View = " + this.get("leftView"));
-    console.log("Right View = " + this.get("rightView"));
   },
   didRender() {},
 
