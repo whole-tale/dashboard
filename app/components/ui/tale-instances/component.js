@@ -152,14 +152,16 @@ export default Component.extend({
     },
 
     transitionToRun(instance, index) {
-      if(!instance || this.internalState.get('currentInstanceId') === instance._id) {
-        // toggle selection if already selected and navigate to 'run.index'
+      let router = this.get('router');
+      if(router.currentRouteName !== 'browse' && (!instance || this.internalState.get('currentInstanceId') === instance._id)) {
+        // toggle selection if we're in '/run' route and there's an already selected instance
         this.internalState.set('currentInstanceId', undefined);
         this.actions.deselectInstance.call(this);
-        this.get('router').transitionTo('run.index');
+        // ...and navigate to 'run.index'
+        router.transitionTo('run.index');
       } else {
         this.actions.selectInstance.call(this, instance, index);
-        this.get('router').transitionTo('run.view', instance._id);
+        router.transitionTo('run.view', instance._id);
       }
     }
 
