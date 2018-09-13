@@ -20,7 +20,7 @@ export default Component.extend({
     let name = this.get('newTaleName');
     let hasName = Boolean(name && name.trim().length);
     let hasEnvironment = Boolean(this.get('selectedEnvironment') && this.get('selectedEnvironment').id);
-    if(!this.get('inputData')) {
+    if (!this.get('inputData')) {
       this.set('inputData', A());
     }
     // let hasData = Boolean(this.get('inputData') && this.get('inputData').length);
@@ -75,25 +75,25 @@ export default Component.extend({
 
       let currentLoop = null;
       // Poll the status of the instance every second using recursive iteration
-      let startLooping = function(func){
-        return run.later(function(){
+      let startLooping = function (func) {
+        return run.later(function () {
           currentLoop = startLooping(func);
-          component.get('store').findRecord('instance', instance.get('_id'), { reload:true })
+          component.get('store').findRecord('instance', instance.get('_id'), { reload: true })
             .then(model => {
-              if(model.get('status') === 1) {
+              if (model.get('status') === 1) {
                 component.set('launchingInstance', false);
                 component.get('taleLaunched')();
                 run.cancel(currentLoop);
+
+                //run.later((function () {
+                component.get('router').transitionTo('run.view', instanceId);
+                //}), 1000);
               }
             });
         }, 1000);
       };
       //Start polling
       currentLoop = startLooping();
-
-      run.later((function () {
-        component.get('router').transitionTo('run.view', instanceId);
-      }), 1000);
     };
 
     let onFail = function (item) {
@@ -124,8 +124,7 @@ export default Component.extend({
     createTale() {
       let component = this;
 
-      if (component.launchingInstance)
-      {
+      if (component.launchingInstance) {
         return;
       }
 

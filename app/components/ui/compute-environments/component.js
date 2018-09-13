@@ -1,3 +1,4 @@
+import { Promise } from 'rsvp';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
@@ -98,7 +99,7 @@ export default Component.extend({
       const models = this.get('models');
       const component = this;
 
-      let promise = new Ember.RSVP.Promise((resolve) => {
+      let promise = new Promise((resolve) => {
         let searchView = [];
         models.forEach(model => {
           let name = model.get('name');
@@ -133,9 +134,7 @@ export default Component.extend({
     },
 
     approveDelete(model) {
-      console.log("Deleting model " + model.name);
       let component = this;
-
       model.destroyRecord({
         reload: true
       }).then(() => component.updateModels(component, component.get('models')));
@@ -148,7 +147,7 @@ export default Component.extend({
     },
 
     addNew() {
-      this.sendAction("onAddNew");
+      this.actions.onAddNew.call(this);
     },
     removeCurrentFilter() {
       this.set('filter', 'All');
@@ -164,7 +163,7 @@ export default Component.extend({
       if (model) {
         model.set('configuration', JSON.stringify(model.get('config'), null, 2));
         let creatorId = model.get('creatorId');
-        let creator = model.get('store').findRecord('user', creatorId).then(user => {
+        model.get('store').findRecord('user', creatorId).then(user => {
           model.set('creator', user);
           component.set('detailsModel', model);
           $('.ui.modal.envdetails').modal('show');
@@ -183,7 +182,7 @@ export default Component.extend({
     },
     deselectEnvironment() {
       let component = this;
-      component.set('selectedEnvironment', Ember.Object.create({}));
+      component.set('selectedEnvironment', Object.create({}));
       component.set('selectedMenuIndex', -1);
       component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
       // component.get('router')

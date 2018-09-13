@@ -63,7 +63,7 @@ export default Controller.extend({
         }
       }
     },
-    updateTale: function () {
+    updateTale() {
       let component = this;
       component.set("tale_creating", true);
 
@@ -92,8 +92,7 @@ export default Controller.extend({
       let tale = this.get("model");
       tale.save().then(onSuccess).catch(onFail);
     },
-    launchTale: function () {
-      debugger;
+    launchTale() {
       let component = this;
       component.set("tale_instantiating", true);
 
@@ -165,19 +164,19 @@ export default Controller.extend({
         this.get('apiCall').exportTale(tale.get("_id"), success, fail);
     },
     */
-    textUpdated: function (text) {
+    textUpdated(text) {
       // do something with text, but what????
       console.log(this.get('model').get('description'));
     },
-    back: function () {
+    back() {
       history.back();
     },
-    openDeleteModal: function (id) {
+    openDeleteModal(id) {
       const selector = '.ui.' + id + '.modal';
       $(selector).modal('show');
     },
 
-    approveDelete: function (model) {
+    approveDelete(model) {
       let component = this;
 
       model.destroyRecord({
@@ -189,7 +188,7 @@ export default Controller.extend({
       return false;
     },
 
-    denyDelete: function () {
+    denyDelete() {
       return true;
     },
 
