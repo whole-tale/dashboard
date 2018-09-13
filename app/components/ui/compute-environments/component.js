@@ -1,8 +1,10 @@
-import Ember from 'ember';
+import { Promise } from 'rsvp';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
+import $ from 'jquery';
+import Object, { observer } from '@ember/object';
 
-const service = Ember.inject.service.bind(Ember);
-
-export default Ember.Component.extend({
+export default Component.extend({
   store: service(),
   userAuth: service(),
   router: service(),
@@ -11,20 +13,18 @@ export default Ember.Component.extend({
   wtEvents: service(),
 
   selectedMenuIndex: -1,
-  selectedEnvironment: Ember.Object.create({}),
+  selectedEnvironment: Object.create({}),
   searchStr: '',
   numberOfModels: 0,
   showSearch: true,
   classNameBindings: ['showSearch'],
 
-  filterObserver: Ember.observer('searchStr', function () {
+  filterObserver: observer('searchStr', function () {
     this.setFilter.call(this);
   }),
 
   init() {
     this._super(...arguments);
-    console.log("Attributes updated");
-
     let models = this.get("models");
     if (!models) {
       models = Promise.resolve([]);
@@ -99,7 +99,7 @@ export default Ember.Component.extend({
       const models = this.get('models');
       const component = this;
 
-      let promise = new Ember.RSVP.Promise((resolve) => {
+      let promise = new Promise((resolve) => {
         let searchView = [];
         models.forEach(model => {
           let name = model.get('name');
@@ -134,9 +134,7 @@ export default Ember.Component.extend({
     },
 
     approveDelete(model) {
-      console.log("Deleting model " + model.name);
       let component = this;
-
       model.destroyRecord({
         reload: true
       }).then(() => component.updateModels(component, component.get('models')));
@@ -149,15 +147,15 @@ export default Ember.Component.extend({
     },
 
     addNew() {
-      this.sendAction("onAddNew");
+      this.actions.onAddNew.call(this);
     },
     removeCurrentFilter() {
       this.set('filter', 'All');
       this.setFilter();
     },
     openModal(modalName) {
-      let modal = Ember.$('.ui.' + modalName + '.modal');
-      modal.parent().prependTo(Ember.$(document.body));
+      let modal = $('.ui.' + modalName + '.modal');
+      modal.parent().prependTo($(document.body));
       modal.modal('show');
     },
     openDetailsModal(model) {
@@ -165,15 +163,12 @@ export default Ember.Component.extend({
       if (model) {
         model.set('configuration', JSON.stringify(model.get('config'), null, 2));
         let creatorId = model.get('creatorId');
-        let creator = model.get('store').findRecord('user', creatorId).then(user => {
+        model.get('store').findRecord('user', creatorId).then(user => {
           model.set('creator', user);
           component.set('detailsModel', model);
-          Ember.$('.ui.modal.envdetails').modal('show');
+          $('.ui.modal.envdetails').modal('show');
         });
       }
-      event.preventDefault();
-      event.cancelBubble = true;
-      return true;
     },
     selectEnvironment(model, index) {
       let component = this;
@@ -181,14 +176,13 @@ export default Ember.Component.extend({
         component.set('selectedEnvironment', model);
         component.set('selectedMenuIndex', index);
         component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
-        console.log('selected environment: ' + model.name);
       } else {
         component.get('router').transitionTo('manage.view', model.get('id'));
       }
     },
     deselectEnvironment() {
       let component = this;
-      component.set('selectedEnvironment', Ember.Object.create({}));
+      component.set('selectedEnvironment', Object.create({}));
       component.set('selectedMenuIndex', -1);
       component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
       // component.get('router')

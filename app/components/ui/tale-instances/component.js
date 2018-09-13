@@ -84,6 +84,8 @@ export default Component.extend({
     },
 
     openDeleteModal(instance) {
+      let component = this;
+      component.set('selectedInstance', instance);
       let selector = `.delete-modal-instance>.ui.delete-modal.modal`;
       later(() => {
         $(selector).modal('show');
@@ -93,19 +95,20 @@ export default Component.extend({
     approveDelete(model) {
       let component = this;
 
-      model.destroyRecord()
-        .then(function () {
+      model.destroyRecord({
+        reload: true
+      }).then(function () {
           component.set('selectedInstance', undefined);
           component.set('selectedMenuIndex', -1);
           // TODO replace this workaround for deletion with something more robust
           component.get('store').unloadRecord(model);
-          component.get('internalState').set('currentInstanceId', null);
+          component.get('internalState').set('currentInstanceId', undefined);
           // transition to the run route if the current route is run.view
           let router = component.get('router');
           if(router.get('currentRouteName') === 'run.view'){
             router.transitionTo('run');
           }
-        });
+      });
 
       return false;
     },
@@ -164,6 +167,5 @@ export default Component.extend({
         router.transitionTo('run.view', instance._id);
       }
     }
-
   }
 });

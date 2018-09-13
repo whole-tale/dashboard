@@ -5,11 +5,11 @@
 
 import Ember from 'ember';
 import EmberUploader from 'ember-uploader';
+import { isEmpty } from '@ember/utils';
 
 export default EmberUploader.FileField.extend({
   init() {
     this._super(...arguments);
-    console.log("initializing file uploading component ...");
   },
 
   filesDidChange: function(files) {
@@ -17,9 +17,10 @@ export default EmberUploader.FileField.extend({
       url: this.get('url')
     });
 
-    if (!Ember.isEmpty(files)) {
+    if (!isEmpty(files)) {
       // this second argument is optional and can to be sent as extra data with the upload
-      this.sendAction('action', files[0].name);
+      this.actions.action.call(this, files[0].name);
+      // this.sendAction('action', files[0].name);
     }
   }
 });

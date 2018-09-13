@@ -1,11 +1,10 @@
-import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 import AuthenticateRoute from 'wholetale/routes/authenticate';
-const inject = Ember.inject;
+import { inject as service } from '@ember/service';
 
 export default AuthenticateRoute.extend({
-  internalState: inject.service(),
-  userAuth: inject.service(),
+  internalState: service(),
+  userAuth: service(),
   
   model(params) {
     this._super();

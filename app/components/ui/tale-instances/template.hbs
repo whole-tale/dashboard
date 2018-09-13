@@ -47,4 +47,8 @@
     </div>
 </div>
 
-{{ui/delete-modal model=selectedInstance modelType="instance" approveDelete=(action "approveDelete" selectedInstance) denyDelete=(action "denyDelete")}}
+{{ui/delete-modal 
+    model=selectedInstance 
+    modelType="instance" 
+    approveDelete=(action "approveDelete" selectedInstance) 
+    denyDelete=(action "denyDelete")}}
