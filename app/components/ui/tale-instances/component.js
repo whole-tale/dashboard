@@ -94,7 +94,7 @@ export default Ember.Component.extend({
           component.set('selectedMenuIndex', -1);
           // TODO replace this workaround for deletion with something more robust
           component.get('store').unloadRecord(model);
-          component.get('internalState').set('currentInstanceId', undefined);
+          component.get('internalState').set('currentInstanceId', null);
           //transition to the run route if the current route is run.view
           let router = component.get('router');
           if(router.get('currentRouteName') === 'run.view'){
