@@ -84,16 +84,13 @@ export default Ember.Component.extend({
                 component.set('launchingInstance', false);
                 component.get('taleLaunched')();
                 Ember.run.cancel(currentLoop);
+                component.get('router').transitionTo('run.view', instanceId);
               }
             });
         }, 1000);
       };
       //Start polling
       currentLoop = startLooping();
-
-      Ember.run.later((function () {
-        component.get('router').transitionTo('run.view', instanceId);
-      }), 1000);
     };
 
     let onFail = function (item) {
