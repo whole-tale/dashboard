@@ -17,8 +17,6 @@ export default Component.extend({
   rightView: null,
   rightPanelColor: null,
 
-  // selectedEnvironment: null,
-
   init() {
     this._super(...arguments);
   },
