@@ -171,9 +171,43 @@ export default Controller.extend({
     back() {
       history.back();
     },
-    openDeleteModal(id) {
-      const selector = '.ui.' + id + '.modal';
-      $(selector).modal('show');
+    openDeleteModal(model) {
+      let component = this;
+      component.set('selectedTale', model);
+      if(!model.get('name')) {
+        model.set('name', model.get('title'));
+      }
+      let selector = `.delete-modal-tale>.ui.delete-modal.modal`;
+      run.later(() => {
+        $(selector).modal('show');
+      }, 500);
+    },
+
+    attemptDeletion(model) {
+      let component = this;
+      if (model) {
+        if(!model.get('name')) {
+          model.set('name', model.get('title'));
+        }
+        let taleId = model.get('_id');
+        let instances = component.get('store').query('instance', {
+          taleId: taleId,
+          reload: true,
+          adapterOptions: {
+            queryParams: {
+              limit: "0"
+            }
+          }
+        }).then((instances) => {
+          if (instances && instances.length) {
+            let message = `There ${instances.length === 1 ? "is" : "are"} ${instances.length} running instance${instances.length === 1 ? "" : "s"} associated to this tale.`;
+            component.set('cannotDeleteMessage', message);
+            component.actions.openWarningModal.call(this);
+          } else {
+            component.actions.openDeleteModal.call(this, model);
+          }
+        });
+      }
     },
 
     approveDelete(model) {
@@ -182,14 +216,14 @@ export default Controller.extend({
       model.destroyRecord({
         reload: true
       }).then(function () {
-        component.transitionToRoute('index');
+        component.transitionToRoute('browse');
       });
 
       return false;
     },
 
     denyDelete() {
-      return true;
+      return false;
     },
 
     enableEditIcon() {
@@ -213,8 +247,12 @@ export default Controller.extend({
     },
     gotoImageView() {
       this.transitionToRoute("image.view", this.image);
-    }
-  },
+    },
 
+    openWarningModal() {
+      let selector = `.ui.warning-modal.modal`;
+      $(selector).modal('show');
+    }
+  }
 
 });
