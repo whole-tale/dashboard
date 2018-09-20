@@ -2,7 +2,7 @@
 // import FileSaver from 'file-saver';
 import { inject as service } from '@ember/service';
 import Object, { computed, observer } from '@ember/object';
-import { run } from '@ember/runloop';
+import { later, cancel } from '@ember/runloop';
 import Controller from '@ember/controller';
 import $ from 'jquery';
 import TextField from '@ember/component/text-field';
@@ -16,13 +16,14 @@ const taleStatus = Object.create({
 });
 
 TextField.reopen({
-  attributes: computed(function() {
+  attributes: computed(function () {
     return ['data-content'];
   })
 });
 
 export default Controller.extend({
   store: service(),
+  router: service(),
   apiCall: service('api-call'),
   userAuth: service(),
   accessControl: service(),
@@ -51,14 +52,33 @@ export default Controller.extend({
   canEditTale: computed('model._accessLevel', function () {
     return this.get('model') && this.get('model').get('_accessLevel') >= taleStatus.WRITE;
   }),
+  taleLaunched(instanceId) {
+    let self = this;
+    // NOTE: using store.query here as a work around to disable store.findAll caching
+    this.get('store').query('instance', {
+      reload: true,
+      adapterOptions: {
+        queryParams: {
+          limit: "0"
+        }
+      }
+    }).then(models => {
+      // Ensure this view is not destroyed by way of route transition
+      if (!self.isDestroyed) {
+        let router = self.get('router');
+        self.set('rightModelTop', models);
+        router.transitionTo('run.view', instanceId);
+      }
+    });
+  },
   actions: {
     shareTale(tale) {
       const state = this.get('internalState');
       state.setACLObject(tale);
       let modalElem = $('.acl-component');
-      if(modalElem) {
+      if (modalElem) {
         modalElem.modal('show');
-        if(modalElem.hasClass("scrolling")) {
+        if (modalElem.hasClass("scrolling")) {
           modalElem.removeClass("scrolling");
         }
       }
@@ -71,7 +91,7 @@ export default Controller.extend({
         component.set("tale_creating", false);
         component.set("tale_created", true);
 
-        run.later((function () {
+        later((function () {
           component.set("tale_created", false);
           // component.transitionToRoute('upload.view', item);
         }), 10000);
@@ -83,7 +103,7 @@ export default Controller.extend({
         component.set("tale_not_created", true);
         component.set("error_msg", e.message);
 
-        run.later((function () {
+        later((function () {
           component.set("tale_not_created", false);
         }), 10000);
 
@@ -92,20 +112,47 @@ export default Controller.extend({
       let tale = this.get("model");
       tale.save().then(onSuccess).catch(onFail);
     },
-    launchTale() {
+    launchTale(tale) {
       let component = this;
+      component.set("tale_instantiating_id", tale.id);
       component.set("tale_instantiating", true);
-
+      
       let onSuccess = function (item) {
         component.set("tale_instantiating", false);
         component.set("tale_instantiated", true);
-
+        
         let instance = Object.create(JSON.parse(item));
+        
         component.set("instance", instance);
+        
+        // Add the new instance to the list of instances in the right panel
+        component.taleLaunched(instance.get('_id'));
 
-        run.later((function () {
-          component.set("tale_instantiated", false);
-        }), 30000);
+        later(function () {
+          // Ensure this component is not destroyed by way of a route transition
+          if (!component.isDestroyed) {
+            component.set("tale_instantiated", false);
+            component.set("tale_instantiating_id", 0);
+          }
+        }, 30000);
+
+        let currentLoop = null;
+        // Poll the status of the instance every second using recursive iteration
+        let startLooping = function (func) {
+          return later(function () {
+            currentLoop = startLooping(func);
+            component.get('store').findRecord('instance', instance.get('_id'), { reload: true })
+              .then(model => {
+                if (model.get('status') === 1) {
+                  component.taleLaunched(instance.get('_id'));
+                  cancel(currentLoop);
+                }
+              });
+          }, 1000);
+        };
+
+        //Start polling
+        currentLoop = startLooping();
       };
 
       let onFail = function (item) {
@@ -114,28 +161,28 @@ export default Controller.extend({
         component.set("tale_not_instantiated", true);
         item = JSON.parse(item);
 
-        console.log(item);
         component.set("error_msg", item.message);
 
-        run.later((function () {
-          component.set("tale_not_instantiated", false);
-        }), 10000);
+        later(function () {
+          if (!component.isDestroyed) {
+            component.set("tale_not_instantiated", false);
+            component.set("tale_instantiating_id", 0);
+          }
+        }, 10000);
 
       };
 
       // submit: API
       // httpCommand, taleid, imageId, folderId, instanceId, name, description, isPublic, config
 
-      let tale = this.get("model");
-
       this.get("apiCall").postInstance(
         tale.get("_id"),
-        tale.get('imageId'),
-        this.get('taleInstanceName'),
+        tale.get("imageId"),
+        null,
         onSuccess,
         onFail);
     },
-    
+
     /*
     exportTale: function() {
         var tale = this.get('model');
@@ -171,9 +218,43 @@ export default Controller.extend({
     back() {
       history.back();
     },
-    openDeleteModal(id) {
-      const selector = '.ui.' + id + '.modal';
-      $(selector).modal('show');
+    openDeleteModal(model) {
+      let component = this;
+      component.set('selectedTale', model);
+      if (!model.get('name')) {
+        model.set('name', model.get('title'));
+      }
+      let selector = `.delete-modal-tale>.ui.delete-modal.modal`;
+      later(() => {
+        $(selector).modal('show');
+      }, 500);
+    },
+
+    attemptDeletion(model) {
+      let component = this;
+      if (model) {
+        if (!model.get('name')) {
+          model.set('name', model.get('title'));
+        }
+        let taleId = model.get('_id');
+        let instances = component.get('store').query('instance', {
+          taleId: taleId,
+          reload: true,
+          adapterOptions: {
+            queryParams: {
+              limit: "0"
+            }
+          }
+        }).then((instances) => {
+          if (instances && instances.length) {
+            let message = `There ${instances.length === 1 ? "is" : "are"} ${instances.length} running instance${instances.length === 1 ? "" : "s"} associated to this tale.`;
+            component.set('cannotDeleteMessage', message);
+            component.actions.openWarningModal.call(this);
+          } else {
+            component.actions.openDeleteModal.call(this, model);
+          }
+        });
+      }
     },
 
     approveDelete(model) {
@@ -182,14 +263,14 @@ export default Controller.extend({
       model.destroyRecord({
         reload: true
       }).then(function () {
-        component.transitionToRoute('index');
+        component.transitionToRoute('browse');
       });
 
       return false;
     },
 
     denyDelete() {
-      return true;
+      return false;
     },
 
     enableEditIcon() {
@@ -200,8 +281,8 @@ export default Controller.extend({
 
     generateIcon(model) {
       this.get('store').query('sils', {
-          text: encodeURI(model.title)
-        })
+        text: encodeURI(model.title)
+      })
         .then(sils => {
           sils.forEach(result => {
             model.set('illustration', result.get('icon'));
@@ -213,8 +294,12 @@ export default Controller.extend({
     },
     gotoImageView() {
       this.transitionToRoute("image.view", this.image);
-    }
-  },
+    },
 
+    openWarningModal() {
+      let selector = `.ui.warning-modal.modal`;
+      $(selector).modal('show');
+    }
+  }
 
 });

@@ -85,9 +85,7 @@ export default Component.extend({
                 component.get('taleLaunched')();
                 run.cancel(currentLoop);
 
-                //run.later((function () {
                 component.get('router').transitionTo('run.view', instanceId);
-                //}), 1000);
               }
             });
         }, 1000);
