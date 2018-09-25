@@ -77,6 +77,7 @@ module.exports = function (environment) {
   ENV.wholeTaleHost = 'https://dashboardHOST';
   ENV.dataOneHost = 'dataOneHOST';
   ENV.dev = environment === 'development';
+  ENV.authProvider = 'authPROVIDER';
 
   return ENV;
 };
