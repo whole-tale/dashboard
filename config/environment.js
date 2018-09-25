@@ -69,38 +69,14 @@ module.exports = function (environment) {
     // ENV.APP.autoboot = false;
   }
 
-  if (environment === 'test-dev') {
-    ENV.apiHost = 'https://girdertest.wholetale.org';
-    ENV.apiPath = 'api/v1';
-    ENV.apiUrl = 'https://girdertest.wholetale.org/api/v1';
-    ENV.dev = true;
-  }
-
-  if (environment === 'development') {
-    // ENV.APP.LOG_RESOLVER = true;
-    // ENV.APP.LOG_ACTIVE_GENERATION = true;
-    // ENV.APP.LOG_TRANSITIONS = true;
-    // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
-    // ENV.APP.LOG_VIEW_LOOKUPS = true;
-    ENV.apiHost = 'https://girder.dev.wholetale.org';
-    ENV.apiPath = 'api/v1';
-    ENV.apiUrl = 'https://girder.dev.wholetale.org/api/v1';
-    ENV.dev = true;
-    ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect;
-    ENV.wholeTaleHost = 'http://dashboard.dev.wholetale.org';
-    ENV.dataOneHost = 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2';
-  }
-
-  if (environment === 'production') {
-    ENV.apiHost = 'apiHOST';
-    ENV.apiPath = 'api/v1';
-    ENV.apiUrl = ENV.apiHost + '/' + ENV.apiPath;
-    ENV.dev = false;
-    ENV.authRedirect = 'https://dashboardHOST/login-success';
-    ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
-    ENV.wholeTaleHost = 'https://dashboardHOST';
-    ENV.dataOneHost = 'dataOneHOST';
-  }
+  ENV.apiHost = 'apiHOST';
+  ENV.apiPath = 'api/v1';
+  ENV.apiUrl = ENV.apiHost + '/' + ENV.apiPath;
+  ENV.authRedirect = 'https://dashboardHOST/login-success';
+  ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
+  ENV.wholeTaleHost = 'https://dashboardHOST';
+  ENV.dataOneHost = 'dataOneHOST';
+  ENV.dev = environment === 'development';
 
   return ENV;
 };
