@@ -11,7 +11,7 @@
     <br>
     <br>
     {{#each-in model as |provider url|}}
-        {{#if (eq provider "Globus")}}
+        {{#if (eq provider authProvider)}}
             <a class="ui large blue button" {{action "login" url}}>
                 <div style="font-weight: 700; font-size: 150%; margin: 10px 10px 0 0; float:left">Access</div>
                 <img src="/images/whole_tale_logo_text_long_light_large.png" width="200px" style="width:200px">

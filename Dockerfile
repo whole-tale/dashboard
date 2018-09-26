@@ -21,7 +21,7 @@ RUN bower install --allow-root
 RUN ./node_modules/.bin/ember build --environment=production
 
 FROM nginx:stable-alpine
-ENV GIRDER_API_URL=https://girder.dev.wholetale.org
+ENV GIRDER_API_URL=https://girder.dev.wholetale.org AUTH_PROVIDER=Globus
 COPY --from=builder /usr/src/node-app/dist /srv/dashboard/.
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY ./docker-entrypoint.sh /
