@@ -69,15 +69,30 @@ module.exports = function (environment) {
     // ENV.APP.autoboot = false;
   }
 
-  ENV.apiHost = 'apiHOST';
+  if (environment === 'development') {
+    // ENV.APP.LOG_RESOLVER = true;
+    // ENV.APP.LOG_ACTIVE_GENERATION = true;
+    // ENV.APP.LOG_TRANSITIONS = true;
+    // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
+    // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV.apiHost = 'https://girder.dev.wholetale.org';
+    ENV.wholeTaleHost = 'https://dashboard.dev.wholetale.org';
+    ENV.dataOneHost = 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2';
+    ENV.authProvider = 'Globus';
+  }
+
+  if (environment === 'production') {
+    ENV.apiHost = 'apiHOST';
+    ENV.wholeTaleHost = 'https://dashboardHOST';
+    ENV.dataOneHost = 'dataOneHOST';
+    ENV.authProvider = 'authPROVIDER';
+  }
+
   ENV.apiPath = 'api/v1';
   ENV.apiUrl = ENV.apiHost + '/' + ENV.apiPath;
-  ENV.authRedirect = 'https://dashboardHOST/login-success';
   ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
-  ENV.wholeTaleHost = 'https://dashboardHOST';
-  ENV.dataOneHost = 'dataOneHOST';
+  ENV.authRedirect = ENV.wholeTaleHost + '/login-success';
   ENV.dev = environment === 'development';
-  ENV.authProvider = 'authPROVIDER';
 
   return ENV;
 };
