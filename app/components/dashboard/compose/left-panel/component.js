@@ -48,11 +48,18 @@ export default Component.extend({
       self.set('selectedEnvironment', selectedEnvironment);
     });
 
-    // If the user is coming to this page from a third party with the intent
-    // on importing data, the referrer is set here.
-    self.set('datasetLocation', this.get('model').queryParams.data_location);
-    self.set('datasetProvider', this.get('model').queryParams.data_provider);
-    self.set('packageAPI', this.get('model').queryParams.data_api);
+    this.setThirdPartyParams();
+    this.scheduleDataImport();
+  },
+
+  scheduleDataImport() {
+      /* 
+      Schedule a function that first checks if it needs to handle
+      the case where the page is being landed on by a third party 
+      with a dataset. 
+      Second, it checks which service was the referrer, and directs
+      program flow to the appropriate section for querying the service.
+      */
     scheduleOnce('afterRender', this, () => {
         // Check if we're coming from a third party
         if (this.get('datasetLocation')) {
@@ -72,6 +79,14 @@ export default Component.extend({
             return;
         }
       });
+  },
+
+  setThirdPartyParams() {
+    // If the user is coming to this page from a third party with the intent
+    // on importing data, the referrer is set here.
+    this.set('datasetLocation', this.get('model').queryParams.data_location);
+    this.set('datasetProvider', this.get('model').queryParams.data_provider);
+    this.set('packageAPI', this.get('model').queryParams.data_api);
   },
 
   insertPackageName(allSelected) {
