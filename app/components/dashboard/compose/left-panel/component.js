@@ -15,6 +15,7 @@ export default Component.extend({
   newTaleName: '',
   message: 'Launching new Tale, please wait.',
   launchingInstance: false,
+  datasetSource: null,
 
   invalidNewTale: computed('inputData', 'selectedEnvironment', 'newTaleName', 'inputData.length', function () {
     let name = this.get('newTaleName');
@@ -40,6 +41,10 @@ export default Component.extend({
     events.on('selectEnvironment', function (selectedEnvironment) {
       self.set('selectedEnvironment', selectedEnvironment);
     });
+
+    // If the user is coming to this page from a third party with the intent
+    // on importing data, the referrer is set here.
+    self.set('datasetSource', this.get('model').queryParams.data_source);
   },
 
   // just checking the toggle works ...

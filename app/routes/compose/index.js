@@ -5,8 +5,8 @@ import RSVP from 'rsvp';
 
 export default AuthenticateRoute.extend({
   internalState: Ember.inject.service(),
-
-  model() {
+  queryParams:{data_source: {refreshModel:true}},
+  model(params) {
     let state = this.get('internalState');
     let thisUserID = this.get('userAuth').getCurrentUserID();
     let data = this.get('store').query('folder', {
@@ -58,7 +58,8 @@ export default AuthenticateRoute.extend({
         }
       }),
       dataRegistered: registered,
-      allData: registered
+      allData: registered,
+      queryParams: params
     });
   }
 });
