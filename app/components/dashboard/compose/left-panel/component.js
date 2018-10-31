@@ -3,6 +3,7 @@ import Object, { computed, observer } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
 import { run } from '@ember/runloop';
+import { scheduleOnce } from '@ember/runloop';
 
 export default Component.extend({
   apiCall: service('api-call'),
@@ -10,12 +11,16 @@ export default Component.extend({
   store: service(),
   router: service(),
 
+  // Holds an array of Objects which are shown in the `Input data section`
   inputData: A(),
   selectedEnvironment: Object.create({}),
+  // The name of the Tale which appears in the UI
   newTaleName: '',
   message: 'Launching new Tale, please wait.',
   launchingInstance: false,
   datasetSource: null,
+  // The title of the dataset which came from a third party
+  datasetTitle: '',
 
   invalidNewTale: computed('inputData', 'selectedEnvironment', 'newTaleName', 'inputData.length', function () {
     let name = this.get('newTaleName');
@@ -36,6 +41,7 @@ export default Component.extend({
       return;
     }
     events.on('select', function (allSelected) {
+      allSelected = self.insertPackageName(allSelected);
       self.set('inputData', allSelected);
     });
     events.on('selectEnvironment', function (selectedEnvironment) {
@@ -46,16 +52,84 @@ export default Component.extend({
     // on importing data, the referrer is set here.
     self.set('datasetLocation', this.get('model').queryParams.data_location);
     self.set('datasetProvider', this.get('model').queryParams.data_provider);
+    self.set('packageAPI', this.get('model').queryParams.data_api);
+    scheduleOnce('afterRender', this, () => {
+        // Check if we're coming from a third party
+        if (this.get('datasetLocation')) {
+            let provider = this.get('datasetProvider');
+            // Check to see where we're coming from
+            if (provider === 'dataone') {
+                this.renderDataONEPackage();
+            }
+            else if (provider === 'dataverse') {
+                this.renderDataversePackage();
+            }
+            else {
+                return;
+            }
+        }
+        else {
+            return;
+        }
+      });
   },
 
-  // just checking the toggle works ...
-  publicCheckedObserver: observer('public_checked', function () {
-    console.log("Checked = " + this.get('public_checked'));
-  }),
+  insertPackageName(allSelected) {
+      /* 
+        We'll want to check if we need to fake the pending dataset in the
+        Input data section. This check needs to be made when we replace the 
+        inputData array with newly (de)selected files.
 
-  publicDescriptionObserver: observer('description', function () {
-    console.log("Description = " + this.get('description'));
-  }),
+        Inserting the package name should be done when the user is importing a dataset 
+        to make it clear that their data will be inside the Tale, even though it hasn't 
+        been registered yet.
+      */
+       let datasetName = self.get('packageAPI');
+       if (datasetName) {
+           // Check if it's in the file listing already
+           var exists =false;
+           allSelected.forEach(function (listing) {
+             if (listing.name === datasetName) {
+                 exists = true;
+             }
+         });
+ 
+         if (exists === false) {
+             let newDataObj = {
+                 name: datasetName
+             };
+             allSelected.push(newDataObj);
+           }
+       }
+       return allSelected;
+  },
+
+  renderDataONEPackage() {
+    console.log('Rendering DataONE package');
+  },
+
+  renderDataversePackage() {
+        /*
+        Queries the dataverse endpoint for information about a package and fills in
+        the proper component variables.
+        */
+        let self = this;
+        let url =this.get('packageAPI')+'/datasets/:persistentId?persistentId='+this.get('datasetLocation');
+        jQuery.get(url, function(resp){
+            self.set('datasetTitle', resp.data.latestVersion.metadataBlocks.citation.fields[0].value);
+            self.set('newTaleName', self.get('datasetTitle'));
+            
+            // Fill in the Input data field. The UI displays 'name' in the UI in the
+            // Input data section
+            let newDataObj = {
+                name: self.get('datasetTitle')
+            };
+            // self.inputData needs to be taken as an array
+            let inputData = A();
+            inputData.push(newDataObj)
+            self.set('inputData', inputData);
+         });
+  },
 
   // public_checked : false,
   tale_creating: false,
@@ -77,7 +151,6 @@ export default Component.extend({
     let onSuccess = function (item) {
       const instance = Object.create(JSON.parse(item));
       const instanceId = instance._id;
-      console.log(`Launching new instance with id: ${instanceId}`);
 
       let currentLoop = null;
       // Poll the status of the instance every second using recursive iteration
@@ -104,7 +177,6 @@ export default Component.extend({
       // deal with the failure here
       item = JSON.parse(item);
       component.set('launchingInstance', false);
-      console.log(`Launching new instance ${item} threw some errors`);
     };
 
     // submit: API

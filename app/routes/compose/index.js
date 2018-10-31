@@ -9,7 +9,9 @@ export default AuthenticateRoute.extend({
       data_location: {
           refreshModel:true},
       data_provider: {
-          refreshModel:true}
+          refreshModel:true},
+      data_api: {
+          refreshModel:true},
     },
 
   model(params) {
