@@ -5,7 +5,13 @@ import RSVP from 'rsvp';
 
 export default AuthenticateRoute.extend({
   internalState: Ember.inject.service(),
-  queryParams:{data_source: {refreshModel:true}},
+  queryParams:{
+      data_location: {
+          refreshModel:true},
+      data_provider: {
+          refreshModel:true}
+    },
+
   model(params) {
     let state = this.get('internalState');
     let thisUserID = this.get('userAuth').getCurrentUserID();

@@ -44,7 +44,8 @@ export default Component.extend({
 
     // If the user is coming to this page from a third party with the intent
     // on importing data, the referrer is set here.
-    self.set('datasetSource', this.get('model').queryParams.data_source);
+    self.set('datasetLocation', this.get('model').queryParams.data_location);
+    self.set('datasetProvider', this.get('model').queryParams.data_provider);
   },
 
   // just checking the toggle works ...
