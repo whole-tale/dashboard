@@ -423,9 +423,9 @@
 }
 
 .publisher .ui.accordion .content.files {
-  height: 25em;
-}
-
+    height: 50%;
+} 
+  
 .publisher .actions {
   position: fixed;
   bottom: 0;
@@ -438,8 +438,8 @@
 }
 
 .ui.basic.segment.file-picker {
-  height: 25em;
-  overflow-x: hidden;
+    height:20em;
+    overflow-x: hidden;
 }
 
 .file-picker.table {
@@ -451,10 +451,10 @@
   width: 0%;
 }
 
-.table.file-picker td {
-  padding: 0.6em;
-  border: none;
-}
+ .table.file-picker td {
+    padding: 0.3em;
+    border: none;
+ }
 
 .table.file-picker tr td {
   border: none;
@@ -467,3 +467,24 @@
 .table.file-picker td:nth-child(2) {
   width: 1rem;
 }
+
+.publisher .progress-area {
+    width:50%;
+    margin-left: 25%;
+}
+ .publisher .publishing-now {
+    text-align: center;
+}
+ .publisher .publishing-status-message {
+    text-align: center;
+    height: 75px;
+    overflow-y: auto;
+}
+
+.publisher .accordion-container {
+    overflow-y: auto;
+}
+
+.publisher .fa-briefcase {
+    margin-left:10px;
+  }
