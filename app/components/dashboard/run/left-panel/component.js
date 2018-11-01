@@ -16,6 +16,9 @@ export default Component.extend(FullScreenMixin, {
     classNames: ['run-left-panel'],
     router: service('-routing'),
     internalState: service(),
+    userAuth: service('user-auth'),
+    dataoneAuth: service('dataone-auth'),
+    store: service(),
     apiCall: service('api-call'),
     tokenHandler: service('token-handler'),
     loadError: false,
@@ -24,6 +27,7 @@ export default Component.extend(FullScreenMixin, {
     hasSelectedTaleInstance: false,
     displayTaleInstanceMenu: false,
     workspaceRootId: undefined,
+    enablePublish: false,
     session: O({dataSet:A()}),
 
     init() {
@@ -72,6 +76,15 @@ export default Component.extend(FullScreenMixin, {
                 iframeWindow.parent.postMessage('message sent', window.location.origin);
             };
         }
+        self.store.findRecord('tale', self.model.taleId)
+        .then(tale => {
+          if (tale.creatorId === self.userAuth.getCurrentUserID()) {
+            self.set('enablePublish', true);
+          }
+          else {
+            self.set('enablePublish', false);
+          }
+        });
     },
 
     didInsertElement() {

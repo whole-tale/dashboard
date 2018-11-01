@@ -11,6 +11,7 @@
                     </div>
                 </div>
                 <div class="right borderless menu">
+
                     {{#if readyToReleaseFeature}}
                         <div class="item">
                             <div class="ui blue icon button">
@@ -28,7 +29,6 @@
                             <i class="fas fa-ellipsis-v clickable"></i>
                         </a>
                     </div>
-                    
                     {{#if displayTaleInstanceMenu}}
                         {{#click-outside action=(action (mut displayTaleInstanceMenu) false)}}
                             <div class="tale-instance-menu">
