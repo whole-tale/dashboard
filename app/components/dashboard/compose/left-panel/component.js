@@ -18,7 +18,6 @@ export default Component.extend({
   newTaleName: '',
   message: 'Launching new Tale, please wait.',
   launchingInstance: false,
-  datasetSource: null,
   // The title of the dataset which came from a third party
   datasetTitle: '',
 
@@ -63,20 +62,8 @@ export default Component.extend({
     scheduleOnce('afterRender', this, () => {
         // Check if we're coming from a third party
         if (this.get('datasetLocation')) {
-            let provider = this.get('datasetProvider');
-            // Check to see where we're coming from
-            if (provider === 'dataone') {
-                this.renderDataONEPackage();
-            }
-            else if (provider === 'dataverse') {
-                this.renderDataversePackage();
-            }
-            else {
-                return;
-            }
-        }
-        else {
-            return;
+            // Fill in the dataset title in the Tale Name and Input data fields
+            this.addExternalPackage();
         }
       });
   },
@@ -85,7 +72,7 @@ export default Component.extend({
     // If the user is coming to this page from a third party with the intent
     // on importing data, the referrer is set here.
     this.set('datasetLocation', this.get('model').queryParams.data_location);
-    this.set('datasetProvider', this.get('model').queryParams.data_provider);
+    this.set('datasetTitle', this.get('model').queryParams.data_title);
     this.set('packageAPI', this.get('model').queryParams.data_api);
   },
 
@@ -99,7 +86,8 @@ export default Component.extend({
         to make it clear that their data will be inside the Tale, even though it hasn't 
         been registered yet.
       */
-       let datasetName = self.get('packageAPI');
+       let self = this;
+       let datasetName = self.get('datasetTitle');
        if (datasetName) {
            // Check if it's in the file listing already
            var exists =false;
@@ -119,31 +107,22 @@ export default Component.extend({
        return allSelected;
   },
 
-  renderDataONEPackage() {
-    console.log('Rendering DataONE package');
-  },
-
-  renderDataversePackage() {
+  addExternalPackage() {
         /*
-        Queries the dataverse endpoint for information about a package and fills in
-        the proper component variables.
+        Fills in the Tale Name and Input data section with the title of the dataset.
         */
         let self = this;
-        let url =this.get('packageAPI')+'/datasets/:persistentId?persistentId='+this.get('datasetLocation');
-        jQuery.get(url, function(resp){
-            self.set('datasetTitle', resp.data.latestVersion.metadataBlocks.citation.fields[0].value);
-            self.set('newTaleName', self.get('datasetTitle'));
-            
-            // Fill in the Input data field. The UI displays 'name' in the UI in the
-            // Input data section
-            let newDataObj = {
-                name: self.get('datasetTitle')
-            };
-            // self.inputData needs to be taken as an array
-            let inputData = A();
-            inputData.push(newDataObj)
-            self.set('inputData', inputData);
-         });
+        self.set('newTaleName', self.get('datasetTitle'));
+        
+        // Fill in the Input data field. The UI displays 'name' in the UI in the
+        // Input data section
+        let newDataObj = {
+            name: self.get('datasetTitle')
+        };
+        // self.inputData needs to be taken as an array
+        let inputData = A();
+        inputData.push(newDataObj)
+        self.set('inputData', inputData);
   },
 
   // public_checked : false,
@@ -231,10 +210,13 @@ export default Component.extend({
       let data = this.get('inputData') || {};
       let formattedData = [];
       data.forEach(x => {
-        formattedData.push({
-          'type': x.get('isFolder') ? 'folder' : 'item',
-          'id': x.get('id')
-        });
+        // Check that the object is a legitimate folder/item
+        if (x.hasOwnProperty('id')) {
+            formattedData.push({
+            'type': x.get('isFolder') ? 'folder' : 'item',
+            'id': x.get('id')
+            });
+        }
       });
 
       let name = this.get('newTaleName').trim();
