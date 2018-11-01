@@ -1,11 +1,9 @@
 import Ember from 'ember';
 import layout from './template';
-import RSVP from 'rsvp';
 import EventStream from 'npm:sse.js';
-
 import config from '../../../../config/environment';
-
-export default Ember.Component.extend({
+import Component from '@ember/component'
+export default Component.extend({
     layout,
     authRequest: Ember.inject.service(),
     userAuth: Ember.inject.service(),
@@ -25,14 +23,8 @@ export default Ember.Component.extend({
     repository: '',
     // Size of the package found
     size: '',
-    // When set to true, the backend will search the DataONE dev server
-    useDev: '',
     // Controls whether the results section is shown in the UI
     showResults: false,
-    // URL to the Development member node
-    devUrl: 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2',
-    // URL to the DataONE production server
-    prodUrl: 'https://cn.dataone.org/cn/v2',
 
     didInsertElement() {
         this._super(...arguments);
@@ -135,12 +127,6 @@ export default Ember.Component.extend({
     },
 
     actions: {
-
-        updateDev(value) {
-            // Called if the `use dev` checkbox is clicked
-            this.set('useDev', value);
-        },
-
         register() {
             this.clearErrors();
             let self = this;
@@ -169,17 +155,12 @@ export default Ember.Component.extend({
                 size: this.size
             }]);
 
-            let baseUrl=this.get('prodUrl');
-            if (this.get('useDev')) {
-                baseUrl=this.get('devUrl')
-            }
-
             let url = config.apiUrl + '/dataset/register' + queryParams;
             let options = {
                 method: 'POST',
                 data: {
                     dataMap: dataMap,
-                    base_url: baseUrl
+                    base_url: config.dataOneHost
                 }
             };
 
@@ -218,16 +199,11 @@ export default Ember.Component.extend({
 
             let url = config.apiUrl + '/repository/lookup';
 
-            let baseUrl=this.get('prodUrl');
-            if (this.get('useDev')) {
-                baseUrl=this.get('devUrl')
-            }
-
             let options = {
                 method: 'GET',
                 data: {
                     dataId: JSON.stringify(this.searchDataId.split()),
-                    base_url: baseUrl
+                    base_url: config.dataOneHost
                 }
             };
 
@@ -255,7 +231,6 @@ export default Ember.Component.extend({
                     }
                 })
                 .catch(e => {
-                    console.log("Error: " + e);
                     self.set('error', true);
                     self.set('errorMessage', 'No matching results found.');
                     self.disableRegister();
