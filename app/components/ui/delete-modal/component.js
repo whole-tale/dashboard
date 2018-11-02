@@ -13,11 +13,9 @@ export default Ember.Component.extend({
 
   actions: {
     approveDelete() {
-      console.log('deleting...');
       this.approveDelete(...arguments);
     },
     denyDelete() {
-      console.log("cancelling deletion");
       this.denyDelete(...arguments);
     }
   },

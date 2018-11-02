@@ -108,14 +108,6 @@ export default Component.extend({
             self.set('packageURL', resp.publishedURI);
             self.set('statusMessage', 'Your Tale has successfully been published to DataONE.');
         }
-        else {
-
-            scheduleOnce('afterRender', this, () => {
-                console.log('Opening publish-intro modal');
-                let selector = '.ui.publish-intro.modal';
-                $(selector).modal('show');
-              });
-        }
 
         // We want to check if the last publish event is still running
         let lastJob = this.get('internalState').getLastPublishJob();

@@ -17,8 +17,6 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
 
     query(store, type, query) {
         let url = this.buildURL(type.modelName, null, null, 'query', query);
-
-        console.log("sending request for sils ... ");
         return new RSVP.Promise(resolve => resolve([{ _id: 1, _modelType: "sils", icon: "https://lorempixel.com/400/400/abstract/" }]));
 
         //TODO: uncomment this after sils endpoint working
