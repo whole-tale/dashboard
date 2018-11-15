@@ -285,12 +285,15 @@ createTaleFromDataset() {
     let onSuccess = (job) => component.trackTaleImport(job);
 
     // Attempt to create a tale from a dataset
+    let taleKwargs = new Object();
+    taleKwargs.title = this.get('newTaleName').trim()
+    console.log(taleKwargs)
     component.get('apiCall').taleFromDataset(
         this.get('selectedEnvironment').get('_id'),
         this.get('datasetLocation'),
         true,
         null,
-        null,
+        JSON.stringify(taleKwargs),
         onSuccess,
         onFail
     );
@@ -298,6 +301,7 @@ createTaleFromDataset() {
 
   actions: {
 
+    // this is called when someone selected the front end image/environment
     selectEnvironment(model) {
       this.set("selectedEnvironment", model);
     },
