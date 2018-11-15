@@ -18,7 +18,10 @@
   .warning-modal,
   .ui.compose-error.modal {
     height: 200px;
-
+    top:    0;
+    left:   0;
+    bottom: 0;
+  
     .header {
       .close.icon {
         position: absolute;
@@ -545,16 +548,6 @@
     height: 50%;
 } 
   
-<<<<<<< HEAD
-.publisher .actions {
-  position: fixed;
-  bottom: 0;
-  width: 95%;
-  margin-bottom: 1em;
-}
-
-=======
->>>>>>> 4aa330f... Use flexbox in the publishing modal. I changed the css to use flexbox in the modal. This way the items auto resize and stack when the window is re-sized. I had to override the hr default css due to the auto margins.
 .publisher .actions .button {
   float: right;
 }
