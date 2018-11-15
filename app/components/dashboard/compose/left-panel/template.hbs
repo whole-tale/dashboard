@@ -10,12 +10,25 @@
     </div>
     <div class="ui segment rounded-bottom composer-container">
         {{#if launchingInstance}}
+            {{#if importing}}
             <div style="display: inline">
                 <div class="creating-tale-message">
-                    {{message}}
+                    <div class="progress-area">
+                        <p class ="publishing-status-message">{{message}}</p>
+                    </div>
+                </div>
+                <div class ='tale-import-progressbar'>
+                    {{ember-progress-bar progress=progress options=(hash strokeWidth=4 color=barColor trailColor= "#a5a4a4")}}
+                </div>
+            </div>
+            {{else}}
+                <div style="display: inline">
+                    <div class="creating-tale-message">
+                        {{message}}
                     <div class="centered"><i class="fa fa-4x fa-circle-notch fa-spin" aria-hidden="true"></i></div>
                 </div>
             </div>
+            {{/if}}
         {{else}}
             {{partial "forms/new-tale-input"}}
             <div class="ui secondary menu">
@@ -27,5 +40,21 @@
                 </div>
             </div>
         {{/if}}
+    </div>
+</div>
+
+<div class="ui compose-error modal" style="display: none">
+    <div class="header">
+        Error Creating Tale
+    </div>
+    <div class="image content">
+        <div class="description">
+            <p>{{errorMessage}}</p>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button" {{action 'closeErrorModal'}}>
+            Close
+        </div>
     </div>
 </div>

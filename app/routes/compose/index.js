@@ -12,6 +12,8 @@ export default AuthenticateRoute.extend({
           refreshModel:true},
       data_api: {
           refreshModel:true},
+      environment: {
+          refreshModel:true}
     },
 
   model(params) {

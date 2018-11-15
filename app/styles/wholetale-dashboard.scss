@@ -55,13 +55,22 @@ body {
   position: absolute;
   z-index: 100;
   left: calc(((100% * 11) / 16) / 2 + 45px);
-  top: 2rem;
+  top: 14rem;
 
   .centered {
     text-align: center;
     margin-top: 1em;
   }
 }
+
+.tale-import-progressbar {
+    position: absolute;
+    top: 10rem;
+    width:50%;
+    left: calc(((50% * 11) / 16) / 2 + 35px);
+
+}
+
 // loader ends
 
 /* Navigation - Top Nav */
@@ -1089,3 +1098,4 @@ wt.panel .wt.paddleboard.header i {
     display: none;
   }
 }
+

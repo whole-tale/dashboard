@@ -142,7 +142,60 @@ export default Service.extend({
     client.send();
   },
 
+  /**
+   * Creates a Tale from a dataset.
+   * @param imageId The ID of the image used for the Tale
+   * @param identifier The doi/identifier of the data package
+   * @param spawn Bool on whether to spawn the instance
+   * @param lookupKwargs Optional arguments
+   * @param taleKwargs Optional arguments
+   */
+  taleFromDataset: function (imageId,
+    identifier, 
+    spawn,
+    lookupKwargs,
+    taleKwargs,
+    success,
+    fail) {
+    let token = this.get('tokenHandler').getWholeTaleAuthToken();
+    var url = config.apiUrl + '/tale/import';
+    var queryPars = "?";
+
+    queryPars += "imageId=" + encodeURIComponent(imageId);
+    queryPars += "&";
+    queryPars += "url=" + encodeURIComponent(identifier);
+
+    if(spawn) {
+      queryPars += "&";
+      queryPars += "spawn=" + encodeURIComponent(spawn);
+    }
+    if (lookupKwargs) {
+      queryPars += "&";
+      queryPars += "lookupKwargs=" + encodeURIComponent(lookupKwargs);
+    }
+    if(taleKwargs) {
+      queryPars += "&";
+      queryPars += "taleKwargs=" + encodeURIComponent(taleKwargs);
+    }
+
+    url += queryPars;
+    var client = new XMLHttpRequest();
+    client.open("post", url);
+    client.setRequestHeader("Girder-Token", token);
+    client.addEventListener("load", function () {
+      if (client.status === 200) {
+        success(JSON.parse(client.responseText));
+      } else {
+        fail(client.responseText);
+      }
+    });
+
+    client.addEventListener("error", fail);
+    client.send();
+  },
+
   postInstance: function (taleId, imageId, name, success, fail) {
+    // Creates an instance
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/instance/';
     var queryPars = "";
@@ -162,7 +215,6 @@ export default Service.extend({
       queryPars += "&";
       queryPars += "name=" + encodeURIComponent(name);
     }
-
 
     if (queryPars !== "") {
       url += "?" + queryPars;
@@ -199,13 +251,36 @@ export default Service.extend({
     // provided by the backend
     client.addEventListener("load", function () {
       if (client.status === 200) {
-        success(client, "tale-export-" + taleId + '.zip')
+        success(client, "tale-export-" + taleId + '.zip');
       } else {
-        fail(client)
+        fail(client);
       }
     });
 
     client.send();
   },
 
+    /**
+   * Queries the job result endpoint.
+   * @param jobId The ID of the job whose status is wanted
+   * @param success Function that is called on success
+   * @param fail Function that is called when the call fails
+   */
+  getFinalJobStatus(jobId, success, fail) {
+    var token = this.get('tokenHandler').getWholeTaleAuthToken();
+    var url = config.apiUrl + '/job/' + jobId + '/result';
+
+    var client = new XMLHttpRequest();
+    client.open('GET', url);
+    client.setRequestHeader("Girder-Token", token);
+    client.addEventListener("load", function () {
+      if (client.status === 200) {
+        success(JSON.parse(client.responseText));
+      } else {
+        fail(client.responseText);
+      }
+    });
+    client.addEventListener("error", fail);
+    client.send();
+  },
 });

@@ -10,8 +10,12 @@
   .newfolder,
   .delete-modal,
   .ui.dataone.modal,
-  .warning-modal {
+  .warning-modal,
+  .ui.compose-error.modal {
     height: 200px;
+    top:    0;
+    left:   0;
+    bottom: 0;
   
     .header {
       .close.icon {
@@ -26,7 +30,11 @@
       color: black;
     }
   }
-  
+
+.ui.compose-error.modal .description {
+  width: 100%;
+}
+
 .destinate-folder {
     left: 0 !important;
     margin: auto !important;
