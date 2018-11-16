@@ -149,6 +149,8 @@ export default Service.extend({
    * @param spawn Bool on whether to spawn the instance
    * @param lookupKwargs Optional arguments
    * @param taleKwargs Optional arguments
+   * @param success Callback function that is called on success
+   * @param fail Callback function that is called on fail
    */
   taleFromDataset: function (imageId,
     identifier, 

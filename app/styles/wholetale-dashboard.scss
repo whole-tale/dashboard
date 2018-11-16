@@ -28,6 +28,9 @@ $desktop: "only screen and (min-width:#{$tablet-screen})";
 $landscape: "only screen and (orientation: landscape)";
 $portrait: "only screen and (orientation: portrait)";
 
+// How far down from the top the compose message is
+$compose-message-top: 0vh;
+
 @import './ember-burger-menu/variables';
 @import './ember-burger-menu/animations/slide';
 @import './ember-burger-menu/animations/menu-item/push';
@@ -41,37 +44,35 @@ body {
   background: #d6e1e8;
 }
 
-// loader starts
-.loading-pane {
-  height: 100%;
-  width: 100%;
-  background: #f3f3f3 center center;
-  background-size: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-.creating-tale-message {
-  position: absolute;
-  z-index: 100;
-  left: calc(((100% * 11) / 16) / 2 + 45px);
-  top: 14rem;
-
-  .centered {
-    text-align: center;
-    margin-top: 1em;
-  }
+.compose-status {
+  position: inherit;
+  height:100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.tale-import-progressbar {
-    position: absolute;
-    top: 10rem;
-    width:50%;
-    left: calc(((50% * 11) / 16) / 2 + 35px);
-
+.compose-status-message {
+  position: relative;
+  top:0px;
+  line-height: 20px;
+  color: black;
+  font-weight: bold;
+  font-size: 2em;
 }
 
-// loader ends
+.tale-compose-progressbar {
+  position: relative;
+  top: calc(#{$compose-message-top} + 2vh);
+  width: 50%;
+}
+
+// If we aren't importing a dataset
+.tale-compose-loader {
+  position: relative;
+  top: calc(#{$compose-message-top} + 2vh);
+}
 
 /* Navigation - Top Nav */
 

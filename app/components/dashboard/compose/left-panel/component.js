@@ -6,6 +6,7 @@ import { later } from '@ember/runloop';
 import Object, { computed } from '@ember/object';
 import { run } from '@ember/runloop';
 import { scheduleOnce } from '@ember/runloop';
+import $ from 'jquery';
 
 export default Component.extend({
   apiCall: service('api-call'),
@@ -65,13 +66,13 @@ export default Component.extend({
       self.set('selectedEnvironment', selectedEnvironment);
     });
 
+    this.setDefaults();
     // Check if we're ingesting a dataset/tale
     if (this.get('model').queryParams.data_location) {
       this.set('importing', true);
       this.setThirdPartyParams();
       this.renderImportInfo();
     }
-    this.setDefaults();
   },
 
   setDefaults() {
@@ -287,7 +288,6 @@ createTaleFromDataset() {
     // Attempt to create a tale from a dataset
     let taleKwargs = new Object();
     taleKwargs.title = this.get('newTaleName').trim()
-    console.log(taleKwargs)
     component.get('apiCall').taleFromDataset(
         this.get('selectedEnvironment').get('_id'),
         this.get('datasetLocation'),
@@ -331,7 +331,7 @@ createTaleFromDataset() {
       let data = this.get('inputData') || {};
       let formattedData = [];
       data.forEach(x => {
-        // Check that the object is a legitimate folder/item
+        // Check that the object is a folder/item
         if (x.hasOwnProperty('id')) {
             formattedData.push({
             'type': x.get('isFolder') ? 'folder' : 'item',
@@ -361,6 +361,5 @@ createTaleFromDataset() {
         this.setDefaults();
         return false;
       },
-
   },
 });
