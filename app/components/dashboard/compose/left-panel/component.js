@@ -92,6 +92,8 @@ export default Component.extend({
     scheduleOnce('afterRender', this, () => {
       // Fill in the dataset title in the Tale Name and Input data fields
       this.renderExternalPackage();
+      // Let the right panel component know that it should disable the file browser
+      this.get('wtEvents').events.disableRightPanel();
       });
   },
 

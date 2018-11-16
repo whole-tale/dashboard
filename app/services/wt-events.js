@@ -11,7 +11,12 @@ export default Service.extend({
 
       selectEnvironment(environment) {
         this.trigger('selectEnvironment', environment);
+      },
+
+      disableRightPanel() {
+        this.trigger('onDisableRightPanel');
       }
+
     });
     return Events.create();
   }()
