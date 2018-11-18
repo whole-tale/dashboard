@@ -1,17 +1,21 @@
-import Ember from 'ember';
+import { inject } from '@ember/service';
+import { A } from '@ember/array';
 import layout from './template';
 import EventStream from 'npm:sse.js';
 import config from '../../../../config/environment';
-import Component from '@ember/component'
+import Component from '@ember/component';
+import $ from 'jquery';
+import { later } from '@ember/runloop';
+
 export default Component.extend({
     layout,
-    authRequest: Ember.inject.service(),
-    userAuth: Ember.inject.service(),
-    internalState: Ember.inject.service(),
-    tokenHandler: Ember.inject.service(),
-    notificationHandler: Ember.inject.service(),
+    authRequest: inject.service(),
+    userAuth: inject.service(),
+    internalState: inject.service(),
+    tokenHandler: inject.service(),
+    notificationHandler: inject.service(),
 
-    datasources: Ember.A(),
+    datasources: A(),
     num_results: -1,
     error: false,
     errorMessage: '',
@@ -39,8 +43,8 @@ export default Component.extend({
     },
 
     disableRegister() {
-        Ember.$('.icon.register').removeClass('checkmark');
-        Ember.$('.ui.positive.register.button').addClass('disabled');
+        $('.icon.register').removeClass('checkmark');
+        $('.ui.positive.register.button').addClass('disabled');
     },
 
     enableRegister(dataId) {
@@ -54,8 +58,8 @@ export default Component.extend({
         this.set('repository', ds.repository);
         this.set('size', ds.size);
 
-        Ember.$('.icon.register').addClass('checkmark');
-        Ember.$('.ui.positive.register.button').removeClass('disabled');
+        $('.icon.register').addClass('checkmark');
+        $('.ui.positive.register.button').removeClass('disabled');
     },
 
     clearModal() {
@@ -71,10 +75,10 @@ export default Component.extend({
     },
     
     clearResults() {
-        Ember.$('#harvester-dropdown').dropdown('clear');
+        $('#harvester-dropdown').dropdown('clear');
         this.set('showResults', false);
         this.set('num_results', -1);
-        this.set('datasources', Ember.A());
+        this.set('datasources', A());
     },
 
     clearPackageResults() {
@@ -86,12 +90,12 @@ export default Component.extend({
     },
 
     clearSearch() {
-        Ember.$('#searchbox').val('');
+      $('#searchbox').val('');
     },
 
     didRender() {
         let self = this;
-        Ember.$('#harvester-dropdown').dropdown({
+        $('#harvester-dropdown').dropdown({
             onChange: function(dataId) {
                 if(!dataId || dataId === "") {
                     self.disableRegister();
@@ -217,15 +221,15 @@ export default Component.extend({
                     if(rep.length === 1) {
                         let name = self.datasources[0].name;
                         let dataId = self.datasources[0].dataId;
-                        Ember.run.later(self, function() {
-                            Ember.$('#harvester-dropdown').dropdown('set text', name);
-                            Ember.$('#harvester-dropdown').dropdown('set value', dataId);
+                        later(self, function() {
+                            $('#harvester-dropdown').dropdown('set text', name);
+                            $('#harvester-dropdown').dropdown('set value', dataId);
                         }, 250);
                     }
                     else {
-                        Ember.$('#harvester-dropdown').dropdown('set visible');
-                        Ember.$('#harvester-dropdown').dropdown('set active');
-                        let menu = Ember.$('#harvester-dropdown .menu');
+                        $('#harvester-dropdown').dropdown('set visible');
+                        $('#harvester-dropdown').dropdown('set active');
+                        let menu = $('#harvester-dropdown .menu');
                         menu.removeClass('hidden');
                         menu.addClass('transition visible');
                     }
