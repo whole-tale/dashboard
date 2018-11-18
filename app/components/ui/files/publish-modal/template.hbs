@@ -103,16 +103,17 @@
 
     <div class="content">
         <div class="ui form" style="height: 140px;">
-                {{#if publishing}}
-                <p class="publishing-now">Your Tale is being published to DataONE</p>
-                {{/if}}
-                <div class="progress-area">
-                    <div class ="publish-progressbar">
-                        {{ember-progress-bar progress=progress options=(hash strokeWidth=3 color=barColor trailColor= "#a5a4a4")}}
-                    <div class ="publishing-status-message">{{statusMessage}}</div>
-                    </div>
-                    
-                </div>
+          <div class="progress-area">
+            {{#if publishing}}
+              <p class="publishing-now">Your Tale is being published to DataONE</p>
+            {{/if}}
+            <div class ="publish-progressbar">
+              {{ember-progress-bar progress=progress options=(hash strokeWidth=3 color=barColor trailColor= "#a5a4a4")}}
+              <div class ="publishing-status-message">
+                {{statusMessage}}
+              </div>
+            </div>        
+            </div>
             {{#if publishingSuccess}}
                 <p>DOI: {{packageDOI}}</p>
                 <p>Package URL: <a href={{packageURL}}>{{{packageDOI}}}</a></p>
@@ -123,7 +124,7 @@
     {{/ui-accordion}}
     <hr class="publish-hr">
 
-<div class="actions">
+<div class="publisher actions">
     {{!-- Dropdown where the user can select which member node to put the package in --}}
     {{#ui-dropdown class="repository search selection dropdown" allowAdditions=false selected=selectedRepository onChange=(action 'onRepositoryChange')
     as |execute mapper|}}
