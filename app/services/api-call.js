@@ -393,4 +393,51 @@ export default Service.extend({
             }
         });
     },
+
+    /**
+     * Publishes a Tale to DataONE
+     * @method publishTale
+     * @param taleId The ID of the Tale this is being published
+     * @param itemIds An array of items that are being packaged
+     * @param repository 
+     * @param jwt The user's DataONE JWT token
+     * @param license The spdx of the license
+     * @param provInfo A dictionary specifying any prov information
+     * @param success A callback function that is called when the query succeeds
+     * @param fail A callback function that is called when the query fails
+     */
+  publishTale: function (taleId,
+    itemIds,
+    repository,
+    jwt,
+    license,
+    provInfo,
+    success,
+    fail) {
+      var token = this.get('tokenHandler').getWholeTaleAuthToken();
+
+      let queryParams = '?' + [
+        'itemIds=' + '[' + itemIds + ']',
+        'taleId=' + taleId,
+        'remoteMemberNode=' + repository,
+        'authToken=' + jwt,
+        'licenseSPDX=' + license,
+        'provInfo= + {"entryPoint": "null"}'
+      ].join('&');
+      let url = config.apiUrl + '/publish/dataone' + queryParams;
+
+      var client = new XMLHttpRequest();
+      client.open('GET', url);
+      client.setRequestHeader("Girder-Token", token);
+
+      client.addEventListener("load", function () {
+        if (client.status === 200) {
+          success(JSON.parse(client.responseText));
+        } else {
+          fail(client.responseText);
+        }
+      });
+
+      client.send();
+    }
 });
