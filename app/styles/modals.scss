@@ -79,13 +79,48 @@
     }
   }
   
-  .ember-modal-dialog {
-      width: 70%;
-      height: 90%;
-  }
-  
   /* Publishing Modal */
+
+  .publish-hr {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .ember-modal-dialog {
+    flex-direction: column;
+    display: flex;
+    overflow-y: auto;
+    min-height: 80%;
+    bottom: 100%;
+    width: 60%;
+    margin-bottom: 1em;
+  }
+
+  .small.publisher {
+    position: absolute;
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    min-height: 95%;
+    overflow: auto;
+    flex: 1;
+  }
+
+  // Bottom button row
+  .publisher .actions {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    margin-top: auto;
+  }
+
+  .repository.ui.selection.dropdown {
+    margin-right: auto;
+  }
+
   .publisher .header {
+    position: relative;
       letter-spacing: .02rem;
       -webkit-border-top-left-radius: 1rem;
       -moz-border-top-left-radius: 1rem;
@@ -93,13 +128,16 @@
       -webkit-border-top-right-radius: 1rem;
       -moz-border-top-right-radius: 1rem;
       border-top-right-radius: 1rem;
+      height: 100%;
   }
   .publisher .main.header img {
+    position: relative;
       height: 2.25rem;
       margin: 0 .75rem 0 0;
       float:left;
   }
   .publisher .main.header span {
+    position: relative;
       font-size: 1.2rem;
       color: rgba(0,0,0,0.4);
       font-weight: 300;
@@ -108,11 +146,8 @@
       padding-left: .4rem;
   }
   
-  .publisher.main.header .info.circle.blue.icon {
-      text-align: right
-  }
-  
   .publisher .title {
+    position: relative;
       color: rgb(74, 74, 74);
       letter-spacing: .02rem;
       -webkit-border-top-left-radius: 1rem;
@@ -147,6 +182,16 @@
     padding: 0;
   }
 
+  .accordion-container {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+  
+  .publisher .info.circle.blue.icon.main {
+      float: right;
+  }
+    
   .ui.segment > button,
   .ui.segment > button:active,
   .ui.segment > button:hover,
@@ -500,6 +545,7 @@
     height: 50%;
 } 
   
+<<<<<<< HEAD
 .publisher .actions {
   position: fixed;
   bottom: 0;
@@ -507,6 +553,8 @@
   margin-bottom: 1em;
 }
 
+=======
+>>>>>>> 4aa330f... Use flexbox in the publishing modal. I changed the css to use flexbox in the modal. This way the items auto resize and stack when the window is re-sized. I had to override the hr default css due to the auto margins.
 .publisher .actions .button {
   float: right;
 }
@@ -543,21 +591,20 @@
 }
 
 .publisher .progress-area {
-    width:50%;
-    margin-left: 25%;
-}
- .publisher .publishing-now {
-    text-align: center;
-}
- .publisher .publishing-status-message {
-    text-align: center;
-    height: 75px;
-    overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.publisher .accordion-container {
-    overflow-y: auto;
+ .publisher .publish-progressbar {
+    width:50%;
 }
+
+ .publisher .publishing-status-message {
+  display: flex;
+  justify-content: center;
+} 
 
 .publisher .fa-briefcase {
     margin-left:10px;

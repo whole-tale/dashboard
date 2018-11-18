@@ -5,7 +5,7 @@
         <span>Create an immutable copy of your Tale with a DOI <i class="info circle blue icon main"></i></span>
     </h2>
 </div>
-<hr>
+<hr class="publish-hr">
 
     {{!-- Accordion menu that lists tale files which can be (de)selected by the user --}}
     {{#ui-accordion class="accordion-container"}}
@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    <hr>
+    <hr class="publish-hr">
     {{!-- Accordion menu that lists the files which cannot be removed by the user --}}
     <div class="title">
         <h2>
@@ -60,7 +60,7 @@
                 </div>
             </div>
         </div>
-    <hr>
+    <hr class="publish-hr">
     {{!-- Accordion menu that lets the user select a license --}}
     <div class="title">
         <h2>
@@ -90,7 +90,7 @@
 
     {{#if showPublishing}}
     {{!-- Accordion that shows publishing status --}}
-    <hr>
+    <hr class="publish-hr">
     <div class="title">
         <h2>
             <i class="fas fa-briefcase"></i> Publishing
@@ -107,10 +107,11 @@
                 <p class="publishing-now">Your Tale is being published to DataONE</p>
                 {{/if}}
                 <div class="progress-area">
-                    <p class ='publish-progressbar'>
+                    <div class ="publish-progressbar">
                         {{ember-progress-bar progress=progress options=(hash strokeWidth=3 color=barColor trailColor= "#a5a4a4")}}
-                    </p>
-                    <p class ="publishing-status-message">{{statusMessage}}</p>
+                    <div class ="publishing-status-message">{{statusMessage}}</div>
+                    </div>
+                    
                 </div>
             {{#if publishingSuccess}}
                 <p>DOI: {{packageDOI}}</p>
@@ -120,11 +121,11 @@
     </div>
     {{/if}}
     {{/ui-accordion}}
-    <hr>
+    <hr class="publish-hr">
 
 <div class="actions">
     {{!-- Dropdown where the user can select which member node to put the package in --}}
-    {{#ui-dropdown class="search selection dropdown" allowAdditions=false selected=selectedRepository onChange=(action 'onRepositoryChange')
+    {{#ui-dropdown class="repository search selection dropdown" allowAdditions=false selected=selectedRepository onChange=(action 'onRepositoryChange')
     as |execute mapper|}}
     <div class="default text">Target Repository</div>
     <i class="dropdown icon"></i>
@@ -144,7 +145,7 @@
         </div>
     {{else}}
     {{!-- Button that is shown when the user can publish the tale --}}
-    <div class="ui positive blue enabled right labeled icon button" {{action "publishedClicked"}}>
+    <div class="ui positive blue enabled right labeled icon button" {{action "publishClicked"}}>
         Publish Tale
     </div>
     {{/if}}
