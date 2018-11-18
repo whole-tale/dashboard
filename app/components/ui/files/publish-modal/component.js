@@ -34,7 +34,7 @@ export default Component.extend({
   // The publishing job's ID
   publishingID: null,
   // The DOI of the package
-  packageDOI: '',
+  packageIdentifier: '',
   // The url for the published tale. This is set after publication succeeds
   packageUrl: '',
   statusMessage: '',
@@ -143,7 +143,7 @@ export default Component.extend({
     self.set('progress', 1);
 
     // Fill in the Tale's published identifier and url
-    self.set('packageDOI', taleInfo.doi);
+    self.set('packageIdentifier', taleInfo.doi);
     self.set('packageURL', taleInfo.publishedURI);
     self.set('statusMessage', 'Your Tale has successfully been published to DataONE.');
   },
@@ -317,9 +317,13 @@ export default Component.extend({
     return this.get('store').findRecord('job', self.get('publishingID'));
   },
 
+   /**
+   * Opens the publishing dropdown
+   * 
+   * @method openPublishAccordion
+   */
   openPublishAccordion() {
-    // Open the publishing accordion
-    $('.ui.accordion').accordion('toggle', 3);
+    $('.ui.accordion').accordion('open', 3);
   },
 
    /**
@@ -435,7 +439,7 @@ export default Component.extend({
 
                   // Update UI with Tale information
                   self.set('tale', resp);
-                  self.set('packageDOI', resp.doi);
+                  self.set('packageIdentifier', resp.doi);
                   self.set('packageURL', resp.publishedURI);
                   cancel(currentLoop);
                 });

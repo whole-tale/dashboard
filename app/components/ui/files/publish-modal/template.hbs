@@ -115,8 +115,9 @@
             </div>        
             </div>
             {{#if publishingSuccess}}
-                <p>DOI: {{packageDOI}}</p>
-                <p>Package URL: <a href={{packageURL}}>{{{packageDOI}}}</a></p>
+                <p>Identifier: {{packageIdentifier}}</p>
+                {{log packageURL}}
+                <p>Package URL: <a href={{packageURL}} target='_blank'>{{{packageURL}}}</a></p>
             {{/if}}
         </div>
     </div>
