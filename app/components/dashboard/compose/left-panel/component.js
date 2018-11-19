@@ -63,7 +63,9 @@ export default Component.extend({
       self.set('inputData', allSelected);
     });
     events.on('selectEnvironment', function (selectedEnvironment) {
-      self.set('selectedEnvironment', selectedEnvironment);
+      if (self) {
+        self.set('selectedEnvironment', selectedEnvironment);
+      }
     });
 
     this.setDefaults();
@@ -75,6 +77,10 @@ export default Component.extend({
     }
   },
 
+  /**
+   * Resets the GUI.
+   * @method getFinalJobStatus
+   */
   setDefaults() {
     // Set default values of mutable variables
     this.set('progress', 0);
@@ -106,16 +112,20 @@ export default Component.extend({
     this.set('environment', this.get('model').queryParams.environment);
   },
 
+  /**
+  * Insers the data package name into the selected data.
+  * 
+  * We'll want to check if we need to fake the pending dataset in the
+  * Input data section. This check needs to be made when we replace the 
+  * inputData array with newly (de)selected files.
+  * Inserting the package name should be done when the user is importing a dataset 
+  * to make it clear that their data will be inside the Tale, even though it hasn't 
+  * been registered yet.
+  * @method insertPackageName
+  * @param allSelected Collection of selected data items
+  */
   insertPackageName(allSelected) {
-      /* 
-        We'll want to check if we need to fake the pending dataset in the
-        Input data section. This check needs to be made when we replace the 
-        inputData array with newly (de)selected files.
 
-        Inserting the package name should be done when the user is importing a dataset 
-        to make it clear that their data will be inside the Tale, even though it hasn't 
-        been registered yet.
-      */
        let self = this;
        let datasetName = self.get('datasetTitle');
        if (datasetName) {
@@ -275,8 +285,11 @@ export default Component.extend({
     jobUpdateLoop = startLooping();
 },
 
-createTaleFromDataset() {
-    /* Handles initiating the job to start the dataset import */
+  /**
+  * Handles asking the backend to spawn a new tale import job.
+  * @method createTaleFromDataset
+  */
+  createTaleFromDataset() {
     let component = this;    
     let onFail = (e) => {
         // deal with the failure here
@@ -303,13 +316,19 @@ createTaleFromDataset() {
 
   actions: {
 
-    // this is called when someone selected the front end image/environment
+    /**
+    * Sets the component's selected environment.
+    * @method selectEnvironment
+    */
     selectEnvironment(model) {
       this.set("selectedEnvironment", model);
     },
 
-    createTale() {
-      // Handles the user's click on Create New Tale
+    /**
+    * Handles the user's click to create a new Tale
+    * @method onNewTaleClick
+    */
+   onNewTaleClick() {
       let component = this;
       if (component.launchingInstance) {
         return;
@@ -354,14 +373,14 @@ createTaleFromDataset() {
     },
 
     openErrorModal() {
-        let selector = '.ui.compose-error.modal';
-        $(selector).modal('setting', 'closable', false);
-        $(selector).modal('show');
-      },
+      let selector = '.ui.compose-error.modal';
+      $(selector).modal('setting', 'closable', false);
+      $(selector).modal('show');
+    },
     
-      closeErrorModal() {
-        this.setDefaults();
-        return false;
-      },
+    closeErrorModal() {
+      this.setDefaults();
+      return false;
+    },
   },
 });

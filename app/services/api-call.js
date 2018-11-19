@@ -66,6 +66,7 @@ export default Service.extend({
 
   /**
    * Posts a Tale, using the query parameters specified in the API ...
+   * @method postTale
    * @param httpCommand
    * @param taleID
    * @param imageId
@@ -143,15 +144,16 @@ export default Service.extend({
   },
 
   /**
-   * Creates a Tale from a dataset.
-   * @param imageId The ID of the image used for the Tale
-   * @param identifier The doi/identifier of the data package
-   * @param spawn Bool on whether to spawn the instance
-   * @param lookupKwargs Optional arguments
-   * @param taleKwargs Optional arguments
-   * @param success Callback function that is called on success
-   * @param fail Callback function that is called on fail
-   */
+  * Creates a Tale from a dataset.
+  * @method taleFromDataset
+  * @param imageId The ID of the image used for the Tale
+  * @param identifier The doi/identifier of the data package
+  * @param spawn Bool on whether to spawn the instance
+  * @param lookupKwargs Optional arguments
+  * @param taleKwargs Optional arguments
+  * @param success Callback function that is called on success
+  * @param fail Callback function that is called on fail
+  */
   taleFromDataset: function (imageId,
     identifier, 
     spawn,
@@ -262,12 +264,13 @@ export default Service.extend({
     client.send();
   },
 
-    /**
-   * Queries the job result endpoint.
-   * @param jobId The ID of the job whose status is wanted
-   * @param success Function that is called on success
-   * @param fail Function that is called when the call fails
-   */
+  /**
+  * Queries the job result endpoint.
+  * @method getFinalJobStatus
+  * @param jobId The ID of the job whose status is wanted
+  * @param success Function that is called on success
+  * @param fail Function that is called when the call fails
+  */
   getFinalJobStatus(jobId, success, fail) {
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/job/' + jobId + '/result';

@@ -34,7 +34,7 @@
             <div class="ui secondary menu">
                 <div style="text-align: center">
                     <button class="{{if (or invalidNewTale launchingTale) 'disabled'}} ui big icon button {{if invalidNewTale 'grey'}} {{unless invalidNewTale 'blue'}}"
-                            {{action "createTale"}}>
+                            {{action "onNewTaleClick"}}>
                         Launch New Tale
                     </button>
                 </div>
