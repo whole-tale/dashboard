@@ -143,6 +143,7 @@ export default Service.extend({
 
         client.send();
     },
+>>>>>>> 54a2b00... Select the environment by name when it's present in the compose route query parameter. Also update some docs and re-position the progressbar and text ion the compose loading page.
    * @method postTale
    * @param httpCommand
    * @param taleID
@@ -156,6 +157,22 @@ export default Service.extend({
    * @param success
    * @param fail
    */
+=======
+  * Posts a Tale, using the query parameters specified in the API ...
+  * @method postTale
+  * @param httpCommand
+  * @param taleID
+  * @param imageId
+  * @param folderId
+  * @param instanceId
+  * @param title
+  * @param description
+  * @param isPublic
+  * @param configuration
+  * @param success
+  * @param fail
+  */
+>>>>>>> 301a251... Select the environment by name when it's present in the compose route query parameter. Also update some docs and re-position the progressbar and text ion the compose loading page.
   postTale: function (httpCommand, taleID, imageId, folderId, instanceId, title, description, isPublic, configuration, success, fail) {
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/tale/';
