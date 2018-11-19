@@ -143,6 +143,39 @@ export default Service.extend({
 
         client.send();
     },
+   * @method postTale
+   * @param httpCommand
+   * @param taleID
+   * @param imageId
+   * @param folderId
+   * @param instanceId
+   * @param title
+   * @param description
+   * @param isPublic
+   * @param configuration
+   * @param success
+   * @param fail
+   */
+  postTale: function (httpCommand, taleID, imageId, folderId, instanceId, title, description, isPublic, configuration, success, fail) {
+    var token = this.get('tokenHandler').getWholeTaleAuthToken();
+    var url = config.apiUrl + '/tale/';
+    var queryPars = "";
+    if (httpCommand === "post") {
+      if (imageId == null) {
+        fail("You must provide an image");
+        return;
+      }
+      if (folderId == null) {
+        fail("You must provide a folder");
+        return;
+      }
+      queryPars += "imageId=" + encodeURIComponent(imageId);
+      queryPars += "&";
+      queryPars += "folderId=" + encodeURIComponent(folderId);
+    } else {
+      url += taleID + "/";
+    }
+>>>>>>> 700b17f... Update documentation
 
     /**
     * Creates a Tale from a dataset.
@@ -440,4 +473,22 @@ export default Service.extend({
 
       client.send();
     }
+  getFinalJobStatus(jobId, success, fail) {
+    var token = this.get('tokenHandler').getWholeTaleAuthToken();
+    var url = config.apiUrl + '/job/' + jobId + '/result';
+
+    var client = new XMLHttpRequest();
+    client.open('GET', url);
+    client.setRequestHeader("Girder-Token", token);
+    client.addEventListener("load", function () {
+      if (client.status === 200) {
+        success(JSON.parse(client.responseText));
+      } else {
+        fail(client.responseText);
+      }
+    });
+    client.addEventListener("error", fail);
+    client.send();
+  },
+>>>>>>> 700b17f... Update documentation
 });
