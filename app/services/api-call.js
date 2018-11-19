@@ -65,20 +65,20 @@ export default Service.extend({
 
 
   /**
-   * Posts a Tale, using the query parameters specified in the API ...
-   * @method postTale
-   * @param httpCommand
-   * @param taleID
-   * @param imageId
-   * @param folderId
-   * @param instanceId
-   * @param title
-   * @param description
-   * @param isPublic
-   * @param configuration
-   * @param success
-   * @param fail
-   */
+  * Posts a Tale, using the query parameters specified in the API ...
+  * @method postTale
+  * @param httpCommand
+  * @param taleID
+  * @param imageId
+  * @param folderId
+  * @param instanceId
+  * @param title
+  * @param description
+  * @param isPublic
+  * @param configuration
+  * @param success
+  * @param fail
+  */
   postTale: function (httpCommand, taleID, imageId, folderId, instanceId, title, description, isPublic, configuration, success, fail) {
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/tale/';

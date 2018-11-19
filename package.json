@@ -63,6 +63,7 @@
     "ember-modal-dialog": "^3.0.0-beta.0",
     "ember-moment": "^7.7.0",
     "ember-oauth2": "^2.0.4-beta",
+    "ember-progress-bar": "^1.0.0",
     "ember-resolver": "^4.0.0",
     "ember-route-action-helper": "^2.0.6",
     "ember-simple-auth": "^1.6.0",

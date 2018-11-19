@@ -29,7 +29,7 @@ $landscape: "only screen and (orientation: landscape)";
 $portrait: "only screen and (orientation: portrait)";
 
 // How far down from the top the compose message is
-$compose-message-top: 0vh;
+$compose-message-top: 30%;
 
 @import './ember-burger-menu/variables';
 @import './ember-burger-menu/animations/slide';
@@ -49,13 +49,13 @@ body {
   height:100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+
   align-items: center;
 }
 
 .compose-status-message {
   position: relative;
-  top:0px;
+  top:20%;
   line-height: 20px;
   color: black;
   font-weight: bold;
@@ -64,14 +64,14 @@ body {
 
 .tale-compose-progressbar {
   position: relative;
-  top: calc(#{$compose-message-top} + 2vh);
+  top: calc(#{$compose-message-top});
   width: 50%;
 }
 
 // If we aren't importing a dataset
 .tale-compose-loader {
   position: relative;
-  top: calc(#{$compose-message-top} + 2vh);
+  top: calc(#{$compose-message-top});
 }
 
 /* Navigation - Top Nav */

@@ -18,6 +18,14 @@ export default Component.extend({
       self.set('disableLowerRightPanel', true);
     });
   },
+
+
+  willDestroyElement () {
+    this._super(...arguments);
+    let events = this.get('wtEvents').events;
+    events.off('onDisableRightPanel');
+  },
+
   actions: {
     dummy: function() {
       //this.sendAction('action');

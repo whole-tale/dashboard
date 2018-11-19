@@ -100,6 +100,7 @@ export default Component.extend({
       this.renderExternalPackage();
       // Let the right panel component know that it should disable the file browser
       this.get('wtEvents').events.disableRightPanel();
+      this.get('wtEvents').events.selectEnvironmentByName(this.get('model').queryParams.environment);
       });
   },
 
@@ -113,17 +114,17 @@ export default Component.extend({
   },
 
   /**
-  * Insers the data package name into the selected data.
-  * 
-  * We'll want to check if we need to fake the pending dataset in the
-  * Input data section. This check needs to be made when we replace the 
-  * inputData array with newly (de)selected files.
-  * Inserting the package name should be done when the user is importing a dataset 
-  * to make it clear that their data will be inside the Tale, even though it hasn't 
-  * been registered yet.
-  * @method insertPackageName
-  * @param allSelected Collection of selected data items
-  */
+   * Inserts the data package name into the selected data.
+   * 
+   * We'll want to check if we need to fake the pending dataset in the
+   * Input data section. This check needs to be made when we replace the 
+   * inputData array with newly (de)selected files.
+   * Inserting the package name should be done when the user is importing a dataset 
+   * to make it clear that their data will be inside the Tale, even though it hasn't 
+   * been registered yet.
+   * @method insertPackageName
+   * @param allSelected Collection of selected data items
+   */
   insertPackageName(allSelected) {
 
        let self = this;
