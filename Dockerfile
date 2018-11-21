@@ -1,4 +1,4 @@
-FROM risingstack/alpine:3.4-v7.9.0-4.5.0 as builder
+FROM risingstack/alpine:3.7-v8.10.0-4.8.0 as builder
 
 RUN npm -g install bower
 
