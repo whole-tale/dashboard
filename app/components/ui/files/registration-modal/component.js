@@ -164,7 +164,9 @@ export default Ember.Component.extend({
             let dataMap = JSON.stringify([{
                 name: this.name,
                 dataId: this.dataId,
-                repository: this.repository
+                repository: this.repository,
+                doi: this.doi,
+                size: this.size
             }]);
 
             let baseUrl=this.get('prodUrl');
