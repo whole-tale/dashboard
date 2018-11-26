@@ -100,7 +100,9 @@ export default Component.extend({
       this.renderExternalPackage();
       // Let the right panel component know that it should disable the file browser
       this.get('wtEvents').events.disableRightPanel();
-      this.get('wtEvents').events.selectEnvironmentByName(this.get('model').queryParams.environment);
+      if (this.get('model').queryParams && this.get('model').queryParams.environment) {
+        this.get('wtEvents').events.selectEnvironmentByName(this.get('model').queryParams.environment);
+      }
       });
   },
 
