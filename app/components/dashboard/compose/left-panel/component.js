@@ -109,10 +109,30 @@ export default Component.extend({
   setThirdPartyParams() {
     // If the user is coming to this page from a third party with the intent
     // on importing data, the referrer is set here.
-    this.set('datasetLocation', this.get('model').queryParams.data_location);
-    this.set('datasetTitle', this.get('model').queryParams.data_title);
-    this.set('packageAPI', this.get('model').queryParams.data_api);
-    this.set('environment', this.get('model').queryParams.environment);
+    let queryParams = this.get('model').queryParams;
+    if (queryParams) {
+      if (queryParams.data_location) {
+        this.set('datasetLocation', queryParams.data_location);
+      }
+      else {
+        this.set('errorMessage', 'There was an error retrieving data from your third party data source. '+ 
+        'Please manually register the dataset and then create the Tale.');
+        this.send('openErrorModal');
+      }
+      if (queryParams.data_title) {
+        this.set('datasetTitle', queryParams.data_title);
+      }
+      else {
+        // Fall back to using the data package URI
+        this.set('datasetTitle', queryParams.data_location);
+      }
+      if (queryParams.data_api) {
+        this.set('packageAPI', queryParams.data_api);
+      }
+      if (queryParams.environment) {
+        this.set('environment', queryParams.environment);
+      }
+    }
   },
 
   /**
@@ -151,21 +171,21 @@ export default Component.extend({
   },
 
   renderExternalPackage() {
-        /*
-        Fills in the Tale Name and Input data section with the title of the dataset.
-        */
-        let self = this;
-        self.set('newTaleName', self.get('datasetTitle'));
-        
-        // Fill in the Input data field. The UI displays 'name' in the UI in the
-        // Input data section
-        let newDataObj = {
-            name: self.get('datasetTitle')
-        };
-        // self.inputData needs to be taken as an array
-        let inputData = A();
-        inputData.push(newDataObj)
-        self.set('inputData', inputData);
+    /*
+    Fills in the Tale Name and Input data section with the title of the dataset.
+    */
+    let self = this;
+    self.set('newTaleName', self.get('datasetTitle'));
+
+    // Fill in the Input data field. The UI displays 'name' in the UI in the
+    // Input data section
+    let newDataObj = {
+      name: self.get('datasetTitle')
+    };
+    // self.inputData needs to be taken as an array
+    let inputData = A();
+    inputData.push(newDataObj)
+    self.set('inputData', inputData);
   },
 
   // DEVNOTE: Are these used anymore?
