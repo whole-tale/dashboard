@@ -76,6 +76,10 @@ export default Component.extend({
       this.renderImportInfo();
     }
   },
+  
+  importFileName: computed('datasetURI', function () {
+    return 'Data Source: ' + this.get('datasetURI');
+  }),
 
   /**
    * Resets the GUI.
@@ -149,7 +153,7 @@ export default Component.extend({
    */
   insertPackageName(allSelected) {
     let self = this;
-    let datasetName = self.get('datasetTitle');
+    let datasetName = self.importFileName;
     if (datasetName) {
       // Check if it's in the file listing already
       var exists = false;
@@ -179,7 +183,7 @@ export default Component.extend({
     // Fill in the Input data field. The UI displays 'name' in the UI in the
     // Input data section
     let newDataObj = {
-      name: self.get('datasetTitle')
+      name: self.importFileName
     };
     // self.inputData needs to be taken as an array
     let inputData = A();
