@@ -1,11 +1,9 @@
 .ui.modal {
-    position: fixed;
-    top:    0;
-    left:   0;
-    right:  0;
-    bottom: 0;
-    margin: auto !important;
-  }
+  position: fixed;
+  top:    20px;
+  left:   0;
+  right:  0;
+  margin: auto !important;
   
   .newfolder,
   .delete-modal,
@@ -13,9 +11,6 @@
   .warning-modal,
   .ui.compose-error.modal {
     height: 200px;
-    top:    0;
-    left:   0;
-    bottom: 0;
   
     .header {
       .close.icon {
@@ -30,6 +25,7 @@
       color: black;
     }
   }
+}
 
 .ui.compose-error.modal .description {
   width: 100%;
