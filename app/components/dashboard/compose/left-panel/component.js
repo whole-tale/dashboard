@@ -70,7 +70,7 @@ export default Component.extend({
 
     this.setDefaults();
     // Check if we're ingesting a dataset/tale
-    if (this.get('model').queryParams.data_location) {
+    if (this.get('model').queryParams.uri) {
       this.set('importing', true);
       this.setThirdPartyParams();
       this.renderImportInfo();
@@ -111,23 +111,23 @@ export default Component.extend({
     // on importing data, the referrer is set here.
     let queryParams = this.get('model').queryParams;
     if (queryParams) {
-      if (queryParams.data_location) {
-        this.set('datasetLocation', queryParams.data_location);
+      if (queryParams.uri) {
+        this.set('datasetURI', queryParams.uri);
       }
       else {
         this.set('errorMessage', 'There was an error retrieving data from your third party data source. '+ 
         'Please manually register the dataset and then create the Tale.');
         this.send('openErrorModal');
       }
-      if (queryParams.data_title) {
-        this.set('datasetTitle', queryParams.data_title);
+      if (queryParams.name) {
+        this.set('datasetTitle', queryParams.name);
       }
       else {
         // Fall back to using the data package URI
-        this.set('datasetTitle', queryParams.data_location);
+        this.set('datasetTitle', queryParams.uri);
       }
-      if (queryParams.data_api) {
-        this.set('packageAPI', queryParams.data_api);
+      if (queryParams.api) {
+        this.set('datasetAPI', queryParams.api);
       }
       if (queryParams.environment) {
         this.set('environment', queryParams.environment);
@@ -148,26 +148,25 @@ export default Component.extend({
    * @param allSelected Collection of selected data items
    */
   insertPackageName(allSelected) {
+    let self = this;
+    let datasetName = self.get('datasetTitle');
+    if (datasetName) {
+      // Check if it's in the file listing already
+      var exists = false;
+      allSelected.forEach(function (listing) {
+        if (listing.name === datasetName) {
+          exists = true;
+        }
+      });
 
-       let self = this;
-       let datasetName = self.get('datasetTitle');
-       if (datasetName) {
-           // Check if it's in the file listing already
-           var exists =false;
-           allSelected.forEach(function (listing) {
-             if (listing.name === datasetName) {
-                 exists = true;
-             }
-         });
- 
-         if (exists === false) {
-             let newDataObj = {
-                 name: datasetName
-             };
-             allSelected.push(newDataObj);
-           }
-       }
-       return allSelected;
+      if (exists === false) {
+        let newDataObj = {
+          name: datasetName
+        };
+        allSelected.push(newDataObj);
+      }
+    }
+    return allSelected;
   },
 
   renderExternalPackage() {
@@ -184,7 +183,7 @@ export default Component.extend({
     };
     // self.inputData needs to be taken as an array
     let inputData = A();
-    inputData.push(newDataObj)
+    inputData.push(newDataObj);
     self.set('inputData', inputData);
   },
 
@@ -309,31 +308,37 @@ export default Component.extend({
 },
 
   /**
-  * Handles asking the backend to spawn a new tale import job.
-  * @method createTaleFromDataset
-  */
+   * Handles asking the backend to spawn a new tale import job.
+   * @method createTaleFromDataset
+   */
   createTaleFromDataset() {
-    let component = this;    
+    let component = this;
     let onFail = (e) => {
-        // deal with the failure here
-        component.set('errorMessage', e);
-        component.send('openErrorModal');
-      };
-    
+      // deal with the failure here
+      component.set('errorMessage', e);
+      component.send('openErrorModal');
+    };
+
     // If the call succeeds, we'll get a job that we want to keep around
     let onSuccess = (job) => component.trackTaleImport(job);
 
     // Attempt to create a tale from a dataset
-    let taleKwargs = new Object();
-    taleKwargs.title = this.get('newTaleName').trim()
+    /* We'll always have a Tale name when on the Compose page, make sure
+    it gets added to the kwargs. */
+    let taleKwargs = new Object ({});
+    taleKwargs.title = component.get('newTaleName').trim();
+    let lookupKwargs = new Object ({});
+    if (component.get('datasetAPI')) {
+      lookupKwargs.base_url = component.get('datasetAPI');
+    }
     component.get('apiCall').taleFromDataset(
-        this.get('selectedEnvironment').get('_id'),
-        this.get('datasetLocation'),
-        true,
-        null,
-        JSON.stringify(taleKwargs),
-        onSuccess,
-        onFail
+      component.get('selectedEnvironment').get('_id'),
+      component.get('datasetURI'),
+      true,
+      JSON.stringify(lookupKwargs),
+      JSON.stringify(taleKwargs),
+      onSuccess,
+      onFail
     );
   },
 
@@ -368,7 +373,7 @@ export default Component.extend({
 
       let onFail = (e) => {
         // deal with the failure here
-        component.set('errorMessage', e)
+        component.set('errorMessage', e);
         component.send('openErrorModal');
       };
 

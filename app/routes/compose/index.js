@@ -1,19 +1,19 @@
-import Ember from 'ember';
-
 import AuthenticateRoute from 'wholetale/routes/authenticate';
+import { inject as service } from '@ember/service';
 import RSVP from 'rsvp';
 
 export default AuthenticateRoute.extend({
-  internalState: Ember.inject.service(),
+  internalState: service(),
+  // Optional query parameters used when importing a dataset/Tale
   queryParams:{
-      data_location: {
-          refreshModel:true},
-      data_title: {
-          refreshModel:true},
-      data_api: {
-          refreshModel:true},
-      environment: {
-          refreshModel:true}
+    // The URI of a package or Tale that is going to be imported
+    uri: {refreshModel:true},
+    // An optional title of the dataset or Tale
+    name: {refreshModel:true},
+    // An optional API URL that can be used to access information about the dataset
+    api: {refreshModel:true},
+    // An optional environment name
+    environment: {refreshModel:true}
     },
 
   model(params) {
