@@ -17,6 +17,7 @@ const taleStatus = Object.create({
 
 export default Ember.Component.extend({
   apiHost: config.apiHost,
+  environments: [],
   model: null,
   init() {
     this._super(...arguments);
@@ -25,11 +26,24 @@ export default Ember.Component.extend({
     let component = this;
     $.getJSON(this.get('apiHost') + '/api/v1/image/').then(function(images) {
       component.set('environments', images);
+      component.selectDefaultImageId();
     });
   },
   
+  didRender() {
+    // Enable the environment dropdown functionality
+    $('.ui.dropdown').dropdown();
+    this.selectDefaultImageId();
+  },
+  
+  selectDefaultImageId() {
+    // Select the current imageId by default
+    let selectedImageId = this.get("model").get("tale").get("imageId")
+    $('.ui.dropdown').dropdown('set selected', selectedImageId);
+  },
+  
   canEditTale: computed('model.tale._accessLevel', function () {
-    return this.get('model') && this.get('model') && this.get('model').get('_accessLevel') >= taleStatus.WRITE;
+    return this.get('model') && this.get('model').get('tale') && this.get('model').get('tale').get('_accessLevel') >= taleStatus.WRITE;
   }).readOnly(),
   cannotEditTale: computed.not('canEditTale').readOnly(),
   
