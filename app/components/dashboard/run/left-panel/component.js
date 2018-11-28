@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import { later } from '@ember/runloop';
 import FullScreenMixin from 'ember-cli-full-screen/mixins/full-screen';
 import config from '../../../../config/environment';
 import { scheduleOnce } from '@ember/runloop';
@@ -8,20 +7,11 @@ import { computed } from '@ember/object';
 import { not } from '@ember/object/computed';
 import $ from 'jquery';
 
-const taleStatus = Object.create({
-  NONE: -1,
-  READ: 0,
-  WRITE: 1,
-  ADMIN: 2,
-  SITE_ADMIN: 100
-});
-
 export default Component.extend(FullScreenMixin, {
   router: service('-routing'),
   internalState: service(),
   loadError: false,
   model: null,
-  apiHost: config.apiHost,
   wholeTaleHost: config.wholeTaleHost,
   hasSelectedTaleInstance: false,
 
@@ -38,21 +28,7 @@ export default Component.extend(FullScreenMixin, {
       UrlLoadedButContentCannotBeAccessed: 2,
       UrlLoadedContentCanBeAccessed: 3
     };
-    
-    this.set("activeTabInteract", true);
-    this.set("activeTabFiles", false);
-    this.set("activeTabMetadata", false);
-    
-    let component = this;
-    $.getJSON(this.get('apiHost') + '/api/v1/image/').then(function(images) {
-      component.set('environments', images);
-    });
   },
-  
-  canEditTale: computed('model.tale._accessLevel', function () {
-    return this.get('model') && this.get('model').get('tale') && this.get('model').get('tale').get('_accessLevel') >= taleStatus.WRITE;
-  }),
-  cannotEditTale: computed.not('canEditTale').readOnly(),
 
   didRender() {
     // Similar to Jquery on page load
@@ -132,63 +108,6 @@ export default Component.extend(FullScreenMixin, {
   }),
 
   actions: {
-    updateTale() {
-      let tale = this.get("model").tale;
-      let component = this;
-      //component.set("tale_creating", true);
-      console.log("Sending updated tale:", tale);
-      console.log("New image ID:", tale.imageId);
-
-      let onSuccess = (item) => {
-        //component.set("tale_creating", false);
-        //component.set("tale_created", true);
-
-        later((function () {
-          //component.set("tale_created", false);
-          // component.transitionToRoute('upload.view', item);
-        }), 10000);
-        console.log("Successfully saved tale (" + tale['id'] + "):", tale)
-      };
-
-      let onFail = function (e) {
-        // deal with the failure here
-        //component.set("tale_creating", false);
-        //component.set("tale_not_created", true);
-        //component.set("error_msg", e.message);
-
-        later((function () {
-          //component.set("tale_not_created", false);
-        }), 10000);
-        console.log("Error saving tale (" + tale['id'] + "):", tale)
-      };
-
-      tale.save().then(onSuccess).catch(onFail);
-    },
-    setTaleEnvironment: function(selected) {
-      let model = this.get('model');
-      let tale = model.tale;
-      tale.set('imageId', selected);
-      console.log("Tale image changed:", tale.imageId);
-    },
-    activateInteract() {
-      let state = this.get('internalState');
-      this.set("activeTabInteract", true);
-      this.set("activeTabFiles", false);
-      this.set("activeTabMetadata", false);
-    },
-    activateFiles() {
-      let state = this.get('internalState');
-      this.set("activeTabInteract", false);
-      this.set("activeTabFiles", true);
-      this.set("activeTabMetadata", false);
-    },
-    activateMetadata() {
-      let state = this.get('internalState');
-      this.set("activeTabInteract", false);
-      this.set("activeTabFiles", false);
-      this.set("activeTabMetadata", true);
-    },
-    
     stop() {
       this.set("model", null);
     },

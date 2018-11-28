@@ -1,0 +1,88 @@
+<div class="ui form">
+  <div class="inline fields ui grid">
+    <label class="two wide column right aligned">Title</label>
+    <div class="field thirteen wide column">
+        {{input value=model.tale.title placeholder="Enter a title..." readonly=cannotEditTale}}
+    </div>
+  </div>
+  
+  <div class="inline fields ui grid">
+    <label class="two wide column right aligned">Authors</label>
+    <div class="field thirteen wide column">
+        {{input value=model.tale.authors placeholder="Enter the author's name..." readonly="true"}}
+    </div>
+  </div>
+  
+  <div class="inline fields ui grid">
+    <label class="two wide column right aligned">Category</label>
+    <div class="field thirteen wide column">
+        {{input value=model.tale.category placeholder="Choose a category..."  readonly=cannotEditTale}}
+    </div>
+  </div>
+  
+  <div class="inline fields ui grid">
+    <label class="two wide column right aligned">Environment</label>
+    <div class="field thirteen wide column">
+      <select class="ui dropdown" onchange={{action "setTaleEnvironment" value="target.value"}}>
+        <option disabled selected={{eq model.tale.imageId null}}>Choose an environment...</option>
+        {{#each environments as |env|}}
+          <option selected={{eq model.tale.imageId env._id}} value="{{env._id}}">
+              <img src="{{env.icon}}" />
+              {{ env.name }}
+          </option>
+        {{/each}}
+      </select>
+    </div>
+  </div>
+  
+  <div class="inline fields ui grid">
+    <label class="two wide column right aligned">Date Created</label>
+    <div class="field thirteen wide column">
+        {{input value=model.tale.created readonly="true"}}
+    </div>
+  </div>
+  
+  <div class="inline fields ui grid">
+    <label class="two wide column right aligned">Last Updated</label>
+    <div class="field thirteen wide column">
+      {{input value=model.tale.updated readonly="true"}}
+    </div>
+  </div>
+  
+  <div class="inline fields ui grid">
+      <label class="two wide column right aligned">Description</label>
+      <div class="thirteen wide column">
+        {{ui/markdown-editor markdownValue=model.tale.description}}
+      </div>
+  </div>
+  
+  <div class="inline fields ui grid">
+    <label class="two wide column right aligned">Illustration</label>
+    <div class="ui action field thirteen wide column">
+        {{input type="text" id="tale-icon" placeholder="Tale Icon" value=model.tale.illustration readonly=cannotEditTale }}
+        <div class="ui buttons">
+            <style type="text/css">
+                .or:before {
+                    color: rgba(0, 0, 0, 0.7) !important;
+                    font-size: 1.5em;
+                    margin-left: -5px;
+                }
+            </style>
+            <div class="or"></div>
+            <button class="ui positive blue button" {{action "generateIcon" model.tale}}>Generate Illustration</button>
+        </div>
+    </div>
+  </div>
+
+  <div class="inline fields ui grid">
+      <div class="field two wide column">
+      </div>
+      <div class="field two wide column">
+        <button {{action 'updateTale'}} class="ui blue submit button" type="submit"
+            disabled={{cannotEditTale}}>Save</button>
+      </div>
+      <div class="field toggle ui checkbox four wide column">
+          {{ui-checkbox class="toggle" label="Public?" checked=model.public onChange=(action (mut model.tale.public)) disabled=cannotEditTale}}
+      </div>
+  </div>
+</div>
