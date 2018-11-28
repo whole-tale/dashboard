@@ -1,0 +1,22 @@
+<div class="ui">
+  <div class="ui secondary pointing menu" style="display:inline-flex;">
+      <a class="item {{if activeTabInteract "active"}}" data-tab="tab-interact" onclick={{action "activateInteract"}}>Interact</a>
+      <!--<a class="item {{if activeTabFiles "active"}}" data-tab="tab-files" onclick={{action "activateFiles"}}>Files</a>-->
+      <a class="item {{if activeTabMetadata "active"}}" data-tab="tab-metadata" onclick={{action "activateMetadata"}}>Metadata</a>
+  </div>
+  <div class="ui tab {{if activeTabInteract "active"}}" data-tab="tab-interact">
+      {{#if activeTabInteract}}
+        {{ui/tale-tab-interact model=model}}
+      {{/if}}
+  </div>
+  <div class="ui tab {{if activeTabFiles "active"}}" data-tab="tab-files">
+      {{#if activeTabFiles}}
+        {{ui/tale-tab-files model=model}}
+      {{/if}}
+  </div>
+  <div class="ui tab {{if activeTabMetadata "active"}}" data-tab="tab-metadata" style="overflow-x:auto;max-height:50vh;">
+      {{#if activeTabMetadata}}
+          {{ui/tale-tab-metadata model=model}}
+      {{/if}}
+  </div>
+</div>
