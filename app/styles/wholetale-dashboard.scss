@@ -55,16 +55,13 @@ body {
 
 .compose-status-message {
   position: relative;
-  top:20%;
+  top:calc(#{$compose-message-top});
   line-height: 20px;
-  color: black;
-  font-weight: bold;
-  font-size: 2em;
 }
 
 .tale-compose-progressbar {
   position: relative;
-  top: calc(#{$compose-message-top});
+  top: calc(#{$compose-message-top+5%});
   width: 50%;
 }
 
