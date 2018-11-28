@@ -23,15 +23,18 @@
   <div class="inline fields ui grid">
     <label class="two wide column right aligned">Environment</label>
     <div class="field thirteen wide column">
-      <select class="ui dropdown" onchange={{action "setTaleEnvironment" value="target.value"}}>
-        <option disabled selected={{eq model.tale.imageId null}}>Choose an environment...</option>
-        {{#each environments as |env|}}
-          <option selected={{eq model.tale.imageId env._id}} value="{{env._id}}">
-              <img src="{{env.icon}}" />
-              {{ env.name }}
-          </option>
-        {{/each}}
-      </select>
+      <div class='ui icon selection dropdown {{if (eq environments.length 0) "loading"}}' style='width:100%'>
+        <input name='TaleImageId' type='hidden' onchange={{action "setTaleEnvironment" value="target.value"}}>
+        <i class='dropdown icon'></i>
+        <div class='default text'> Choose an environment...</div>
+        <div class='menu'>
+          {{#each environments as |env|}}
+            <div class='item' data-value={{env._id}}>
+              <img class='ui image' src={{env.icon}} style='height:28px;width:28px;'> {{env.name}}
+            </div>
+          {{/each}}
+        </div>
+      </div>
     </div>
   </div>
   
