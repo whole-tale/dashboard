@@ -15,9 +15,15 @@ export default Ember.Route.extend({
     var slashes = http.concat("//");
     var ishttp = (location.port === '') || (location.port === 80) || (location.port === 443);
     var host = slashes.concat(window.location.hostname) + (ishttp? "": ':'+location.port);
-    console.log("Route: ", this.routerService);
-    var pathSuffix = params.rd || "";
-    let url = config.apiUrl + '/oauth/provider?redirect=' + host + pathSuffix + "%3Ftoken%3D%7BgirderToken%7D";
+    var pathSuffix = decodeURIComponent(params.rd) || "";
+    // Append to query string if on exists, otherwise add one
+    if (pathSuffix.indexOf("?") !== -1) {
+      pathSuffix += "&token={girderToken}"
+    } else {
+      pathSuffix += "?token={girderToken}"
+    }
+    var redirectUrl = host + pathSuffix;
+    let url = config.apiUrl + '/oauth/provider?redirect=' + encodeURIComponent(redirectUrl);
 
     return Ember.$.getJSON(url);
   }
