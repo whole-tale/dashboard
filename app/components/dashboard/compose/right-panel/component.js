@@ -3,10 +3,9 @@ import { inject as service } from '@ember/service';
 
 export default Component.extend({
   wtEvents: service(),
-  classNameBindings: ['showUpperPanel', 'showLowerPanel', 'disableLowerRightPanel'],
+  classNameBindings: ['showUpperPanel', 'showLowerPanel'],
   showUpperPanel: true,
   showLowerPanel: true,
-  disableLowerRightPanel: false,
 
   init() {
     this._super(...arguments);
@@ -15,7 +14,7 @@ export default Component.extend({
 
     // Wait for an event that asks for the file browser to be disabled
     events.on('onDisableRightPanel', function () {
-      self.set('disableLowerRightPanel', true);
+      self.set('showLowerPanel', false);
     });
   },
 
