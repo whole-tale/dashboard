@@ -16,9 +16,9 @@
   <div class="ui segment rounded-bottom composer-container">
     {{#if launchingInstance}}
       <div class="compose-status">
-          <h1 class ="compose-status-message">
+          <p class ="compose-status-message">
             {{message}}
-          </h1>
+          </p>
         {{#if importing}}
           <div class ='tale-compose-progressbar'>
             {{ember-progress-bar progress=progress options=(hash strokeWidth=4 color=barColor trailColor= "#a5a4a4")}}
