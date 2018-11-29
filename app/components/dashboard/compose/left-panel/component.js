@@ -39,7 +39,7 @@ export default Component.extend({
   // The error message that gets shown on catastrophic failures
   defaultErrorMessage: "There was an error while creating your Tale.",
   // The color of the progress bar
-  barColor:"#11d850",
+  barColor:"#093268",
 
   invalidNewTale: computed('inputData', 'selectedEnvironment', 'newTaleName', 'inputData.length', function () {
     let name = this.get('newTaleName');
