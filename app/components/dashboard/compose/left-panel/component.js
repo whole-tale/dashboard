@@ -78,7 +78,10 @@ export default Component.extend({
   },
   
   importFileName: computed('datasetURI', function () {
-    return 'Data Source: ' + this.get('datasetURI');
+    if (this.get('datasetURI')) {
+      return 'Data Source: ' + this.get('datasetURI');
+    }
+    return false;
   }),
 
   /**
