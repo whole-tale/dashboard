@@ -57,7 +57,15 @@ export default Component.extend({
     } else {
       updater(models);
     }
+
+    let events = this.get('wtEvents').events;
+    events.on('selectEnvironmentByName', function (environmentName) {
+      component.send('selectEnvironmentFromName', environmentName);
+    });
+
   },
+
+
   didRender() {},
   didUpdate() {},
 
@@ -172,7 +180,8 @@ export default Component.extend({
     },
     selectEnvironment(model, index) {
       let component = this;
-      if (this.get('isComposing')) {
+
+      if (component.get('isComposing')) {
         component.set('selectedEnvironment', model);
         component.set('selectedMenuIndex', index);
         component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
@@ -180,12 +189,39 @@ export default Component.extend({
         component.get('router').transitionTo('manage.view', model.get('id'));
       }
     },
+
+    /**
+     * Given an environment name, select it in the widget.
+     * 
+     * Iterates over the model (environments), finds the one that matches
+     * the environmentName parameter, and then selects it.
+     * @method selectEnvironmentFromName
+     * @param environmentName {String} 
+    */
+    selectEnvironmentFromName(environmentName) {
+      let component = this;
+      let models = component.get('models')
+
+      // We want to know what the index of the image is in the list. Track the position with i
+      let i = 0;
+      models.forEach(model => {
+        let name = model.get('name');
+        if (name.toLowerCase() == environmentName.toLowerCase()) {
+          component.send('selectEnvironment', model, i)
+        }
+        i++;
+      });
+    },
+    /**
+     * De-selects any selected environment.
+     * 
+     * @method deselectEnvironment
+    */
     deselectEnvironment() {
       let component = this;
       component.set('selectedEnvironment', Object.create({}));
       component.set('selectedMenuIndex', -1);
       component.get('wtEvents').events.selectEnvironment(this.get('selectedEnvironment'));
-      // component.get('router')
       component.get('router').transitionTo('manage.index');
     }
   }
