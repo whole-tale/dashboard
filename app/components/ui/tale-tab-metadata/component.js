@@ -1,7 +1,5 @@
-import Ember from 'ember';
-import { later } from '@ember/runloop';
+import Component from '@ember/component';
 import { computed } from '@ember/object';
-import { not } from '@ember/object/computed';
 
 import $ from 'jquery';
 
@@ -15,7 +13,8 @@ const taleStatus = Object.create({
   SITE_ADMIN: 100
 });
 
-export default Ember.Component.extend({
+
+export default Component.extend({
   apiHost: config.apiHost,
   environments: [],
   model: null,
@@ -48,35 +47,14 @@ export default Ember.Component.extend({
   cannotEditTale: computed.not('canEditTale').readOnly(),
   
   actions: {
-    // TODO: Status messages are still missing
     updateTale() {
       let tale = this.get("model").get("tale");
-      let component = this;
-      //component.set("tale_creating", true);
-      console.log("Sending updated tale:", tale);
-      console.log("New image ID:", tale.imageId);
-      
       let onSuccess = (item) => {
-      //component.set("tale_creating", false);
-      //component.set("tale_created", true);
-      
-      later((function () {
-        //component.set("tale_created", false);
-        // component.transitionToRoute('upload.view', item);
-      }), 10000);
-      console.log("Successfully saved tale (" + tale['id'] + "):", tale)
+        //console.log("Successfully saved tale (" + tale['id'] + "):", tale);
       };
       
-      let onFail = function (e) {
-      // deal with the failure here
-      //component.set("tale_creating", false);
-      //component.set("tale_not_created", true);
-      //component.set("error_msg", e.message);
-      
-      later((function () {
-        //component.set("tale_not_created", false);
-      }), 10000);
-      console.log("Error saving tale (" + tale['id'] + "):", tale)
+      let onFail = (e) => {
+        alert("Error saving tale (" + tale['id'] + "):", tale);
       };
       
       tale.save().then(onSuccess).catch(onFail);
@@ -85,7 +63,6 @@ export default Ember.Component.extend({
     setTaleEnvironment: function(selected) {
       let tale = this.get('model').get("tale");
       tale.set('imageId', selected);
-      console.log("Tale image changed:", tale.imageId);
     },
   }
 });
