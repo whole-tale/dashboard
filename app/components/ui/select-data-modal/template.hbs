@@ -1,0 +1,50 @@
+{{#ui-modal class="small selectdata" name="selectdata" onVisible=(action 'loadData')}}
+    <div class="header">
+       Select Data 
+    </div>
+    <div class="content">
+      {{#if loading}}
+      <div class="ui segment" style="min-height:100px;">
+        <div class="ui active inverted dimmer" style="background-color:#cedce2;">
+          <div class="ui indeterminate medium text loader">Preparing Files</div>
+        </div>
+        <p></p>
+      </div>
+      {{else}}
+        <div class="ui list">
+          {{#each folders as | folder |}}
+          <div class="item">
+            <i class="folder icon"></i>
+            <div class="content" {{action 'dblClick' folder on='doubleClick'}}>
+              {{folder.name}}
+            </div>
+          </div>
+          {{/each}}
+        </div>
+        <div class="ui list">
+          {{#each files as | file |}}
+          <div class="item">
+            <i class="file icon"></i>
+            <div class="content">
+              {{file.name}}
+            </div>
+          </div>
+          {{/each}}
+        </div>
+      {{/if}}
+    </div>
+    <div class="actions">
+        <div class="ui black deny button" style="background-color:#cedce2; color:black"
+            onclick={{action "cancel" 
+            preventDefault=false
+            bubble=false}}>
+            Cancel
+        </div>
+        <div class="ui positive button"  style="background-color:#2980B9;"
+            onclick={{action "updateSessionData"
+            preventDefault=false 
+            bubble=false}}>
+            Update Session Data
+        </div>
+    </div>
+{{/ui-modal}}
