@@ -1,4 +1,5 @@
 import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
 
 import $ from 'jquery';
@@ -16,17 +17,10 @@ const taleStatus = Object.create({
 
 export default Component.extend({
   apiHost: config.apiHost,
-  environments: [],
   model: null,
+  store: service(),
   init() {
     this._super(...arguments);
-    
-    // Fetch images for user to select an environment
-    const component = this;
-    $.getJSON(this.get('apiHost') + '/api/v1/image/').then(function(images) {
-      component.set('environments', images);
-      component.selectDefaultImageId();
-    });
   },
   
   didRender() {
@@ -37,18 +31,22 @@ export default Component.extend({
   
   selectDefaultImageId() {
     // Select the current imageId by default
-    const selectedImageId = this.get('model').get('tale').get('imageId');
+    const selectedImageId = this.getTale().get('imageId');
     $('.ui.dropdown').dropdown('set selected', selectedImageId);
   },
   
-  canEditTale: computed('model.tale._accessLevel', function () {
-    return this.get('model') && this.get('model').get('tale') && this.get('model').get('tale').get('_accessLevel') >= taleStatus.WRITE;
+  getTale() {
+    return this.model.selected.tale;
+  },
+  
+  canEditTale: computed('model.selected.tale._accessLevel', function () {
+    return this.getTale() && this.getTale().get('_accessLevel') >= taleStatus.WRITE;
   }).readOnly(),
   cannotEditTale: computed.not('canEditTale').readOnly(),
   
   actions: {
     updateTale() {
-      const tale = this.get('model').get('tale');
+      const tale = this.getTale();
       const onFail = (e) => {
         alert('Error saving tale (' + tale['id'] + '):', e);
       };
@@ -57,7 +55,7 @@ export default Component.extend({
     },
       
     setTaleEnvironment: function(selected) {
-      const tale = this.get('model').get('tale');
+      const tale = this.getTale();
       tale.set('imageId', selected);
     },
   }

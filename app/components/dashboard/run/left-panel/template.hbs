@@ -5,8 +5,8 @@
             {{#if hasSelectedTaleInstance}}
                 <i class="fas fa-expand right floated" style="cursor: pointer;" {{action 'toggleFullscreen'}}></i>
             {{/if}}
-            {{#if (and (not-eq model.status 0) (and model.iframe (eq internalState.currentInstanceId model._id)))}}
-                <a href="{{model.url}}" target="_blank">
+            {{#if (and (not-eq model.selected.status 0) (and model.selected.iframe (eq internalState.currentInstanceId model.selected._id)))}}
+                <a href="{{model.selected.url}}" target="_blank">
                     <i class="external alternate right icon" style="cursor: pointer; padding-right: 0.3em; bottom: 4px"></i>
                 </a>
             {{/if}}
@@ -16,11 +16,11 @@
         <div class="wt paddleboard tall header">
             <div class="ui bordlerless menu">
                 <div class="item">
-                    <img class="illustration" src="{{model.tale.illustration}}" />
-                    <img class="env" src="{{model.tale.icon}}" />
+                    <img class="illustration" src="{{model.selected.tale.illustration}}" />
+                    <img class="env" src="{{model.selected.tale.icon}}" />
                     <div class="header name">
-                        <h3>{{model.name}}</h3>
-                        <span>{{model.tale.authors}}</span>
+                        <h3>{{model.selected.name}}</h3>
+                        <span>{{model.selected.tale.authors}}</span>
                     </div>
                 </div>
                 <div class="right borderless menu">
@@ -30,7 +30,7 @@
                         </div>
                     </div>
                     <div class="item">
-                        <div class="ui blue button" {{action "editTaleInfo" model._id}}>
+                        <div class="ui blue button" {{action "editTaleInfo" model.selected._id}}>
                             Edit Tale Info
                         </div>
                     </div>
@@ -43,7 +43,7 @@
             </div>
         </div>
     {{/unless}}
-    {{!-- {{#if (eq internalState.currentInstanceId model._id)}} --}}
+    {{!-- {{#if (eq internalState.currentInstanceId model.selected._id)}} --}}
     {{#if hasSelectedTaleInstance}}
         {{ui/tale-tabs-selector model=model}}
     {{else}}
@@ -54,21 +54,21 @@
         </div>
     {{/if}}
 
-    {{!-- <div class="ui {{model._id}} modal" style="display: none">
+    {{!-- <div class="ui {{model.selected._id}} modal" style="display: none">
         <i class="close icon"></i>
         <div class="header">
             Really Delete Instance?
         </div>
         <div class="image content">
             <div class="description">
-                <p>This will permanently delete the '{{model.name}}' instance. Continue?</p>
+                <p>This will permanently delete the '{{model.selected.name}}' instance. Continue?</p>
             </div>
         </div>
         <div class="actions">
             <div class="ui black deny button" {{action 'denyDelete'}}>
                 No
             </div>
-            <div class="ui positive right labeled icon button" {{action 'approveDelete' model}}>
+            <div class="ui positive right labeled icon button" {{action 'approveDelete' model.selected}}>
                 Yes
                 <i class="checkmark icon"></i>
             </div>
@@ -91,7 +91,7 @@
             <div class="ui black deny button" {{action 'denyDataONE'}}>
                 Cancel
             </div>
-            <div class="ui positive right labeled icon button" {{action 'authenticateD1' model._id}}>
+            <div class="ui positive right labeled icon button" {{action 'authenticateD1' model.selected._id}}>
                 Continue to DataOne Login
                 <i class="checkmark icon"></i>
             </div>

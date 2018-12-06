@@ -4,7 +4,6 @@ import AuthenticateRoute from 'wholetale/routes/authenticate';
 export default AuthenticateRoute.extend({
   model (params) {
     this._super();
-
     return this.get('store').findAll('instance', {
       reload: true,
       adapterOptions: {

@@ -16,6 +16,14 @@ export default AuthenticateRoute.extend({
           }
         }
       }),
+      environments: this.get('store').findAll('image', {
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      }),
       selected: this.get('store').findRecord('instance', params.instance_id, { reload: true })
     });
   }
