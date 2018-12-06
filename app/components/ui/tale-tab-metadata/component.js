@@ -22,7 +22,7 @@ export default Component.extend({
     this._super(...arguments);
     
     // Fetch images for user to select an environment
-    let component = this;
+    const component = this;
     $.getJSON(this.get('apiHost') + '/api/v1/image/').then(function(images) {
       component.set('environments', images);
       component.selectDefaultImageId();
@@ -37,7 +37,7 @@ export default Component.extend({
   
   selectDefaultImageId() {
     // Select the current imageId by default
-    let selectedImageId = this.get("model").get("tale").get("imageId")
+    const selectedImageId = this.get('model').get('tale').get('imageId');
     $('.ui.dropdown').dropdown('set selected', selectedImageId);
   },
   
@@ -48,20 +48,16 @@ export default Component.extend({
   
   actions: {
     updateTale() {
-      let tale = this.get("model").get("tale");
-      let onSuccess = (item) => {
-        //console.log("Successfully saved tale (" + tale['id'] + "):", tale);
+      const tale = this.get('model').get('tale');
+      const onFail = (e) => {
+        alert('Error saving tale (' + tale['id'] + '):', e);
       };
       
-      let onFail = (e) => {
-        alert("Error saving tale (" + tale['id'] + "):", tale);
-      };
-      
-      tale.save().then(onSuccess).catch(onFail);
+      tale.save().catch(onFail);
     },
       
     setTaleEnvironment: function(selected) {
-      let tale = this.get('model').get("tale");
+      const tale = this.get('model').get('tale');
       tale.set('imageId', selected);
     },
   }
