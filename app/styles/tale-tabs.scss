@@ -1,7 +1,13 @@
 #frontendDisplay {
   padding: 0;
-  width:100%;
+  width: 100%;
   height: inherit;
+}
+
+#frontendDisplayParent {
+  padding: 0;
+  margin: 0;
+  overflow-y: hidden;
 }
 
 #taleMetadataForm {
