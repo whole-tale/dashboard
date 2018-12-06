@@ -1,0 +1,37 @@
+#frontendDisplay {
+  padding: 0;
+  width:100%;
+  height: inherit;
+}
+
+#taleMetadataForm {
+  margin-top: 20px;  
+}
+
+.or:before {
+    color: rgba(0, 0, 0, 0.7) !important;
+    font-size: 1.5em;
+    margin-left: -5px;
+}
+
+#tale-icon {
+  margin-right: 0;
+}
+
+#environmentDropdown {
+  width: 100%
+}
+
+.environment-icon {
+  height: 28px;
+  width: 28px;
+}
+
+#taleTabSelector {
+  display: inline-flex;
+}
+
+#taleMetadataTab {
+  overflow-x: auto;
+  max-height: 50vh;
+}
