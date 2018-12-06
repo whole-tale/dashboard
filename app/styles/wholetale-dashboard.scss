@@ -448,6 +448,58 @@ ui.inverted.menu.wt.top {
   margin: 0 1.5rem 0 0;
 }
 
+// right tabbed vertical menu
+
+.ui.vertical.menu.right {
+  margin-top: 0;
+  margin-bottom: 0;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+.ui.vertical.menu.right .item:first-child {
+  border-top: none;
+}
+
+.ui.vertical.menu.right .item {
+  position: relative;
+  // padding: 1em 1.25em 1em 6em;
+  border-right: 4px solid transparent;
+  min-height: 6.3rem;
+}
+.ui.vertical.menu.right .active.item,
+.ui.vertical.menu.right .active-class.item {
+  background: #e8f3fa;
+  border-right: 3px solid #2185d0;
+}
+.ui.vertical.menu.right .item.active:first-child,
+.ui.vertical.menu.right .item.active-class:first-child {
+  background: #e8f3fa;
+  border-right: 4px solid #2185d0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.ui.vertical.menu.right .item:hover {
+  background: #e8f3fa;
+}
+
+.ui.vertical.menu.right .item p {
+  font-size: 1.0rem;
+  color: rgba(0,0,0,0.6);
+  line-height: 1.2;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 1.5rem 0 0;
+}
+
+.zebra {
+  background: #f3f3f3;
+}
+
 /* Navigation - Environments panel */
 
 .grey.zone {
