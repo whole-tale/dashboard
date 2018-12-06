@@ -38,6 +38,6 @@
 }
 
 #taleMetadataTab {
-  overflow-x: auto;
-  max-height: 50vh;
+  overflow: auto;
+  height: calc(100vh - (2.5rem + 50px + 40px + 50px + 0px + 94px + 50px));
 }
