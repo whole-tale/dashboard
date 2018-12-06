@@ -55,8 +55,13 @@
     }
 }
   
+.selectdata {
+  width:95% !important;
+}
+
   .scrolling.undetached.dimmable .ui.modal.acl-component.scrolling,
-  .scrolling.undetached.dimmable .ui.modal.harvester.scrolling {
+  .scrolling.undetached.dimmable .ui.modal.harvester.scrolling,
+  .selectdata {
     min-height: 50vh;
     height: auto;
     max-height: 70%;

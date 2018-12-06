@@ -1,50 +1,89 @@
-{{#ui-modal class="small selectdata" name="selectdata" onVisible=(action 'loadData')}}
+{{#ui-modal class="selectdata" name="selectdata" onVisible=(action 'initData')}}
     <div class="header">
        Select Data 
     </div>
-    <div class="content">
-      {{#if loading}}
-      <div class="ui segment" style="min-height:100px;">
-        <div class="ui active inverted dimmer" style="background-color:#cedce2;">
-          <div class="ui indeterminate medium text loader">Preparing Files</div>
+    <div class="content" style="padding:0">
+      <div class="ui grid">
+        <div class="two wide column">
+          <div class="ui segment" style="border:0;border-radius:0;height:100%; height:fill-available; height:-moz-available; height:-webkit-fill-available;padding:0;">
+            {{#each dataSources as |datasource index|}}
+            <div class="ui vertical menu fluid right">
+              <a class="item {{if (eq index selectedMenuIndex) 'active-class'}}" {{action 'selectDatasource' datasource index}}>
+                <p>{{datasource.name}}</p>
+              </a>
+            </div>
+            {{/each}}
+          </div>
         </div>
-        <p></p>
+        
+        <div class="seven wide column">
+          <div class="ui segment" style="padding:0;border:0;border-radius:0;overflow-y:scroll;height:fill-available;height:100%;height:-moz-available; height:-webkit-fill-available;">
+            {{#if loading}}
+            <div class="ui active inverted dimmer" style="background-color:#cedce2;">
+              <div class="ui indeterminate medium text loader">Preparing Files</div>
+            </div>
+            <p></p>
+            {{else}}
+            <table class="ui very basic compact striped fixed single line table" >
+              <tbody>
+              {{#if (ne rootFolderId currentFolder.id)}}
+              <tr>
+                <td class="ui sub header collapsing noselect" style="color:rgba(0,0,0,0.6);" {{action 'goBack' on='click'}}>
+                  <i class="long alternate blue left arrow icon"></i>{{currentFolder.name}} 
+                </td>
+              </tr>
+              {{else}}
+              <tr><td class="ui sub header collapsing noselect" style="color:rgba(0,0,0,0)">-</td></tr>
+              {{/if}}
+              {{#each folders as | folder |}}
+              <tr {{action 'dblClick' folder on='doubleClick'}} {{action 'click' folder on='click'}}>
+                <td class="collapsing noselect">
+                    <i class="folder icon"></i>{{folder.name}}
+                </td>
+              </tr>
+              {{/each}}
+              {{#each files as | file |}}
+              <tr>
+                <td class="collapsing noselect" {{action 'click' file on='click'}}>
+                  <i class="file icon"></i>{{file.name}}
+                </td>
+              </tr>
+              {{/each}}
+              </tbody>
+            </table>
+            {{/if}}
+          </div>
+        </div>
+        <div class="seven wide column">
+          <div class="ui segment" style="border:0;border-radius:0;height:100%; height:fill-available; height:-moz-available; height:-webkit-fill-available;">
+            <h1 class="ui sub header noselect" style="cursor:default;color:rgba(0,0,0,0.6);"> Selected Data</h1>
+            <div class="ui list">
+              {{#each allSelectedItems as | item |}}
+              <div class="item">
+                <i class="{{item._modelType}} icon"></i>
+                <div class="content" style="cursor:default;" {{action 'click' item on='click'}}>
+                  {{item.name}}
+                </div>
+              </div>
+              {{/each}}
+            </div>
+          </div>
+        </div>
       </div>
-      {{else}}
-        <div class="ui list">
-          {{#each folders as | folder |}}
-          <div class="item">
-            <i class="folder icon"></i>
-            <div class="content" {{action 'dblClick' folder on='doubleClick'}}>
-              {{folder.name}}
-            </div>
-          </div>
-          {{/each}}
-        </div>
-        <div class="ui list">
-          {{#each files as | file |}}
-          <div class="item">
-            <i class="file icon"></i>
-            <div class="content">
-              {{file.name}}
-            </div>
-          </div>
-          {{/each}}
-        </div>
-      {{/if}}
     </div>
+    
     <div class="actions">
-        <div class="ui black deny button" style="background-color:#cedce2; color:black"
+        <div class="ui black deny button" style="background-color:#e8f3fa; color:rgba(0,0,0,0.6);"
             onclick={{action "cancel" 
             preventDefault=false
             bubble=false}}>
             Cancel
         </div>
-        <div class="ui positive button"  style="background-color:#2980B9;"
+        <div class="ui positive button"  style="background-color:#2185d0;"
             onclick={{action "updateSessionData"
             preventDefault=false 
             bubble=false}}>
-            Update Session Data
+            Select
         </div>
     </div>
 {{/ui-modal}}
