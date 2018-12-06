@@ -1,6 +1,6 @@
 {{#if (not-eq model.status 0)}}
     {{#if model.iframe}}
-      <div class="rounded-bottom" style="padding: 0; margin: 0; overflow-y: hidden;">
+      <div id="frontendDisplayParent" class="rounded-bottom">
         <iframe id="frontendDisplay"
                 src="{{model.url}}"
                 class="ui basic segment">
