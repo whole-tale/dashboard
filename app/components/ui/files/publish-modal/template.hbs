@@ -1,0 +1,133 @@
+<div name="publisher" class="small publisher" >
+
+<div class="main header">
+    <h2>Publish Tale
+        <span>Create an immutable copy of your Tale with a DOI <i class="info circle blue icon main"></i></span>
+    </h2>
+</div>
+<hr>
+{{#ui-accordion as |execute|}}
+
+{{!-- Accordion menu that lists tale files which can be (de)selected by the user --}}
+<div class="title">
+    <h2>
+        <i class="far fa-hdd"></i> Data
+        <span>
+            Select the files needed to fully reproduce your work
+             <i class="dropdown icon"></i>
+        </span>
+    </h2>
+</div>
+
+<div class="content files">
+    <div class="ui basic segment file-picker">
+            {{ui/files/file-picker inputData=inputData taleId=modalContext}}
+    </div>
+</div>
+
+<hr>
+{{!-- Accordion menu that lists the files which cannot be removed by the user --}}
+<div class="title">
+    <h2>
+        <i class="desktop icon"></i> Environment
+            <span>
+            Everything required to recreate chosen compute environment - view only 
+            <i class="dropdown icon"></i>
+        </span>
+    </h2>
+</div>
+
+<div class="content">
+        <div class="ui basic segment">
+        <div class="ui list">
+            <div class="item">
+                 <i class="environment folder icon"></i>
+                <div class="content">
+                    <div class="environment name header">{{taleName}}</div>
+                    <div class="list">
+                        {{#each nonOptionalFile as |file|}}
+                        <div class="item">
+                                <label>
+                                    <div class="content">
+                                        <i class="file icon"></i>
+                                         {{file}} <i class="info circle blue icon {{file}}"></i> 
+                                    </div>
+                                </label>
+                            </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+{{!-- Accordion menu that lets the user select a license --}}
+<div class="title">
+    <h2>
+        <i class="fab fa-creative-commons"></i> Usage Rights
+        <span>
+            Choose how you wish your Tale to be stored and reused
+            <i class="dropdown icon"></i>
+        </span>
+
+    </h2>
+</div>
+
+<div class="content">
+    <div class="ui form">
+        <div class="grouped fields">
+            {{#each availableLicenses as |license|}}
+            <div class="field">
+                <div class="ui radio checkbox {{license.short}}" id="{{license.spdx}}">
+                    <input type="radio" name="license-radio" checked="checked">
+                    <label><img class="ui small image left floated" src="{{license.imageName}}">
+                     {{license.name}} <i class="info circle blue icon {{license.short}}"></i></label> 
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+<hr>
+{{/ui-accordion}}
+
+<div class="actions">
+    {{!-- Dropdown where the user can select which member node to put the package in --}}
+    {{#ui-dropdown class="search selection dropdown" allowAdditions=false selected=selectedRepository onChange=(action 'onRepositoryChange')
+    as |execute mapper|}}
+    <div class="default text">Target Repository</div>
+    <i class="dropdown icon"></i>
+    <div class="menu">
+        {{#each repositories as |type|}}
+        <div class="item">
+            {{type.name}}
+        </div>
+        {{/each}}
+    </div>
+    {{/ui-dropdown}}
+    
+    {{!-- Button that is shown when the user can publish the tale --}}
+    {{#if enablePublish}}
+    <div class="ui positive blue enabled right labeled icon button" {{action "publishedClicked"}}>
+        Publish Tale
+    </div>
+    {{else if publishing}}
+    {{!-- Button that has a loader on top --}}
+        <div class="ui positive blue disabled loading right labeled icon button">
+            Publishing
+        </div>
+    {{else}}
+    {{!-- Button that is shown after publishing completes --}}
+        <div class="ui positive green right labeled icon button" {{action "publishedClicked"}}>
+            View Package
+        </div>
+    {{/if}}
+
+    <div class="ui deny blue inverted button" {{action 'closeModal'}}>
+        Cancel
+    </div>
+
+</div>
+</div>

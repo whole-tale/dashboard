@@ -23,10 +23,11 @@
                 <div class="info-block">
                     <p style="padding:8px; font-style:italic;">
                         The URL or DOI of the data object. Data packages can be imported into Whole Tale from
-                         <a href='https://dataone.org/' target='_blank'>DataONE</a> and select 
+                         <a href='https://dataone.org/' target='_blank'>DataONE</a>,
+                         <a href='https://dataverse.org/' target='_blank'>Dataverse</a> and select
                          <a href='https://www.globus.org/' target='_blank'>Globus</a> repositories. For a full list of
-                          DataONE member nodes and supported Globus repositories, visit
-                           the <a href='http://wholetale.readthedocs.io/users_guide/manage.html' target='_blank'>data registration guide</a>.
+                          DataONE member nodes, Dataverse instances and supported Globus repositories, visit
+                           the <a href='https://wholetale.readthedocs.io/users_guide/manage.html#supported-data-repositories' target='_blank'>data registration guide</a>.
                     </p>
                 </div>
                 {{#if showResults}}
@@ -47,7 +48,7 @@
                     </div>
                     {{/ui-dropdown}} {{else if searching}}
                     <div class="ui active inline indeterminate tiny loader"></div>
-                    Searching DataONE and Globus
+                    Searching Data Providers...
                     <p></p>
                     {{/if}} {{#if error}}
                     <div class="ui negative message">

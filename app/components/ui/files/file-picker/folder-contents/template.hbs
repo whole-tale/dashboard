@@ -1,0 +1,71 @@
+<table class="ui striped table file-picker">
+  {{#unless parent._parent}}
+  <tr>
+    <th style="width: 1rem;">Entry Point</th>
+    <th style="width: 1rem;"></th>
+    <th>Name</th>
+  </tr>
+  {{/unless}}
+  {{#each parent.folders as |folder|}}
+  <tr class="left aligned selectable" id={{folder.id}}>
+    <td style="">
+    </td>
+    <td>
+      {{#unless folder.disallowImport}}
+        {{#if (is-checked selectionTree folder.id)}}
+        <i class="far fa-check-square clickable" {{action uncheck folder on="click"}}></i>
+        {{else if (is-partial-checked selectionTree folder.id)}}
+        <i class="far fa-minus-square clickable" {{action uncheck folder on="click"}}></i>
+        {{else}}
+        <i class="far fa-square clickable" {{action check folder on="click"}}></i>
+        {{/if}}
+      {{/unless}}
+    </td>
+    <td {{action toggleExpandFolder folder on="click"}}>
+      {{#if folder.icon}}
+      <i class="{{folder.icon}} icon black large"></i>
+      {{else}}
+        <i class="fas fa-folder icon black large"></i> 
+      {{/if}}
+      {{truncate-name folder.name}}
+    </td>
+  </tr>
+  {{#if (and (or folder.folders.length folder.files.length) folder.expanded)}}
+  <tr>
+    <td></td>
+    <td></td>
+    <td style="padding-left:1em;">
+      {{ui/files/file-picker/folder-contents parent=folder selectionTree=selectionTree toggleExpandFolder=(action toggleExpandFolder) 
+        uncheck=(action uncheck) check=(action check) checkEntry=(action checkEntry) uncheckEntry=(action uncheckEntry) entryPoint=entryPoint}}
+    </td>
+  </tr>
+  {{/if}}
+  {{/each}}
+
+  {{#each parent.files as |file|}}
+  <tr class="left aligned selectable" id={{file.id}}>
+    <td style="position: absolute; left: 1rem;">
+      {{#if (eq entryPoint.id file.id)}}
+      <i class="far fa-dot-circle clickable" {{action uncheckEntry file on="click"}}></i>
+      {{else}}
+      <i class="far fa-circle clickable" {{action checkEntry file on="click"}}></i>
+      {{/if}}
+    </td>
+    <td>
+      {{#unless file.disallowImport}}
+        {{#if (is-checked selectionTree file.id)}}
+        <i class="far fa-check-square clickable" {{action uncheck file on="click"}}></i>
+        {{else if (is-partial-checked selectionTree file.id)}}
+        <i class="far fa-minus-square clickable" {{action uncheck file on="click"}}></i>
+        {{else}}
+        <i class="far fa-square clickable" {{action check file on="click"}}></i>
+        {{/if}}
+      {{/unless}}
+    </td>
+    <td>
+      <i class="fas fa-file icon black large"></i> 
+      {{truncate-name file.name}}
+    </td>
+  </tr>
+  {{/each}}
+</table>

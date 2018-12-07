@@ -1,6 +1,6 @@
 {
   "name": "wholetale",
-  "version": "0.4.1",
+  "version": "0.5.0rc1",
   "description": "Wholetale dashboard app",
   "private": true,
   "directories": {
@@ -60,15 +60,17 @@
     "ember-load-initializers": "^1.1.0",
     "ember-lodash": "^4.18.0",
     "ember-maybe-import-regenerator": "^0.1.6",
+    "ember-modal-dialog": "^3.0.0-beta.0",
     "ember-moment": "^7.7.0",
-    "ember-oauth2": "^2.0.2-beta",
+    "ember-oauth2": "^2.0.4-beta",
+    "ember-progress-bar": "^1.0.0",
     "ember-resolver": "^4.0.0",
     "ember-route-action-helper": "^2.0.6",
     "ember-simple-auth": "^1.6.0",
     "ember-source": "~3.1.0",
     "ember-token-auth": "^3.0.4-beta",
     "ember-truth-helpers": "^2.0.0",
-    "ember-uploader": "^1.2.3",
+    "ember-uploader": "^2.0.0",
     "ember-welcome-page": "^3.0.0",
     "eslint-plugin-ember": "^5.0.0",
     "json-beautify": "^1.0.1",
@@ -81,6 +83,7 @@
   "dependencies": {
     "guid": "0.0.12",
     "lodash": "^4.17.10",
-    "marked": "^0.3.19"
+    "marked": "^0.3.19",
+    "npm": "^6.4.1"
   }
 }

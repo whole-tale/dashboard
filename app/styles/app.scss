@@ -7,6 +7,8 @@
 @import './floating-action-button';
 @import './tables';
 @import './ember-burger-menu';
+@import "ember-modal-dialog/ember-modal-structure";
+@import "ember-modal-dialog/ember-modal-appearance";
 
 html,
 body {
@@ -285,9 +287,11 @@ div.upload.progress {
   color: #ffffff;
 }
 
-a {
-  color: #283649;
-  text-decoration: none;
+.ui.dropdown.ember-view {
+  a {
+    color: #283649;
+    text-decoration: none;
+  }
 }
 
 p,

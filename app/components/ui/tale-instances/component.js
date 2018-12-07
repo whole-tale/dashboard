@@ -1,15 +1,23 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import Object, { observer, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { A } from '@ember/array';
+import { later } from '@ember/runloop';
+import { Promise } from 'rsvp';
+import $ from 'jquery';
 
-export default Ember.Component.extend({
-  router: Ember.inject.service(),
-  store: Ember.inject.service(),
-  userAuth: Ember.inject.service(),
-  apiCall: Ember.inject.service('api-call'),
-  internalState: Ember.inject.service(),
+export default Component.extend({
+  router: service(),
+  store: service(),
+  userAuth: service(),
+  apiCall: service('api-call'),
+  internalState: service(),
 
-  taleInstanceName: "",
-  filteredSet: Ember.A(),
-  filters: ['All', 'Mine', 'Published', 'Recent'],
+  taleInstanceName: '',
+  filteredSet: A(),
+  filters: computed(function() {
+    return ['All', 'Mine', 'Published', 'Recent'];
+  }),
   filter: 'All',
   numberOfModels: 0,
   searchStr: '',
@@ -21,10 +29,10 @@ export default Ember.Component.extend({
   animationRefreshTime: 500, // min ms time between animation refreshes
   guid: null,
   selectedMenuIndex: -1,
-  selectedInstance: Ember.Object.create({}),
+  selectedInstance: Object.create({}),
   classNameBindings: ['showSearch'],
 
-  filterObserver: Ember.observer('searchStr', function () {
+  filterObserver: observer('searchStr', function () {
     this.setFilter.call(this);
   }),
 
@@ -46,45 +54,45 @@ export default Ember.Component.extend({
   didRender() {},
   didUpdate() {
     let component = this;
-
     this.get("models").forEach(function (instance) {
       component.get('store').findRecord('tale', instance.get('taleId'))
         .then(tale => {
           instance.set('tale', tale);
         });
     });
+    let selected = component.get('models').filter(model => model.id === component.internalState.currentInstanceId);
+    if(!(selected && selected.length)) {
+      component.internalState.set('currentInstanceId', undefined);
+    }
   },
 
   actions: {
-    selectInstance: function (model, index) {
+    selectInstance(model, index) {
       let component = this;
       component.set('selectedInstance', model);
       component.set('selectedMenuIndex', index);
       // should trigger an event later
       // component.get('wtEvents').events.selectEnvironment(this.get('selectedInstance'));
-      console.log('selected instance: ' + model.name);
       // this.sendAction('onLeftModelChange', model); // sends evnt to parent component
     },
 
     deselectInstance() {
       let component = this;
-      component.set('selectedInstance', Ember.Object.create({}));
+      component.set('selectedInstance', Object.create({}));
       component.set('selectedMenuIndex', -1);
       // component.get('wtEvents').events.selectEnvironment(this.get('selectedInstance'));
     },
 
-    openDeleteModal: function (instance) {
+    openDeleteModal(instance) {
       let component = this;
       component.set('selectedInstance', instance);
       let selector = `.delete-modal-instance>.ui.delete-modal.modal`;
-      console.log("Selector: " + selector);
-      Ember.run.later(() => {
+      later(() => {
         $(selector).modal('show');
       }, 500);
     },
 
-    approveDelete: function (model) {
-      console.log("Deleting model " + model.name);
+    approveDelete(model) {
       let component = this;
 
       model.destroyRecord({
@@ -94,27 +102,27 @@ export default Ember.Component.extend({
           component.set('selectedMenuIndex', -1);
           // TODO replace this workaround for deletion with something more robust
           component.get('store').unloadRecord(model);
-          component.get('internalState').set('currentInstanceId', null);
-          //transition to the run route if the current route is run.view
+          component.get('internalState').set('currentInstanceId', undefined);
+          // transition to the run route if the current route is run.view
           let router = component.get('router');
           if(router.get('currentRouteName') === 'run.view'){
             router.transitionTo('run');
           }
-        });
+      });
 
       return false;
     },
 
-    denyDelete: function () {
+    denyDelete() {
       return true;
     },
 
-    search: function () {
+    search() {
       let searchStr = this.get('searchStr').trim();
       const models = this.get('models');
       const component = this;
 
-      let promise = new Ember.RSVP.Promise((resolve) => {
+      let promise = new Promise((resolve) => {
         let searchView = [];
         models.forEach(model => {
           let name = model.get('name');
@@ -135,25 +143,29 @@ export default Ember.Component.extend({
         });
         if (!selected.length) {
           component.set('selectedMenuIndex', -1);
-          // component.set('selectedInstance', Ember.Object.create({}));
+          // component.set('selectedInstance', Object.create({}));
           // component.get('wtEvents').events.selectEnvironment(this.get('selectedInstance'));
         }
         // component.updateModels(component, searchView);
       });
     },
 
-    addNew: function () {
+    addNew() {
       this.sendAction("onAddNew");
     },
 
-    transitionToRun: function (instance, index) {
-      this.actions.selectInstance.call(this, instance, index);
-      // console.log('transitionToRun');
-      // if clicked outside of delete icon
-      // if (event && event.target && !$(event.target).hasClass('times')) {
-      this.get('router').transitionTo('run.view', instance._id);
-      // }
+    transitionToRun(instance, index) {
+      let router = this.get('router');
+      if(router.currentRouteName !== 'browse' && (!instance || this.internalState.get('currentInstanceId') === instance._id)) {
+        // toggle selection if we're in '/run' route and there's an already selected instance
+        this.internalState.set('currentInstanceId', undefined);
+        this.actions.deselectInstance.call(this);
+        // ...and navigate to 'run.index'
+        router.transitionTo('run.index');
+      } else {
+        this.actions.selectInstance.call(this, instance, index);
+        router.transitionTo('run.view', instance._id);
+      }
     }
-
   }
 });

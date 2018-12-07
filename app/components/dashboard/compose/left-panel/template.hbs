@@ -1,31 +1,60 @@
 <div class="wt panel manage composer">
-    <div class="wt paddleboard">
-        <h2>
-            <i class="fas fa-edit left"></i> Compose
-            <span class="subtitle">Create a new Tale by pairing a compute environment with a dataset</span>
-            <a href="https://wholetale.readthedocs.io/users_guide/compose.html">
-              <i class="fas fa-info-circle right" style="cursor: pointer; padding-right: 0.3em"></i>
-            </a>
-        </h2>
-    </div>
-    <div class="ui segment rounded-bottom composer-container">
-        {{#if launchingInstance}}
-            <div style="display: inline">
-                <div class="creating-tale-message">
-                    {{message}}
-                    <div class="centered"><i class="fa fa-4x fa-circle-notch fa-spin" aria-hidden="true"></i></div>
-                </div>
-            </div>
+  <div class="wt paddleboard">
+    <h2>
+      <i class="fas fa-edit left">
+      </i>
+        Compose
+      <span class="subtitle">
+        Create a new Tale by pairing a compute environment with a dataset
+      </span>
+      <a href="https://wholetale.readthedocs.io/users_guide/compose.html">
+        <i class="fas fa-info-circle right" style="cursor: pointer; padding-right: 0.3em"></i>
+      </a>
+    </h2>
+  </div>
+    
+  <div class="ui segment rounded-bottom composer-container">
+    {{#if launchingInstance}}
+      <div class="compose-status">
+          <p class ="compose-status-message">
+            {{message}}
+          </p>
+        {{#if importing}}
+          <div class ='tale-compose-progressbar'>
+            {{ember-progress-bar progress=progress options=(hash strokeWidth=4 color=barColor trailColor= "#a5a4a4")}}
+          </div>
+        {{else}}
+          <div class="tale-compose-loader">
+            <i class="fa fa-4x fa-circle-notch fa-spin"></i>
+          </div>
+        {{/if}}
+      </div>
         {{else}}
             {{partial "forms/new-tale-input"}}
             <div class="ui secondary menu">
                 <div style="text-align: center">
                     <button class="{{if (or invalidNewTale launchingTale) 'disabled'}} ui big icon button {{if invalidNewTale 'grey'}} {{unless invalidNewTale 'blue'}}"
-                            {{action "createTale"}}>
+                            {{action "onNewTaleClick"}}>
                         Launch New Tale
                     </button>
                 </div>
             </div>
         {{/if}}
+    </div>
+</div>
+
+<div class="ui compose-error modal" style="display: none">
+    <div class="header">
+        Error Creating Tale
+    </div>
+    <div class="image content">
+        <div class="description">
+            <p>{{errorMessage}}</p>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button" {{action 'closeErrorModal'}}>
+            Close
+        </div>
     </div>
 </div>

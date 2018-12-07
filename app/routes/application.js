@@ -2,15 +2,16 @@ import config from '../config/environment';
 import {
   inject as service
 } from '@ember/service';
+import { setProperties, set } from '@ember/object';
 import AuthenticateRoute from 'wholetale/routes/authenticate';
+import $ from 'jquery';
 
 export default AuthenticateRoute.extend({
   internalState: service(),
-  model: function (params) {
-    // console.log("Called Authenticate, proceeding in Application");
+  model(params) {
     let router = this;
     return router._super(...arguments)
-      .then(_ => {
+      .then(() => {
         let user = router.get('userAuth').getCurrentUser();
         return user;
       });
@@ -39,6 +40,36 @@ export default AuthenticateRoute.extend({
     toRoute() {
       this.transitionTo.call(this, ...arguments);
       return true;
+    },
+
+    showModal(modalDialogName, modalContext) {
+      if (modalContext.hasD1JWT) {
+        const applicationController = this.controller;
+
+        setProperties(applicationController, {
+          modalDialogName,
+          modalContext: modalContext.taleId,
+          isModalVisible: true
+        });
+      }
+      else {
+        let selector = '.ui.dataone.modal';
+        $(selector).modal('show');
+      }
+      // const applicationController = this.controller;
+
+      // setProperties(applicationController, {
+      //   modalDialogName,
+      //   modalContext,
+      //   isModalVisible: true
+      // });
+    },
+
+    closeModal() {
+      const applicationController = this.controller;
+  
+      set(applicationController, 'isModalVisible', false);
     }
+
   }
 });

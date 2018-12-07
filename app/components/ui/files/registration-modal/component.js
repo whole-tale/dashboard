@@ -164,10 +164,12 @@ export default Ember.Component.extend({
             let dataMap = JSON.stringify([{
                 name: this.name,
                 dataId: this.dataId,
-                repository: this.repository
+                repository: this.repository,
+                doi: this.doi,
+                size: this.size
             }]);
 
-            let baseUrl=this.get('podUrl');
+            let baseUrl=this.get('prodUrl');
             if (this.get('useDev')) {
                 baseUrl=this.get('devUrl')
             }
@@ -216,7 +218,7 @@ export default Ember.Component.extend({
 
             let url = config.apiUrl + '/repository/lookup';
 
-            let baseUrl=this.get('podUrl');
+            let baseUrl=this.get('prodUrl');
             if (this.get('useDev')) {
                 baseUrl=this.get('devUrl')
             }

@@ -85,6 +85,8 @@ export default Component.extend({
     },
 
     move(file) {
+      let disallowed = this.get('currentNav').command === 'home' ? 'Data' : 'Home';
+      this.set('disallowed', disallowed);
       this.set('fileToMove', file);
       $('.ui.modal.destinate-folder').modal('show');
     },

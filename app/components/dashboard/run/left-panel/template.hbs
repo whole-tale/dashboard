@@ -1,21 +1,51 @@
 <div class="wt panel manage">
     <div class="wt paddleboard">
         <h2>
-            <img src="/images/wholetale_logo_sm.png" />Current Tale
-            <span style="float: right">
-                {{#if (and (not-eq model.status 0) (and model.iframe (eq internalState.currentInstanceId model._id)))}}
-                    <a href="{{model.url}}" target="_blank">
-                        <i class="external alternate icon"></i>
-                    </a>
-                {{/if}}
-            </span>
-            <i class="fas fa-expand" style="cursor: pointer;" {{action 'toggleFullscreen'}}></i>
-            <a href="https://wholetale.readthedocs.io/users_guide/run.html">
-              <i class="fas fa-info-circle right" style="cursor: pointer; padding-right: 0.3em"></i>
-            </a>
+            <img src="/images/wholetale_logo_sm.png" /> Current Tale
+            {{#if hasSelectedTaleInstance}}
+                <i class="fas fa-expand right floated" style="cursor: pointer;" {{action 'toggleFullscreen'}}></i>
+            {{/if}}
+            {{#if (and (not-eq model.status 0) (and model.iframe (eq internalState.currentInstanceId model._id)))}}
+                <a href="{{model.url}}" target="_blank">
+                    <i class="external alternate right icon" style="cursor: pointer; padding-right: 0.3em; bottom: 4px"></i>
+                </a>
+            {{/if}}
         </h2>
     </div>
-    {{#if (eq internalState.currentInstanceId model._id)}}
+    {{!-- DEVNOTE: This should be enabled when we're ready to publish Tales
+    {{#unless noInstanceSelected}}
+        <div class="wt paddleboard tall header">
+            <div class="ui bordlerless menu">
+                <div class="item">
+                    <img class="illustration" src="{{model.tale.illustration}}" />
+                    <img class="env" src="{{model.tale.icon}}" />
+                    <div class="header name">
+                        <h3>{{model.name}}</h3>
+                        <span>{{model.tale.authors}}</span>
+                    </div>
+                </div>
+                <div class="right borderless menu">
+                    <div class="item">
+                        <div class="ui basic blue button" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
+                            Publish Tale
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="ui blue button" {{action "editTaleInfo" model._id}}>
+                            Edit Tale Info
+                        </div>
+                    </div>
+                    <div class="item">
+                        <a href="https://wholetale.readthedocs.io/users_guide/run.html">
+                            <i class="fas fa-info" style="cursor: pointer;"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{/unless}} --}}
+    {{!-- {{#if (eq internalState.currentInstanceId model._id)}} --}}
+    {{#if hasSelectedTaleInstance}}
       {{#if (not-eq model.status 0)}}
           {{#unless model.iframe}}
               <div class="placeholder message">
@@ -45,7 +75,7 @@
         </div>
     {{/if}}
 
-    <div class="ui {{model._id}} modal" style="display: none">
+    {{!-- <div class="ui {{model._id}} modal" style="display: none">
         <i class="close icon"></i>
         <div class="header">
             Really Delete Instance?
@@ -64,6 +94,28 @@
                 <i class="checkmark icon"></i>
             </div>
         </div>
-    </div>
+    </div> --}}
 
+    <div class="ui dataone modal" style="display: none">
+        <i class="close icon"></i>
+        <div class="header">
+            Log into DataONE
+        </div>
+        <div class="image content">
+            <div class="description">
+                <p>In order to publish your Tale, you must first log into DataONE. Continuing will 
+                    redirect you to the DataONE login page.
+                </p>
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui black deny button" {{action 'denyDataONE'}}>
+                Cancel
+            </div>
+            <div class="ui positive right labeled icon button" {{action 'authenticateD1' model._id}}>
+                Continue to DataOne Login
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
 </div>

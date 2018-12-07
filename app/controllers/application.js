@@ -63,6 +63,11 @@ export default Controller.extend({
   }),
   currentUserName: 'Hallo!',
   actions: {
+
+    closeModal() {
+        this.set('isModalVisible', false);
+      },
+
     toggle: function (subSidebarName) {
       $('#' + subSidebarName)
         .sidebar('setting', 'transition', 'push')

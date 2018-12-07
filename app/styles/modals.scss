@@ -1,60 +1,217 @@
-.ui.modal {
-  position: fixed;
-  top:    0;
-  left:   0;
-  right:  0;
-  bottom: 0;
-  margin: auto !important;
+/* Override Semantic craziness */
+.ui.legacy.modal,
+.ui.legacy.page.dimmer > .ui.modal {
+  top: 20px!important;
+  left: 0!important;
 }
 
-.newfolder,
-.delete-modal,
-.warning-modal {
-  height: 200px;
+.ui.modal {
+  position: fixed;
+  top:    20px;
+  left:   0;
+  right:  0;
+  margin: auto !important;
 
-  .header {
-    .close.icon {
-      position: absolute;
-      right: 1rem;
-      cursor: pointer;
+  .newfolder,
+  .delete-modal,
+  .ui.dataone.modal,
+  .warning-modal,
+  .ui.compose-error.modal {
+    height: 200px;
+  
+    .header {
+      .close.icon {
+        position: absolute;
+        right: 1rem;
+        cursor: pointer;
+      }
+    }
+  
+    .image.content {
+      height: auto;
+      color: black;
     }
   }
+}
 
-  .image.content {
-    height: auto;
-    color: black;
-  }
+.ui.compose-error.modal .description {
+  width: 100%;
 }
 
 .destinate-folder {
-  left: 0 !important;
-  margin: auto !important;
-  height: fit-content !important;
-  width: fit-content !important;
+    left: 0 !important;
+    margin: auto !important;
+    height: fit-content !important;
+    width: fit-content !important;
 } 
-
+  
 .ui.modal.envdetails {
-  height: 50%;
-  width: 70%;
-
-  .content {
-    height: calc(100% - 64px - 60px);
-    overflow-y: auto;
+    height: 60%;
+    width: 70%;
+  
+    .content {
+      height: calc(100% - 64px - 60px);
+      overflow-y: auto;
+    }
+}
+  
+  .scrolling.undetached.dimmable .ui.modal.acl-component.scrolling,
+  .scrolling.undetached.dimmable .ui.modal.harvester.scrolling {
+    min-height: 50vh;
+    height: auto;
+    max-height: 70%;
+    min-width: 50vw;
+    position: fixed;
+    left: 0 !important;
+    margin: 0 auto;
+  
+    .content {
+      height: calc(100% - 64px - 60px);
+      overflow-y: auto;
+    }
   }
+  
+  .ember-modal-dialog {
+      width: 70%;
+      height: 90%;
+  }
+  
+  /* Publishing Modal */
+  .publisher .header {
+      letter-spacing: .02rem;
+      -webkit-border-top-left-radius: 1rem;
+      -moz-border-top-left-radius: 1rem;
+      border-top-left-radius: 1rem;
+      -webkit-border-top-right-radius: 1rem;
+      -moz-border-top-right-radius: 1rem;
+      border-top-right-radius: 1rem;
+  }
+  .publisher .main.header img {
+      height: 2.25rem;
+      margin: 0 .75rem 0 0;
+      float:left;
+  }
+  .publisher .main.header span {
+      font-size: 1.2rem;
+      color: rgba(0,0,0,0.4);
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: .05rem;
+      padding-left: .4rem;
+  }
+  
+  .publisher.main.header .info.circle.blue.icon {
+      text-align: right
+  }
+  
+  .publisher .title {
+      letter-spacing: .02rem;
+      -webkit-border-top-left-radius: 1rem;
+      -moz-border-top-left-radius: 1rem;
+      border-top-left-radius: 1rem;
+      -webkit-border-top-right-radius: 1rem;
+      -moz-border-top-right-radius: 1rem;
+      border-top-right-radius: 1rem;
+  }
+  .publisher .title img {
+      height: 2.25rem;
+      margin: 0 .75rem 0 0;
+      float:left;
+  }
+  
+  .publisher .title {
+      color: rgb(74, 74, 74)
+  }
+  .publisher .title span {
+      font-size: 1.2rem;
+      color: rgb(107, 104, 104);
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: .05rem;
+      padding-left: .4rem;
+      display: block;
+  }
+  
+  .publisher .info.circle.blue.icon.main {
+      float: right;
+  }
+  
+  .publisher .ui.radio.checkbox {
+      left:3%;
+      font-size:medium;
+  }
+  
+  .publisher .environment.folder.icon {
+      font-size: 25;
+  }
+  
+  .publisher .environment.name.header {
+      font-size: 15pt;
+  }
+  
+  .publisher .main.header {
+      margin-left:10px;
+  }
+  
+  .publisher .far.fa-hdd {
+      margin-left:10px;
+  }
+  
+  .publisher .desktop.icon {
+      margin-left:10px;
+  }
+  
+  .publisher .fab.fa-creative-commons {
+      margin-left:10px;
+  }
+  
+.publisher .ui.accordion .title .dropdown.icon {
+    float: right;
+    font-size: 2em;
 }
 
-.scrolling.undetached.dimmable .ui.modal.acl-component.scrolling,
-.scrolling.undetached.dimmable .ui.modal.harvester.scrolling {
-  min-height: 50vh;
-  height: auto;
-  max-height: 70%;
-  min-width: 50vw;
-  position: fixed;
-  left: 0 !important;
-  margin: 0 auto;
+.publisher .ui.accordion .content.files {
+    height: 25em;
+} 
+  
+.publisher .actions {
+    position: fixed;
+    bottom: 0;
+    width: 95%;
+    margin-bottom: 1em;
+}
+  
+.publisher .actions .button {
+    float: right;
+}
 
-  .content {
-    height: calc(100% - 64px - 60px);
-    overflow-y: auto;
-  }
+.ui.basic.segment.file-picker {
+    height:25em;
+    overflow-x: hidden;
+}
+
+.file-picker.table{
+    border-collapse: collapse;
+    border:none;
+ }
+
+.file-picker.table entry-head {
+     width:0%;
+ }
+
+ .table.file-picker td {
+    padding: 0.6em;
+    border: none;
+ }
+
+ .table.file-picker tr td {
+    border: none;
+ }
+
+ .table.file-picker td:nth-child(1) {
+    width: 1rem;
+ }
+
+ .table.file-picker td:nth-child(2) {
+    width: 1rem;
 }
