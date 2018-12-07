@@ -10,8 +10,6 @@ export default Ember.Component.extend({
   folderNavs: service(),
   store: service(),
 
-  uuid: '33866dfb-8954-4bc9-bf61-f695b1ac2a14',
-
   selectedMenuIndex: 0,
   dataSources: A([
     O({name: 'WholeTale Catalog'}),
@@ -50,7 +48,7 @@ export default Ember.Component.extend({
     },
 
     updateSessionData() {
-      this.updateSessionData.call(this);
+      this.updateSessionData.call(this, this.get('allSelectedItems'));
     },
 
     cancel() {
@@ -61,12 +59,20 @@ export default Ember.Component.extend({
       this.dblClick.call(this, target);
     },
 
-    click(target) {
+    onClick(target) {
       this.onClick.call(this, target);
     },
 
     goBack() {
       this.goBack.call(this, this.get('currentFolder'));
+    },
+
+    addSelectedData() {
+      this.addSelectedData.call(this, this.get('files'), this.get('folders'));
+    },
+
+    removeSelectedData() {
+      this.removeSelectedData.call(this);
     }
   },
 
@@ -77,6 +83,12 @@ export default Ember.Component.extend({
 
   initData() {
     this.set('loading', true);
+
+    this.set('allSelectedItems', A());
+    this.set('folders', A());
+    this.set('files', A());
+    this.set('currentFolder', null);
+    this.set('rootFolderId', null);
 
     const store = this.get('store');
     let parentId = this.get('userAuth').getCurrentUserID();
@@ -114,7 +126,8 @@ export default Ember.Component.extend({
   },
 
   onClick(target) {
-
+    let selected = !target.get('selected');
+    target.set('selected', selected);
   },
 
   goBack(currentFolder) {
@@ -148,6 +161,30 @@ export default Ember.Component.extend({
       self.set('files', A(files));
       self.set('loading', false);
     }); 
+  },
+
+  addSelectedData(files, folders) {
+    const self = this;
+    const add = f => {
+      if (f.selected) {
+        f.set('selected', false);
+        let {id, name, _modelType} = f; 
+        self.allSelectedItems.pushObject(O({id, name, _modelType}));
+      }
+    }
+    files.forEach(add);
+    folders.forEach(add);
+  },
+
+  removeSelectedData() {
+    const self = this;
+    const del = f => {
+      if (f.selected) {
+        self.allSelectedItems.removeObject(f);
+      }
+    }
+    let all = A(this.get('allSelectedItems').concat([]));
+    all.forEach(del);
   },
   
   loadDataset(adapterOptions = {queryParams: {limit: "0"}}) {
