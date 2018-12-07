@@ -3,7 +3,7 @@ import { inject as service } from '@ember/service';
 import FullScreenMixin from 'ember-cli-full-screen/mixins/full-screen';
 import config from '../../../../config/environment';
 import { scheduleOnce } from '@ember/runloop';
-import { computed } from '@ember/object';
+import { observer, computed } from '@ember/object';
 import { not } from '@ember/object/computed';
 import $ from 'jquery';
 
