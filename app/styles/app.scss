@@ -298,9 +298,11 @@ div.upload.progress {
   color: #ffffff;
 }
 
-a {
-  color: #283649;
-  text-decoration: none;
+.ui.dropdown.ember-view {
+  a {
+    color: #283649;
+    text-decoration: none;
+  }
 }
 
 p,
