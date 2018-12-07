@@ -2,7 +2,7 @@
     <div class="ui grid files-tab-description">
         <div class="five wide column">
             {{#if currentFolderId}}
-                {{input type='file' value=file class='nice upload hidden' multiple=true}}
+                {{input type="file" value=file class="nice upload hidden" multiple=true}}
             {{/if}}
         </div>
         <div class="eleven wide column">
@@ -16,14 +16,14 @@
             {{ui/files/folder-navigator currentNavCommand=currentNavCommand openUploadDialog="openUploadDialog" openCreateFolderModal="openCreateFolderModal" onRegisterDataset="openRegisterModal" navClicked="navClicked"}}
         </div>
     </div>
-    <div class='eleven wide column'>
-        <div class='ui collapsable grid' style='margin-left: 10px'>
-            <div class='sixteen wide right aligned column'>
-              {{ui/files/directory-browser currentNav=currentNav folderList=fileData.folderContents fileList=fileData.itemContents onItemClicked=(action 'itemClicked')}}
+    <div class="eleven wide column">
+        <div class="ui collapsable grid" style="margin-left: 10px">
+            <div class="sixteen wide right aligned column">
+              {{ui/files/directory-browser currentNav=currentNav folderList=fileData.folderContents fileList=fileData.itemContents onItemClicked=(action "itemClicked")}}
             </div>
             {{#unless currentBreadCrumb.isCollection}}
-                <div class='sixteen wide column overlay'>
-                  {{ui/files/nice-dropzone folderId=currentFolderId refresh=(action 'refresh')}}
+                <div class="sixteen wide column overlay">
+                  {{ui/files/nice-dropzone folderId=currentFolderId refresh=(action "refresh")}}
                 </div>
             {{/unless}}
         </div>
