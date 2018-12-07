@@ -661,7 +661,34 @@ ui.inverted.menu.wt.top {
 .left.panel.content {
   height: calc(100vh - (#{$left-panel-padding} + #{$wt-paddleboard-panel-height} + #{$wt-main-row-height} + #{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height}));
 }
+.run-left-panel > .wt.panel.manage {
+    .wt.paddleboard.header.tall {
+        .right.menu {
+            .tale-instance-menu {
+                position: absolute;
+                right: 1.6rem;
+                top: calc(#{$wt-paddleboard-panel-tall-height} - 10px);
+                z-index: 10;
 
+                .vertical.menu {
+                    width: 190px;
+                    box-shadow: 0px 2px 3px 0px rgba(34, 36, 38, 0.15);
+                    border: 1px solid rgba(34, 36, 38, 0.15);
+                    border-radius: 0.28571429rem;
+                    -webkit-transition: opacity 0.1s ease;
+                    transition: opacity 0.1s ease;
+                    z-index: 11;
+                    will-change: transform, opacity;
+
+                    .item > .label {
+                        background-color: transparent;
+                        color: black;
+                    }
+                }
+            }
+        }
+    }
+}
 .wt.panel {
   background: #fff;
   border: 1px solid rgba(0,0,0,0.20);
@@ -676,7 +703,31 @@ ui.inverted.menu.wt.top {
     height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height}));
 
     .wt.paddleboard.header.tall {
-      padding: 0;
+      //   padding: 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+      padding: .6rem 1.6rem;
+      letter-spacing: .02rem;
+      background: #fff;
+      -webkit-border-top-left-radius: 1rem;
+      -moz-border-top-left-radius: 1rem;
+      border-top-left-radius: 1rem;
+      -webkit-border-top-right-radius: 1rem;
+      -moz-border-top-right-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+
+    .tale-tabs-selector {
+      .ui.secondary.menu.pointing {
+        display: inline-flex;
+        width: 100%;
+
+        a {
+          width: auto;
+        }
+        .active {
+          margin-bottom: -2px;
+        }
+      }
     }
 
     .rounded-bottom {

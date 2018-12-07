@@ -1,5 +1,5 @@
 <div class="wt panel manage">
-    <div class="wt paddleboard">
+    {{!-- <div class="wt paddleboard">
         <h2>
             <img src="/images/wholetale_logo_sm.png" /> Current Tale
             {{#if hasSelectedTaleInstance}}
@@ -11,8 +11,7 @@
                 </a>
             {{/if}}
         </h2>
-    </div>
-    {{!-- DEVNOTE: This should be enabled when we're ready to publish Tales
+    </div> --}}
     {{#unless noInstanceSelected}}
         <div class="wt paddleboard tall header">
             <div class="ui bordlerless menu">
@@ -20,57 +19,72 @@
                     <img class="illustration" src="{{model.tale.illustration}}" />
                     <img class="env" src="{{model.tale.icon}}" />
                     <div class="header name">
-                        <h3>{{model.name}}</h3>
+                        <h3>{{truncate-name model.name}}</h3>
                         <span>{{model.tale.authors}}</span>
                     </div>
                 </div>
                 <div class="right borderless menu">
-                    <div class="item">
-                        <div class="ui basic blue button" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
-                            Publish Tale
+                    {{#if readyToReleaseFeature}}
+                        <div class="item">
+                            <div class="ui blue icon button">
+                                <i class="fas fa-stop"></i> Stop
+                            </div>
                         </div>
-                    </div>
-                    <div class="item">
-                        <div class="ui blue button" {{action "editTaleInfo" model._id}}>
-                            Edit Tale Info
+                        <div class="item">
+                            <div class="ui button">
+                                Close
+                            </div>
                         </div>
-                    </div>
+                    {{/if}}
                     <div class="item">
-                        <a href="https://wholetale.readthedocs.io/users_guide/run.html">
-                            <i class="fas fa-info" style="cursor: pointer;"></i>
+                        <a onclick={{action (mut displayTaleInstanceMenu) (not displayTaleInstanceMenu)}}>
+                            <i class="fas fa-ellipsis-v clickable" style="cursor: pointer"></i>
                         </a>
                     </div>
+                    {{#if displayTaleInstanceMenu}}
+                        {{#click-outside action=(action (mut displayTaleInstanceMenu) false)}}
+                            <div class="tale-instance-menu">
+                                <div class="ui vertical left menu transition">
+                                    <a class="item" href="https://wholetale.readthedocs.io/users_guide/run.html">
+                                        Read the docs <div class="ui label transparent"><i class="fas fa-book"></i></div>
+                                    </a>
+                                    {{#if readyToReleaseFeature}}
+                                        <a class="item">
+                                            Duplicate Tale <div class="ui label transparent"><i class="fas fa-copy"></i></div>
+                                        </a>
+                                        <a class="item">
+                                            Delete Tale <div class="ui label transparent"><i class="fas fa-trash"></i></div>
+                                        </a>
+                                        <a class="item">
+                                            Rebuild Tale <div class="ui label transparent"><i class="fas fa-cog"></i></div>
+                                        </a>
+                                    {{/if}}
+                                    <a class="item" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
+                                        Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
+                                    </a>
+                                    {{#if readyToReleaseFeature}}
+                                        <a class="item" {{action "editTaleInfo" model._id}}>
+                                            Edit Tale Info <div class="ui label transparent"><i class="fas fa-edit"></i></div>
+                                        </a>
+                                    {{/if}}
+                                    <a class="item" onclick={{action 'toggleFullscreen'}}>
+                                        View Fullscreen <div class="ui label transparent"><i class="fas fa-expand"></i></div>
+                                    </a>
+                                </div>
+                            </div>
+                        {{/click-outside}}
+                    {{/if}}
                 </div>
             </div>
         </div>
-    {{/unless}} --}}
+    {{/unless}}
     {{!-- {{#if (eq internalState.currentInstanceId model._id)}} --}}
     {{#if hasSelectedTaleInstance}}
-      {{#if (not-eq model.status 0)}}
-          {{#unless model.iframe}}
-              <div class="placeholder message">
-                  <p>The compute environment for this Tale must run in a separate browser window.<br/>
-                    <a class="ui primary button huge" href="{{model.url}}" target="_blank">Go to new window</a></p>
-
-              </div>
-          {{else}}
-            <div class="rounded-bottom" style="padding: 0; margin: 0; overflow-y: hidden;">
-              <iframe id="frontendDisplay"
-                      src="{{model.url}}"
-                      style="padding: 0; width:100%; height: inherit;"
-                      class="ui basic segment">
-              </iframe>
-            </div>
-          {{/unless}}
-      {{else}}
-        <div class="placeholder message">
-          <p>Creating your new Tale...</p>
-        </div>
-      {{/if}}
+        {{ui/tale-tabs-selector model=model}}
     {{else}}
         <div class="placeholder message">
             <p>Choose from
-                <br/>Launched Tales panel
+                <br />Launched Tales panel
             </p>
         </div>
     {{/if}}
@@ -103,7 +117,7 @@
         </div>
         <div class="image content">
             <div class="description">
-                <p>In order to publish your Tale, you must first log into DataONE. Continuing will 
+                <p>In order to publish your Tale, you must first log into DataONE. Continuing will
                     redirect you to the DataONE login page.
                 </p>
             </div>
