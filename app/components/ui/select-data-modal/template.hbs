@@ -51,13 +51,6 @@
                 </td>
               </tr>
               {{/each}}
-                            {{#each files as | file |}}
-              <tr class="{{if file.selected 'selected-row'}}">
-                <td class="collapsing noselect" {{action 'onClick' file on='click'}}>
-                  <i class="file icon"></i>{{file.name}}
-                </td>
-              </tr>
-              {{/each}}
               </tbody>
             </table>
             {{/if}}
