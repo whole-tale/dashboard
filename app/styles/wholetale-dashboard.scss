@@ -703,7 +703,7 @@ ui.inverted.menu.wt.top {
     height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + #{$main-menu-height} + #{$footer-height}));
 
     .wt.paddleboard.header.tall {
-      //   padding: 0;
+      // padding: 0;
       border-bottom: 1px solid rgba(0, 0, 0, 0.2);
       padding: .6rem 1.6rem;
       letter-spacing: .02rem;

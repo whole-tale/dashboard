@@ -1,0 +1,9 @@
+@import 'variables';
+
+.tale-tab-interact {
+    height: calc(100vh - (2rem + #{$inverted-menu-height} + #{$footer-height} + 80px + #{$wt-main-row-height}));
+
+    #frontendDisplayParent {
+        height: inherit;
+    }
+}
