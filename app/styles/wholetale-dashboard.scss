@@ -779,6 +779,16 @@ ui.inverted.menu.wt.top {
         .active {
           margin-bottom: -2px;
         }
+        .external-icon-container {
+            position: absolute;
+            right: 3rem;
+            .external {
+                cursor: pointer;
+                top: 0.5em;
+                position: relative;
+                font-size: 20px;
+            }
+        }
       }
     }
 

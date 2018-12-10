@@ -78,7 +78,7 @@
             </div>
         </div>
     {{/unless}}
-    {{!-- {{#if (eq internalState.currentInstanceId model._id)}} --}}
+    {{!-- {{#if (eq internalState.currentInstanceId model.id)}} --}}
     {{#if hasSelectedTaleInstance}}
         {{ui/tale-tabs-selector model=model refresh="refresh" itemClicked="itemClicked" navClicked="navClicked" breadcrumbClicked="breadcrumbClicked"}}
     {{else}}

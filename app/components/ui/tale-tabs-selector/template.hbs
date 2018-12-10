@@ -1,22 +1,27 @@
 <div class="ui">
-  <div class="ui secondary pointing menu">
-      <a class="item {{if activeTabInteract "active"}} auto-width" data-tab="tab-interact" onclick={{action "activateInteract"}}>Interact</a>
-      <a class="item {{if activeTabFiles "active"}} auto-width" data-tab="tab-files" onclick={{action "activateFiles"}}>Files</a>
-      <a class="item {{if activeTabMetadata "active"}} auto-width" data-tab="tab-metadata" onclick={{action "activateMetadata"}}>Metadata</a>
-  </div>
-  <div class="ui tab {{if activeTabInteract "active"}}" data-tab="tab-interact">
-      {{#if activeTabInteract}}
-        {{ui/tale-tab-interact model=model}}
-      {{/if}}
-  </div>
-  <div class="ui tab {{if activeTabFiles "active"}}" data-tab="tab-files">
-      {{#if activeTabFiles}}
-        {{ui/tale-tab-files model=model}}
-      {{/if}}
-  </div>
-  <div id="taleMetadataTab" class="ui tab {{if activeTabMetadata "active"}}" data-tab="tab-metadata">
-      {{#if activeTabMetadata}}
-          {{ui/tale-tab-metadata model=model}}
-      {{/if}}
-  </div>
+    <div class="ui secondary pointing menu">
+        <a class="item {{if activeTabInteract "active"}} auto-width" data-tab="tab-interact" onclick={{action "activateInteract"}}>Interact</a>
+        <a class="item {{if activeTabFiles "active"}} auto-width" data-tab="tab-files" onclick={{action "activateFiles"}}>Files</a>
+        <a class="item {{if activeTabMetadata "active"}} auto-width" data-tab="tab-metadata" onclick={{action "activateMetadata"}}>Metadata</a>
+        {{#if (and activeTabInteract (and (not-eq model.status 0) (and model.iframe (eq internalState.currentInstanceId model.id))))}}
+            <a href="{{model.url}}" target="_blank" class="external-icon-container">
+                <i class="external alternate right icon floated"></i>
+            </a>
+        {{/if}}
+    </div>
+    <div class="ui tab {{if activeTabInteract "active"}}" data-tab="tab-interact">
+        {{#if activeTabInteract}}
+            {{ui/tale-tab-interact model=model}}
+        {{/if}}
+    </div>
+    <div class="ui tab {{if activeTabFiles "active"}}" data-tab="tab-files">
+        {{#if activeTabFiles}}
+            {{ui/tale-tab-files model=model}}
+        {{/if}}
+    </div>
+    <div id="taleMetadataTab" class="ui tab {{if activeTabMetadata "active"}}" data-tab="tab-metadata">
+        {{#if activeTabMetadata}}
+            {{ui/tale-tab-metadata model=model}}
+        {{/if}}
+    </div>
 </div>
