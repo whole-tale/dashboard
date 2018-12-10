@@ -1,9 +1,12 @@
 import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import layout from './template';
 
 export default Component.extend({
     layout,
     classNames: ['tale-tabs-selector'],
+    internalState: service(),
+
     init() {
         this._super(...arguments);
 
