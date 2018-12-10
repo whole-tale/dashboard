@@ -1,6 +1,6 @@
-import Ember from 'ember';
+import { helper } from '@ember/component/helper';
 
-export default Ember.Helper.helper(function(params) {
-  let [a, b] = params;
-  return a!==b;
+export default helper(function (params) {
+    let [a, b] = params;
+    return a !== b;
 });
