@@ -65,19 +65,20 @@ export default Service.extend({
 
 
   /**
-   * Posts a Tale, using the query parameters specified in the API ...
-   * @param httpCommand
-   * @param taleID
-   * @param imageId
-   * @param folderId
-   * @param instanceId
-   * @param title
-   * @param description
-   * @param isPublic
-   * @param configuration
-   * @param success
-   * @param fail
-   */
+  * Posts a Tale, using the query parameters specified in the API ...
+  * @method postTale
+  * @param httpCommand
+  * @param taleID
+  * @param imageId
+  * @param folderId
+  * @param instanceId
+  * @param title
+  * @param description
+  * @param isPublic
+  * @param configuration
+  * @param success
+  * @param fail
+  */
   postTale: function (httpCommand, taleID, imageId, folderId, instanceId, title, description, isPublic, configuration, success, fail) {
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/tale/';
@@ -142,7 +143,63 @@ export default Service.extend({
     client.send();
   },
 
+  /**
+  * Creates a Tale from a dataset.
+  * @method taleFromDataset
+  * @param imageId The ID of the image used for the Tale
+  * @param identifier The doi/identifier of the data package
+  * @param spawn Bool on whether to spawn the instance
+  * @param lookupKwargs Optional arguments
+  * @param taleKwargs Optional arguments
+  * @param success Callback function that is called on success
+  * @param fail Callback function that is called on fail
+  */
+  taleFromDataset: function (imageId,
+    identifier, 
+    spawn,
+    lookupKwargs,
+    taleKwargs,
+    success,
+    fail) {
+    let token = this.get('tokenHandler').getWholeTaleAuthToken();
+    var url = config.apiUrl + '/tale/import';
+    var queryPars = "?";
+
+    queryPars += "imageId=" + encodeURIComponent(imageId);
+    queryPars += "&";
+    queryPars += "url=" + encodeURIComponent(identifier);
+
+    if(spawn) {
+      queryPars += "&";
+      queryPars += "spawn=" + encodeURIComponent(spawn);
+    }
+    if (lookupKwargs) {
+      queryPars += "&";
+      queryPars += "lookupKwargs=" + encodeURIComponent(lookupKwargs);
+    }
+    if(taleKwargs) {
+      queryPars += "&";
+      queryPars += "taleKwargs=" + encodeURIComponent(taleKwargs);
+    }
+
+    url += queryPars;
+    var client = new XMLHttpRequest();
+    client.open("post", url);
+    client.setRequestHeader("Girder-Token", token);
+    client.addEventListener("load", function () {
+      if (client.status === 200) {
+        success(JSON.parse(client.responseText));
+      } else {
+        fail(client.responseText);
+      }
+    });
+
+    client.addEventListener("error", fail);
+    client.send();
+  },
+
   postInstance: function (taleId, imageId, name, success, fail) {
+    // Creates an instance
     var token = this.get('tokenHandler').getWholeTaleAuthToken();
     var url = config.apiUrl + '/instance/';
     var queryPars = "";
@@ -162,7 +219,6 @@ export default Service.extend({
       queryPars += "&";
       queryPars += "name=" + encodeURIComponent(name);
     }
-
 
     if (queryPars !== "") {
       url += "?" + queryPars;
@@ -199,13 +255,37 @@ export default Service.extend({
     // provided by the backend
     client.addEventListener("load", function () {
       if (client.status === 200) {
-        success(client, "tale-export-" + taleId + '.zip')
+        success(client, "tale-export-" + taleId + '.zip');
       } else {
-        fail(client)
+        fail(client);
       }
     });
 
     client.send();
   },
 
+  /**
+  * Queries the job result endpoint.
+  * @method getFinalJobStatus
+  * @param jobId The ID of the job whose status is wanted
+  * @param success Function that is called on success
+  * @param fail Function that is called when the call fails
+  */
+  getFinalJobStatus(jobId, success, fail) {
+    var token = this.get('tokenHandler').getWholeTaleAuthToken();
+    var url = config.apiUrl + '/job/' + jobId + '/result';
+
+    var client = new XMLHttpRequest();
+    client.open('GET', url);
+    client.setRequestHeader("Girder-Token", token);
+    client.addEventListener("load", function () {
+      if (client.status === 200) {
+        success(JSON.parse(client.responseText));
+      } else {
+        fail(client.responseText);
+      }
+    });
+    client.addEventListener("error", fail);
+    client.send();
+  },
 });

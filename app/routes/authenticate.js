@@ -1,8 +1,10 @@
 import Ember from 'ember';
+import { inject as service } from '@ember/service';
 
 export default Ember.Route.extend({
   tokenHandler: Ember.inject.service('token-handler'),
   userAuth: Ember.inject.service('user-auth'),
+  routerService: service('-routing'),
   currentUser: null,
   token: null,
 
@@ -28,7 +30,14 @@ export default Ember.Route.extend({
           this.get("tokenHandler").releaseWholeTaleCookie();
           this.get("userAuth").resetCurrentUser();
           router.set('currentUser', null);
-          router.transitionTo('login');
+          let returnRoute = this.routerService.router.url;
+          
+          // Prevent nexting of multiple "rd" parameters inside each other
+          if (returnRoute.indexOf("?rd=") !== -1) {
+            router.transitionTo('login');
+          } else {
+            router.transitionTo('login', { queryParams: { rd: encodeURIComponent(returnRoute) }});
+          }
           return null;
         } else {
           //   console.log("User is not null!!!");
