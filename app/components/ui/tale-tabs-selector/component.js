@@ -1,30 +1,35 @@
 import Component from '@ember/component';
-
+import { inject as service } from '@ember/service';
+import layout from './template';
 
 export default Component.extend({
-  init() {
-    this._super(...arguments);
-    
-    this.set('activeTabInteract', true);
-    this.set('activeTabFiles', false);
-    this.set('activeTabMetadata', false);
-  },
-  
-  actions: {
-    activateInteract() {
-      this.set('activeTabInteract', true);
-      this.set('activeTabFiles', false);
-      this.set('activeTabMetadata', false);
+    layout,
+    classNames: ['tale-tabs-selector'],
+    internalState: service(),
+
+    init() {
+        this._super(...arguments);
+
+        this.set("activeTabInteract", true);
+        this.set("activeTabFiles", false);
+        this.set("activeTabMetadata", false);
     },
-    activateFiles() {
-      this.set('activeTabInteract', false);
-      this.set('activeTabFiles', true);
-      this.set('activeTabMetadata', false);
-    },
-    activateMetadata() {
-      this.set('activeTabInteract', false);
-      this.set('activeTabFiles', false);
-      this.set('activeTabMetadata', true);
-    },
-  }
+
+    actions: {
+        activateInteract() {
+            this.set("activeTabInteract", true);
+            this.set("activeTabFiles", false);
+            this.set("activeTabMetadata", false);
+        },
+        activateFiles() {
+            this.set("activeTabInteract", false);
+            this.set("activeTabFiles", true);
+            this.set("activeTabMetadata", false);
+        },
+        activateMetadata() {
+            this.set("activeTabInteract", false);
+            this.set("activeTabFiles", false);
+            this.set("activeTabMetadata", true);
+        },
+    }
 });
