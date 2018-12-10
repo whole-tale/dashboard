@@ -1,20 +1,19 @@
-<div class='main-row'>
-    <div class='ui grid'>
-        <div class='five wide column'>
+<div class="main-row">
+    <div class="ui grid files-tab-description">
+        <div class="five wide column">
             {{#if currentFolderId}}
                 {{input type='file' value=file class='nice upload hidden' multiple=true}}
             {{/if}}
         </div>
-        <div class='eleven wide column'>
-            {{ui/files/bread-crumbs currentNav=currentNav currentBreadCrumb=currentBreadCrumb fileBreadCrumbs=fileBreadCrumbs isMain=true navClicked='navClicked' bcClicked='breadcrumbClicked'}}
+        <div class="eleven wide column">
+            {{ui/files/bread-crumbs currentNav=currentNav currentBreadCrumb=currentBreadCrumb fileBreadCrumbs=fileBreadCrumbs isMain=true navClicked=navClicked bcClicked="breadcrumbClicked"}}
         </div>
     </div>
 </div>
-
-<div class='ui grid'>
-    <div class='five wide column folder-navigator-container'>
-        <div class='ui collapsable grid folder-grid'>
-          {{ui/files/folder-navigator currentNavCommand=currentNavCommand openUploadDialog='openUploadDialog' openCreateFolderModal='openCreateFolderModal' onRegisterDataset='openRegisterModal' navClicked='navClicked'}}
+<div class="ui grid">
+    <div class="five wide column folder-navigator-container">
+        <div class="ui collapsable grid folder-grid">
+            {{ui/files/folder-navigator currentNavCommand=currentNavCommand openUploadDialog="openUploadDialog" openCreateFolderModal="openCreateFolderModal" onRegisterDataset="openRegisterModal" navClicked="navClicked"}}
         </div>
     </div>
     <div class='eleven wide column'>
