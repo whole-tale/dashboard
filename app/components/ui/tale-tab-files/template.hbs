@@ -13,17 +13,17 @@
 <div class="ui grid">
     <div class="five wide column folder-navigator-container">
         <div class="ui collapsable grid folder-grid">
-          {{ui/files/folder-navigator currentNavCommand=currentNavCommand openUploadDialog="openUploadDialog" openCreateFolderModal="openCreateFolderModal" onRegisterDataset="openRegisterModal" navClicked="navClicked"}}
+            {{ui/files/folder-navigator currentNavCommand=currentNavCommand openUploadDialog="openUploadDialog" openCreateFolderModal="openCreateFolderModal" onRegisterDataset="openRegisterModal" navClicked="navClicked"}}
         </div>
     </div>
     <div class="eleven wide column">
         <div class="ui collapsable grid" style="margin-left: 10px">
             <div class="sixteen wide right aligned column">
-              {{ui/files/directory-browser currentNav=currentNav folderList=fileData.folderContents fileList=fileData.itemContents onItemClicked=(action "itemClicked")}}
+                {{ui/files/directory-browser currentNav=currentNav folderList=fileData.folderContents fileList=fileData.itemContents onItemClicked=(action "itemClicked")}}
             </div>
             {{#unless currentBreadCrumb.isCollection}}
                 <div class="sixteen wide column overlay">
-                  {{ui/files/nice-dropzone folderId=currentFolderId refresh=(action "refresh")}}
+                    {{ui/files/nice-dropzone folderId=currentFolderId refresh=(action "refresh")}}
                 </div>
             {{/unless}}
         </div>
