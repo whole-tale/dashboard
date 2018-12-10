@@ -82,10 +82,10 @@ module.exports = function (environment) {
   }
 
   if (environment === 'production') {
-    ENV.apiHost = 'https://girder.dev.wholetale.org';//'apiHOST';
-    ENV.wholeTaleHost = 'https://dashboard.dev.wholetale.org';//'https://dashboardHOST';
-    ENV.dataOneHost = 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2';//'dataOneHOST';
-    ENV.authProvider = 'Globus';//'authPROVIDER';
+    ENV.apiHost = 'apiHOST';
+    ENV.wholeTaleHost = 'https://dashboardHOST';
+    ENV.dataOneHost = 'dataOneHOST';
+    ENV.authProvider = 'authPROVIDER';
   }
 
   ENV.apiPath = 'api/v1';
