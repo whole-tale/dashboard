@@ -80,7 +80,7 @@
     {{/unless}}
     {{!-- {{#if (eq internalState.currentInstanceId model._id)}} --}}
     {{#if hasSelectedTaleInstance}}
-        {{ui/tale-tabs-selector model=model}}
+        {{ui/tale-tabs-selector model=model refresh="refresh" itemClicked="itemClicked" navClicked="navClicked" breadcrumbClicked="breadcrumbClicked"}}
     {{else}}
         <div class="placeholder message">
             <p>Choose from

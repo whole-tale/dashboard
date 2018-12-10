@@ -3,7 +3,7 @@ import { inject as service } from '@ember/service';
 import FullScreenMixin from 'ember-cli-full-screen/mixins/full-screen';
 import config from '../../../../config/environment';
 import { scheduleOnce } from '@ember/runloop';
-import { observer, computed } from '@ember/object';
+import { computed } from '@ember/object';
 import { not } from '@ember/object/computed';
 import $ from 'jquery';
 import layout from './template';
@@ -85,7 +85,7 @@ export default Component.extend(FullScreenMixin, {
         return xmlHttp.responseText;
     },
 
-    shouldShowButtons: computed('internalState', 'internalState.currentInstanceId', function (internalState) {
+    shouldShowButtons: computed('internalState', 'internalState.currentInstanceId', function () {
         let shouldButtonsAppear = this.get('internalState').currentInstanceId;
         if (shouldButtonsAppear) {
             this.set('hasSelectedTaleInstance', true);
@@ -145,6 +145,165 @@ export default Component.extend(FullScreenMixin, {
 
         denyDelete() {
             return true;
+        },
+
+        // previously was in the manage tab
+        //----------------------------------------------------------------------------
+        itemClicked(item, isFolder) {
+            let state = this.get('internalState');
+            let myController = this;
+
+            let itemID = item.get('_id');
+            let itemName = item.get('name');
+
+            if (isFolder === "true") {
+                this.store.find('folder', itemID).then(function (folder) {
+                    myController.set("parentId", folder.get('parentId'));
+
+                    state.setCurrentParentId(folder.get('parentId'));
+                    state.setCurrentParentType(folder.get('parentCollection'));
+
+                    let folderContents, itemContents;
+                    try {
+                        folderContents = myController.store.query('folder', {
+                            parentId: itemID,
+                            parentType: "folder"
+                        });
+                        itemContents = myController.store.query('item', {
+                            folderId: itemID
+                        });
+
+                        let newModel = {
+                            'folderContents': folderContents,
+                            'itemContents': itemContents
+                        };
+                        myController.set("fileData", newModel);
+                    } catch (e) {
+                        // TODO(Adam): better handle this somehow. for now I just log a message
+                    }
+                    // add to history (recent folders visited)
+
+                    // NOTE(Adam): The following code was moved into the "find folder .then" clause. We need this here
+                    //             to make sure we only update breadcrumbs after successfully navigating into the folder.
+                    state.addFolderToRecentFolders(itemID);
+
+                    state.setCurrentFolderID(itemID);
+                    state.setCurrentFolderName(itemName);
+
+                    myController.set("currentFolderId", itemID);
+
+                    let previousBreadCrumb = state.getCurrentBreadCrumb();
+
+                    state.setCurrentBreadCrumb(item);
+
+                    let fileBreadCrumbs = state.getCurrentFileBreadcrumbs();
+
+                    if (previousBreadCrumb) { // NOTE(Adam): prevent from pushing a null value into the array
+                        fileBreadCrumbs.push(previousBreadCrumb);
+                    }
+
+                    state.setCurrentFileBreadcrumbs(fileBreadCrumbs);
+
+                    myController.set("currentBreadCrumb", state.getCurrentBreadCrumb());
+                    myController.set("fileBreadCrumbs", state.getCurrentFileBreadcrumbs());
+                });
+
+            } /* else {
+                // myController.get('router').transitionTo('upload.view', item.get('id'));
+            } */
+        },
+        navClicked(nav) {
+            let controller = this;
+            let state = this.get('internalState');
+
+            let folderContents = null;
+            let itemContents = null;
+
+            state.setCurrentNavCommand(nav.command);
+            this.set('currentNav', nav);
+            this.set("currentNavCommand", nav.command);
+            this.set("currentNavTitle", nav.name);
+
+            if (nav.command === "home" || nav.command === "user_data" || nav.command === "workspace") {
+                folderContents = controller.get('store').query('folder', {
+                    parentId: nav.parentId,
+                    parentType: nav.parentType,
+                    name: nav.name,
+                    reload: true,
+                    adapterOptions: {
+                        queryParams: {
+                            limit: "0"
+                        }
+                    }
+                }).then(folders => {
+                    if (folders.length) {
+                        let folder_id = folders.content[0].id;
+
+                        state.setCurrentFolderID(folder_id);
+                        state.setCurrentParentId(nav.parentId);
+                        state.setCurrentParentType(nav.parentType);
+                        state.setCurrentFolderName(nav.name);
+                        controller.set("currentFolderId", folder_id);
+
+                        itemContents = controller.store.query('item', {
+                            folderId: folder_id,
+                            reload: true,
+                            adapterOptions: {
+                                queryParams: {
+                                    limit: "0"
+                                }
+                            }
+                        });
+                        return controller.store.query('folder', {
+                            "parentId": folder_id,
+                            "parentType": "folder"
+                        });
+                    }
+                    throw new Error(nav.name + " folder not found.");
+                })
+                    .catch(() => {
+                        return;
+                    });
+            } else if (nav.command === "recent") {
+                let uniqueSetOfRecentFolders = [];
+                let recentFolders = state.getRecentFolders().filter(folder => {
+                    let index = uniqueSetOfRecentFolders.findIndex(added => {
+                        return added === folder;
+                    });
+                    let isAdded = index < 0 ? false : true;
+                    if (!isAdded) {
+                        uniqueSetOfRecentFolders.push(folder);
+                        return true;
+                    }
+                    return false;
+                });
+                let payload = JSON.stringify({
+                    "folder": recentFolders
+                });
+                folderContents = controller.get('store').query('resource', {
+                    "resources": payload
+                });
+                // alert("Not implemented yet ...");
+            }
+
+            let newModel = {};
+            folderContents
+                .then(_folderContents => {
+                    newModel.folderContents = _folderContents;
+                    return itemContents;
+                })
+                .then(_itemContents => {
+                    newModel.itemContents = _itemContents;
+                })
+                .finally(() => {
+                    controller.set("fileData", newModel);
+                });
+
+            state.setCurrentBreadCrumb(null);
+            state.setCurrentFileBreadcrumbs([]); // new nav folder, reset crumbs
+            state.setCurrentFolderName("");
+            this.set("currentBreadCrumb", null);
+            this.set("fileBreadCrumbs", []);
         }
     }
 });

@@ -1,0 +1,14 @@
+@import 'variables';
+
+.tale-tab-files {
+    height: calc(100vh - (2rem + #{$inverted-menu-height} + 94px + 80px + #{$wt-main-row-height}));
+
+    .ui.grid:not(.files-tab-description) {
+        height: calc(100vh - (2rem + #{$inverted-menu-height} + 94px + 80px + #{$wt-main-row-height}));
+
+        .folder-navigator-container {
+            height: calc(100vh - (2rem + 48px + 0px + 94px + 80px + 50px + 51px));
+        }
+    }
+
+}
