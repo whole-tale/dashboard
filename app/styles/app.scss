@@ -37,6 +37,17 @@ body {
   cursor: pointer;
 }
 
+.noselect
+{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
 .ui.notifier {
   top: 0px;
   right: 0px;
@@ -290,9 +301,11 @@ div.upload.progress {
   color: #ffffff;
 }
 
-a {
-  color: #283649;
-  text-decoration: none;
+.ui.dropdown.ember-view {
+  a {
+    color: #283649;
+    text-decoration: none;
+  }
 }
 
 p,
