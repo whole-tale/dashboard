@@ -3,6 +3,7 @@ import { inject as service } from '@ember/service';
 import layout from './template';
 
 export default Component.extend({
+    classNames: ['folder-navigator'],
     folderNavs: service(),
     userAuth: service(),
     layout,
