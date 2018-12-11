@@ -177,7 +177,9 @@ export default Ember.Component.extend({
       if (f.selected) {
         f.set('selected', false);
         let {id, name, _modelType} = f; 
-        self.allSelectedItems.pushObject(O({id, name, _modelType}));
+        if (!self.allSelectedItems.findBy('id', id)) {
+          self.allSelectedItems.pushObject(O({id, name, _modelType}));
+        }
       }
     }
     files.forEach(add);
