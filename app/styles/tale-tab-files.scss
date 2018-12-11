@@ -3,6 +3,21 @@
 .tale-tab-files {
     height: calc(100vh - (2rem + #{$inverted-menu-height} + #{$footer-height} + 80px + #{$wt-main-row-height}));
 
+    .main-row {
+        padding: 0.5rem 1.6rem;
+        .files-tab-description {
+            .breadcrumbs-container {
+                .breadcrumb {
+                    .fa-plus-circle {
+                        position: absolute;
+                        right: 0;
+                        bottom: 3px;
+                    }
+                }
+            }
+        }
+    }
+
     .ui.grid:not(.files-tab-description) {
         height: calc(100vh - (2rem + #{$inverted-menu-height} + #{$footer-height} + 80px + #{$wt-main-row-height}));
 
