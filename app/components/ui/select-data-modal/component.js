@@ -23,6 +23,8 @@ export default Ember.Component.extend({
   files: A(),
 
   loading: true,
+  loadingMessage: 'Preparing Files',
+  loadError: false,
   currentFolder: null, 
   rootFolderId: null,
 
@@ -83,6 +85,8 @@ export default Ember.Component.extend({
 
   initData() {
     this.set('loading', true);
+    this.set('loadError', false);
+    this.set('loadingMessage', 'Preparing Files');
 
     this.set('allSelectedItems', A());
     this.set('folders', A());
@@ -106,8 +110,8 @@ export default Ember.Component.extend({
 
       return self.loadFolder.call(self, dataFolderId, 'folder');
     }).catch(e => {
-      self.set('loading', false);
-      console.error(e);
+      self.set('loadError', true);
+      self.set('loadingMessage', 'Failed to load registered data. Please try again');
     });   
   },
 
@@ -120,8 +124,8 @@ export default Ember.Component.extend({
     
     const self = this;
     return this.loadFolder.call(this, target.get('id'), target.get('_modelType')).catch(e => {
-      self.set('loading', false);
-      console.error(e);
+      self.set('loadError', true);
+      self.set('loadingMessage', 'Failed to load registered data. Please try again');
     });   
   },
 
@@ -132,6 +136,8 @@ export default Ember.Component.extend({
 
   goBack(currentFolder) {
     this.set('loading', true);
+    this.set('loadError', false);
+    this.set('loadingMessage', 'Preparing Files');
 
     const store = this.get('store');
     
@@ -143,13 +149,15 @@ export default Ember.Component.extend({
       self.set('currentFolder', parent);
       return self.loadFolder.call(self, parentId, parentType);
     }).catch(e => {
-      self.set('loading', false);
-      console.error(e);
+      self.set('loadError', true);
+      self.set('loadingMessage', 'Failed to load registered data. Please try again');
     });   
   },
 
   loadFolder(parentId, parentType, adapterOptions = {queryParams: {limit: "0"}}) {
     this.set('loading', true);
+    this.set('loadError', false);
+    this.set('loadingMessage', 'Preparing Files');
     
     const store = this.get('store');
     let fetchFolders = store.query('folder', {parentId, parentType, adapterOptions});
