@@ -249,19 +249,41 @@ div.upload.progress {
 }
 
 .ui.breadcrumb {
-  color: #1B1C1D; // #283b49;
-  // background-color: #efefef;
+  color: #1B1C1D;
   padding: 8px 4px 8px 10px;
   width: 100%;
   margin: 0 0 5px 0 !important;
+
+  .bc-description {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    // font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font-weight: 300;
+    font-style: italic;
+    // font-size: 1.2rem;
+    color: #666;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: calc(100% - 76px);
+    &.ws {
+        width: calc(100% - 152px);
+    }
+  }
 }
 
-.ui.breadcrumb:hover {
+.ui.breadcrumb:not(.bold):hover {
   color: #a5a5a5;
 }
 
-.ui.breadcrumb>a {
-  color: #1B1C1D; // #21a6f6;
+.ui.breadcrumb > a {
+  color: #1B1C1D;
+  &.bold {
+    font-weight: 600;
+    // font-size: 1.4rem;
+    vertical-align: top;
+  }
 }
 
 .ui.breadcrumb .divider {
@@ -461,7 +483,7 @@ pre {
 .full.screen.style {
   width: 200% !important;
   height: 200% !important;
-  margin: 0 0 0 0 !important;
+  margin: 0 !important;
   border-radius: 0;
 }
 
@@ -543,7 +565,7 @@ pre {
 
 .catalog .middle.text {
   color: #666666;
-  text-wrap: normal;
+  white-space: normal;
   text-align: justify
 }
 
