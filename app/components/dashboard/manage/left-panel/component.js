@@ -85,6 +85,18 @@ export default Component.extend({
     this.set("fileBreadCrumbs", state.getCurrentFileBreadcrumbs()); // new collection, reset crumbs
   },
 
+  updateSessionData(listOfDataItems) {
+    console.log(listOfDataItems);
+
+    // Add this to the dm session
+    // const store = this.get('store');
+    
+  },
+
+  cancelSelectData() {
+
+  },
+
   actions: {
     refresh() {
       let state = this.get('internalState');
@@ -350,8 +362,12 @@ export default Component.extend({
     //-----------------------------------------------------------------------------
     openRegisterModal() {
       $('.ui.modal.harvester').modal('show');
-    }
+    },
 
+    //----------------------------------------------------------------------------
+    openSelectDataModal() {
+      $('.ui.modal.selectdata').modal('show');
+    }
   }
 
 });
