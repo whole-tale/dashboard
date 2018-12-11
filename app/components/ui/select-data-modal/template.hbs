@@ -17,7 +17,7 @@
         </div>
         
         <div class="seven wide column">
-          <div class="ui segment">
+          <div class="ui segment" style="overflow-y:scroll;">
             <button class="ui very basic right labeled icon button" {{action 'addSelectedData'}}><i class="angle double right icon"></i>Add Selected</button>
             {{#if loading}}
             <div class="ui active inverted dimmer">
@@ -45,6 +45,20 @@
               </tr>
               {{/each}}
               {{#each files as | file |}}
+              <tr class="{{if file.selected 'selected-row'}}">
+                <td class="collapsing noselect" {{action 'onClick' file on='click'}}>
+                  <i class="file icon"></i>{{file.name}}
+                </td>
+              </tr>
+              {{/each}}
+                           {{#each files as | file |}}
+              <tr class="{{if file.selected 'selected-row'}}">
+                <td class="collapsing noselect" {{action 'onClick' file on='click'}}>
+                  <i class="file icon"></i>{{file.name}}
+                </td>
+              </tr>
+              {{/each}}
+                           {{#each files as | file |}}
               <tr class="{{if file.selected 'selected-row'}}">
                 <td class="collapsing noselect" {{action 'onClick' file on='click'}}>
                   <i class="file icon"></i>{{file.name}}
