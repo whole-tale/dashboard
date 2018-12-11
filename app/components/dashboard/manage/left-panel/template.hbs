@@ -24,7 +24,13 @@
     <div class="ui grid">
         <div class="five wide column folder-navigator-container">
             <div class="ui collapsable grid folder-grid">
-              {{ui/files/folder-navigator currentNavCommand=currentNavCommand openUploadDialog="openUploadDialog" openCreateFolderModal="openCreateFolderModal" onRegisterDataset="openRegisterModal" navClicked="navClicked"}}
+              {{ui/files/folder-navigator 
+                currentNavCommand=currentNavCommand 
+                openUploadDialog="openUploadDialog"
+                openCreateFolderModal="openCreateFolderModal"
+                onRegisterDataset="openRegisterModal"
+                navClicked="navClicked"
+                useIcons=true}}
             </div>
         </div>
         <div class="eleven wide column">

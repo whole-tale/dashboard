@@ -1,96 +1,108 @@
 <div class="ui grid">
     <div class="sixteen wide tablet computer only column">
         <div class="ui vertical mini compact menu">
-          {{#each navs as |nav|}}
-            <div class="sixteen menu-item clickable">
-                {{#if (and (eq currentNavCommand nav.command) nav.allowUpload)}}
-                <a class="active item" {{action "navClicked" nav}}>
-                    <div style="padding-left: 1rem; padding-top: 4px;">
-                        <span class="instructions">{{nav.instructions}}</span>
-                        <nav class="fabcontainer"> 
-                        <a href="#" class="fabbuttons" tooltip="Upload">
-                            <i class="fas fa-upload icon blue big" tooltip="Upload" {{action 'openUploadDialog' bubbles=false}}></i>
+            {{#each navs as |nav|}}
+                <div class="sixteen menu-item clickable">
+                    {{#if (and (eq currentNavCommand nav.command) nav.allowUpload)}}
+                        <a class="active item" {{action "navClicked" nav}}>
+                            {{#if useIcons}}
+                                <div style="padding-left: 1rem; padding-top: 4px;">
+                                    <span class="instructions">{{nav.instructions}}</span>
+                                    <nav class="fabcontainer">
+                                        <a href="#" class="fabbuttons" tooltip="Upload">
+                                            <i class="fas fa-upload icon blue big" tooltip="Upload"
+                                                {{action 'openUploadDialog' bubbles=false}}></i>
+                                        </a>
+                                        <a href="#" class="fabbuttons" tooltip="Create Folder">
+                                            <i class="fas fa-folder icon blue big" tooltip="Create Folder"
+                                                {{action 'openCreateFolderModal' bubbles=false}}></i>
+                                        </a>
+                                        <i class="fabbuttons fas fa-plus-circle icon blue large" style="float: right;"></i>
+                                    </nav>
+                                    {{!-- <i class="fas fa-plus-circle icon blue large" style="float: right;"></i> --}}
+                                </div>
+                            {{/if}}
+                            <div class="icon-wrapper">
+                                {{#if useIcons}}<i class="{{nav.icon}} icon big"></i>{{/if}} {{#if (and (not useIcons) (eq nav.name 'Data'))}}external_{{/if}}{{snake-case nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
+                            </div>
                         </a>
-                        <a href="#" class="fabbuttons" tooltip="Create Folder">
-                            <i class="fas fa-folder icon blue big" tooltip="Create Folder" {{action 'openCreateFolderModal' bubbles=false}}></i>
+                    {{else if (and (eq currentNavCommand nav.command) nav.allowRegister)}}
+                        <a class="active item" {{action "navClicked" nav}}>
+                            {{#if useIcons}}
+                                <div style="padding-left: 1rem; padding-top: 4px;">
+                                    <span class="instructions">{{nav.instructions}}</span>
+                                    <i class="fas fa-plus-circle icon blue large" tooltip="Register" style="float: right;"
+                                        {{action 'registerDataset'}}></i>
+                                </div>
+                            {{/if}}
+                            <div class="icon-wrapper">
+                                {{#if useIcons}}<i class="{{nav.icon}} icon big"></i>{{/if}} {{#if (and (not useIcons) (eq nav.name 'Data'))}}external_{{/if}}{{snake-case nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
+                            </div>
                         </a>
-                        <i class="fabbuttons fas fa-plus-circle icon blue large" style="float: right;"></i>
-                        </nav>
-                        {{!-- <i class="fas fa-plus-circle icon blue large" style="float: right;"></i> --}}
-                    </div>
-                    <div class="icon-wrapper">
-                        <i class="{{nav.icon}} icon big"></i> {{nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
-                    </div>
-                </a>
-                {{else if (and (eq currentNavCommand nav.command) nav.allowRegister)}}
-                    <a class="active item" {{action "navClicked" nav}}>
-                        <div style="padding-left: 1rem; padding-top: 4px;">
-                            <span class="instructions">{{nav.instructions}}</span>
-                            <i class="fas fa-plus-circle icon blue large" tooltip="Register" style="float: right;" {{action 'registerDataset'}}></i>
-                        </div>
-                        <div class="icon-wrapper">
-                            <i class="{{nav.icon}} icon big"></i> {{nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
-                        </div>
-                    </a>
-                {{else}}
-                    <a class="item" {{action "navClicked" nav}}>
-                        <div style="padding-left: 1rem; padding-top: 4px;">
-                            <span class="instructions">{{nav.instructions}}</span>
-                        </div>
-                        <div class="icon-wrapper">
-                            <i class="{{nav.icon}} icon big"></i> {{nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
-                        </div>
-                    </a>
-                {{/if}}
-            </div>
-          {{/each}}
+                    {{else}}
+                        <a class="item" {{action "navClicked" nav}}>
+                            {{#if useIcons}}
+                                <div style="padding-left: 1rem; padding-top: 4px;">
+                                    <span class="instructions">{{nav.instructions}}</span>
+                                </div>
+                            {{/if}}
+                            <div class="icon-wrapper">
+                                {{#if useIcons}}<i class="{{nav.icon}} icon big"></i>{{/if}}  {{#if (and (not useIcons) (eq nav.name 'Data'))}}external_{{/if}}{{snake-case nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
+                            </div>
+                        </a>
+                    {{/if}}
+                </div>
+            {{/each}}
         </div>
     </div>
     <div class="sixteen wide mobile only column">
         <div class="ui vertical mini compact menu">
-          {{#each navs as |nav|}}
-            <div class="sixteen menu-item clickable">
-                {{#if (and (eq currentNavCommand nav.command) nav.allowUpload)}}
-                    <a class="active item" {{action "navClicked" nav}}>
-                        <div style="padding-left: 1rem; padding-top: 4px;">
-                            <span class="instructions">{{nav.instructions}}</span>
-                            <nav class="fabcontainer"> 
-                            <a href="#" class="fabbuttons" tooltip="Upload">
-                                <i class="fas fa-upload icon blue big" tooltip="Upload" {{action 'openUploadDialog'}}></i>
-                            </a>
-                            <a href="#" class="fabbuttons" tooltip="Create Folder">
-                                <i class="fas fa-folder icon blue big" tooltip="Create Folder" {{action 'openCreateFolderModal'}}></i>
-                            </a>
-                            <i class="fabbuttons fas fa-plus-circle icon blue large" style="float: right;"></i>
-                            </nav>
-                            {{!-- <i class="fas fa-plus-circle icon blue large" style="float: right;"></i> --}}
-                        </div>
-                        <div class="icon-wrapper">
-                            <i class="{{nav.icon}} icon big"></i> {{nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
-                        </div>
-                    </a>
-                {{else if (and (eq currentNavCommand nav.command) nav.allowRegister)}}
-                    <a class="active item" {{action "navClicked" nav}}>
-                        <div style="padding-left: 1rem; padding-top: 4px;">
-                            <span class="instructions">{{nav.instructions}}</span>
-                            <i class="fas fa-plus-circle icon blue large" tooltip="Register" style="float: right;" {{action 'registerDataset'}}></i>
-                        </div>
-                        <div class="icon-wrapper">
-                            <i class="{{nav.icon}} icon big"></i> {{nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
-                        </div>
-                    </a>
-                {{else}}
-                    <a class="item" {{action "navClicked" nav}}>
-                        <div style="padding-left: 1rem; padding-top: 4px;">
-                            <span class="instructions">{{nav.instructions}}</span>
-                        </div>
-                        <div class="icon-wrapper">
-                            <i class="{{nav.icon}} icon big"></i> {{nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
-                        </div>
-                    </a>
-                {{/if}}
-            </div>
-          {{/each}}
+            {{#each navs as |nav|}}
+                <div class="sixteen menu-item clickable">
+                    {{#if (and (eq currentNavCommand nav.command) nav.allowUpload)}}
+                        <a class="active item" {{action "navClicked" nav}}>
+                            <div style="padding-left: 1rem; padding-top: 4px;">
+                                <span class="instructions">{{nav.instructions}}</span>
+                                <nav class="fabcontainer">
+                                    <a href="#" class="fabbuttons" tooltip="Upload">
+                                        <i class="fas fa-upload icon blue big" tooltip="Upload"
+                                            {{action 'openUploadDialog'}}></i>
+                                    </a>
+                                    <a href="#" class="fabbuttons" tooltip="Create Folder">
+                                        <i class="fas fa-folder icon blue big" tooltip="Create Folder"
+                                            {{action 'openCreateFolderModal'}}></i>
+                                    </a>
+                                    <i class="fabbuttons fas fa-plus-circle icon blue large" style="float: right;"></i>
+                                </nav>
+                                {{!-- <i class="fas fa-plus-circle icon blue large" style="float: right;"></i> --}}
+                            </div>
+                            <div class="icon-wrapper">
+                                <i class="{{nav.icon}} icon big"></i>  {{#if (and (not useIcons) (eq nav.name 'Data'))}}external_{{/if}}{{snake-case nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
+                            </div>
+                        </a>
+                    {{else if (and (eq currentNavCommand nav.command) nav.allowRegister)}}
+                        <a class="active item" {{action "navClicked" nav}}>
+                            <div style="padding-left: 1rem; padding-top: 4px;">
+                                <span class="instructions">{{nav.instructions}}</span>
+                                <i class="fas fa-plus-circle icon blue large" tooltip="Register" style="float: right;"
+                                    {{action 'registerDataset'}}></i>
+                            </div>
+                            <div class="icon-wrapper">
+                                <i class="{{nav.icon}} icon big"></i>  {{#if (and (not useIcons) (eq nav.name 'Data'))}}external_{{/if}}{{snake-case nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
+                            </div>
+                        </a>
+                    {{else}}
+                        <a class="item" {{action "navClicked" nav}}>
+                            <div style="padding-left: 1rem; padding-top: 4px;">
+                                <span class="instructions">{{nav.instructions}}</span>
+                            </div>
+                            <div class="icon-wrapper">
+                                <i class="{{nav.icon}} icon big"></i>  {{#if (and (not useIcons) (eq nav.name 'Data'))}}external_{{/if}}{{snake-case nav.name}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
+                            </div>
+                        </a>
+                    {{/if}}
+                </div>
+            {{/each}}
         </div>
     </div>
 </div>

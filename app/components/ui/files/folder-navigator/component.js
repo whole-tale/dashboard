@@ -1,36 +1,37 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import layout from './template';
 
-export default Ember.Component.extend({
-  folderNavs : Ember.inject.service(),
-  userAuth: Ember.inject.service(),
+export default Component.extend({
+    folderNavs: service(),
+    userAuth: service(),
+    layout,
 
-  layout,
-  init () {
-    this._super(...arguments);
-    this.set("navs", this.get('folderNavs').getFolderNavs());
-    this.set("user", this.get('userAuth').getCurrentUser());
-  },
-  actions: {
-    //--------------------------------------------
-    navClicked : function(nav) {
-      this.sendAction('navClicked', nav);
+    init() {
+        this._super(...arguments);
+        this.set("navs", this.get('folderNavs').getFolderNavs());
+        this.set("user", this.get('userAuth').getCurrentUser());
     },
+    actions: {
+        //--------------------------------------------
+        navClicked(nav) {
+            this.sendAction('navClicked', nav);
+        },
 
-    //--------------------------------------------
-    openCreateFolderModal: function() {
-      this.sendAction('openCreateFolderModal');
-    },
+        //--------------------------------------------
+        openCreateFolderModal() {
+            this.sendAction('openCreateFolderModal');
+        },
 
-    //--------------------------------------------
-    openUploadDialog: function() {
-      this.sendAction('openUploadDialog');
-    },
+        //--------------------------------------------
+        openUploadDialog() {
+            this.sendAction('openUploadDialog');
+        },
 
-    //--------------------------------------------
-    registerDataset: function() {
-      this.sendAction('onRegisterDataset');
+        //--------------------------------------------
+        registerDataset() {
+            this.sendAction('onRegisterDataset');
+        }
     }
-  }
 });
  
