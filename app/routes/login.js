@@ -16,13 +16,17 @@ export default Ember.Route.extend({
     var ishttp = (location.port === '') || (location.port === 80) || (location.port === 443);
     var host = slashes.concat(window.location.hostname) + (ishttp? "": ':'+location.port);
     var pathSuffix = decodeURIComponent(params.rd) || "";
-    // Append to query string if on exists, otherwise add one
-    if (pathSuffix.indexOf("?") !== -1) {
-      pathSuffix += "&token={girderToken}"
-    } else {
-      pathSuffix += "?token={girderToken}"
+    var redirectUrl = host;
+    // Append return route if one exists, ignore login route
+    if (pathSuffix && pathSuffix.indexOf('/login') === -1) {
+      redirectUrl += pathSuffix
     }
-    var redirectUrl = host + pathSuffix;
+    // Append to query string if one exists, otherwise add one
+    if (redirectUrl.indexOf("?") !== -1) {
+      redirectUrl += "&token={girderToken}"
+    } else {
+      redirectUrl += "?token={girderToken}"
+    }
     let url = config.apiUrl + '/oauth/provider?redirect=' + encodeURIComponent(redirectUrl);
 
     return Ember.$.getJSON(url);
