@@ -22,6 +22,10 @@ export default Ember.Component.extend({
       this.sendAction('openCreateFolderModal');
     },
 
+    openSelectDataModal: function() {
+      this.sendAction('openSelectDataModal');
+    },
+
     //--------------------------------------------
     openUploadDialog: function() {
       this.sendAction('openUploadDialog');
@@ -33,3 +37,4 @@ export default Ember.Component.extend({
     }
   }
 });
+ 
