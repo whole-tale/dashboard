@@ -24,9 +24,7 @@
               <a class="item {{if (and internalState.currentInstanceId (eq internalState.currentInstanceId instance._id)) 'active'}}" {{action 'transitionToRun' instance index preventDefault=true}}>
                   <img src="{{instance.tale.illustration}}" />
                   <img src="{{instance.tale.icon}}" class="env" />
-                  {{#unless (eq instance.status 0)}}
-                    <i class="times icon" {{action 'openDeleteModal' instance bubbles=false}}></i>
-                  {{/unless}}
+                  <i class="times icon" {{action 'openDeleteModal' instance bubbles=false}}></i>
                   <p>{{truncate-name instance.name}}</p>
                 {{#if (eq instance.status 0)}}
                   <span style="position: absolute; left: 45%; top: 20%; opacity: .7; z-index: 1">
