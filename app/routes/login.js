@@ -15,7 +15,7 @@ export default Ember.Route.extend({
     var slashes = http.concat("//");
     var ishttp = (location.port === '') || (location.port === 80) || (location.port === 443);
     var host = slashes.concat(window.location.hostname) + (ishttp? "": ':'+location.port);
-    var pathSuffix = decodeURIComponent(params.rd) || "";
+    var pathSuffix = decodeURIComponent(params.rd || "");
     var redirectUrl = host;
     // Append return route if one exists, ignore login route
     if (pathSuffix && pathSuffix.indexOf('/login') === -1) {
