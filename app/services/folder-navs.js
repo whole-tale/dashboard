@@ -7,11 +7,12 @@ export default Service.extend({
     userAuth: service(),
     internalState: service(),
 
-    getFolderNavs: function () {
+    getFolderNavs() {
         const thisUserID = this.get('userAuth').getCurrentUserID();
 
         return [{
             name: "Home",
+            displayName: "Home",
             command: "home",
             parentId: thisUserID,
             parentType: "user",
@@ -25,6 +26,7 @@ export default Service.extend({
         },
         {
             name: "Data",
+            displayName: "External Data",
             command: "user_data",
             parentId: thisUserID,
             parentType: "user",
@@ -37,7 +39,8 @@ export default Service.extend({
             description: 'Linked, external data for use as Tale input (read-only)'
         },
         {
-            name: "Tale Workspace",
+            name: "Workspace",
+            displayName: "Tale Workspace",
             command: "workspace",
             parentId: thisUserID,
             parentType: "user",
@@ -61,7 +64,7 @@ export default Service.extend({
         }
         */
     },
-    getFolderNavFor: function (navCommand) {
+    getFolderNavFor(navCommand) {
         let navs = this.getFolderNavs();
         //console.log(navs);
 
@@ -71,8 +74,9 @@ export default Service.extend({
         }
         return null;
     },
-    getCurrentFolderNavAndSetOn: function (obj) {
-        let navCommand = this.get('internalState').getCurrentNavCommand() || 'home';
+    getCurrentFolderNavAndSetOn(obj) {
+        let currentCommand = this.get('internalState').getCurrentNavCommand();
+        let navCommand = (currentCommand && currentCommand !== 'undefined') ? currentCommand : 'home';
         // console.log("Nav Command = " + navCommand);
         let currentNav = this.getFolderNavFor(navCommand);
         obj.set("currentNavCommand", navCommand);

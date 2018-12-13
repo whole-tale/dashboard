@@ -1,9 +1,28 @@
 {{#if isMain}}
     <div class="ui large breadcrumb">
-        <a class="section {{if justDescription 'bold'}}" {{action "navClicked" currentNav}}> {{#if (and justDescription (eq currentNav.name 'Data'))}}External {{/if}}{{currentNav.name}}</a>
+        <a class="section {{if justDescription 'bold'}}" {{action "navClicked" currentNav}}> {{#if justDescription}} {{currentNav.displayName}} {{else}} {{currentNav.name}} {{/if}}</a>
         {{#if justDescription}}
-            <div class="bc-description {{if (not-eq currentNav.command 'home') 'ws'}}">{{currentNav.description}}</div>
-            <i class="fas fa-plus-circle icon blue large" style="float: right; display: inline;"></i>
+            <i class="fas fa-plus-circle icon blue large" onclick={{action 'triggerBreadcrumbAction' currentNav.name}}></i>
+            {{#if displayFoldersMenu}}
+                {{#click-outside action=(action (mut displayFoldersMenu) false)}}
+                    <div class="folder-menu">
+                        <div class="ui vertical left menu transition">
+                            <div class="header">{{currentNav.name}} Options</div>
+                            <a class="item" onclick={{action 'openCreateFolderModal'}}>
+                                New Folder <div class="ui label transparent"><i class="fas fa-folder"></i></div>
+                            </a>
+                            <a class="item" onclick={{action 'openUploadDialog'}}>
+                                Upload File <div class="ui label transparent"><i class="fas fa-upload"></i></div>
+                            </a>
+                            {{#if (eq currentNav.command 'workspace')}}
+                                <a class="item" onclick={{action 'openSelectDataModal'}}>
+                                    Select Data...
+                                </a>
+                            {{/if}}
+                        </div>
+                    </div>
+                {{/click-outside}}
+            {{/if}}
         {{else}}
             {{#each fileBreadCrumbs as |bc|}}
                 <i class="right chevron icon divider"></i>

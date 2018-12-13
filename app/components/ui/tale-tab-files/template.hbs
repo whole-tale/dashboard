@@ -10,6 +10,10 @@
                 currentNav=currentNav
                 currentBreadCrumb=currentBreadCrumb
                 fileBreadCrumbs=fileBreadCrumbs
+                openUploadDialog="openUploadDialog"
+                openCreateFolderModal="openCreateFolderModal"
+                onRegisterDataset="openRegisterModal"
+                openSelectDataModal=(action "openSelectDataModal")
                 isMain=true
                 justDescription=true
                 navClicked="navClicked"
@@ -42,3 +46,7 @@
         </div>
     </div>
 </div>
+
+{{ui/files/create-folder-modal onNewFolder=(action "insertNewFolder")}}
+{{ui/files/registration-modal onRegisterData=(action "refresh")}}
+{{ui/select-data-modal updateSessionData=(action "updateSessionData") cancel=(action "closeSelectDataModal")}}
