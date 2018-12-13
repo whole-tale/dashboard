@@ -73,7 +73,7 @@ export default Component.extend({
         this.get("folderNavs").getCurrentFolderNavAndSetOn(this);
 
         let fileBreadCrumbs = state.getCurrentFileBreadcrumbs();
-        if (!fileBreadCrumbs) {
+        if (!(fileBreadCrumbs && fileBreadCrumbs.length)) {
             fileBreadCrumbs = [];
             state.setCurrentFileBreadcrumbs(fileBreadCrumbs); // new collection, reset crumbs
         }
@@ -352,6 +352,38 @@ export default Component.extend({
         //-----------------------------------------------------------------------------
         openRegisterModal() {
             $('.ui.modal.harvester').modal('show');
+        },
+        updateSessionData(listOfSelectedItems) {
+            // console.log('updating session data...');
+            // NOTE: Structure of the list looks like this:
+
+            /*
+              [
+                {
+                  "id": "59aeb3f246a83d0001ab6777",
+                  "name": "us85co.xls",
+                  "_modelType": "item"
+                },
+                {
+                  "id": "59aeb3f246a83d0001ab6775",
+                  "name": "usco2000.xls",
+                  "_modelType": "item"
+                },
+                {
+                  "id": "59aeb3f246a83d0001ab677b",
+                  "name": "datadict2005.html",
+                  "_modelType": "item"
+                }
+              ]
+            */
+
+            // do something with selected items here ...
+        },
+        openSelectDataModal() {
+            $('.ui.modal.selectdata').modal('show');
+        },
+        closeSelectDataModal() {
+            $('.ui.modal.selectdata').modal('hide');
         }
 
     }
