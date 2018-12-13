@@ -1,16 +1,17 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
+import $ from 'jquery';
 import layout from './template';
 
-export default Ember.Component.extend({
+export default Component.extend({
     layout,
-    store: Ember.inject.service(),
-    internalState: Ember.inject.service(),
+    store: service(),
+    internalState: service(),
 
     folderName: '',
 
     clearModal() {
-        Ember.$('.ui.dropdown').dropdown('clear');
-
+        $('.ui.dropdown').dropdown('clear');
         this.set('folderName', '');
     },
 

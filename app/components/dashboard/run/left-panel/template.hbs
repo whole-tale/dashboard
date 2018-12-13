@@ -38,7 +38,7 @@
                     {{/if}}
                     <div class="item">
                         <a onclick={{action (mut displayTaleInstanceMenu) (not displayTaleInstanceMenu)}}>
-                            <i class="fas fa-ellipsis-v clickable" style="cursor: pointer"></i>
+                            <i class="fas fa-ellipsis-v clickable"></i>
                         </a>
                     </div>
                     {{#if displayTaleInstanceMenu}}
@@ -58,11 +58,9 @@
                                         <a class="item">
                                             Rebuild Tale <div class="ui label transparent"><i class="fas fa-cog"></i></div>
                                         </a>
-                                    {{/if}}
-                                    <a class="item" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
-                                        Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
-                                    </a>
-                                    {{#if readyToReleaseFeature}}
+                                        <a class="item" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
+                                            Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
+                                        </a>
                                         <a class="item" {{action "editTaleInfo" model._id}}>
                                             Edit Tale Info <div class="ui label transparent"><i class="fas fa-edit"></i></div>
                                         </a>

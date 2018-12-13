@@ -12,6 +12,48 @@
                         position: absolute;
                         right: 0;
                         bottom: 3px;
+                        cursor: pointer;
+                        display: inline;
+                    }
+                    .fa-plus-circle + .ember-view {
+                        display: inline;
+                    }
+                    .folder-menu {
+                        position: absolute;
+                        right: 5px;
+                        top: 35px;
+                        z-index: 10;
+        
+                        .vertical.menu {
+                            width: 190px;
+                            box-shadow: 0px 2px 3px 0px rgba(34, 36, 38, 0.15);
+                            border: 1px solid rgba(34, 36, 38, 0.15);
+                            border-radius: 0.28571429rem;
+                            -webkit-transition: opacity 0.1s ease;
+                            transition: opacity 0.1s ease;
+                            z-index: 11;
+                            will-change: transform, opacity;
+
+                            .header {
+                                margin: 1rem 0 .75rem;
+                                padding: 0 1.14285714rem;
+                                color: rgba(0,0,0,.85);
+                                font-size: .78571429em;
+                                font-weight: 700;
+                                text-transform: uppercase;
+                            }
+                            .item::before {
+                                height: 0;
+                            }
+        
+                            .item {
+                                border: none;
+                                .label {
+                                    background-color: transparent;
+                                    color: black;
+                                }
+                            }
+                        }
                     }
                 }
             }
