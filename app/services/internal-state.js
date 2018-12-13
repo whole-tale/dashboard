@@ -1,5 +1,4 @@
 import Service from '@ember/service';
-import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
 import { A } from '@ember/array';
 
@@ -8,7 +7,6 @@ import { A } from '@ember/array';
 
 export default Service.extend({
   isAuthenticated: true,
-  store: service(),
   currentInstanceId: computed({
     get() {
       return (localStorage.currentInstanceId && localStorage.currentInstanceId !== 'undefined') ? JSON.parse(localStorage.currentInstanceId) : undefined;
@@ -32,23 +30,7 @@ export default Service.extend({
   },
 
   getCurrentFolderID: function () {
-    let currentFolderID = localStorage.currentFolderID;
-    
-    // Skip checking falsey ID strings
-    if (typeof(currentFolderID) !== "undefined" && currentFolderID) {
-      this.store.findRecord('folder', currentFolderID).then(function(result) {
-        // folder exists - effectively a noop
-        // NOTE: after first lookup, this result is cached in the store
-      }).catch(function(error) {
-        //console.log(`Failed to fetch current folder (${currentFolderID}):`, error);
-        // Set currentFolderID to "undefined" and refresh the page
-        localStorage.removeItem("currentFolderID");
-        currentFolderID = undefined;
-        window.location.reload(true);
-      });
-    }
-    
-    return currentFolderID;
+    return localStorage.currentFolderID;
   },
 
   setCurrentFolderName: function (val) {

@@ -88,6 +88,29 @@
                 }
             }
         }
+
+        .directory-browser-container {
+            .ui.collapsable.grid {
+                height: 100%;
+                .directory-browser {
+                    height: 100%;
+                    margin-right: 3px;
+                    .left.panel.content {
+                        height: 100%;
+                        table {
+                            height: auto;
+                            max-height: 100%;
+                            width: calc(100% - 10px);
+                            margin: 0 10px;
+                            tbody {
+                                max-height: calc(100% - 45px);
+                                overflow-y: auto;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     .main-row + .ui.grid {
