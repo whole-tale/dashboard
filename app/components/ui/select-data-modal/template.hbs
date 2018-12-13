@@ -17,11 +17,11 @@
         </div>
         
         <div class="seven wide column">
-          <div class="ui segment">
+          <div class="ui segment" style="overflow-y:scroll;">
             <button class="ui very basic right labeled icon button" {{action 'addSelectedData'}}><i class="angle double right icon"></i>Add Selected</button>
             {{#if loading}}
             <div class="ui active inverted dimmer">
-              <div class="ui indeterminate medium text loader">Preparing Files</div>
+              <div class="ui indeterminate medium text {{unless loadError 'loader'}}">{{loadingMessage}}</div>
             </div>
             <p></p>
             {{else}}

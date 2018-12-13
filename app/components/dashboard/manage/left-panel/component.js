@@ -350,8 +350,12 @@ export default Component.extend({
     //-----------------------------------------------------------------------------
     openRegisterModal() {
       $('.ui.modal.harvester').modal('show');
-    }
+    },
 
+    //----------------------------------------------------------------------------
+    openSelectDataModal() {
+      $('.ui.modal.selectdata').modal('show');
+    }
   }
 
 });
