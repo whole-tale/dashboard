@@ -44,120 +44,176 @@ export default Component.extend({
             this.set('selectedMenuIndex', index);
         },
 
-        // -----------------------------------------------------------------------
-        // BELOW ARE FUNCTIONS FOR DEFAULT BEHAVIOR: 
-        //    You can set custom behavior by overriding these functions. 
-        // -----------------------------------------------------------------------
-
         initData() {
-            this.set('loading', true);
+            this.selectedDataSource = this.get('dataSources')[this.get('selectedMenuIndex')];
+            this.initData.call(this);
+        },
 
-            this.set('allSelectedItems', A());
-            this.set('folders', A());
-            this.set('files', A());
-            this.set('currentFolder', null);
-            this.set('rootFolderId', null);
+        updateSessionData() {
+            this.updateSessionData.call(this, this.get('allSelectedItems'));
+        },
 
-            const store = this.get('store');
-            let parentId = this.get('userAuth').getCurrentUserID();
-            let dataNavInfo = this.get('folderNavs').getFolderNavFor('user_data');
-            let parentType = dataNavInfo.parentType;
-            let name = dataNavInfo.name;
-            let adapterOptions = { queryParams: { limit: "0" } };
-
-            const self = this;
-            return store.query('folder', { parentId, parentType, name, adapterOptions }).then(dataFolder => {
-                let dataFolderId = dataFolder.content[0].id;
-                let parentCollection = parentType;
-                self.set('rootFolderId', dataFolderId);
-                self.set('currentFolder', O({ id: dataFolderId, _modelType: 'folder', parentCollection, parentId }));
-
-                return self.loadFolder.call(self, dataFolderId, 'folder');
-            }).catch(e => {
-                self.set('loading', false);
-                console.error(e);
-            });
+        cancel() {
+            this.cancel.call(this);
         },
 
         dblClick(target) {
-            if (!target || !target._modelType || target._modelType !== 'folder') {
-                throw new Error('[select-data-modal] Cannot open. Not a folder.');
-            }
-
-            this.set('currentFolder', target);
-
-            const self = this;
-            return this.loadFolder.call(this, target.get('id'), target.get('_modelType')).catch(e => {
-                self.set('loading', false);
-                console.error(e);
-            });
+            this.dblClick.call(this, target);
         },
 
         onClick(target) {
-            let selected = !target.get('selected');
-            target.set('selected', selected);
+            this.onClick.call(this, target);
         },
 
-        goBack(currentFolder) {
-            this.set('loading', true);
-
-            const store = this.get('store');
-
-            let parentId = currentFolder.parentId;
-            let parentType = currentFolder.parentCollection;
-
-            const self = this;
-            return store.find('folder', parentId).then(parent => {
-                self.set('currentFolder', parent);
-                return self.loadFolder.call(self, parentId, parentType);
-            }).catch(e => {
-                self.set('loading', false);
-                console.error(e);
-            });
+        goBack() {
+            this.goBack.call(this, this.get('currentFolder'));
         },
 
-        loadFolder(parentId, parentType, adapterOptions = { queryParams: { limit: "0" } }) {
-            this.set('loading', true);
-
-            const store = this.get('store');
-            let fetchFolders = store.query('folder', { parentId, parentType, adapterOptions });
-            let fetchFiles = store.query('item', { folderId: parentId });
-
-            const self = this;
-            return Promise.all([fetchFolders, fetchFiles]).then(([folders, files]) => {
-                self.set('folders', A(folders));
-                self.set('files', A(files));
-                self.set('loading', false);
-            });
-        },
-
-        addSelectedData(files, folders) {
-            const self = this;
-            const add = f => {
-                if (f.selected) {
-                    f.set('selected', false);
-                    let { id, name, _modelType } = f;
-                    self.allSelectedItems.pushObject(O({ id, name, _modelType }));
-                }
-            }
-            files.forEach(add);
-            folders.forEach(add);
+        addSelectedData() {
+            this.addSelectedData.call(this, this.get('files'), this.get('folders'));
         },
 
         removeSelectedData() {
             this.removeSelectedData.call(this);
-        },
+        }
+    },
 
-        updateSessionData() {
-            throw new Error('[select-data-modal] "updateSessionData" must be provided!!');
-        },
+    // -----------------------------------------------------------------------
+    // BELOW ARE FUNCTIONS FOR DEFAULT BEHAVIOR: 
+    //    You can set custom behavior by overriding these functions. 
+    // -----------------------------------------------------------------------
 
-        cancel() {
-            if (this.get('cancel')) {
-                this.get('cancel')();
-            } else {
-                throw new Error('[select-data-modal] "cancel" function must be provided!!');
+    initData() {
+        this.set('loading', true);
+        this.set('loadError', false);
+        this.set('loadingMessage', 'Preparing Files');
+
+        this.set('allSelectedItems', A());
+        this.set('folders', A());
+        this.set('files', A());
+        this.set('currentFolder', null);
+        this.set('rootFolderId', null);
+
+        const store = this.get('store');
+        let parentId = this.get('userAuth').getCurrentUserID();
+        let dataNavInfo = this.get('folderNavs').getFolderNavFor('user_data');
+        let parentType = dataNavInfo.parentType;
+        let name = dataNavInfo.name;
+        let adapterOptions = { queryParams: { limit: "0" } };
+
+        const self = this;
+        return store.query('folder', { parentId, parentType, name, adapterOptions }).then(dataFolder => {
+            let dataFolderId = dataFolder.content[0].id;
+            let parentCollection = parentType;
+            self.set('rootFolderId', dataFolderId);
+            self.set('currentFolder', O({ id: dataFolderId, _modelType: 'folder', parentCollection, parentId }));
+
+            return self.loadFolder.call(self, dataFolderId, 'folder');
+        }).catch(e => {
+            self.set('loadError', true);
+            self.set('loadingMessage', 'Failed to load registered data. Please try again');
+        });
+    },
+
+    dblClick(target) {
+        if (!target || !target._modelType || target._modelType !== 'folder') {
+            throw new Error('[select-data-modal] Cannot open. Not a folder.');
+        }
+
+        this.set('currentFolder', target);
+
+        const self = this;
+        return this.loadFolder.call(this, target.get('id'), target.get('_modelType')).catch(e => {
+            self.set('loadError', true);
+            self.set('loadingMessage', 'Failed to load registered data. Please try again');
+        });
+    },
+
+    onClick(target) {
+        let selected = !target.get('selected');
+        target.set('selected', selected);
+    },
+
+    goBack(currentFolder) {
+        this.set('loading', true);
+        this.set('loadError', false);
+        this.set('loadingMessage', 'Preparing Files');
+
+        const store = this.get('store');
+
+        let parentId = currentFolder.parentId;
+        let parentType = currentFolder.parentCollection;
+
+        const self = this;
+        return store.find('folder', parentId).then(parent => {
+            self.set('currentFolder', parent);
+            return self.loadFolder.call(self, parentId, parentType);
+        }).catch(e => {
+            self.set('loadError', true);
+            self.set('loadingMessage', 'Failed to load registered data. Please try again');
+        });
+    },
+
+    loadFolder(parentId, parentType, adapterOptions = { queryParams: { limit: "0" } }) {
+        this.set('loading', true);
+        this.set('loadError', false);
+        this.set('loadingMessage', 'Preparing Files');
+
+        const store = this.get('store');
+        let fetchFolders = store.query('folder', { parentId, parentType, adapterOptions });
+        let fetchFiles = store.query('item', { folderId: parentId });
+
+        const self = this;
+        return Promise.all([fetchFolders, fetchFiles]).then(([folders, files]) => {
+            self.set('folders', A(folders));
+            self.set('files', A(files));
+            self.set('loading', false);
+        });
+    },
+
+    addSelectedData(files, folders) {
+        const self = this;
+        const add = f => {
+            if (f.selected) {
+                f.set('selected', false);
+                let { id, name, _modelType } = f;
+                if (!self.allSelectedItems.findBy('id', id)) {
+                    self.allSelectedItems.pushObject(O({ id, name, _modelType }));
+                }
             }
+        }
+        files.forEach(add);
+        folders.forEach(add);
+    },
+
+    removeSelectedData() {
+        const self = this;
+        const del = f => {
+            if (f.selected) {
+                self.allSelectedItems.removeObject(f);
+            }
+        }
+        let all = A(this.get('allSelectedItems').concat([]));
+        all.forEach(del);
+    },
+
+    loadDataset(adapterOptions = { queryParams: { limit: "0" } }) {
+
+    },
+
+    loadTaleWorkspaces(adapterOptions = { queryParams: { limit: "0" } }) {
+
+    },
+
+    updateSessionData() {
+        throw new Error('[select-data-modal] "updateSessionData" must be provided!!');
+    },
+
+    cancel() {
+        if (this.get('cancel')) {
+            this.get('cancel')();
+        } else {
+            throw new Error('[select-data-modal] "cancel" function must be provided!!');
         }
     }
 });
