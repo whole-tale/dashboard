@@ -31,7 +31,7 @@ export default Component.extend({
     model: O({}),
     classNameBindings: ['injectedClassName'],
 
-    injectedClassName: Ember.computed('modelType', 'model._modelType', 'model._id', function () {
+    injectedClassName: computed('modelType', 'model.{_modelType,_id}', function () {
         if (this.get('modelType')) {
             let newClass = `select-data-modal-${this.get('modelType')}`;
             return newClass;
@@ -145,22 +145,7 @@ export default Component.extend({
         },
 
         removeSelectedData() {
-            const self = this;
-            const del = f => {
-                if (f.selected) {
-                    self.allSelectedItems.removeObject(f);
-                }
-            }
-            let all = A(this.get('allSelectedItems').concat([]));
-            all.forEach(del);
-        },
-
-        loadDataset(adapterOptions = { queryParams: { limit: "0" } }) {
-
-        },
-
-        loadTaleWorkspaces(adapterOptions = { queryParams: { limit: "0" } }) {
-
+            this.removeSelectedData.call(this);
         },
 
         updateSessionData() {
@@ -168,7 +153,11 @@ export default Component.extend({
         },
 
         cancel() {
-            throw new Error('[select-data-modal] "cancel" function must be provided!!');
+            if (this.get('cancel')) {
+                this.get('cancel')();
+            } else {
+                throw new Error('[select-data-modal] "cancel" function must be provided!!');
+            }
         }
     }
 });
