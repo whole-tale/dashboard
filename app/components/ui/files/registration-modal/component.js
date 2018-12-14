@@ -1,6 +1,5 @@
-import { inject } from '@ember/service';
+import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
-import layout from './template';
 import EventStream from 'npm:sse.js';
 import config from '../../../../config/environment';
 import Component from '@ember/component';
@@ -8,12 +7,11 @@ import $ from 'jquery';
 import { later } from '@ember/runloop';
 
 export default Component.extend({
-    layout,
-    authRequest: inject.service(),
-    userAuth: inject.service(),
-    internalState: inject.service(),
-    tokenHandler: inject.service(),
-    notificationHandler: inject.service(),
+    authRequest: service(),
+    userAuth: service(),
+    internalState: service(),
+    tokenHandler: service(),
+    notificationHandler: service(),
 
     datasources: A(),
     num_results: -1,
