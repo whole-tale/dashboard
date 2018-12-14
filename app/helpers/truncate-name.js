@@ -1,9 +1,8 @@
 import { helper } from '@ember/component/helper';
 
-export default helper(function truncateText(params, hash) {
+export default helper(function truncateText(params/*, hash*/) {
     const [value] = params;
-    let { limit } = hash;
-    limit = limit || 35;
+    let limit = params.length > 1 ? params[1] : 35;
     let text = '';
 
     if (value && value.length) {

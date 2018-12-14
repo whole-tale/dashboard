@@ -2,10 +2,10 @@
   <table class="ui very basic compact striped table">
       <thead>
         <tr style="font-weight: 500;">
-            <th width="60%" style="font-size: 12px;padding: 10px 0 0 10px">Name</th>
+            <th width="65%" style="font-size: 12px;padding: 10px 0 0 10px">Name</th>
             {{!-- <th width="35%" style="font-size: 12px;padding: 10px 0 0 10px">Description</th> --}}
-            <th width="15%" style="font-size: 12px;padding: 10px 0 0 10px">Size</th>
-            <th width="25%" style="font-size: 12px;padding: 10px 0 0 10px">Last Modified</th>
+            <th width="15%" style="font-size: 12px;padding: 10px 0 0 10px;text-align: left;">Size</th>
+            <th width="20%" style="font-size: 12px;padding: 10px 0 0 10px">Last Modified</th>
         </tr>
       </thead>
       <tbody>
@@ -24,7 +24,7 @@
                         <i class="large grey folder icon"> </i>
                         {{#ui-dropdown}}
                             <a href="#" onclick={{action 'clickedFolder' item}} style="font-weight: 900">
-                                {{truncate-name item.name}}
+                                {{truncate-name item.name 50}}
                             </a>
                             <i class="dropdown icon"></i>
                             <div class="menu">
@@ -41,7 +41,7 @@
                 {{!-- <td >
                     {{item.description}}
                 </td> --}}
-                <td >
+                <td style="text-align: left;">
                     {{bytes-to-readable item.size}}
                 </td>
                 <td >
@@ -63,7 +63,7 @@
                     {{else}}
                         {{#ui-dropdown}}
                             <a href="#" {{action "clickedFile" item}}>
-                                {{{file-icon-for item.name}}} {{truncate-name item.name}}
+                                {{{file-icon-for item.name}}} {{truncate-name item.name 50}}
                             </a>
                             <i class="dropdown icon"></i>
                             <div class="menu">
@@ -80,7 +80,7 @@
                 {{!-- <td >
                     {{item.description}}
                 </td> --}}
-                <td >
+                <td style="text-align: left;">
                     {{bytes-to-readable item.size}}
                 </td>
                 <td >
