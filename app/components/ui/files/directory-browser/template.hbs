@@ -9,6 +9,16 @@
         </tr>
       </thead>
       <tbody>
+         {{#each sessionList as |item|}}
+          <tr class="left aligned contextmenu" id={{item.id}}>
+              <td>
+                {{{file-icon-for item.name}}} {{truncate-name item.name}}
+              </td>
+              <td >
+                  --
+              </td>
+          </tr>
+        {{/each}}
         {{#each folderList as |item|}}
             <tr class="left aligned contextmenu" id={{item.id}}>
                 <td>
