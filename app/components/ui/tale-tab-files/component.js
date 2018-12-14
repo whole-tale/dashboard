@@ -198,22 +198,24 @@ export default Component.extend({
                 // alert("Not implemented yet ...");
             } else if (nav.command === "user_data") {
               let sessionId = controller.model.get('sessionId');
-              folderContents = controller.get('store').findRecord('dm', sessionId, { adapterOptions: { insertPath: 'session' }})
+              let sessionContents = controller.get('store').findRecord('dm', sessionId, { adapterOptions: { insertPath: 'session' }})
                 .then(session => {
-                  console.log('session', session);
                   return session.get('dataSet').map(item => {
                     let {itemId, mountPath} = item;
-                    return {id: itemId, name: mountPath, _modelType: 'item' };
+                    return {id: itemId, name: mountPath };
                   });
                 })
               ;
               itemContents = Promise.resolve(A([]));
+              folderContents = sessionContents.then(_sessionContents => {
+                newModel.sessionContents = _sessionContents;
+                return A();
+              });
             }
 
             let newModel = {};
             folderContents
                 .then(_folderContents => {
-                    console.log('folder contents', _folderContents);
                     newModel.folderContents = _folderContents;
                     return itemContents;
                 })
