@@ -1,5 +1,6 @@
 import TextField from '@ember/component/text-field';
 import Component from '@ember/component';
+import { A } from '@ember/array'; 
 import { inject as service } from '@ember/service';
 import { observer, computed } from '@ember/object';
 import Object from '@ember/object';
@@ -135,7 +136,7 @@ export default Component.extend({
             this.set("currentNavCommand", nav.command);
             this.set("currentNavTitle", nav.name);
 
-            if (nav.command === "home" || nav.command === "user_data" || nav.command === "workspace") {
+            if (nav.command === "home" || nav.command === "workspace") {
                 folderContents = controller.get('store').query('folder', {
                     parentId: nav.parentId,
                     parentType: nav.parentType,
@@ -195,11 +196,24 @@ export default Component.extend({
                     "resources": payload
                 });
                 // alert("Not implemented yet ...");
+            } else if (nav.command === "user_data") {
+              let sessionId = controller.model.get('sessionId');
+              folderContents = controller.get('store').findRecord('dm', sessionId, { adapterOptions: { insertPath: 'session' }})
+                .then(session => {
+                  console.log('session', session);
+                  return session.get('dataSet').map(item => {
+                    let {itemId, mountPath} = item;
+                    return {id: itemId, name: mountPath, _modelType: 'item' };
+                  });
+                })
+              ;
+              itemContents = Promise.resolve(A([]));
             }
 
             let newModel = {};
             folderContents
                 .then(_folderContents => {
+                    console.log('folder contents', _folderContents);
                     newModel.folderContents = _folderContents;
                     return itemContents;
                 })
@@ -208,7 +222,8 @@ export default Component.extend({
                 })
                 .finally(() => {
                     controller.set("fileData", newModel);
-                });
+                })
+            ;
 
             state.setCurrentBreadCrumb(null);
             state.setCurrentFileBreadcrumbs([]); // new nav folder, reset crumbs
