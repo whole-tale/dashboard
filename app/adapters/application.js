@@ -47,8 +47,12 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
     if (appendPath) {
       url += "/" + snapshot.adapterOptions.appendPath;
     }
+    let insertPath = _.get(snapshot, 'adapterOptions.insertPath');
+    if (insertPath) {
+      url = url.replace(id, `session/${id}`);
+    }
     let queryParams = _.get(snapshot, 'adapterOptions.queryParams');
-    if (queryParams) {
+    if (queryParams) { 
       let q = this.buildQueryParams(queryParams);
       return url + "?" + q;
     }
