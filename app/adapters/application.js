@@ -49,7 +49,7 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
     }
     let insertPath = _.get(snapshot, 'adapterOptions.insertPath');
     if (insertPath) {
-      url = url.replace(id, `session/${id}`);
+      url = url.replace(id, `${insertPath}/${id}`);
     }
     let queryParams = _.get(snapshot, 'adapterOptions.queryParams');
     if (queryParams) { 
