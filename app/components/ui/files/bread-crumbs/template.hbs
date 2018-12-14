@@ -1,23 +1,43 @@
 {{#if isMain}}
-  <div class="ui large breadcrumb">
-      <a class="section" {{action "navClicked" currentNav}}> {{currentNav.name}}</a>
-
-      {{#each fileBreadCrumbs as |bc|}}
-          <i class="right chevron icon divider"></i>
-          <a class="section" {{action "breadcrumbClicked" bc}}>{{truncate-breadcrumb bc.name}}</a>
-      {{/each}}
-
-      {{#if currentBreadCrumb.name}}<i class="right chevron icon divider"></i>{{/if}}
-      <div class="active section" style="font-weight:bold;">{{truncate-breadcrumb currentBreadCrumb.name}}</div>
-
-  </div>
+    <div class="ui large breadcrumb">
+        <a class="section {{if justDescription 'bold'}}" {{action "navClicked" currentNav}}> {{#if justDescription}} {{currentNav.displayName}} {{else}} {{currentNav.name}} {{/if}}</a>
+        {{#if justDescription}}
+            <i class="fas fa-plus-circle icon blue large" onclick={{action 'triggerBreadcrumbAction' currentNav.name}}></i>
+            {{#if displayFoldersMenu}}
+                {{#click-outside action=(action (mut displayFoldersMenu) false)}}
+                    <div class="folder-menu">
+                        <div class="ui vertical left menu transition">
+                            <div class="header">{{currentNav.name}} Options</div>
+                            <a class="item" onclick={{action 'openCreateFolderModal'}}>
+                                New Folder <div class="ui label transparent"><i class="fas fa-folder"></i></div>
+                            </a>
+                            <a class="item" onclick={{action 'openUploadDialog'}}>
+                                Upload File <div class="ui label transparent"><i class="fas fa-upload"></i></div>
+                            </a>
+                            {{#if (eq currentNav.command 'workspace')}}
+                                <a class="item" onclick={{action 'openSelectDataModal'}}>
+                                    Select Data...
+                                </a>
+                            {{/if}}
+                        </div>
+                    </div>
+                {{/click-outside}}
+            {{/if}}
+        {{else}}
+            {{#each fileBreadCrumbs as |bc|}}
+                <i class="right chevron icon divider"></i>
+                <a class="section" {{action "breadcrumbClicked" bc}}>{{truncate-breadcrumb bc.name}}</a>
+            {{/each}}
+        {{/if}}
+        {{#if currentBreadCrumb.name}}<i class="right chevron icon divider"></i>{{/if}}
+        <div class="active section bold">{{truncate-breadcrumb currentBreadCrumb.name}}</div>
+    </div>
 {{else}}
-
     <div class="ui grid">
-        <div class="one wide column" style="padding: 0 0 0 0; margin: 0px 0 0 0;">
+        <div class="one wide column" style="padding: 0; margin: 0;">
             {{#link-to "upload" class="ui fluid small blue button"}}<i class="left arrow icon"></i> {{/link-to}}
         </div>
-        <div class="fifteen wide column" style="padding: 0 0 0 0; margin: 0px 0 0 0;">
+        <div class="fifteen wide column" style="padding: 0; margin: 0;">
             <div class="ui large breadcrumb">
                 <a class="section"> {{currentNavTitle}}</a>
 
@@ -26,11 +46,9 @@
                     <i class="right chevron icon divider"></i>
                 {{/each}}
 
-                <div class="active section" style="font-weight:bold;">{{truncate-breadcrumb currentBreadCrumb.name}}</div>
+                <div class="active section bold">{{truncate-breadcrumb currentBreadCrumb.name}}</div>
 
             </div>
         </div>
     </div>
-
 {{/if}}
-

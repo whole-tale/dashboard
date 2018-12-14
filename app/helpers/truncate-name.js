@@ -1,12 +1,18 @@
-import Ember from 'ember';
-import moment from 'moment';
+import { helper } from '@ember/component/helper';
 
+export default helper(function truncateText(params, hash) {
+    const [value] = params;
+    let { limit } = hash;
+    limit = limit || 35;
+    let text = '';
 
-export default Ember.Helper.helper(function(params) {
-  let [name] = params;
-  if (name == null) return "";
-  if (name.length > 35)
-    name= name.substring(0,35) + "...";
+    if (value && value.length) {
+        text = value.substr(0, limit);
 
-  return name;
+        if (value.length > limit) {
+            text += '...';
+        }
+    }
+
+    return text;
 });
