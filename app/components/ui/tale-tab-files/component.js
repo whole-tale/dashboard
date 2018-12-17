@@ -1,5 +1,6 @@
 import TextField from '@ember/component/text-field';
 import Component from '@ember/component';
+import { A } from '@ember/array'; 
 import { inject as service } from '@ember/service';
 import { observer, computed } from '@ember/object';
 import Object from '@ember/object';
@@ -135,7 +136,7 @@ export default Component.extend({
             this.set("currentNavCommand", nav.command);
             this.set("currentNavTitle", nav.name);
 
-            if (nav.command === "home" || nav.command === "user_data" || nav.command === "workspace") {
+            if (nav.command === "home" || nav.command === "workspace") {
                 folderContents = controller.get('store').query('folder', {
                     parentId: nav.parentId,
                     parentType: nav.parentType,
@@ -195,6 +196,21 @@ export default Component.extend({
                     "resources": payload
                 });
                 // alert("Not implemented yet ...");
+            } else if (nav.command === "user_data") {
+              let sessionId = controller.model.get('sessionId');
+              let sessionContents = controller.get('store').findRecord('dm', sessionId, { adapterOptions: { insertPath: 'session' }})
+                .then(session => {
+                  return session.get('dataSet').map(item => {
+                    let {itemId, mountPath} = item;
+                    return {id: itemId, name: mountPath };
+                  });
+                })
+              ;
+              itemContents = Promise.resolve(A([]));
+              folderContents = sessionContents.then(_sessionContents => {
+                newModel.sessionContents = _sessionContents;
+                return A();
+              });
             }
 
             let newModel = {};
@@ -208,7 +224,8 @@ export default Component.extend({
                 })
                 .finally(() => {
                     controller.set("fileData", newModel);
-                });
+                })
+            ;
 
             state.setCurrentBreadCrumb(null);
             state.setCurrentFileBreadcrumbs([]); // new nav folder, reset crumbs
