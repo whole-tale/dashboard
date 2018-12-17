@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import Object, { computed } from '@ember/object';
 import { A } from '@ember/array';
+import { observer } from '@ember/object';
 import { inject as service } from '@ember/service';
 
 const O = Object.create.bind(Object);
@@ -36,6 +37,10 @@ export default Component.extend({
             let newClass = `select-data-modal-${this.get('modelType')}`;
             return newClass;
         } else return '';
+    }),
+
+    asio: observer('allSelectedItems', function() {
+      console.log(this.allSelectedItems);
     }),
 
     actions: {
@@ -88,7 +93,7 @@ export default Component.extend({
         this.set('loadError', false);
         this.set('loadingMessage', 'Preparing Files');
 
-        this.set('allSelectedItems', A());
+        // this.set('allSelectedItems', A());
         this.set('folders', A());
         this.set('files', A());
         this.set('currentFolder', null);
@@ -210,10 +215,18 @@ export default Component.extend({
     },
 
     cancel() {
-        if (this.get('cancel')) {
-            this.get('cancel')();
-        } else {
-            throw new Error('[select-data-modal] "cancel" function must be provided!!');
-        }
+        this.set('allSelectedItems', A());
+        this.set('folders', A());
+        this.set('files', A());
+        this.set('currentFolder', null);
+        this.set('rootFolderId', null);
+
+        // NOTE(Adam): This causes an infinite loop where the function calls itself recursively forever.
+
+        // if (this.get('cancel')) {
+        //     this.get('cancel')();
+        // } else {
+        //     throw new Error('[select-data-modal] "cancel" function must be provided!!');
+        // }
     }
 });

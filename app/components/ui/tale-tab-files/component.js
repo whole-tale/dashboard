@@ -1,6 +1,6 @@
 import TextField from '@ember/component/text-field';
 import Component from '@ember/component';
-import { A } from '@ember/array'; 
+import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
 import { observer, computed } from '@ember/object';
 import Object from '@ember/object';
@@ -31,6 +31,8 @@ export default Component.extend({
     store: service(),
     folderNavs: service(),
     router: service(),
+
+    sessionData: A(),
 
     fileBreadCrumbs: computed(function () {
         return {};
@@ -202,13 +204,14 @@ export default Component.extend({
                 .then(session => {
                   return session.get('dataSet').map(item => {
                     let {itemId, mountPath} = item;
-                    return {id: itemId, name: mountPath };
+                    return {id: itemId, name: mountPath.replace(/\//g, '') };
                   });
                 })
               ;
               itemContents = Promise.resolve(A([]));
               folderContents = sessionContents.then(_sessionContents => {
                 newModel.sessionContents = _sessionContents;
+                controller.set('sessionData', A(_sessionContents));
                 return A();
               });
             }
@@ -369,39 +372,12 @@ export default Component.extend({
         //-----------------------------------------------------------------------------
         openRegisterModal() {
             $('.ui.modal.harvester').modal('show');
-        },
-        updateSessionData(listOfSelectedItems) {
-            // console.log('updating session data...');
-            // NOTE: Structure of the list looks like this:
-
-            /*
-              [
-                {
-                  "id": "59aeb3f246a83d0001ab6777",
-                  "name": "us85co.xls",
-                  "_modelType": "item"
-                },
-                {
-                  "id": "59aeb3f246a83d0001ab6775",
-                  "name": "usco2000.xls",
-                  "_modelType": "item"
-                },
-                {
-                  "id": "59aeb3f246a83d0001ab677b",
-                  "name": "datadict2005.html",
-                  "_modelType": "item"
-                }
-              ]
-            */
-
-            // do something with selected items here ...
-        },
-        openSelectDataModal() {
-            $('.ui.modal.selectdata').modal('show');
-        },
+        }, 
         closeSelectDataModal() {
             $('.ui.modal.selectdata').modal('hide');
+        },
+        openSelectDataModal() {
+            this.sendAction('openSelectDataModal');
         }
-
     }
 });
