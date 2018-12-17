@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import layout from './template';
+// import hasEmberVersion from 'ember-test-helpers/has-ember-version';
 
 export default Component.extend({
     layout,
@@ -31,5 +32,8 @@ export default Component.extend({
             this.set("activeTabFiles", false);
             this.set("activeTabMetadata", true);
         },
+        openSelectDataModal() {
+            this.sendAction('openSelectDataModal');
+        }
     }
 });

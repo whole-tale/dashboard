@@ -16,7 +16,7 @@
     </div>
     <div class="ui tab {{if activeTabFiles "active"}}" data-tab="tab-files">
         {{#if activeTabFiles}}
-            {{ui/tale-tab-files model=model}}
+            {{ui/tale-tab-files model=model openSelectDataModal=(action 'openSelectDataModal') sessionData=sessionData}}
         {{/if}}
     </div>
     <div id="taleMetadataTab" class="ui tab {{if activeTabMetadata "active"}}" data-tab="tab-metadata">
