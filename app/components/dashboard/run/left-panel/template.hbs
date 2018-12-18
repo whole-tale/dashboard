@@ -78,7 +78,7 @@
     {{/unless}}
     {{!-- {{#if (eq internalState.currentInstanceId model.id)}} --}}
     {{#if hasSelectedTaleInstance}}
-        {{ui/tale-tabs-selector model=model openSelectDataModal=(action 'openSelectDataModal') sessionData=sessionData}}
+        {{ui/tale-tabs-selector model=model openSelectDataModal=(action 'openSelectDataModal') session=session }}
     {{else}}
         <div class="placeholder message">
             <p>Choose from

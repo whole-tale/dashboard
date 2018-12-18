@@ -3,12 +3,14 @@ import { inject as service } from '@ember/service';
 import FullScreenMixin from 'ember-cli-full-screen/mixins/full-screen';
 import config from '../../../../config/environment';
 import { scheduleOnce } from '@ember/runloop';
-import { computed } from '@ember/object';
+import Object, { computed } from '@ember/object';
 import { A } from '@ember/array';
 import { not } from '@ember/object/computed';
 import $ from 'jquery';
 import layout from './template';
 // import hasEmberVersion from 'ember-test-helpers/has-ember-version';
+
+const O = Object.create.bind(Object);
 
 export default Component.extend(FullScreenMixin, {
     layout,
@@ -21,10 +23,13 @@ export default Component.extend(FullScreenMixin, {
     hasSelectedTaleInstance: false,
     displayTaleInstanceMenu: false,
 
-    sessionData: A(),
+    session: O({dataSet:A()}),
 
-    allSelectedItems: computed('sessionData', function() {
-      return A(this.sessionData.concat([]));
+    allSelectedItems: computed('session', function() {
+      return A(this.session.get('dataSet').map(item => {
+        let {itemId, mountPath} = item;
+        return O({id: itemId, name: mountPath.replace(/\//g, '') });
+      }));
     }),
 
     init() {
@@ -155,31 +160,16 @@ export default Component.extend(FullScreenMixin, {
             return true;
         },
         updateSessionData(listOfSelectedItems) {
-          // console.log('updating session data...');
-          // NOTE: Structure of the list looks like this:
-
-          /*
-            [
-              {
-                "id": "59aeb3f246a83d0001ab6777",
-                "name": "us85co.xls",
-                "_modelType": "item"
-              },
-              {
-                "id": "59aeb3f246a83d0001ab6775",
-                "name": "usco2000.xls",
-                "_modelType": "item"
-              },
-              {
-                "id": "59aeb3f246a83d0001ab677b",
-                "name": "datadict2005.html",
-                "_modelType": "item"
-              }
-            ]
-          */
-
-          // do something with selected items here ...
-          
+          let dataSet = listOfSelectedItems.map(item => {
+            let {id, name} = item;
+            return {itemId: id, mountPath: name};
+          });
+          this.session.set('dataSet', dataSet);
+          this.session.save()
+            .then(() => {
+              // TODO(Adam): Somehow refresh the state of the external data tab to reflect the changes made to the session.
+            })
+          ;
       },
       openSelectDataModal() {
           $('.ui.modal.selectdata').modal('show');
