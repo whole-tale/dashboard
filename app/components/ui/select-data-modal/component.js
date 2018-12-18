@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import Object, { computed } from '@ember/object';
 import { A } from '@ember/array';
-import { observer } from '@ember/object';
 import { inject as service } from '@ember/service';
 
 const O = Object.create.bind(Object);
@@ -37,10 +36,6 @@ export default Component.extend({
             let newClass = `select-data-modal-${this.get('modelType')}`;
             return newClass;
         } else return '';
-    }),
-
-    asio: observer('allSelectedItems', function() {
-      console.log(this.allSelectedItems);
     }),
 
     actions: {
@@ -179,10 +174,10 @@ export default Component.extend({
     addSelectedData(files, folders) {
         const self = this;
         const add = f => {
-            if (f.selected) {
-                f.set('selected', false);
-                let { id, name, _modelType } = f;
-                if (!self.allSelectedItems.findBy('id', id)) {
+          if (f.selected) {
+            f.set('selected', false);
+            let { id, name, _modelType } = f;
+            if (!self.allSelectedItems.findBy('id', id)) {
                     self.allSelectedItems.pushObject(O({ id, name, _modelType }));
                 }
             }

@@ -6,6 +6,8 @@ import { observer, computed } from '@ember/object';
 import Object from '@ember/object';
 import $ from 'jquery';
 
+const O = Object.create.bind(Object);
+
 function wrapFolder(folderID, folderName) {
     return {
         "name": folderName,
@@ -31,8 +33,6 @@ export default Component.extend({
     store: service(),
     folderNavs: service(),
     router: service(),
-
-    sessionData: A(),
 
     fileBreadCrumbs: computed(function () {
         return {};
@@ -199,19 +199,20 @@ export default Component.extend({
                 });
                 // alert("Not implemented yet ...");
             } else if (nav.command === "user_data") {
-              let sessionId = controller.model.get('sessionId');
+              let session, sessionId = controller.model.get('sessionId');
               let sessionContents = controller.get('store').findRecord('dm', sessionId, { adapterOptions: { insertPath: 'session' }})
-                .then(session => {
+                .then(_session => {
+                  session = _session;
                   return session.get('dataSet').map(item => {
                     let {itemId, mountPath} = item;
-                    return {id: itemId, name: mountPath.replace(/\//g, '') };
+                    return O({id: itemId, name: mountPath.replace(/\//g, '') });
                   });
                 })
               ;
               itemContents = Promise.resolve(A([]));
               folderContents = sessionContents.then(_sessionContents => {
                 newModel.sessionContents = _sessionContents;
-                controller.set('sessionData', A(_sessionContents));
+                controller.set('session', session);
                 return A();
               });
             }
