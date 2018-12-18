@@ -75,6 +75,19 @@ export default Component.extend({
 
         removeSelectedData() {
             this.removeSelectedData.call(this);
+        },
+
+        close() {
+          const deselect = f => {
+            if (f.selected) {
+              f.set('selected', false);
+            }
+          }
+          this.allSelectedItems.forEach(deselect);
+          this.set('folders', A());
+          this.set('files', A());
+          this.set('currentFolder', null);
+          this.set('rootFolderId', null);
         }
     },
 
@@ -212,16 +225,6 @@ export default Component.extend({
     cancel() {
         
         // this.set('allSelectedItems', A());
-        const deselect = f => {
-            if (f.selected) {
-                f.set('selected', false);
-            }
-        }
-        this.allSelectedItems.forEach(deselect);
-        this.set('folders', A());
-        this.set('files', A());
-        this.set('currentFolder', null);
-        this.set('rootFolderId', null);
 
         // NOTE(Adam): This causes an infinite loop where the function calls itself recursively forever.
 
