@@ -55,8 +55,72 @@
     }
 }
   
+.selectdata {
+  width:95% !important;
+  position:fixed !important;
+
+  .ui.dimmer {
+    background-color:#cedce2 !important;
+  }
+
+  table {
+    margin-top:0 !important;
+  }
+
+  td.buttons.row,
+  .ui.segment,
+  .content {
+    padding: 0;
+  }
+
+  .ui.segment>button,
+  .ui.segment>button:active,
+  .ui.segment>button:hover,
+  .ui.segment>button:focus,
+  .buttons.row>button,
+  .buttons.row>button:active,
+  .buttons.row>button:hover,
+  .buttons.row>button:focus {
+    padding: 0.78571429em .8em 0.78571429em; 
+    box-shadow: 0px 0px 0px 1px #2185d0 inset; 
+    -webkit-box-shadow: 0px 0px 0px 1px #2185d0 inset;
+    color:#2185d0 !important;
+    position: fixed !important;
+    top: 1.7rem;
+  }
+  
+  .ui.basic.striped.table tbody tr:nth-child(2n).selected-row,
+  tr.selected-row {
+    background-color: #2185d0 !important; 
+    color:white;
+  }
+
+  td.ui.sub.header {
+    color:rgba(0,0,0,0.6) !important;
+  }
+
+  .ui.segment {
+    border:0;
+    border-radius:0;
+    height:100%; 
+    height:fill-available; 
+    height:-moz-available; 
+    height:-webkit-fill-available;
+  }
+
+  .ui.black.deny.button {
+    background-color:#e8f3fa; 
+    color:rgba(0,0,0,0.6);
+  }
+
+  .ui.positive.button {
+    background-color:#2185d0;
+  }
+}
+
   .scrolling.undetached.dimmable .ui.modal.acl-component.scrolling,
-  .scrolling.undetached.dimmable .ui.modal.harvester.scrolling {
+  .scrolling.undetached.dimmable .ui.modal.harvester.scrolling,
+  .selectdata {
     min-height: 50vh;
     height: auto;
     max-height: 70%;
