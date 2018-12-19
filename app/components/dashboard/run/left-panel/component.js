@@ -17,11 +17,13 @@ export default Component.extend(FullScreenMixin, {
     classNames: ['run-left-panel'],
     router: service('-routing'),
     internalState: service(),
+    apiCall: service('api-call'),
     loadError: false,
     model: null,
     wholeTaleHost: config.wholeTaleHost,
     hasSelectedTaleInstance: false,
     displayTaleInstanceMenu: false,
+    workspaceRootId: undefined,
 
     session: O({dataSet:A()}),
 
@@ -34,11 +36,22 @@ export default Component.extend(FullScreenMixin, {
 
     init() {
         this._super(...arguments);
-        let shouldButtonsAppear = this.get('internalState').currentInstanceId;
+        let state = this.get('internalState');
+        let shouldButtonsAppear = state.currentInstanceId;
         if (shouldButtonsAppear) {
             this.set('hasSelectedTaleInstance', true);
         } else {
             this.set('hasSelectedTaleInstance', false);
+        }
+        if(!state.workspaceRootId) {
+            let controller = this;
+            let apiCallService = this.get('apiCall');
+            let success = (folderId) => {
+                state.set('workspaceRootId', folderId);
+                controller.set('workspaceRootId', folderId);
+            };
+            let failure = () => controller.set('workspaceRootId', undefined);
+            apiCallService.getWorkspaceRootId(success, failure);
         }
         this.result = {
             CouldNotLoadUrl: 1,

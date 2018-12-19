@@ -26,7 +26,10 @@ export default Component.extend({
         this.sendAction('openUploadDialog');
     },
     openSelectDataModal() {
-        this.get("openSelectDataModal")();
+        this.get('openSelectDataModal')();
+    },
+    openWorkspacesDataModal() {
+        this.get('openWorkspacesDataModal')();
     },
 
     triggerBreadcrumbAction(currentNavName) {

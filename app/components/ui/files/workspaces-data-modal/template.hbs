@@ -1,0 +1,111 @@
+{{#ui-modal class="workspacedata" name="workspacedata" onVisible=(action 'initData')}}
+    <div class="header">
+        Select Data
+    </div>
+    <div class="content">
+        <div class="ui grid">
+            <div class="four wide column">
+                <div class="ui segment">
+                    {{#each dataSources as |datasource index|}}
+                        <div class="ui vertical menu fluid right">
+                            <a class="item {{if (eq index selectedMenuIndex) 'active-class'}}"
+                                style="padding: 0"
+                                {{action 'selectDatasource' datasource index}}>
+                                <div class="icon-wrapper" style="ont-size: 1.2rem;line-height: 1.2rem;font-weight: 400;padding: 0.92857143em 1.14285714em;">{{datasource.name}}</div>
+                                <div style="padding-left: 1rem; padding-top: 4px;">
+                                    <span class="instructions" style="color: rgba(0, 0, 0, 0.4);font-size: 12px;font-style: italic;letter-spacing: -0.5px;">
+                                        {{datasource.description}}
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
+                    {{/each}}
+                </div>
+            </div>
+
+            <div class="twelve wide column">
+                <div class="ui segment">
+                    {{!-- <button class="ui very basic right labeled icon button" {{action 'addSelectedData'}}><i class="angle double right icon"></i>
+                        Add Selected</button> --}}
+                    {{#if loading}}
+                        <div class="ui active inverted dimmer">
+                            <div class="ui indeterminate medium text {{unless loadError 'loader'}}">{{loadingMessage}}</div>
+                        </div>
+                        <p></p>
+                    {{else}}
+                        <table class="ui very basic compact striped fixed single line table">
+                            <thead>
+                                {{#if (eq rootFolderId currentFolder.id)}}
+                                    <th>
+                                        <td class="ui sub header collapsing noselect">Workspace Root Folder</td>
+                                    </th>
+                                {{else}}
+                                    <th>
+                                        <td class="ui sub header collapsing noselect" {{action 'goBack' on='click'}}>
+                                            <i class="long alternate blue left arrow icon"></i>{{currentFolder.name}}
+                                        </td>
+                                    </th>
+                                {{/if}}                                
+                            </thead>
+                            <tbody>
+                                {{#each folders as | folder |}}
+                                    <tr class="{{if folder.selected 'selected-row'}}"
+                                        {{action 'dblClick' folder on='doubleClick'}}
+                                        {{action 'onClick' folder on='click'}}>
+                                        <td class="collapsing noselect">
+                                            <i class="folder icon"></i>{{truncate-name folder.name}}
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                                {{#each files as | file |}}
+                                    <tr class="{{if file.selected 'selected-row'}}">
+                                        <td class="collapsing noselect" {{action 'onClick' file on='click'}}>
+                                            <i class="file icon"></i>{{file.name}}
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    {{/if}}
+                </div>
+            </div>
+            {{!-- <div class="seven wide column">
+                <div class="ui segment">
+                    <button class="ui very basic labeled icon button" {{action 'removeSelectedData'}}>
+                        <i class="angle double left icon"></i>Remove Selected
+                    </button>
+                    <table class="ui very basic compact striped fixed single line table">
+                        <tbody>
+                            <tr></tr>
+                            <tr>
+                                <td class="ui sub header collapsing noselect">Selected Data</td>
+                            </tr>
+                            {{#each allSelectedItems as | item |}}
+                                <tr class="{{if item.selected 'selected-row'}}">
+                                    <td class="collapsing noselect" {{action 'onClick' item on='click'}}>
+                                        {{#if (eq item._modelType 'file')}}
+                                            <i class="file icon"></i>{{item.name}}
+                                        {{else}}
+                                            <i class="folder icon"></i>{{item.name}}
+                                        {{/if}}
+                                    </td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div> --}}
+        </div>
+    </div>
+
+    <div class="actions">
+        <div class="ui black deny button"
+            onclick={{action "cancel" preventDefault=false bubble=false}}>
+            Cancel
+        </div>
+        <div class="ui positive button" 
+            onclick={{action "updateWorkspaceData" preventDefault=false bubble=false}}>
+            Select
+        </div>
+    </div>
+{{/ui-modal}}
