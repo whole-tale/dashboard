@@ -139,18 +139,37 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
     },
 
     updateRecord(store, type, snapshot) {
+        let data = {};
+        let serializer = store.serializerFor(type.modelName);
+
+        serializer.serializeIntoHash(data, type, snapshot);
+
+        let id = snapshot.id;
+        let url = this.buildURL(type.modelName, id, snapshot, 'updateRecord');
+
         if (_.get(snapshot, "adapterOptions.copy")) {
-            let data = {};
-            let serializer = store.serializerFor(type.modelName);
-
-            serializer.serializeIntoHash(data, type, snapshot);
-
-            let id = snapshot.id;
-            let url = this.buildURL(type.modelName, id, snapshot, 'updateRecord');
-
             return this.get('authRequest').send(url, {
                 method: "POST",
                 data: data
+            });
+        }
+
+        // NOTE(Adam): The /dm endpoint does not match what the ember REST adapter expects.
+        //             For example, Ember adapter uses PATCH to update models. And Ember also expects a json body but /dm uses query params. 
+        //             And the endpoint uses /dm/session/{id} instead of /dm/{id}. 
+        //             For these reasons, I must override the Ember adapter and customize the update function for the /dm endpoint.
+        if (type.modelName === 'dm') {
+            url = url.replace(id, `session/${id}`);
+            let q = '';
+            try {
+                q = this.buildQueryParams({ dataSet: JSON.stringify(snapshot.record.dataSet) });
+            } catch (e) {
+                throw new Error("could not save dataset back to the session.");
+            }
+            url += '?' + q;
+
+            return this.get('authRequest').send(url, {
+                method: "PUT"
             });
         }
 
@@ -186,5 +205,5 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
             return 'PUT';
         }
         return this._super(params);
-    },
+    }
 });

@@ -1,9 +1,11 @@
 import TextField from '@ember/component/text-field';
 import Component from '@ember/component';
-import { A } from '@ember/array'; 
+import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
 import Object, { observer, computed } from '@ember/object';
 import $ from 'jquery';
+
+const O = Object.create.bind(Object);
 
 function wrapFolder(folderID, folderName) {
     return {
@@ -237,19 +239,21 @@ export default Component.extend({
                 folderContents = controller.get('store').query('resource', {
                     'resources': payload
                 });
-                // alert('Not implemented yet ...');
-            } else if (nav.command === 'user_data') {
-                let sessionId = controller.model.get('sessionId');
-                let sessionContents = controller.get('store').findRecord('dm', sessionId, { adapterOptions: { insertPath: 'session' }})
-                    .then(session => {
+                // alert("Not implemented yet ...");
+            } else if (nav.command === "user_data") {
+                let session, sessionId = controller.model.get('sessionId');
+                let sessionContents = controller.get('store').findRecord('dm', sessionId, { adapterOptions: { insertPath: 'session' } })
+                    .then(_session => {
+                        session = _session;
                         return session.get('dataSet').map(item => {
                             let { itemId, mountPath } = item;
-                            return { id: itemId, name: mountPath };
+                            return O({ id: itemId, name: mountPath.replace(/\//g, '') });
                         });
                     });
                 itemContents = Promise.resolve(A([]));
                 folderContents = sessionContents.then(_sessionContents => {
                     newModel.sessionContents = _sessionContents;
+                    controller.set('session', session);
                     return A();
                 });
             }
@@ -409,7 +413,7 @@ export default Component.extend({
         openRegisterModal() {
             $('.ui.modal.harvester').modal('show');
         },
-        updateSessionData(listOfSelectedItems) {
+        // updateSessionData(listOfSelectedItems) {
             // console.log('updating session data...');
             // NOTE: Structure of the list looks like this:
 
@@ -434,9 +438,10 @@ export default Component.extend({
             */
 
             // do something with selected items here ...
-        },
+        // },
         openSelectDataModal() {
-            $('.ui.modal.selectdata').modal('show');
+            // $('.ui.modal.selectdata').modal('show');
+            this.sendAction('openSelectDataModal');
         },
         closeSelectDataModal() {
             $('.ui.modal.selectdata').modal('hide');
@@ -473,6 +478,5 @@ export default Component.extend({
         closeWorkspacesDataModal() {
             $('.ui.modal.workspacedata').modal('hide');
         }
-
     }
 });

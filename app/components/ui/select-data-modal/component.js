@@ -75,6 +75,19 @@ export default Component.extend({
 
         removeSelectedData() {
             this.removeSelectedData.call(this);
+        },
+
+        close() {
+          const deselect = f => {
+            if (f.selected) {
+              f.set('selected', false);
+            }
+          }
+          this.allSelectedItems.forEach(deselect);
+          this.set('folders', A());
+          this.set('files', A());
+          this.set('currentFolder', null);
+          this.set('rootFolderId', null);
         }
     },
 
@@ -88,7 +101,7 @@ export default Component.extend({
         this.set('loadError', false);
         this.set('loadingMessage', 'Preparing Files');
 
-        this.set('allSelectedItems', A());
+        // this.set('allSelectedItems', A());
         this.set('folders', A());
         this.set('files', A());
         this.set('currentFolder', null);
@@ -174,10 +187,10 @@ export default Component.extend({
     addSelectedData(files, folders) {
         const self = this;
         const add = f => {
-            if (f.selected) {
-                f.set('selected', false);
-                let { id, name, _modelType } = f;
-                if (!self.allSelectedItems.findBy('id', id)) {
+          if (f.selected) {
+            f.set('selected', false);
+            let { id, name, _modelType } = f;
+            if (!self.allSelectedItems.findBy('id', id)) {
                     self.allSelectedItems.pushObject(O({ id, name, _modelType }));
                 }
             }
@@ -210,10 +223,15 @@ export default Component.extend({
     },
 
     cancel() {
-        if (this.get('cancel')) {
-            this.get('cancel')();
-        } else {
-            throw new Error('[select-data-modal] "cancel" function must be provided!!');
-        }
+        
+        // this.set('allSelectedItems', A());
+
+        // NOTE(Adam): This causes an infinite loop where the function calls itself recursively forever.
+
+        // if (this.get('cancel')) {
+        //     this.get('cancel')();
+        // } else {
+        //     throw new Error('[select-data-modal] "cancel" function must be provided!!');
+        // }
     }
 });

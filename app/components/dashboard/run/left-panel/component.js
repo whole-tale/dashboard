@@ -3,10 +3,14 @@ import { inject as service } from '@ember/service';
 import FullScreenMixin from 'ember-cli-full-screen/mixins/full-screen';
 import config from '../../../../config/environment';
 import { scheduleOnce } from '@ember/runloop';
-import { computed } from '@ember/object';
+import Object, { computed } from '@ember/object';
+import { A } from '@ember/array';
 import { not } from '@ember/object/computed';
 import $ from 'jquery';
 import layout from './template';
+// import hasEmberVersion from 'ember-test-helpers/has-ember-version';
+
+const O = Object.create.bind(Object);
 
 export default Component.extend(FullScreenMixin, {
     layout,
@@ -20,6 +24,15 @@ export default Component.extend(FullScreenMixin, {
     hasSelectedTaleInstance: false,
     displayTaleInstanceMenu: false,
     workspaceRootId: undefined,
+
+    session: O({dataSet:A()}),
+
+    allSelectedItems: computed('session', function() {
+      return A(this.session.get('dataSet').map(item => {
+        let {itemId, mountPath} = item;
+        return O({id: itemId, name: mountPath.replace(/\//g, '') });
+      }));
+    }),
 
     init() {
         this._super(...arguments);
@@ -158,6 +171,21 @@ export default Component.extend(FullScreenMixin, {
 
         denyDelete() {
             return true;
-        }
+        },
+        updateSessionData(listOfSelectedItems) {
+          let dataSet = listOfSelectedItems.map(item => {
+            let {id, name} = item;
+            return {itemId: id, mountPath: name};
+          });
+          this.session.set('dataSet', dataSet);
+          this.session.save()
+            .then(() => {
+              // TODO(Adam): Somehow refresh the state of the external data tab to reflect the changes made to the session.
+            })
+          ;
+      },
+      openSelectDataModal() {
+          $('.ui.modal.selectdata').modal('show');
+      },
     }
 });

@@ -106,8 +106,7 @@ export default Component.extend({
         let workspaceRootId = this.get('internalState').workspaceRootId;
         console.log('workspaceRootId: ' + workspaceRootId);
         return store.query('folder', { parentId: workspaceRootId, parentType,/* name,*/ adapterOptions }).then(wsFolder => {
-            debugger;
-            let wsFolderId = workspaceRootId;//wsFolder.content[0].id;
+            let wsFolderId = workspaceRootId; // wsFolder.content[0].id;
             console.log('wsFolderId: ' + wsFolderId);
             let parentCollection = parentType;
             self.set('rootFolderId', wsFolderId);
