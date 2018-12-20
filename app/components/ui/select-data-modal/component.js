@@ -12,8 +12,7 @@ export default Component.extend({
 
     selectedMenuIndex: 0,
     dataSources: A([
-        O({ name: 'WholeTale Catalog' }),
-        O({ name: 'Tale Workspaces' })
+        O({ name: 'WholeTale Catalog' })
     ]),
     selectedDataSource: O({}),
 
