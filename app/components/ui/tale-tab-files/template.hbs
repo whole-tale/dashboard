@@ -52,5 +52,6 @@
 {{ui/files/registration-modal onRegisterData=(action "refresh")}}
 {{!-- {{ui/select-data-modal updateSessionData=(action "updateSessionData") cancel=(action "closeSelectDataModal")}} --}}
 {{ui/files/workspaces-data-modal
+    taleId=model.taleId
     updateWorkspaceData=(action "updateWorkspaceData")
     cancel=(action "closeWorkspacesDataModal")}}

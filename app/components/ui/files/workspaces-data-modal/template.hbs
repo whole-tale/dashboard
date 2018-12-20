@@ -3,7 +3,7 @@
         Select Data
     </div>
     <div class="content">
-        <div class="ui grid">
+        <div class="ui grid" style="border-bottom-color: transparent;">
             <div class="four wide column">
                 <div class="ui segment">
                     {{#each dataSources as |datasource index|}}
@@ -11,7 +11,7 @@
                             <a class="item {{if (eq index selectedMenuIndex) 'active-class'}}"
                                 style="padding: 0"
                                 {{action 'selectDatasource' datasource index}}>
-                                <div class="icon-wrapper" style="ont-size: 1.2rem;line-height: 1.2rem;font-weight: 400;padding: 0.92857143em 1.14285714em;">{{datasource.name}}</div>
+                                <div class="icon-wrapper">{{datasource.name}}</div>
                                 <div style="padding-left: 1rem; padding-top: 4px;">
                                     <span class="instructions" style="color: rgba(0, 0, 0, 0.4);font-size: 12px;font-style: italic;letter-spacing: -0.5px;">
                                         {{datasource.description}}
@@ -26,7 +26,8 @@
             <div class="twelve wide column">
                 <div class="ui segment">
                     {{!-- <button class="ui very basic right labeled icon button" {{action 'addSelectedData'}}><i class="angle double right icon"></i>
-                        Add Selected</button> --}}
+                        Add Selected
+                    </button> --}}
                     {{#if loading}}
                         <div class="ui active inverted dimmer">
                             <div class="ui indeterminate medium text {{unless loadError 'loader'}}">{{loadingMessage}}</div>
@@ -36,26 +37,33 @@
                         <table class="ui very basic compact striped fixed single line table">
                             <thead>
                                 {{#if (eq rootFolderId currentFolder.id)}}
-                                    <th>
-                                        <td class="ui sub header collapsing noselect">Workspace Root Folder</td>
+                                    <th class="ui sub header collapsing noselect">
+                                        {{!-- {{debugger}} --}}
+                                        {{#if (eq currentFolder.id internalState.workspaceRootId)}}
+                                            Workspace Root Folder
+                                        {{else}}
+                                            Home Folder
+                                        {{/if}}
                                     </th>
                                 {{else}}
-                                    <th>
-                                        <td class="ui sub header collapsing noselect" {{action 'goBack' on='click'}}>
-                                            <i class="long alternate blue left arrow icon"></i>{{currentFolder.name}}
-                                        </td>
+                                    <th class="ui sub header collapsing noselect clickable blue"
+                                        style="text-transform: none"
+                                        {{action 'goBack' on='click'}}>
+                                        <i class="long alternate blue horizontally flipped level up icon"></i>{{truncate-name currentFolder.name}}
                                     </th>
                                 {{/if}}                                
                             </thead>
                             <tbody>
                                 {{#each folders as | folder |}}
-                                    <tr class="{{if folder.selected 'selected-row'}}"
-                                        {{action 'dblClick' folder on='doubleClick'}}
-                                        {{action 'onClick' folder on='click'}}>
-                                        <td class="collapsing noselect">
-                                            <i class="folder icon"></i>{{truncate-name folder.name}}
-                                        </td>
-                                    </tr>
+                                    {{#unless (eq folder.name taleId)}}
+                                        <tr class="{{if folder.selected 'selected-row'}}"
+                                            {{action 'dblClick' folder on='doubleClick'}}
+                                            {{action 'onClick' folder on='click'}}>
+                                            <td class="collapsing noselect">
+                                                <i class="folder icon"></i>{{truncate-name folder.name}}
+                                            </td>
+                                        </tr>
+                                    {{/unless}}
                                 {{/each}}
                                 {{#each files as | file |}}
                                     <tr class="{{if file.selected 'selected-row'}}">
@@ -83,11 +91,7 @@
                             {{#each allSelectedItems as | item |}}
                                 <tr class="{{if item.selected 'selected-row'}}">
                                     <td class="collapsing noselect" {{action 'onClick' item on='click'}}>
-                                        {{#if (eq item._modelType 'file')}}
-                                            <i class="file icon"></i>{{item.name}}
-                                        {{else}}
-                                            <i class="folder icon"></i>{{item.name}}
-                                        {{/if}}
+                                        <i class="icon {{if (eq item._modelType 'file' else 'folder'}}"></i>{{item.name}}
                                     </td>
                                 </tr>
                             {{/each}}
@@ -97,14 +101,14 @@
             </div> --}}
         </div>
     </div>
-
     <div class="actions">
-        <div class="ui black deny button"
+        <div class="ui deny button"
             onclick={{action "cancel" preventDefault=false bubble=false}}>
             Cancel
         </div>
-        <div class="ui positive button" 
+        <div class="ui positive right labeled icon button" 
             onclick={{action "updateWorkspaceData" preventDefault=false bubble=false}}>
+            <i class="check icon"></i>
             Select
         </div>
     </div>

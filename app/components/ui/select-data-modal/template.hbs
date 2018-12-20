@@ -64,8 +64,8 @@
             </div>
             <div class="seven wide column">
                 <div class="ui segment">
-                    <button class="ui very basic labeled icon button" {{action 'removeSelectedData'}}><i class="angle double left icon"></i>Remove
-                        Selected</button>
+                    <button class="ui very basic labeled icon button" {{action 'removeSelectedData'}}>
+                        <i class="angle double left icon"></i>Remove Selected</button>
                     <table class="ui very basic compact striped fixed single line table">
                         <tbody>
                             <tr></tr>
@@ -91,14 +91,12 @@
     </div>
 
     <div class="actions">
-        <div class="ui black deny button" onclick={{action "cancel" 
-            preventDefault=false
-            bubble=false}}>
+        <div class="ui black deny button"
+            onclick={{action "cancel" preventDefault=false bubble=false}}>
             Cancel
         </div>
-        <div class="ui positive button" onclick={{action "updateSessionData"
-            preventDefault=false 
-            bubble=false}}>
+        <div class="ui positive button"
+            onclick={{action "updateSessionData" preventDefault=false bubble=false}}>
             Select
         </div>
     </div>

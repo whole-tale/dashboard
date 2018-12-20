@@ -127,7 +127,7 @@ export default Component.extend({
         },
 
         //----------------------------------------------------------------------------
-        navClicked: function (nav) {
+        navClicked(nav) {
             let controller = this;
             let state = this.get('internalState');
 
