@@ -97,23 +97,10 @@ export default Component.extend(FullScreenMixin, {
         });
     },
 
-    getDataONEJWT() {
-        /*
-        Queries the DataONE `token` endpoint for the jwt. When a user signs into
-        DataONE a cookie is created, which is checked by `token`. If the cookie wasn't
-        found, then the response will be empty. Otherwise the jwt is returned.
-        */
-
-        // Use the XMLHttpRequest to handle the request
-        let xmlHttp = new XMLHttpRequest();
-        // Open the request to the the token endpoint, which will return the jwt if logged in
-        xmlHttp.open("GET", 'https://cn-stage-2.test.dataone.org/portal/token', false);
-        // Set the response content type
-        xmlHttp.setRequestHeader("Content-Type", "text/xml");
-        // Let XMLHttpRequest know to use cookies
-        xmlHttp.withCredentials = true;
-        xmlHttp.send(null);
-        return xmlHttp.responseText;
+    authenticateD1(taleId) {
+      let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
+      let orcidLogin = config.dataOneHost+'/portal/oauth?action=start&target=';
+      window.location.replace(orcidLogin + callback);
     },
 
     shouldShowButtons: computed('internalState', 'internalState.currentInstanceId', function () {

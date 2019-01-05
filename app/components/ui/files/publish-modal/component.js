@@ -167,17 +167,6 @@ export default Component.extend({
     self.handlePublishingStatus();
   },
 
-    create_tooltips() {
-        // Create the popup in the main title
-        $('.info.circle.blue.icon.main').popup({
-            position : 'right center',
-            target   : '.info.circle.blue.icon.main',
-            hoverable: true,
-            html: "Get a citeable DOI by publishing your Tale on <a href='https://www.dataone.org/' target='_blank'>DataONE.</a> \
-            For more information on how to publish and cite your tale, visit the \
-            <a href='https://wholetale.readthedocs.io/en/stable/users_guide/publishing.html' target='_blank'>publishing guide</a>."
-        });
-
   didInsertElement() {
     let self = this;
     self.set('selectedRepository', self.get('repositories')[0].name);
@@ -417,16 +406,12 @@ export default Component.extend({
             reload: true
           })
           .then(job => {
-            console.log('Got job');
-
             if (job.get('status') === 3) {
               if (job.progress) {
-                console.log(job.progress.current);
                 self.set('progress', job.progress.current / 100);
                 self.set('statusMessage', job.progress.message);
               }
               // Then the job completed
-              console.log('Registration complete');
               self.set('publishing', false);
               self.set('publishingSuccess', true);
 
@@ -435,8 +420,6 @@ export default Component.extend({
                   reload: true
                 })
                 .then(resp => {
-                  console.log(resp);
-
                   // Update UI with Tale information
                   self.set('tale', resp);
                   self.set('packageIdentifier', resp.doi);
@@ -444,9 +427,6 @@ export default Component.extend({
                   cancel(currentLoop);
                 });
             } else if (job.get('status') === 4) {
-              console.log('Registration failed');
-              console.log(job)
-              console.log(job.log)
               // Then the job failed with an error
               self.set('publishing', false);
               self.set('publishingSuccess', false);
@@ -458,11 +438,9 @@ export default Component.extend({
               // Otherwise the job is still running
               // Update the progressbar
               if (job.progress) {
-                console.log(job.progress.current)
                 self.set('progress', job.progress.current / 100);
                 self.set('statusMessage', job.progress.message);
               }
-              console.log('Registration running')
               console.log(job)
             }
           });
@@ -509,13 +487,9 @@ export default Component.extend({
       self.set('publishing', true);
       let jwt = self.dataoneAuth.getDataONEJWT();
 
-      if (jwt) {
-        self.set('dataoneJWT', jwt);
-        // If they are, go ahead and publish
-        self.initiatePublish();
-      } else {
-        console.log('Error not logged in.')
-      }
+      self.set('dataoneJWT', jwt);
+      // If they are, go ahead and publish
+      self.initiatePublish();
       return false;
     },
 

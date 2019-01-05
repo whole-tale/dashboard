@@ -90,7 +90,6 @@ module.exports = function (environment) {
 
   ENV.apiPath = 'api/v1';
   ENV.apiUrl = ENV.apiHost + '/' + ENV.apiPath;
-  ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
   ENV.authRedirect = ENV.wholeTaleHost + '/login-success';
   ENV.dev = environment === 'development';
 

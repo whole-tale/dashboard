@@ -27,6 +27,13 @@ export default Component.extend({
     size: '',
     // Controls whether the results section is shown in the UI
     showResults: false,
+    // The DataONE CN endpoint that is used to locate the dataset
+    dataoneEndpoint: '',
+
+    init() {
+      this._super(...arguments);
+      this.set('dataoneEndpoint', config.dataOneHost+'/cn/v2');
+    },
 
     didInsertElement() {
         this._super(...arguments);
@@ -162,7 +169,7 @@ export default Component.extend({
                 method: 'POST',
                 data: {
                     dataMap: dataMap,
-                    base_url: config.dataOneHost
+                    base_url: self.get('dataoneEndpoint')
                 }
             };
 
@@ -205,7 +212,7 @@ export default Component.extend({
                 method: 'GET',
                 data: {
                     dataId: JSON.stringify(this.searchDataId.split()),
-                    base_url: config.dataOneHost
+                    base_url: this.get('dataoneEndpoint')
                 }
             };
 

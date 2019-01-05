@@ -1,11 +1,12 @@
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
+import config from '../config/environment';
  export default Service.extend({
   tokenHandler: service('token-handler'),
   store: service(),
   authRequest: service(),
-   isAuthenticated: true,
+  isAuthenticated: true,
    getDataONEJWT() {
     /*
     Queries the DataONE `token` endpoint for the jwt. When a user signs into
@@ -15,7 +16,7 @@ import { computed } from '@ember/object';
      // Use the XMLHttpRequest to handle the request
     let xmlHttp = new XMLHttpRequest();
     // Open the request to the the token endpoint, which will return the jwt if logged in
-    xmlHttp.open("GET", 'https://cn-stage-2.test.dataone.org/portal/token', false);
+    xmlHttp.open("GET", config.dataOneHost+'/portal/token', false);
     // Set the response content type
     xmlHttp.setRequestHeader("Content-Type", "text/xml");
     // Let XMLHttpRequest know to use cookies
