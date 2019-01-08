@@ -1,9 +1,10 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import Object from '@ember/object';
+import { inject as service } from '@ember/service';
+import { A } from '@ember/array';
 import layout from './template';
 
-const service = Ember.inject.service.bind(Ember);
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   fileToMove: null,
@@ -12,19 +13,19 @@ export default Ember.Component.extend({
   userAuth: service(),
   folderNavs: service(),
 
-  folders: Ember.A(), //Array of folders in the directory
+  folders: A(), //Array of folders in the directory
 
-  destinationFolder: Ember.Object.create({}),
-  previousFolder: Ember.Object.create({}),
-  selectionTree: Ember.Object.create({}),
-  directory: Ember.Object.create({}),
+  destinationFolder: Object.create({}),
+  previousFolder: Object.create({}),
+  selectionTree: Object.create({}),
+  directory: Object.create({}),
 
   clearModal() {
-    this.set('destinationFolder', Ember.Object.create({}));
-    this.set('previousFolder', Ember.Object.create({}));
-    this.set('selectionTree', Ember.Object.create({}));
-    this.set('directory', Ember.Object.create({}));
-    this.set('folders', Ember.A());
+    this.set('destinationFolder', Object.create({}));
+    this.set('previousFolder', Object.create({}));
+    this.set('selectionTree', Object.create({}));
+    this.set('directory', Object.create({}));
+    this.set('folders', A());
     const self = this;
     const folderNavs = this.get('folderNavs');
 
@@ -114,13 +115,13 @@ export default Ember.Component.extend({
         }
         self.set('folders', folders);
       })
-      .catch(e => {
-        console.log(e);
-      })
-      .finally(() => {
-        self.set('directory', folder);
-        self.set('loading', false);
-      });
+        .catch(e => {
+          console.log(e);
+        })
+        .finally(() => {
+          self.set('directory', folder);
+          self.set('loading', false);
+        });
     },
 
     clickBack() {
@@ -148,19 +149,19 @@ export default Ember.Component.extend({
           }
         }
       }).then(folders => {
-        if (fileToMove) folders = folders.reject(f => (f.id === fileToMove.id));
+        if (fileToMove) {
+          folders = folders.reject(f => (f.id === fileToMove.id));
+        }
         folders = folders.reject(f => (f.name === 'Workspace'));
         self.set('folders', folders);
-      })
-      .catch(e => {
+      }).catch(e => {
         console.log(e);
-      })
-      .finally(() => {
+      }).finally(() => {
         if (parentType === "folder") {
           store.find('folder', parentId).then(folder => {
             self.set('directory', folder);
           });
-        };
+        }
         self.set('loading', false);
       });
     },
@@ -170,13 +171,13 @@ export default Ember.Component.extend({
       selectionTree[folder.id] = {
         check: true
       };
-      this.set('selectionTree', Ember.Object.create(selectionTree));
+      this.set('selectionTree', Object.create(selectionTree));
       this.set('destinationFolder', folder);
     },
 
     uncheck(folder) {
-      this.set('destinationFolder', Ember.Object.create({}));
-      this.set('selectionTree', Ember.Object.create({}));
+      this.set('destinationFolder', Object.create({}));
+      this.set('selectionTree', Object.create({}));
     }
   }
 });

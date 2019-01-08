@@ -237,11 +237,14 @@ ui.inverted.menu.wt.top {
 
 /* Navigation NEW UI - Manage section starts */
 .folder-navigator-container {
-  background: rgba(0, 0, 0, 0.05);
+//   background: rgba(0, 0, 0, 0.05);
+  border-right: none;
+  box-shadow: none;
+  background: transparent;
   border-bottom-left-radius: 14px;
   $difference: $inverted-menu-height+$main-menu-height+$wt-paddleboard-panel-height+$wt-main-row-height+$footer-height;
   height: calc(100vh - #{$difference} - #{$bottom-separation});
-  box-shadow: 2px 0px 0px 0px rgba(34, 36, 38, 0.15);
+//   box-shadow: 2px 0px 0px 0px rgba(34, 36, 38, 0.15);
 
   .folder-grid {
     display: inline;
@@ -269,9 +272,11 @@ ui.inverted.menu.wt.top {
           }
           .menu-item {
             border-bottom: 1px solid $main-menu-bg;
-            .item,
             .active {
-              background: transparent; //rgba(0, 0, 0, 0.05);
+              // background: transparent; //rgba(0, 0, 0, 0.05);
+              background: #e8f3fa;
+              border-right: 3px solid #2185d0;
+              border-radius: 0;
             }
             .item {
               text-align: left;
