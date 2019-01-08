@@ -6,6 +6,7 @@ import {
 
 export default Service.extend({
     tokenHandler: service('token-handler'),
+    notificationHandler: service('notification-handler'),
     isAuthenticated: true,
 
     getFileContents(itemID, callback) {
@@ -63,7 +64,6 @@ export default Service.extend({
         client.send();
     },
 
-
     /**
     * Posts a Tale, using the query parameters specified in the API ...
     * @method postTale
@@ -84,11 +84,11 @@ export default Service.extend({
         let url = config.apiUrl + '/tale/';
         let queryPars = "";
         if (httpCommand === "post") {
-            if (imageId == null) {
+            if (!imageId) {
                 fail("You must provide an image");
                 return;
             }
-            if (folderId == null) {
+            if (!folderId) {
                 fail("You must provide a folder");
                 return;
             }
@@ -99,12 +99,12 @@ export default Service.extend({
             url += taleID + "/";
         }
 
-        if (instanceId != null) {
+        if (instanceId) {
             if (queryPars !== "")
                 queryPars += "&";
             queryPars += "instanceId=" + encodeURIComponent(instanceId);
         }
-        if (title != null) {
+        if (title) {
             if (queryPars !== "")
                 queryPars += "&";
             queryPars += "title=" + encodeURIComponent(title);
@@ -114,17 +114,17 @@ export default Service.extend({
             queryPars += "description=" + encodeURIComponent(description);
         }
 
-        if (isPublic != null) {
+        if (isPublic) {
             queryPars += "&";
             queryPars += "public=" + encodeURIComponent(isPublic);
         }
 
-        if (configuration != null) {
+        if (configuration) {
             queryPars += "&";
             queryPars += "config=" + encodeURIComponent(configuration);
         }
 
-        if (queryPars !== "") {
+        if (queryPars) {
             url += "?" + queryPars;
         }
         let client = new XMLHttpRequest();
@@ -312,6 +312,44 @@ export default Service.extend({
             }
         });
         client.addEventListener("error", fail);
+        client.send();
+    },
+
+    /**
+     * Copies a list of files and folders to a new destination folder POSTing to /resource/copy
+     * @method copyToFolder
+     * @param resources A JSON-encoded set of resources to copy. 
+     *                  Each type is a list of ids. Only folders and items may be specified. 
+     * @param parentType Parent type for the new parent of these resources
+     * @param destinationFolderId Parent ID for the new parent of these resources
+     * @param success Function to be called on success
+     * @param fail Function to be called when the call fails
+     * @param copier Component consuming the service
+     * @param progress Whether to record progress on this task (optional).
+     */
+    copyToFolder(destinationFolderId, parentType, resources, permanently, success, fail, copier, progress) {
+        const token = this.get('tokenHandler').getWholeTaleAuthToken();
+        let verb = permanently ? 'move' : 'copy';
+        const httpVerb = permanently ? 'PUT' : 'POST';
+        let url = `${config.apiUrl}/resource/${verb}?resources=${resources}&parentType=${parentType}&parentId=${destinationFolderId}`;
+        if(progress) {
+            url += '&progress=true';
+        }
+        let client = new XMLHttpRequest();
+        let notifier = this.get('notificationHandler');
+        client.open(httpVerb, url);
+        client.setRequestHeader("Girder-Token", token);
+        client.addEventListener("load", function () {
+            if (client.status === 200) {
+                let gerund = permanently ? 'moving' : 'copying';
+                success(notifier, copier, gerund);
+            } else {
+                fail(notifier, client.responseText);
+            }
+        });
+
+        client.addEventListener("error", fail);
+
         client.send();
     }
 });

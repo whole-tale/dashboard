@@ -255,7 +255,7 @@
         position: fixed;
         left: 0 !important;
     }
-    .ui.modal > .content {
+    .ui.modal:not(.destinate-folder) > .content {
         height: calc(100% - 64px - 60px);
         padding: 0;
         overflow-y: auto;

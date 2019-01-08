@@ -25,9 +25,6 @@
 
             <div class="twelve wide column">
                 <div class="ui segment">
-                    {{!-- <button class="ui very basic right labeled icon button" {{action 'addSelectedData'}}><i class="angle double right icon"></i>
-                        Add Selected
-                    </button> --}}
                     {{#if loading}}
                         <div class="ui active inverted dimmer">
                             <div class="ui indeterminate medium text {{unless loadError 'loader'}}">{{loadingMessage}}</div>
@@ -38,7 +35,6 @@
                             <thead>
                                 {{#if (eq rootFolderId currentFolder.id)}}
                                     <th class="ui sub header collapsing noselect">
-                                        {{!-- {{debugger}} --}}
                                         {{#if (eq currentFolder.id internalState.workspaceRootId)}}
                                             Workspace Root Folder
                                         {{else}}
@@ -77,39 +73,23 @@
                     {{/if}}
                 </div>
             </div>
-            {{!-- <div class="seven wide column">
-                <div class="ui segment">
-                    <button class="ui very basic labeled icon button" {{action 'removeSelectedData'}}>
-                        <i class="angle double left icon"></i>Remove Selected
-                    </button>
-                    <table class="ui very basic compact striped fixed single line table">
-                        <tbody>
-                            <tr></tr>
-                            <tr>
-                                <td class="ui sub header collapsing noselect">Selected Data</td>
-                            </tr>
-                            {{#each allSelectedItems as | item |}}
-                                <tr class="{{if item.selected 'selected-row'}}">
-                                    <td class="collapsing noselect" {{action 'onClick' item on='click'}}>
-                                        <i class="icon {{if (eq item._modelType 'file' else 'folder'}}"></i>{{item.name}}
-                                    </td>
-                                </tr>
-                            {{/each}}
-                        </tbody>
-                    </table>
-                </div>
-            </div> --}}
         </div>
     </div>
     <div class="actions">
         <div class="ui deny button"
+            style="float: left"
             onclick={{action "cancel" preventDefault=false bubble=false}}>
             Cancel
         </div>
         <div class="ui positive right labeled icon button" 
-            onclick={{action "updateWorkspaceData" preventDefault=false bubble=false}}>
-            <i class="check icon"></i>
-            Select
+            onclick={{action "updateWorkspaceData" false preventDefault=false bubble=false}}>
+            <i class="copy icon"></i>
+            Copy to Workspace
+        </div>
+        <div class="ui positive right labeled icon button" 
+            onclick={{action "updateWorkspaceData" true preventDefault=false bubble=false}}>
+            <i class="cut icon"></i>
+            Move to Workspace
         </div>
     </div>
 {{/ui-modal}}

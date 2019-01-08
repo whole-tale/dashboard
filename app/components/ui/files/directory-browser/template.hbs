@@ -2,7 +2,7 @@
     <table class="ui very basic compact striped table">
         <thead>
             <tr style="font-weight: 500;">
-                {{#if (eq currentNav.command "user_data")}}
+                {{#if (and (eq currentNav.command "user_data") notInManagePage)}}
                     <th width="100%" style="font-size: 12px;padding: 10px 0 0 10px">Name</th>
                 {{else}}
                     <th width="65%" style="font-size: 12px;padding: 10px 0 0 10px">Name</th>
@@ -43,7 +43,11 @@
                                     <a class="item" {{action "rename" item}}><i class="write square icon"></i>
                                         Rename...</a>
                                     {{!-- <a class="item" {{action "share" item}}><i class="share icon"></i> Share</a> --}}
-                                    <a class="item" {{action "copy" item}}><i class="clone icon"></i> Copy</a>
+                                    {{#if (and notInManagePage (eq currentNav.command 'workspace'))}}
+                                        <a class="item" {{action "copyToHome" item}}><i class="clone icon"></i> Copy to Home</a>
+                                    {{else}}
+                                        <a class="item" {{action "copy" item}}><i class="clone icon"></i> Copy</a>
+                                    {{/if}}
                                     <a class="item" href="{{apiUrl}}/folder/{{item.id}}/download?contentDisposition=attachment"><i
                                             class="download icon"></i> Download</a>
                                     <a class="item" {{action "remove" item}}><i class="trash icon"></i> Remove</a>
@@ -51,9 +55,7 @@
                             {{/ui-dropdown}}
                         {{/if}}
                     </td>
-                    {{!-- <td >
-                    {{item.description}}
-                </td> --}}
+                    {{!-- <td>{{item.description}}</td> --}}
                     <td style="text-align: left;">
                         {{bytes-to-readable item.size}}
                     </td>
@@ -84,7 +86,11 @@
                                     <a class="item" {{action "rename" item}}><i class="write square icon"></i>
                                         Rename...</a>
                                     {{!-- <a class="item" {{action "share" item}}><i class="share icon"></i> Share</a> --}}
-                                    <a class="item" {{action "copy" item}}><i class="clone icon"></i> Copy</a>
+                                    {{#if (and notInManagePage (eq currentNav.command 'workspace'))}}
+                                        <a class="item" {{action "copyToHome" item}}><i class="clone icon"></i> Copy to Home</a>
+                                    {{else}}
+                                        <a class="item" {{action "copy" item}}><i class="clone icon"></i> Copy</a>
+                                    {{/if}}
                                     <a class="item" href="{{apiUrl}}/item/{{item.id}}/download?contentDisposition=attachment"><i
                                             class="download icon"></i> Download</a>
                                     <a class="item" {{action "remove" item}}><i class="trash icon"></i> Remove</a>
@@ -127,4 +133,4 @@
 
 </div>
 
-{{ui/files/destinate-folder-modal disallowed=disallowed fileToMove=fileToMove onMoveFile=(action "moveFile")}}
+{{ui/files/destinate-folder-modal disallowed=disallowed currentNavName=currentNav.command fileToMove=fileToMove onMoveFile=(action "moveFile")}}

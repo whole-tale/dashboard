@@ -37,7 +37,15 @@
     <div class="eleven wide column directory-browser-container">
         <div class="ui collapsable grid">
             <div class="sixteen wide right aligned column">
-                {{ui/files/directory-browser currentNav=currentNav sessionList=fileData.sessionContents folderList=fileData.folderContents fileList=fileData.itemContents onItemClicked=(action 'itemClicked')}}
+                {{ui/files/directory-browser 
+                    currentNav=currentNav
+                    sessionList=fileData.sessionContents
+                    folderList=fileData.folderContents
+                    fileList=fileData.itemContents
+                    onItemClicked=(action 'itemClicked')
+                    showSuccessfulCopyNotification=showSuccessfulCopyNotification
+                    showFailedCopyNotification=showFailedCopyNotification
+                    notInManagePage=true}}
             </div>
             {{#unless currentBreadCrumb.isCollection}}
                 <div class="sixteen wide column overlay">
@@ -50,7 +58,6 @@
 
 {{ui/files/create-folder-modal onNewFolder=(action "insertNewFolder")}}
 {{ui/files/registration-modal onRegisterData=(action "refresh")}}
-{{!-- {{ui/select-data-modal updateSessionData=(action "updateSessionData") cancel=(action "closeSelectDataModal")}} --}}
 {{ui/files/workspaces-data-modal
     taleId=model.taleId
     updateWorkspaceData=(action "updateWorkspaceData")

@@ -57,8 +57,9 @@ export default Component.extend({
             this.initData.call(this);
         },
 
-        updateWorkspaceData() {
-            this.updateWorkspaceData.call(this, this.get('allSelectedItems'));
+        updateWorkspaceData(permanently) {
+            this.actions.addSelectedData.call(this);
+            this.updateWorkspaceData.call(this, this.get('allSelectedItems'), permanently);
         },
 
         cancel() {
@@ -127,9 +128,6 @@ export default Component.extend({
     onClick(target) {
         let selected = !target.get('selected');
         target.set('selected', selected);
-        if(selected) {
-
-        }
     },
 
     goBack(currentFolder) {
@@ -202,14 +200,16 @@ export default Component.extend({
     },
 
     loadHomeFolder(adapterOptions = { queryParams: { limit: "0" } }) {
+        const self = this;
+        self.set('loading', true);
         let parentId = this.get('userAuth').getCurrentUserID();
         let parentType = 'user';
         let homeNavInfo = this.get('folderNavs').getFolderNavFor('home');
         let name = homeNavInfo.name;
 
         const store = this.get('store');
-        const self = this;
         return store.query('folder', { parentId, parentType, name, adapterOptions }).then(homeFolder => {
+            self.set('loading', false);
             let homeFolderId = homeFolder.content[0].id;
             let parentCollection = parentType;
             self.set('rootFolderId', homeFolderId);
@@ -217,6 +217,7 @@ export default Component.extend({
 
             return self.loadFolder.call(self, homeFolderId, 'folder');
         }).catch(e => {
+            self.set('loading', false);
             self.set('loadError', true);
             self.set('loadingMessage', 'Failed to load home folder content. Please try again');
         });
