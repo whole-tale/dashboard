@@ -1,9 +1,12 @@
 import TextField from '@ember/component/text-field';
 import Component from '@ember/component';
+import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
 import { observer, computed } from '@ember/object';
 import Object from '@ember/object';
 import $ from 'jquery';
+
+const O = Object.create.bind(Object);
 
 function wrapFolder(folderID, folderName) {
     return {
@@ -135,7 +138,7 @@ export default Component.extend({
             this.set("currentNavCommand", nav.command);
             this.set("currentNavTitle", nav.name);
 
-            if (nav.command === "home" || nav.command === "user_data" || nav.command === "workspace") {
+            if (nav.command === "home" || nav.command === "workspace") {
                 folderContents = controller.get('store').query('folder', {
                     parentId: nav.parentId,
                     parentType: nav.parentType,
@@ -195,6 +198,23 @@ export default Component.extend({
                     "resources": payload
                 });
                 // alert("Not implemented yet ...");
+            } else if (nav.command === "user_data") {
+              let session, sessionId = controller.model.get('sessionId');
+              let sessionContents = controller.get('store').findRecord('dm', sessionId, { adapterOptions: { insertPath: 'session' }})
+                .then(_session => {
+                  session = _session;
+                  return session.get('dataSet').map(item => {
+                    let {itemId, mountPath} = item;
+                    return O({id: itemId, name: mountPath.replace(/\//g, '') });
+                  });
+                })
+              ;
+              itemContents = Promise.resolve(A([]));
+              folderContents = sessionContents.then(_sessionContents => {
+                newModel.sessionContents = _sessionContents;
+                controller.set('session', session);
+                return A();
+              });
             }
 
             let newModel = {};
@@ -208,7 +228,8 @@ export default Component.extend({
                 })
                 .finally(() => {
                     controller.set("fileData", newModel);
-                });
+                })
+            ;
 
             state.setCurrentBreadCrumb(null);
             state.setCurrentFileBreadcrumbs([]); // new nav folder, reset crumbs
@@ -352,39 +373,12 @@ export default Component.extend({
         //-----------------------------------------------------------------------------
         openRegisterModal() {
             $('.ui.modal.harvester').modal('show');
-        },
-        updateSessionData(listOfSelectedItems) {
-            // console.log('updating session data...');
-            // NOTE: Structure of the list looks like this:
-
-            /*
-              [
-                {
-                  "id": "59aeb3f246a83d0001ab6777",
-                  "name": "us85co.xls",
-                  "_modelType": "item"
-                },
-                {
-                  "id": "59aeb3f246a83d0001ab6775",
-                  "name": "usco2000.xls",
-                  "_modelType": "item"
-                },
-                {
-                  "id": "59aeb3f246a83d0001ab677b",
-                  "name": "datadict2005.html",
-                  "_modelType": "item"
-                }
-              ]
-            */
-
-            // do something with selected items here ...
-        },
-        openSelectDataModal() {
-            $('.ui.modal.selectdata').modal('show');
-        },
+        }, 
         closeSelectDataModal() {
             $('.ui.modal.selectdata').modal('hide');
+        },
+        openSelectDataModal() {
+            this.sendAction('openSelectDataModal');
         }
-
     }
 });
