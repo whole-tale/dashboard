@@ -8,6 +8,7 @@ import $ from 'jquery';
 
 export default Component.extend({
   layout,
+  classNames: ['directory-browser'],
 
   store: service(),
   internalState: service(),

@@ -2,21 +2,20 @@ import TextField from '@ember/component/text-field';
 import Component from '@ember/component';
 import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
-import { observer, computed } from '@ember/object';
-import Object from '@ember/object';
+import Object, { observer, computed } from '@ember/object';
 import $ from 'jquery';
 
 const O = Object.create.bind(Object);
 
 function wrapFolder(folderID, folderName) {
     return {
-        "name": folderName,
-        "id": folderID,
-        "isFolder": true,
+        'name': folderName,
+        'id': folderID,
+        'isFolder': true,
 
         get(name) {
-            if (name === "name") return folderName;
-            else if (name === "id") return folderID;
+            if (name === 'name') return folderName;
+            else if (name === 'id') return folderID;
             else return null;
         }
     };
@@ -33,6 +32,7 @@ export default Component.extend({
     store: service(),
     folderNavs: service(),
     router: service(),
+    apiCall: service('api-call'),
 
     fileBreadCrumbs: computed(function () {
         return {};
@@ -43,16 +43,16 @@ export default Component.extend({
     currentNav: computed(function () {
         return {};
     }),
-    currentNavCommand: "home",
-    currentNavTitle: "Home",
+    currentNavCommand: 'home',
+    currentNavTitle: 'Home',
     parentId: null,
-    file: "",
+    file: '',
 
     fileChosen: observer('file', function () {
-        if (this.get('file') === "") return;
+        if (this.get('file') === '') return;
         let uploader = $('.nice.upload.hidden');
         let files = uploader[0].files;
-        let dz = window.Dropzone.forElement(".dropzone");
+        let dz = window.Dropzone.forElement('.dropzone');
         for (let i = 0; i < files.length; i++) {
             dz.addFile(files[i]);
         }
@@ -65,15 +65,15 @@ export default Component.extend({
 
         state.setCurrentBreadCrumb(null);
         state.setCurrentFileBreadcrumbs([]); // new nav folder, reset crumbs
-        state.setCurrentFolderName("");
+        state.setCurrentFolderName('');
 
-        this.set("currentBreadCrumb", null);
-        this.set("fileBreadCrumbs", []);
+        this.set('currentBreadCrumb', null);
+        this.set('fileBreadCrumbs', []);
 
         this.set('fileData', this.model);
-        this.set("currentFolderId", state.getCurrentFolderID());
+        this.set('currentFolderId', state.getCurrentFolderID());
 
-        this.get("folderNavs").getCurrentFolderNavAndSetOn(this);
+        this.get('folderNavs').getCurrentFolderNavAndSetOn(this);
 
         let fileBreadCrumbs = state.getCurrentFileBreadcrumbs();
         if (!(fileBreadCrumbs && fileBreadCrumbs.length)) {
@@ -83,11 +83,12 @@ export default Component.extend({
 
         if (state.getCurrentParentType() !== 'user') {
             let bc = wrapFolder(state.getCurrentFolderID(), state.getCurrentFolderName());
-            this.set("currentBreadCrumb", bc);
+            this.set('currentBreadCrumb', bc);
             state.setCurrentBreadCrumb(bc);
         }
 
-        this.set("fileBreadCrumbs", state.getCurrentFileBreadcrumbs()); // new collection, reset crumbs
+        this.set('fileBreadCrumbs', state.getCurrentFileBreadcrumbs()); // new collection, reset crumbs
+
     },
 
     actions: {
@@ -98,11 +99,11 @@ export default Component.extend({
 
             let folderContents = myController.store.query('folder', {
                 parentId: itemID,
-                parentType: "folder",
+                parentType: 'folder',
                 reload: true,
                 adapterOptions: {
                     queryParams: {
-                        limit: "0"
+                        limit: '0'
                     }
                 }
             });
@@ -112,7 +113,7 @@ export default Component.extend({
                 reload: true,
                 adapterOptions: {
                     queryParams: {
-                        limit: "0"
+                        limit: '0'
                     }
                 }
             });
@@ -122,7 +123,7 @@ export default Component.extend({
                 'itemContents': itemContents
             };
 
-            myController.set("fileData", newModel);
+            myController.set('fileData', newModel);
         },
 
         //----------------------------------------------------------------------------
@@ -135,10 +136,52 @@ export default Component.extend({
 
             state.setCurrentNavCommand(nav.command);
             this.set('currentNav', nav);
-            this.set("currentNavCommand", nav.command);
-            this.set("currentNavTitle", nav.name);
+            this.set('currentNavCommand', nav.command);
+            this.set('currentNavTitle', nav.name);
 
-            if (nav.command === "home" || nav.command === "workspace") {
+            if (nav.command === 'workspace') {
+                // gather necessary data before querying folders
+                let workspaceRootId = state.workspaceRootId;
+                // the model is the instance, which has a reference
+                // to the taleId from which it was spun
+                let taleId = this.get('model.taleId'); // state.currentInstanceId;
+                folderContents = controller.get('store').query('folder', {
+                    parentId: workspaceRootId,
+                    parentType: 'folder',
+                    name: taleId,
+                    adapterOptions: {
+                        queryParams: {
+                            limit: '0'
+                        }
+                    }
+                }).then(folders => {
+                    if (folders.length) {
+                        let folder_id = folders.content[0].id;
+                        state.setCurrentFolderID(folder_id);
+                        state.setCurrentParentId(workspaceRootId/*nav.parentId*/);
+                        state.setCurrentParentType('folder'/*nav.parentType*/);
+                        state.setCurrentFolderName(nav.name);
+                        controller.set('currentFolderId', folder_id);
+
+                        itemContents = controller.store.query('item', {
+                            folderId: folder_id,
+                            reload: true,
+                            adapterOptions: {
+                                queryParams: {
+                                    limit: '0'
+                                }
+                            }
+                        });
+                        return controller.store.query('folder', {
+                            'parentId': folder_id,
+                            'parentType': 'folder'
+                        });
+                    }
+                    throw new Error(nav.name + ' folder not found for this tale.');
+                }).catch(() => {
+                    return;
+                });
+            } else if (nav.command === 'home') {
                 folderContents = controller.get('store').query('folder', {
                     parentId: nav.parentId,
                     parentType: nav.parentType,
@@ -146,7 +189,7 @@ export default Component.extend({
                     reload: true,
                     adapterOptions: {
                         queryParams: {
-                            limit: "0"
+                            limit: '0'
                         }
                     }
                 }).then(folders => {
@@ -157,28 +200,27 @@ export default Component.extend({
                         state.setCurrentParentId(nav.parentId);
                         state.setCurrentParentType(nav.parentType);
                         state.setCurrentFolderName(nav.name);
-                        controller.set("currentFolderId", folder_id);
+                        controller.set('currentFolderId', folder_id);
 
                         itemContents = controller.store.query('item', {
                             folderId: folder_id,
                             reload: true,
                             adapterOptions: {
                                 queryParams: {
-                                    limit: "0"
+                                    limit: '0'
                                 }
                             }
                         });
                         return controller.store.query('folder', {
-                            "parentId": folder_id,
-                            "parentType": "folder"
+                            'parentId': folder_id,
+                            'parentType': 'folder'
                         });
                     }
-                    throw new Error(nav.name + " folder not found.");
-                })
-                    .catch(() => {
-                        return;
-                    });
-            } else if (nav.command === "recent") {
+                    throw new Error(nav.name + ' folder not found.');
+                }).catch(() => {
+                    return;
+                });
+            } else if (nav.command === 'recent') {
                 let uniqueSetOfRecentFolders = [];
                 let recentFolders = state.getRecentFolders().filter(folder => {
                     let index = uniqueSetOfRecentFolders.findIndex(added => {
@@ -192,10 +234,25 @@ export default Component.extend({
                     return false;
                 });
                 let payload = JSON.stringify({
-                    "folder": recentFolders
+                    'folder': recentFolders
                 });
                 folderContents = controller.get('store').query('resource', {
-                    "resources": payload
+                    'resources': payload
+                });
+                // alert('Not implemented yet ...');
+            } else if (nav.command === 'user_data') {
+                let sessionId = controller.model.get('sessionId');
+                let sessionContents = controller.get('store').findRecord('dm', sessionId, { adapterOptions: { insertPath: 'session' }})
+                    .then(session => {
+                        return session.get('dataSet').map(item => {
+                            let { itemId, mountPath } = item;
+                            return { id: itemId, name: mountPath };
+                        });
+                    });
+                itemContents = Promise.resolve(A([]));
+                folderContents = sessionContents.then(_sessionContents => {
+                    newModel.sessionContents = _sessionContents;
+                    return A();
                 });
                 // alert("Not implemented yet ...");
             } else if (nav.command === "user_data") {
@@ -218,8 +275,8 @@ export default Component.extend({
             }
 
             let newModel = {};
-            folderContents
-                .then(_folderContents => {
+            if(folderContents.then) {
+                folderContents.then(_folderContents => {
                     newModel.folderContents = _folderContents;
                     return itemContents;
                 })
@@ -227,16 +284,14 @@ export default Component.extend({
                     newModel.itemContents = _itemContents;
                 })
                 .finally(() => {
-                    controller.set("fileData", newModel);
-                })
-            ;
-
+                    controller.set('fileData', newModel);
+                });
+            }
             state.setCurrentBreadCrumb(null);
             state.setCurrentFileBreadcrumbs([]); // new nav folder, reset crumbs
-            state.setCurrentFolderName("");
-            this.set("currentBreadCrumb", null);
-            this.set("fileBreadCrumbs", []);
-
+            state.setCurrentFolderName('');
+            this.set('currentBreadCrumb', null);
+            this.set('fileBreadCrumbs', []);
         },
 
         //----------------------------------------------------------------------------
@@ -247,9 +302,9 @@ export default Component.extend({
             let itemID = item.get('_id');
             let itemName = item.get('name');
 
-            if (isFolder === "true") {
+            if (isFolder === 'true') {
                 this.store.find('folder', itemID).then(function (folder) {
-                    myController.set("parentId", folder.get('parentId'));
+                    myController.set('parentId', folder.get('parentId'));
 
                     state.setCurrentParentId(folder.get('parentId'));
                     state.setCurrentParentType(folder.get('parentCollection'));
@@ -258,7 +313,7 @@ export default Component.extend({
                     try {
                         folderContents = myController.store.query('folder', {
                             parentId: itemID,
-                            parentType: "folder"
+                            parentType: 'folder'
                         });
                         itemContents = myController.store.query('item', {
                             folderId: itemID
@@ -268,20 +323,20 @@ export default Component.extend({
                             'folderContents': folderContents,
                             'itemContents': itemContents
                         };
-                        myController.set("fileData", newModel);
+                        myController.set('fileData', newModel);
                     } catch (e) {
                         // TODO(Adam): better handle this somehow. for now I just log a message
                     }
                     // add to history (recent folders visited)
 
-                    // NOTE(Adam): The following code was moved into the "find folder .then" clause. We need this here
+                    // NOTE(Adam): The following code was moved into the 'find folder .then' clause. We need this here
                     //             to make sure we only update breadcrumbs after successfully navigating into the folder.
                     state.addFolderToRecentFolders(itemID);
 
                     state.setCurrentFolderID(itemID);
                     state.setCurrentFolderName(itemName);
 
-                    myController.set("currentFolderId", itemID);
+                    myController.set('currentFolderId', itemID);
 
                     let previousBreadCrumb = state.getCurrentBreadCrumb();
 
@@ -295,13 +350,13 @@ export default Component.extend({
 
                     state.setCurrentFileBreadcrumbs(fileBreadCrumbs);
 
-                    myController.set("currentBreadCrumb", state.getCurrentBreadCrumb());
-                    myController.set("fileBreadCrumbs", state.getCurrentFileBreadcrumbs());
+                    myController.set('currentBreadCrumb', state.getCurrentBreadCrumb());
+                    myController.set('fileBreadCrumbs', state.getCurrentFileBreadcrumbs());
                 });
 
             } /* else {
-          // myController.get('router').transitionTo('upload.view', item.get('id'));
-        } */
+                // myController.get('router').transitionTo('upload.view', item.get('id'));
+            } */
         },
 
         breadcrumbClicked: function (item) {
@@ -326,7 +381,7 @@ export default Component.extend({
 
             this.set('currentFolderId', item._id);
 
-            this.send('itemClicked', Object.create(item), "true");
+            this.send('itemClicked', Object.create(item), 'true');
         },
 
         //----------------------------------------------------------------------------
@@ -373,12 +428,70 @@ export default Component.extend({
         //-----------------------------------------------------------------------------
         openRegisterModal() {
             $('.ui.modal.harvester').modal('show');
-        }, 
-        closeSelectDataModal() {
-            $('.ui.modal.selectdata').modal('hide');
+        },
+        updateSessionData(listOfSelectedItems) {
+            // console.log('updating session data...');
+            // NOTE: Structure of the list looks like this:
+
+            /*
+              [
+                {
+                  'id': '59aeb3f246a83d0001ab6777',
+                  'name': 'us85co.xls',
+                  '_modelType': 'item'
+                },
+                {
+                  'id': '59aeb3f246a83d0001ab6775',
+                  'name': 'usco2000.xls',
+                  '_modelType': 'item'
+                },
+                {
+                  'id': '59aeb3f246a83d0001ab677b',
+                  'name': 'datadict2005.html',
+                  '_modelType': 'item'
+                }
+              ]
+            */
+
+            // do something with selected items here ...
         },
         openSelectDataModal() {
             this.sendAction('openSelectDataModal');
+        },
+        closeSelectDataModal() {
+            $('.ui.modal.selectdata').modal('hide');
+        },
+        updateWorkspaceData(listOfSelectedItems) {
+            console.log('updating workspace data...');
+            // NOTE: Structure of the list looks like this:
+
+            /*
+              [
+                {
+                  'id': '59aeb3f246a83d0001ab6777',
+                  'name': 'us85co.xls',
+                  '_modelType': 'item'
+                },
+                {
+                  'id': '59aeb3f246a83d0001ab6775',
+                  'name': 'usco2000.xls',
+                  '_modelType': 'item'
+                },
+                {
+                  'id': '59aeb3f246a83d0001ab677b',
+                  'name': 'datadict2005.html',
+                  '_modelType': 'item'
+                }
+              ]
+            */
+
+            // do something with selected items here ...
+        },
+        openWorkspacesDataModal() {
+            $('.ui.modal.workspacedata').modal('show');
+        },
+        closeWorkspacesDataModal() {
+            $('.ui.modal.workspacedata').modal('hide');
         }
     }
 });
