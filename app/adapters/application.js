@@ -8,6 +8,7 @@ import buildQueryParamsMixin from 'wholetale/mixins/build-query-params';
 
 export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
     tokenHandler: service('token-handler'),
+    notificationHandler: service('notification-handler'),
     authRequest: service(),
     host: config.apiHost,
     namespace: config.apiPath,
@@ -167,13 +168,23 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
                 throw new Error("could not save dataset back to the session.");
             }
             url += '?' + q;
-
-            return this.get('authRequest').send(url, {
-                method: "PUT"
-            });
+            try {
+              return this.get('authRequest').send(url, {
+                  method: "PUT"
+              });
+            } catch(error) {
+              let notifier = this.get('notificationHandler');
+              let notification = { message: error || 'Your update operation has failed', header: "Failed update operation" };
+              notifier.pushNotification(notification);
+            }
         }
-
-        return this._super(...arguments);
+        try {
+          return this._super(...arguments);
+        } catch(error) {
+          let notifier = this.get('notificationHandler');
+          let notification = { message: error || 'Your update operation has failed', header: "Failed update operation" };
+          notifier.pushNotification(notification);
+        }
     },
 
     createRecord(store, type, snapshot) {
