@@ -50,7 +50,7 @@
 
 {{ui/files/create-folder-modal onNewFolder=(action "insertNewFolder")}}
 {{ui/files/registration-modal onRegisterData=(action "refresh")}}
-{{ui/select-data-modal updateSessionData=(action "updateSessionData") cancel=(action "closeSelectDataModal")}}
+{{ui/select-data-modal updateSessionData=(action "updateSessionData") allSelectedItems=allSelectedItems cancel=(action "closeSelectDataModal")}}
 {{ui/files/workspaces-data-modal
     updateWorkspaceData=(action "updateWorkspaceData")
     cancel=(action "closeWorkspacesDataModal")}}

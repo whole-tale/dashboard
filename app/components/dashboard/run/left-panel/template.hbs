@@ -77,7 +77,7 @@
         </div>
     {{/unless}}
     {{#if hasSelectedTaleInstance}}
-        {{ui/tale-tabs-selector model=model  workspaceRootId=workspaceRootId openSelectDataModal=(action 'openSelectDataModal') session=session }}
+        {{ui/tale-tabs-selector model=model workspaceRootId=workspaceRootId session=session }}
     {{else}}
         <div class="placeholder message">
             <p>Choose from
@@ -130,5 +130,3 @@
         </div>
     </div>
 </div>
-
-{{ui/select-data-modal updateSessionData=(action "updateSessionData") allSelectedItems=allSelectedItems}}
