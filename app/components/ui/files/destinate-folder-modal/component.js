@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import Object from '@ember/object';
+import EmberObject as Object from '@ember/object';
 import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
 import layout from './template';
