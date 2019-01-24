@@ -463,6 +463,9 @@ export default Component.extend({
                     tale.save();
                     //console.log("Saved dataSet:", dataSet);
                     context.resync();
+                    
+                    // XXX: We shouldn't have to call this manually
+                    context.actions.closeSelectDataModal();
                 });
         },
         openSelectDataModal() {
