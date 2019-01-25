@@ -27,13 +27,6 @@ export default Component.extend(FullScreenMixin, {
 
     session: O({dataSet:A()}),
 
-    allSelectedItems: computed('session', function() {
-      return A(this.session.get('dataSet').map(item => {
-        let {itemId, mountPath} = item;
-        return O({id: itemId, name: mountPath.replace(/\//g, '') });
-      }));
-    }),
-
     init() {
         this._super(...arguments);
         let state = this.get('internalState');
@@ -172,20 +165,5 @@ export default Component.extend(FullScreenMixin, {
         denyDelete() {
             return true;
         },
-        updateSessionData(listOfSelectedItems) {
-          let dataSet = listOfSelectedItems.map(item => {
-            let {id, name} = item;
-            return {itemId: id, mountPath: name};
-          });
-          this.session.set('dataSet', dataSet);
-          this.session.save()
-            .then(() => {
-              // TODO(Adam): Somehow refresh the state of the external data tab to reflect the changes made to the session.
-            })
-          ;
-      },
-      openSelectDataModal() {
-          $('.ui.modal.selectdata').modal('show');
-      },
     }
 });

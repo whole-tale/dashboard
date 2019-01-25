@@ -47,6 +47,13 @@ export default Component.extend({
     currentNavTitle: 'Home',
     parentId: null,
     file: '',
+    
+    allSelectedItems: computed('model.tale', function(dataSet) {
+      return A(this.get('model.tale').get('dataSet').map(item => {
+        let {itemId, mountPath} = item;
+        return O({id: itemId, name: mountPath.replace(/\//g, '') });
+      }));
+    }),
 
     fileChosen: observer('file', function () {
         if (this.get('file') === '') return;
@@ -103,8 +110,13 @@ export default Component.extend({
         let notification = { message: errorMessage || 'Failed copying some files and/or folders', header: "Failed" };
         notifier.pushNotification(notification);
     },
+    resync() {
+        let nav = this.get('currentNav');
+        this.send('navClicked', nav);
+    },
 
     actions: {
+        
         refresh() {
             let state = this.get('internalState');
             let myController = this;
@@ -254,36 +266,18 @@ export default Component.extend({
                     'resources': payload
                 });
             } else if (nav.command === "user_data") {
-                let session, sessionId = controller.model.get('sessionId');
-                let sessionContents = controller.get('store').findRecord('dm', sessionId, { adapterOptions: { insertPath: 'session' } })
-                    .then(_session => {
-                        session = _session;
-                        return session.get('dataSet').map(item => {
-                            let { itemId, mountPath } = item;
+
+              let taleId = this.get('model.taleId'); // state.currentInstanceId;
+                let taleDatasetContents = controller.get('store').findRecord('tale', taleId)
+                    .then(tale => {
+                        return tale.get('dataSet').map(dataset => {
+                            let { itemId, mountPath } = dataset;
                             return { id: itemId, name: mountPath };
-                        });
+                        })
                     });
-                itemContents = Promise.resolve(A([]));
-                folderContents = sessionContents.then(_sessionContents => {
-                    newModel.sessionContents = _sessionContents;
-                    return A();
-                });
-                // alert("Not implemented yet ...");
-            } else if (nav.command === "user_data") {
-              let session, sessionId = controller.model.get('sessionId');
-              let sessionContents = controller.get('store').findRecord('dm', sessionId, { adapterOptions: { insertPath: 'session' }})
-                .then(_session => {
-                  session = _session;
-                  return session.get('dataSet').map(item => {
-                    let {itemId, mountPath} = item;
-                    return O({id: itemId, name: mountPath.replace(/\//g, '') });
-                  });
-                })
-              ;
               itemContents = Promise.resolve(A([]));
-              folderContents = sessionContents.then(_sessionContents => {
-                newModel.sessionContents = _sessionContents;
-                controller.set('session', session);
+              folderContents = taleDatasetContents.then(_taleDatasetContents => {
+                newModel.sessionContents = _taleDatasetContents;
                 return A();
               });
             }
@@ -443,8 +437,56 @@ export default Component.extend({
         openRegisterModal() {
             $('.ui.modal.harvester').modal('show');
         },
+
+        updateSessionData(listOfSelectedItems) {
+            // console.log('updating session data...');
+            // NOTE: Structure of the list looks like this:
+
+            /*
+              [
+                {
+                  'id': '59aeb3f246a83d0001ab6777',
+                  'name': 'us85co.xls',
+                  '_modelType': 'item'
+                },
+                {
+                  'id': '59aeb3f246a83d0001ab6775',
+                  'name': 'usco2000.xls',
+                  '_modelType': 'item'
+                },
+                {
+                  'id': '59aeb3f246a83d0001ab677b',
+                  'name': 'datadict2005.html',
+                  '_modelType': 'item'
+                }
+              ]
+            */
+            let context = this;
+
+            // Build up our dataSet list
+            let dataSet = listOfSelectedItems.map(item => {
+                let {id, name} = item;
+                return {itemId: id, mountPath: name};
+            });
+            this.session.set('dataSet', dataSet);
+          
+            // Look up the current Tale by id
+            let taleId = this.get('model.taleId');
+            this.get('store').findRecord('tale', taleId)
+                .then(tale => {
+                    // Overwrite Tale dataSet with selected datasets
+                    tale.set('dataSet', dataSet);
+                    tale.save();
+                    //console.log("Saved dataSet:", dataSet);
+                    context.resync();
+                    
+                    // XXX: We shouldn't have to call this manually
+                    context.actions.closeSelectDataModal();
+                });
+        },
+
         openSelectDataModal() {
-            this.sendAction('openSelectDataModal');
+            $('.ui.modal.selectdata').modal('show');
         },
         closeSelectDataModal() {
             $('.ui.modal.selectdata').modal('hide');
