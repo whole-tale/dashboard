@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import EmberObject as Object from '@ember/object';
+import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
 import layout from './template';
@@ -15,16 +15,16 @@ export default Component.extend({
 
   folders: A(), //Array of folders in the directory
 
-  destinationFolder: Object.create({}),
-  previousFolder: Object.create({}),
-  selectionTree: Object.create({}),
-  directory: Object.create({}),
+  destinationFolder: EmberObject.create({}),
+  previousFolder: EmberObject.create({}),
+  selectionTree: EmberObject.create({}),
+  directory: EmberObject.create({}),
 
   clearModal() {
-    this.set('destinationFolder', Object.create({}));
-    this.set('previousFolder', Object.create({}));
-    this.set('selectionTree', Object.create({}));
-    this.set('directory', Object.create({}));
+    this.set('destinationFolder', EmberObject.create({}));
+    this.set('previousFolder', EmberObject.create({}));
+    this.set('selectionTree', EmberObject.create({}));
+    this.set('directory', EmberObject.create({}));
     this.set('folders', A());
     const self = this;
     const folderNavs = this.get('folderNavs');
@@ -171,13 +171,13 @@ export default Component.extend({
       selectionTree[folder.id] = {
         check: true
       };
-      this.set('selectionTree', Object.create(selectionTree));
+      this.set('selectionTree', EmberObject.create(selectionTree));
       this.set('destinationFolder', folder);
     },
 
     uncheck(folder) {
-      this.set('destinationFolder', Object.create({}));
-      this.set('selectionTree', Object.create({}));
+      this.set('destinationFolder', EmberObject.create({}));
+      this.set('selectionTree', EmberObject.create({}));
     }
   }
 });
