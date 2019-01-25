@@ -9,11 +9,17 @@ export default Component.extend({
     userAuth: service(),
     folderNavs: service(),
     store: service(),
+    
+    catalogTitle: 'WholeTale Catalog',
+    catalogParentType: 'collection',
+    catalogPath: '/collection/WholeTale Catalog/WholeTale Catalog',
+    catalogId: '',
+    catalogParentId: '',
 
     selectedMenuIndex: 0,
     dataSources: A([
         O({ name: 'WholeTale Catalog' }),
-        O({ name: 'Tale Workspaces' })
+        //O({ name: 'Tale Workspaces' })
     ]),
     selectedDataSource: O({}),
 
@@ -46,7 +52,16 @@ export default Component.extend({
 
         initData() {
             this.selectedDataSource = this.get('dataSources')[this.get('selectedMenuIndex')];
-            this.initData.call(this);
+            
+            let text = this.get('catalogTitle');
+            this.get('store').query('collection', { text }).then((results) => {
+                let firstResult = results.firstObject;
+                this.set('catalogParentType', firstResult['_modelType']);
+                this.set('catalogParentId', firstResult['_id']);
+                    
+                // Only init after we've located the catalog
+                this.initData.call(this);
+            });
         },
 
         updateSessionData() {
@@ -108,14 +123,15 @@ export default Component.extend({
         this.set('rootFolderId', null);
 
         const store = this.get('store');
-        let parentId = this.get('userAuth').getCurrentUserID();
+        let selectedDS = this.get('selectedDataSource');
+        let catalogTitle = this.get('catalogTitle');
+        let parentId = selectedDS['name'] == catalogTitle ? this.get('catalogParentId') : this.get('userAuth').getCurrentUserID();
         let dataNavInfo = this.get('folderNavs').getFolderNavFor('user_data');
-        let parentType = dataNavInfo.parentType;
-        let name = dataNavInfo.name;
+        let parentType = selectedDS['name'] == catalogTitle ? this.get('catalogParentType') : dataNavInfo.parentType;
         let adapterOptions = { queryParams: { limit: "0" } };
 
         const self = this;
-        return store.query('folder', { parentId, parentType, name, adapterOptions }).then(dataFolder => {
+        return store.query('folder', { parentId, parentType, adapterOptions }).then(dataFolder => {
             let dataFolderId = dataFolder.content[0].id;
             let parentCollection = parentType;
             self.set('rootFolderId', dataFolderId);
