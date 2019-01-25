@@ -95,7 +95,20 @@ export default Component.extend({
         }
 
         this.set('fileBreadCrumbs', state.getCurrentFileBreadcrumbs()); // new collection, reset crumbs
+    },
 
+    showSuccessfulCopyNotification(notifier, copier, gerund) {
+        let notification = { message: `Successfully finished ${gerund} data`, header: "Success" };
+        notifier.pushNotification(notification);
+        // reload workspace's content
+        if(copier.actions.refresh) {
+          copier.actions.refresh.call(copier);
+        }
+    },
+
+    showFailedCopyNotification(notifier, errorMessage) {
+        let notification = { message: errorMessage || 'Failed copying some files and/or folders', header: "Failed" };
+        notifier.pushNotification(notification);
     },
     resync() {
         let nav = this.get('currentNav');
@@ -139,7 +152,7 @@ export default Component.extend({
         },
 
         //----------------------------------------------------------------------------
-        navClicked: function (nav) {
+        navClicked(nav) {
             let controller = this;
             let state = this.get('internalState');
 
@@ -156,7 +169,7 @@ export default Component.extend({
                 let workspaceRootId = state.workspaceRootId;
                 // the model is the instance, which has a reference
                 // to the taleId from which it was spun
-                let taleId = this.get('model.taleId'); // state.currentInstanceId;
+                let taleId = this.get('model.taleId');
                 folderContents = controller.get('store').query('folder', {
                     parentId: workspaceRootId,
                     parentType: 'folder',
@@ -169,9 +182,10 @@ export default Component.extend({
                 }).then(folders => {
                     if (folders.length) {
                         let folder_id = folders.content[0].id;
+                        controller.set('currentWorkspaceFolderId', folder_id);
                         state.setCurrentFolderID(folder_id);
-                        state.setCurrentParentId(workspaceRootId/*nav.parentId*/);
-                        state.setCurrentParentType('folder'/*nav.parentType*/);
+                        state.setCurrentParentId(workspaceRootId);
+                        state.setCurrentParentType('folder');
                         state.setCurrentFolderName(nav.name);
                         controller.set('currentFolderId', folder_id);
 
@@ -252,6 +266,7 @@ export default Component.extend({
                     'resources': payload
                 });
             } else if (nav.command === "user_data") {
+
               let taleId = this.get('model.taleId'); // state.currentInstanceId;
                 let taleDatasetContents = controller.get('store').findRecord('tale', taleId)
                     .then(tale => {
@@ -268,17 +283,17 @@ export default Component.extend({
             }
 
             let newModel = {};
-            if(folderContents.then) {
+            if (folderContents.then) {
                 folderContents.then(_folderContents => {
                     newModel.folderContents = _folderContents;
                     return itemContents;
                 })
-                .then(_itemContents => {
-                    newModel.itemContents = _itemContents;
-                })
-                .finally(() => {
-                    controller.set('fileData', newModel);
-                });
+                    .then(_itemContents => {
+                        newModel.itemContents = _itemContents;
+                    })
+                    .finally(() => {
+                        controller.set('fileData', newModel);
+                    });
             }
             state.setCurrentBreadCrumb(null);
             state.setCurrentFileBreadcrumbs([]); // new nav folder, reset crumbs
@@ -288,7 +303,7 @@ export default Component.extend({
         },
 
         //----------------------------------------------------------------------------
-        itemClicked: function (item, isFolder) {
+        itemClicked(item, isFolder) {
             let state = this.get('internalState');
             let myController = this;
 
@@ -352,7 +367,7 @@ export default Component.extend({
             } */
         },
 
-        breadcrumbClicked: function (item) {
+        breadcrumbClicked(item) {
             let state = this.get('internalState');
             let crumbs = state.getCurrentFileBreadcrumbs();
 
@@ -422,6 +437,7 @@ export default Component.extend({
         openRegisterModal() {
             $('.ui.modal.harvester').modal('show');
         },
+
         updateSessionData(listOfSelectedItems) {
             // console.log('updating session data...');
             // NOTE: Structure of the list looks like this:
@@ -468,16 +484,15 @@ export default Component.extend({
                     context.actions.closeSelectDataModal();
                 });
         },
+
         openSelectDataModal() {
             $('.ui.modal.selectdata').modal('show');
         },
         closeSelectDataModal() {
             $('.ui.modal.selectdata').modal('hide');
         },
-        updateWorkspaceData(listOfSelectedItems) {
-            console.log('updating workspace data...');
+        updateWorkspaceData(listOfSelectedItems, permanently) {
             // NOTE: Structure of the list looks like this:
-
             /*
               [
                 {
@@ -499,6 +514,16 @@ export default Component.extend({
             */
 
             // do something with selected items here ...
+            if (listOfSelectedItems) {
+                let resources = { item: [], folder: [] };
+                listOfSelectedItems.forEach(f => {
+                    resources[`${f._modelType}`].push(f.id);
+                });
+                let payload = JSON.stringify(resources);
+                const currentWorkspaceFolderId = this.get('currentWorkspaceFolderId');
+                let parentType = 'folder';
+                this.get('apiCall').copyToFolder(currentWorkspaceFolderId, parentType, payload, permanently, this.showSuccessfulCopyNotification, this.showFailedCopyNotification, this);
+            }
         },
         openWorkspacesDataModal() {
             $('.ui.modal.workspacedata').modal('show');
