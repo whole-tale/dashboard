@@ -7,7 +7,7 @@ export default Ember.Component.extend({
 
   classNameBindings: ['showUpperPanel', 'showLowerPanel'],
   showUpperPanel: true,
-  showLowerPanel: true,
+  showLowerPanel: false,
 
   actions: {
     onLeftModelChange : function (model) {
