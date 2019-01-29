@@ -14,7 +14,7 @@ export default Component.extend({
 
     selectedMenuIndex: 0,
     dataSources: A([
-        O({ name: 'Home', description: 'Global directory accessible across all Tales' }),
+        //O({ name: 'Home', description: 'Global directory accessible across all Tales' }),
         O({ name: 'Tale Workspaces', description: 'Other accessible Tales' })
     ]),
     selectedDataSource: O({}),
