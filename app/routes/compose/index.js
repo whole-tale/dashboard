@@ -32,7 +32,7 @@ export default AuthenticateRoute.extend({
     let registered = this.get('store').query('folder', {
       reload: true,
       adapterOptions: {
-        registered: true,
+        appendPath: "registered",
         queryParams: {
           limit: "0"
         }
