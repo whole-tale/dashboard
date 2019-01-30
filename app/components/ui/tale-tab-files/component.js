@@ -50,8 +50,8 @@ export default Component.extend({
     
     allSelectedItems: computed('model.tale', function(dataSet) {
       return A(this.get('model.tale').get('dataSet').map(item => {
-        let {itemId, mountPath} = item;
-        return O({id: itemId, name: mountPath.replace(/\//g, '') });
+        let {itemId, mountPath, _modelType} = item;
+        return O({id: itemId, name: mountPath.replace(/\//g, ''), _modelType});
       }));
     }),
 
@@ -271,8 +271,8 @@ export default Component.extend({
                 let taleDatasetContents = controller.get('store').findRecord('tale', taleId)
                     .then(tale => {
                         return tale.get('dataSet').map(dataset => {
-                            let { itemId, mountPath } = dataset;
-                            return { id: itemId, name: mountPath };
+                            let { itemId, mountPath, _modelType } = dataset;
+                            return { id: itemId, name: mountPath, _modelType };
                         })
                     });
               itemContents = Promise.resolve(A([]));
@@ -465,8 +465,8 @@ export default Component.extend({
 
             // Build up our dataSet list
             let dataSet = listOfSelectedItems.map(item => {
-                let {id, name} = item;
-                return {itemId: id, mountPath: name};
+                let {id, name, _modelType} = item;
+                return {itemId: id, mountPath: name, _modelType};
             });
             this.session.set('dataSet', dataSet);
           

@@ -16,7 +16,11 @@
             {{#each sessionList as |item|}}
                 <tr class="left aligned contextmenu" id="{{item.id}}">
                     <td colspan="3">
-                        {{{file-icon-for item.name}}} {{item.name}}
+                        {{#if (eq item._modelType "folder")}}
+                            <i class="large folder icon"></i> {{item.name}}
+                        {{else}}
+                            {{{file-icon-for item.name}}} {{item.name}}
+                        {{/if}}
                     </td>
                 </tr>
             {{/each}}
