@@ -68,7 +68,7 @@ export default AuthenticateRoute.extend({
           dataRegistered: this.get('store').query('folder', {
             reload: true,
             adapterOptions: {
-              registered: true,
+              appendPath: "registered",
               queryParams: {
                 limit: "0"
               }

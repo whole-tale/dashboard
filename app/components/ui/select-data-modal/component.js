@@ -190,7 +190,7 @@ export default Component.extend({
 
         const store = this.get('store');
         let fetchFolders = store.query('folder', { parentId, parentType, adapterOptions });
-        let fetchFiles = store.query('item', { folderId: parentId });
+        let fetchFiles = store.query('item', { folderId: parentId, adapterOptions });
 
         const self = this;
         return Promise.all([fetchFolders, fetchFiles]).then(([folders, files]) => {
