@@ -60,6 +60,7 @@ export default Component.extend(FullScreenMixin, {
         // Similar to Jquery on page load
         // doesn't work because of the handlebars. But even if you unhide the element, the iframes show
         // that they load ok even though some are blocked and some are not.
+        let self = this;
         let frame = document.getElementById('frontendDisplay');
         if (frame) {
             frame.onload = () => {
@@ -106,7 +107,7 @@ export default Component.extend(FullScreenMixin, {
     shouldShowButtons: computed('internalState', 'internalState.currentInstanceId', function () {
         let shouldButtonsAppear = this.get('internalState').currentInstanceId;
         if (shouldButtonsAppear) {
-            this.set('hasSelectedTaleInstance', true);
+            this.set('SelectedTaleInstance', true);
         } else {
             this.set('hasSelectedTaleInstance', false);
         }
@@ -115,18 +116,13 @@ export default Component.extend(FullScreenMixin, {
 
     noInstanceSelected: not('hasSelectedTaleInstance'),
 
-    hasD1JWT: computed('model.taleId', function () {
-        let jwt = this.getDataONEJWT();
-        return (jwt && jwt.length) ? true : false;
-    }),
-
     showModal(modalDialogName, modalContext) {
         // Open Publish Modal
         this.sendAction('publishTale', modalDialogName, modalContext);
     },
 
     publishModalContext: computed('model.taleId', function () {
-        return { taleId: this.get('model.taleId'), hasD1JWT: this.hasD1JWT };
+        return { taleId: this.get('model.taleId'), hasD1JWT: this.dataoneAuth.hasD1JWT };
     }),
 
     actions: {
@@ -154,7 +150,7 @@ export default Component.extend(FullScreenMixin, {
 
         authenticateD1(taleId) {
             let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
-            let orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=';
+            let orcidLogin = config.dataOneHost+'/portal/oauth?action=start&target=';
             window.location.replace(orcidLogin + callback);
         },
 

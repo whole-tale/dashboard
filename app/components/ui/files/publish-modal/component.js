@@ -63,7 +63,7 @@ export default Component.extend({
     // A map that connects the repository dropdown to a url
     self.repositories = [{
       name: 'NCEAS Development',
-      url: 'https://dev.nceas.ucsb.edu/knb/d1/mn/',
+      url: 'https://dev.nceas.ucsb.edu/knb/d1/mn',
       licenses: ['cc0', 'ccby4']
     }];
 
@@ -485,6 +485,7 @@ export default Component.extend({
 
       // Let the UI know that the user clicked the `Publish` button. 
       self.set('publishing', true);
+      self.set('statusMessage', '');
       let jwt = self.dataoneAuth.getDataONEJWT();
 
       self.set('dataoneJWT', jwt);
