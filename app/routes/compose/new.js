@@ -20,7 +20,7 @@ export default AuthenticateRoute.extend({
     });
     let registered = this.get('store').query('folder', {
       adapterOptions: {
-        registered: true,
+        appendPath: "registered",
         queryParams: {
           limit: "0"
         }

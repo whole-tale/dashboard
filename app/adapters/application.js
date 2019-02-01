@@ -109,25 +109,14 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
         let url = this._super(query, modelName);
 
         if (query.adapterOptions) {
-            if (query.adapterOptions.registered) {
-                url += "/registered";
-            } else if (query.adapterOptions.icon) {
-                let queryParams = query.adapterOptions.queryParams;
-                if (queryParams) {
-                    let q = this.buildQueryParams(queryParams);
-                    url += "?" + q;
-                }
-                url += "/icon";
-            } else if (query.adapterOptions.appendPath) {
+            if (query.adapterOptions.appendPath) {
                 url += "/" + query.adapterOptions.appendPath;
-                let queryParams = query.adapterOptions.queryParams;
-                if (queryParams) {
-                    let q = this.buildQueryParams(queryParams);
-                    url += "?" + q;
-                }
+            }
+            if (query.adapterOptions.queryParams) {
+                let q = this.buildQueryParams(query.adapterOptions.queryParams);
+                url += "?" + q;
             }
         }
-
         return url;
     },
 
