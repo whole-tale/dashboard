@@ -75,7 +75,7 @@
                             {{#each allSelectedItems as | item |}}
                                 <tr class="{{if item.selected 'selected-row'}}">
                                     <td class="collapsing noselect" {{action 'onClick' item on='click'}}>
-                                        {{#if (eq item._modelType 'file')}}
+                                        {{#if (eq item._modelType 'item')}}
                                             <i class="file icon"></i>{{item.name}}
                                         {{else}}
                                             <i class="folder icon"></i>{{item.name}}
