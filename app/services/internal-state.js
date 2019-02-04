@@ -1,4 +1,5 @@
 import Service from '@ember/service';
+import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
 import { A } from '@ember/array';
 
@@ -6,6 +7,7 @@ import { A } from '@ember/array';
 // these methods use localStorage so they persist beyond sessions ...
 
 export default Service.extend({
+    store: service(),
     isAuthenticated: true,
     currentInstanceId: computed({
         get() {
@@ -30,7 +32,13 @@ export default Service.extend({
     },
 
     getCurrentFolderID() {
-        return localStorage.currentFolderID;
+        this.get('store').findRecord('folder', localStorage.currentFolderID).then(folder => {
+            console.log(folder);
+            return localStorage.currentFolderID;
+        }).catch(function(error){
+            console.log("No such folder : " + localStorage.currentFolderID);
+            return null;
+        });
     },
 
     setCurrentFolderName(val) {
