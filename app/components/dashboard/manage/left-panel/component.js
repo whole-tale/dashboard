@@ -29,6 +29,7 @@ export default Component.extend({
   folderNavs: service(),
   router: service(),
   classNames: ['manage-page'],
+  datasets: [],
   
   fileBreadCrumbs: computed(function() {
     return {};
@@ -93,7 +94,7 @@ export default Component.extend({
   },
 
   actions: {
-    refresh() {
+    refresh(adapterOptions = { queryParams: { limit: '0' } }) {
       let state = this.get('internalState');
       let myController = this;
       let itemID = state.getCurrentFolderID();
@@ -102,21 +103,13 @@ export default Component.extend({
         parentId: itemID,
         parentType: 'folder',
         reload: true,
-        adapterOptions: {
-          queryParams: {
-            limit: '0'
-          }
-        }
+        adapterOptions
       });
 
       let itemContents = myController.store.query('item', {
         folderId: itemID,
         reload: true,
-        adapterOptions: {
-          queryParams: {
-            limit: '0'
-          }
-        }
+        adapterOptions
       });
 
       let newModel = {
@@ -134,23 +127,51 @@ export default Component.extend({
 
       let folderContents = null;
       let itemContents = null;
+      let adapterOptions = { queryParams: { limit: '0' } };
 
       state.setCurrentNavCommand(nav.command);
       this.set('currentNav', nav);
       this.set('currentNavCommand', nav.command);
       this.set('currentNavTitle', nav.name);
 
-      if (nav.command === 'home' || nav.command === 'user_data' || nav.command === 'workspace') {
+      if (nav.command === 'user_data') {
+        let text = this.get('catalogTitle');
+        
+        // Defer loading folders/items (only datasets at the top level)
+        itemContents = Promise.resolve([]);
+        folderContents = Promise.resolve([]);
+        this.get('store').query('collection', { text }).then((results) => {
+          let firstResult = results.firstObject;
+          let parentType = firstResult['_modelType'];
+          let parentId = firstResult['_id'];
+          controller.get('store').query('folder', { parentId, parentType }).then((folders) => {
+            let folderId = folders.content[0]._id;
+            
+            // Only init after we've located the catalog
+            controller.get('store').query('dataset', {
+                reload: true,
+                adapterOptions
+              }).then(datasets => {
+                controller.set('datasets', datasets);
+                state.setCurrentFolderID(folderId);
+                state.setCurrentParentId(parentId);
+                state.setCurrentParentType(parentType);
+                state.setCurrentFolderName(this.get('catalogTitle'));
+                controller.set('currentFolderId', folderId);
+              })
+              .catch(() => {
+                return;
+              });
+          });
+        });
+      } else if (nav.command === 'home' || nav.command === 'workspace') {
+        controller.set('datasets', []);
         folderContents = controller.get('store').query('folder', {
             parentId: nav.parentId,
             parentType: nav.parentType,
             name: nav.name,
             reload: true,
-            adapterOptions: {
-              queryParams: {
-                limit: '0'
-              }
-            }
+            adapterOptions
           }).then(folders => {
             if (folders.length) {
               let folder_id = folders.content[0].id;
@@ -164,15 +185,12 @@ export default Component.extend({
               itemContents = controller.store.query('item', {
                 folderId: folder_id,
                 reload: true,
-                adapterOptions: {
-                  queryParams: {
-                    limit: '0'
-                  }
-                }
+                adapterOptions
               });
               return controller.store.query('folder', {
                 'parentId': folder_id,
-                'parentType': 'folder'
+                'parentType': 'folder',
+                adapterOptions
               });
             }
             throw new Error(nav.name + ' folder not found.');
@@ -181,6 +199,7 @@ export default Component.extend({
             return;
           });
       } else if (nav.command === 'recent') {
+        controller.set('datasets', []);
         let uniqueSetOfRecentFolders = [];
         let recentFolders = state.getRecentFolders().filter(folder => {
           let index = uniqueSetOfRecentFolders.findIndex(added => {
@@ -232,27 +251,35 @@ export default Component.extend({
       let itemName = item.get('name');
 
       if (isFolder === 'true') {
+        this.set('loading', true);
         this.store.find('folder', itemID).then(function (folder) {
           myController.set('parentId', folder.get('parentId'));
 
           state.setCurrentParentId(folder.get('parentId'));
           state.setCurrentParentType(folder.get('parentCollection'));
+          let adapterOptions = { queryParams: { limit: "0" } };
 
           let folderContents, itemContents;
           try {
             folderContents = myController.store.query('folder', {
               parentId: itemID,
-              parentType: 'folder'
+              parentType: 'folder',
+              adapterOptions
             });
             itemContents = myController.store.query('item', {
-              folderId: itemID
+              folderId: itemID,
+              adapterOptions
             });
-
-            let newModel = {
-              'folderContents': folderContents,
-              'itemContents': itemContents
-            };
-            myController.set('fileData', newModel);
+            //myController.set('datasets', []);
+            myController.set('datasets', []);
+            Promise.all([folderContents, itemContents]).then(([folders, items]) => {
+              let newModel = {
+                'folderContents': folders,
+                'itemContents': items
+              };
+              myController.set('loading', false);
+              myController.set('fileData', newModel);
+            });
           } catch (e) {
             // TODO(Adam): better handle this somehow. for now I just log a message
           }
@@ -291,13 +318,21 @@ export default Component.extend({
     breadcrumbClicked(item) {
       let state = this.get('internalState');
       let crumbs = state.getCurrentFileBreadcrumbs();
+      let self = this;
+      let adapterOptions = { queryParams: { limit: "0" } };
 
       let previousItem = null;
       let newCrumbs = [];
       for (let i; i < crumbs.length; ++i) {
-        if (crumbs[i].name === item.get('name'))
+        if (crumbs[i].name === item.get('name')) {
+          if (i == 0 && this.get('currentNav') == 'user_data') {
+            self.set('fileData', { itemContents: [], folderContents: [] });
+            self.get('store').query('dataset', { adapterOptions }).then(datasets => {
+              self.set('datasets', datasets);
+            });
+          }
           break;
-        else {
+        } else {
           newCrumbs.append(crumbs[i]);
           previousItem = crumbs[i];
         }
