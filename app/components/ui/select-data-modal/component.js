@@ -85,7 +85,7 @@ export default Component.extend({
         },
 
         addSelectedData() {
-            this.addSelectedData.call(this, this.get('files'), this.get('folders'));
+            this.addSelectedData.call(this, this.get('datasets'), this.get('files'), this.get('folders'));
         },
 
         removeSelectedData() {
@@ -221,7 +221,7 @@ export default Component.extend({
         });
     },
 
-    addSelectedData(files, folders) {
+    addSelectedData(datasets, files, folders) {
         const self = this;
         const add = f => {
           if (f.selected) {
@@ -232,6 +232,7 @@ export default Component.extend({
                 }
             }
         }
+        datasets.forEach(add);
         files.forEach(add);
         folders.forEach(add);
     },
