@@ -19,7 +19,7 @@ export default Component.extend({
     selectedMenuIndex: 0,
     dataSources: A([
         O({ name: 'WholeTale Catalog' }),
-        //O({ name: 'Tale Workspaces' })
+        //O({ name: 'My Data' })
     ]),
     selectedDataSource: O({}),
 
@@ -131,13 +131,17 @@ export default Component.extend({
         let adapterOptions = { queryParams: { limit: "0" } };
 
         const self = this;
-        return store.query('folder', { parentId, parentType, adapterOptions }).then(dataFolder => {
-            let dataFolderId = dataFolder.content[0].id;
+        return store.query('dataset', { adapterOptions }).then(datasets => {
+            let catalogId = parentId;
             let parentCollection = parentType;
-            self.set('rootFolderId', dataFolderId);
-            self.set('currentFolder', O({ id: dataFolderId, _modelType: 'folder', parentCollection, parentId }));
+            self.set('rootFolderId', catalogId);
+            self.set('loading', false);
+            self.set('datasets', A(datasets));
+            self.set('folders', A([]));
+            self.set('files', A([]));
+            self.set('currentFolder', O({ id: catalogId, _modelType: 'folder', parentCollection, parentId }));
 
-            return self.loadFolder.call(self, dataFolderId, 'folder');
+            //return self.loadFolder.call(self, catalogId, 'folder');
         }).catch(e => {
             self.set('loadError', true);
             self.set('loadingMessage', 'Failed to load registered data. Please try again');
@@ -145,8 +149,13 @@ export default Component.extend({
     },
 
     dblClick(target) {
-        if (!target || !target._modelType || target._modelType !== 'folder') {
-            throw new Error('[select-data-modal] Cannot open. Not a folder.');
+        // HACK: Standard endpoints use "_modelType", /dataset uses "modelType"
+        if (!target._modelType && target.modelType) {
+            target._modelType = target.modelType;
+        }
+        
+        if (!target || !target._modelType || (target._modelType !== 'folder' && target._modelType !== 'dataset')) {
+            throw new Error('[select-data-modal] Cannot open. Not a folder or dataset.');
         }
 
         this.set('currentFolder', target);
@@ -163,7 +172,7 @@ export default Component.extend({
         target.set('selected', selected);
     },
 
-    goBack(currentFolder) {
+    goBack(currentFolder, adapterOptions = { queryParams: { limit: "0" } }) {
         this.set('loading', true);
         this.set('loadError', false);
         this.set('loadingMessage', 'Preparing Files');
@@ -174,13 +183,24 @@ export default Component.extend({
         let parentType = currentFolder.parentCollection;
 
         const self = this;
-        return store.find('folder', parentId).then(parent => {
-            self.set('currentFolder', parent);
-            return self.loadFolder.call(self, parentId, parentType);
-        }).catch(e => {
-            self.set('loadError', true);
-            self.set('loadingMessage', 'Failed to load registered data. Please try again');
-        });
+        if (parentId == null || parentId == this.get('rootFolderId')) {
+            return store.query('dataset', adapterOptions).then(datasets => {
+                let catalogId = this.get('rootFolderId');
+                self.set('loading', false);
+                self.set('currentFolder', O({ id: catalogId, _modelType: 'folder', parentType, catalogId }));
+                self.set('datasets', A(datasets));
+                self.set('folders', A([]));
+                self.set('files', A([]));
+            });
+        } else {
+            return store.find('folder', parentId).then(parent => {
+                self.set('currentFolder', parent);
+                return self.loadFolder.call(self, parentId, parentType);
+            }).catch(e => {
+                self.set('loadError', true);
+                self.set('loadingMessage', 'Failed to load registered data. Please try again');
+            });
+        }
     },
 
     loadFolder(parentId, parentType, adapterOptions = { queryParams: { limit: "0" } }) {
@@ -194,6 +214,7 @@ export default Component.extend({
 
         const self = this;
         return Promise.all([fetchFolders, fetchFiles]).then(([folders, files]) => {
+            self.set('datasets', A([]));
             self.set('folders', A(folders));
             self.set('files', A(files));
             self.set('loading', false);

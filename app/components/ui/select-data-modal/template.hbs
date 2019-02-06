@@ -36,27 +36,36 @@
                                             <i class="long alternate blue left arrow icon"></i>{{currentFolder.name}}
                                         </td>
                                     </tr>
+                                    {{#each folders as | folder |}}
+                                        <tr class="{{if folder.selected 'selected-row'}}"
+                                            {{action 'dblClick' folder on='doubleClick'}}
+                                            {{action 'onClick' folder on='click'}}>
+                                            <td class="collapsing noselect">
+                                                <i class="folder icon"></i>{{folder.name}}
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+                                    {{#each files as | file |}}
+                                        <tr class="{{if file.selected 'selected-row'}}">
+                                            <td class="collapsing noselect" {{action 'onClick' file on='click'}}>
+                                                <i class="file icon"></i>{{file.name}}
+                                            </td>
+                                        </tr>
+                                    {{/each}}
                                 {{else}}
                                     <tr>
                                         <td class="ui sub header collapsing noselect">Catalog</td>
                                     </tr>
+                                    {{#each datasets as | dataset |}}
+                                        <tr class="{{if dataset.selected 'selected-row'}}"
+                                            {{action 'dblClick' dataset on='doubleClick'}}
+                                            {{action 'onClick' dataset on='click'}}>
+                                            <td class="collapsing noselect">
+                                                <i class="folder icon"></i>{{dataset.name}}
+                                            </td>
+                                        </tr>
+                                    {{/each}}
                                 {{/if}}
-                                {{#each folders as | folder |}}
-                                    <tr class="{{if folder.selected 'selected-row'}}"
-                                        {{action 'dblClick' folder on='doubleClick'}}
-                                        {{action 'onClick' folder on='click'}}>
-                                        <td class="collapsing noselect">
-                                            <i class="folder icon"></i>{{folder.name}}
-                                        </td>
-                                    </tr>
-                                {{/each}}
-                                {{#each files as | file |}}
-                                    <tr class="{{if file.selected 'selected-row'}}">
-                                        <td class="collapsing noselect" {{action 'onClick' file on='click'}}>
-                                            <i class="file icon"></i>{{file.name}}
-                                        </td>
-                                    </tr>
-                                {{/each}}
                             </tbody>
                         </table>
                     {{/if}}
