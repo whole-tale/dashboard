@@ -146,10 +146,11 @@ export default Component.extend({
           let parentId = firstResult['_id'];
           controller.get('store').query('folder', { parentId, parentType }).then((folders) => {
             let folderId = folders.content[0]._id;
+            let myData = true;
             
             // Only init after we've located the catalog
             controller.get('store').query('dataset', {
-                reload: true,
+                myData,
                 adapterOptions
               }).then(datasets => {
                 controller.set('datasets', datasets);
@@ -327,7 +328,7 @@ export default Component.extend({
         if (crumbs[i].name === item.get('name')) {
           if (i == 0 && this.get('currentNav') == 'user_data') {
             self.set('fileData', { itemContents: [], folderContents: [] });
-            self.get('store').query('dataset', { adapterOptions }).then(datasets => {
+            self.get('store').query('dataset', { myData: true, adapterOptions }).then(datasets => {
               self.set('datasets', datasets);
             });
           }

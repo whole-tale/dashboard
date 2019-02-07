@@ -19,12 +19,28 @@ export default DS.RESTAdapter.extend(buildQueryParamsMixin, {
 
     query(store, type, query, recordArray) {
         let url = this.buildURL(type.modelName, null, null, 'query', query);
+        delete query.adapterOptions;
 
         if (this.sortQueryParams) {
             query = this.sortQueryParams(query);
         }
 
-        return this.get('authRequest').send(url, { method: 'GET' });
+        return this.get('authRequest').send(url, { method: 'GET', data: query });
+    },
+    
+    urlForQuery(query, modelName) {
+        let url = this._super(query, modelName);
+
+        if (query.adapterOptions) {
+            if (query.adapterOptions.appendPath) {
+                url += "/" + query.adapterOptions.appendPath;
+            }
+            if (query.adapterOptions.queryParams) {
+                let q = this.buildQueryParams(query.adapterOptions.queryParams);
+                url += "?" + q;
+            }
+        }
+        return url;
     },
 
     urlForUpdateRecord(id, modelName, snapshot) {
