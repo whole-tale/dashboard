@@ -51,7 +51,7 @@
                             </thead>
                             <tbody>
                                 {{#each folders as | folder |}}
-                                    {{#unless (eq folder.name taleId)}}
+                                    {{#unless (eq taleId folder.meta.taleId)}}
                                         <tr class="{{if folder.selected 'selected-row'}}"
                                             {{action 'dblClick' folder on='doubleClick'}}
                                             {{action 'onClick' folder on='click'}}>
@@ -76,20 +76,22 @@
         </div>
     </div>
     <div class="actions">
-        <div class="ui deny button"
+        <button class="ui deny button"
             style="float: left"
             onclick={{action "cancel" preventDefault=false bubble=false}}>
             Cancel
-        </div>
-        <div class="ui positive right labeled icon button" 
+        </button>
+        <button class="ui positive right labeled icon button" 
+            disabled={{canSubmit}}
             onclick={{action "updateWorkspaceData" false preventDefault=false bubble=false}}>
             <i class="copy icon"></i>
             Copy to Workspace
-        </div>
-        <div class="ui positive right labeled icon button" 
+        </button>
+        <button class="ui positive right labeled icon button" 
+            disabled={{canSubmit}}
             onclick={{action "updateWorkspaceData" true preventDefault=false bubble=false}}>
             <i class="cut icon"></i>
             Move to Workspace
-        </div>
+        </button>
     </div>
 {{/ui-modal}}

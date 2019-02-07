@@ -18,6 +18,13 @@ export default Component.extend({
     ]),
     selectedDataSource: O({}),
 
+    canSubmit: computed('rootFolderId', 'currentFolder', function() {
+        let rootFolderId = this.rootFolderId;
+        let currentFolder = this.currentFolder;
+        let currentFolderId = currentFolder != null ? currentFolder.get('id') : null; 
+        return rootFolderId == currentFolderId;
+    }),
+    
     allSelectedItems: A(),
 
     folders: A(),
