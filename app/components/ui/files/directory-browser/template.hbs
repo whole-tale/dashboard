@@ -20,17 +20,30 @@
                 <p></p>
             {{/if}}
             {{#each datasetList as |item|}}
-                <tr class="left aligned contextmenu" id="{{item.id}}" style="height: 45px !important;">
+                <tr class="left aligned contextmenu" id="{{item.id}}" style={{if (eq item._modelType 'folder') 'height: 45px !important;' ''}}>
                     <td>
-                        <span onclick={{action 'clickedFolder' item}} style="cursor:pointer;font-weight:900;">
-                            <i class="large grey folder icon"></i> {{truncate-name item.name 50}}
-                        </span>
+                        {{#if (eq item._modelType 'folder')}}
+                            {{!-- When clicking a folder, show the contents --}}
+                            <span style="cursor:pointer;font-weight:900;" onclick={{action 'clickedFolder' item}}>
+                                <i class="large grey folder icon"></i> {{truncate-name item.name 50}}
+                            </span>
+                        {{/if}}
                         {{#ui-dropdown}}
+                            {{!-- When clicking an item, show the dropdown --}}
+                            {{#if (eq item._modelType 'item')}}
+                                <span style="cursor:pointer;" onclick={{action 'clickedFile' item}}>
+                                    {{{file-icon-for item.name}}} {{truncate-name item.name 50}}
+                                </span>
+                            {{/if}}
                             <i class="dropdown icon"></i>
                             <div class="menu">
-                                <a class="item" href="{{apiUrl}}/folder/{{item.id}}/download?contentDisposition=attachment"><i
-                                        class="download icon"></i> Download</a>
-                                <a class="item" {{action "remove" item}}><i class="trash icon"></i> Remove</a>
+                                <a class="item" href="{{apiUrl}}/{{item._modelType}}/{{item.id}}/download?contentDisposition=attachment">
+                                    <i class="download icon"></i> Download
+                                </a>
+                                {{!-- FIXME: There is not yet a DELETE /dataset endpoint --}}
+                                <a class="item" style="cursor:not-allowed;">
+                                    <i class="trash icon"></i> Remove {{!-- {{action "remove" item}} --}}
+                                </a>
                             </div>
                         {{/ui-dropdown}}
                     </td>

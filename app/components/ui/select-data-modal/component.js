@@ -149,11 +149,6 @@ export default Component.extend({
     },
 
     dblClick(target) {
-        // HACK: Standard endpoints use "_modelType", /dataset uses "modelType"
-        if (!target._modelType && target.modelType) {
-            target._modelType = target.modelType;
-        }
-        
         if (!target || !target._modelType || (target._modelType !== 'folder' && target._modelType !== 'dataset')) {
             throw new Error('[select-data-modal] Cannot open. Not a folder or dataset.');
         }
