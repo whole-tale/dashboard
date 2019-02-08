@@ -61,7 +61,11 @@
                                             {{action 'dblClick' dataset on='doubleClick'}}
                                             {{action 'onClick' dataset on='click'}}>
                                             <td class="collapsing noselect">
-                                                <i class="folder icon"></i>{{dataset.name}}
+                                                {{#if (eq dataset._modelType 'item')}}
+                                                    <i class="file icon"></i>{{dataset.name}}
+                                                {{else}}
+                                                    <i class="folder icon"></i>{{dataset.name}}
+                                                {{/if}}
                                             </td>
                                         </tr>
                                     {{/each}}
