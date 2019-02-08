@@ -522,7 +522,8 @@ export default Component.extend({
                 let payload = JSON.stringify(resources);
                 const currentWorkspaceFolderId = this.get('currentWorkspaceFolderId');
                 let parentType = 'folder';
-                this.get('apiCall').copyToFolder(currentWorkspaceFolderId, parentType, payload, permanently, this.showSuccessfulCopyNotification, this.showFailedCopyNotification, this);
+                this.get('apiCall').copyToFolder(currentWorkspaceFolderId, parentType, payload, permanently, this.showSuccessfulCopyNotification, this.showFailedCopyNotification, this)
+                    .then(this.openWorkspacesDataModal);
             }
         },
         openWorkspacesDataModal() {
