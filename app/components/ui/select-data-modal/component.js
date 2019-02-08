@@ -19,7 +19,7 @@ export default Component.extend({
     selectedMenuIndex: 0,
     dataSources: A([
         O({ name: 'WholeTale Catalog' }),
-        //O({ name: 'Tale Workspaces' })
+        O({ name: 'My Data' })
     ]),
     selectedDataSource: O({}),
 
@@ -48,6 +48,7 @@ export default Component.extend({
         selectDatasource(datasource, index) {
             this.set('selectedDataSource', datasource);
             this.set('selectedMenuIndex', index);
+            this.requeryDatasets();
         },
 
         initData() {
@@ -85,7 +86,7 @@ export default Component.extend({
         },
 
         addSelectedData() {
-            this.addSelectedData.call(this, this.get('files'), this.get('folders'));
+            this.addSelectedData.call(this, this.get('datasets'), this.get('files'), this.get('folders'));
         },
 
         removeSelectedData() {
@@ -99,6 +100,7 @@ export default Component.extend({
             }
           }
           this.allSelectedItems.forEach(deselect);
+          this.set('datasets', A());
           this.set('folders', A());
           this.set('files', A());
           this.set('currentFolder', null);
@@ -122,31 +124,40 @@ export default Component.extend({
         this.set('currentFolder', null);
         this.set('rootFolderId', null);
 
+        return this.requeryDatasets();
+    },
+    
+    requeryDatasets(adapterOptions = { queryParams: { limit: "0" } }) {
+        const self = this;
+        
         const store = this.get('store');
         let selectedDS = this.get('selectedDataSource');
         let catalogTitle = this.get('catalogTitle');
-        let parentId = selectedDS['name'] == catalogTitle ? this.get('catalogParentId') : this.get('userAuth').getCurrentUserID();
-        let dataNavInfo = this.get('folderNavs').getFolderNavFor('user_data');
-        let parentType = selectedDS['name'] == catalogTitle ? this.get('catalogParentType') : dataNavInfo.parentType;
-        let adapterOptions = { queryParams: { limit: "0" } };
+        let parentId = this.get('catalogParentId');
+        let parentCollection = this.get('catalogParentType');
+        let myData = selectedDS['name'] == catalogTitle ? false : true;
+        
+        return store.query('dataset', { 
+            myData,
+            adapterOptions
+        }).then(datasets => {
+            self.set('rootFolderId', parentId);
+            self.set('loading', false);
+            self.set('datasets', A(datasets));
+            self.set('folders', A([]));
+            self.set('files', A([]));
+            self.set('currentFolder', O({ id: parentId, _modelType: 'folder', parentCollection, parentId }));
 
-        const self = this;
-        return store.query('folder', { parentId, parentType, adapterOptions }).then(dataFolder => {
-            let dataFolderId = dataFolder.content[0].id;
-            let parentCollection = parentType;
-            self.set('rootFolderId', dataFolderId);
-            self.set('currentFolder', O({ id: dataFolderId, _modelType: 'folder', parentCollection, parentId }));
-
-            return self.loadFolder.call(self, dataFolderId, 'folder');
+            //return self.loadFolder.call(self, catalogId, 'folder');
         }).catch(e => {
             self.set('loadError', true);
             self.set('loadingMessage', 'Failed to load registered data. Please try again');
-        });
+        })  
     },
 
     dblClick(target) {
-        if (!target || !target._modelType || target._modelType !== 'folder') {
-            throw new Error('[select-data-modal] Cannot open. Not a folder.');
+        if (!target || !target._modelType || (target._modelType !== 'folder' && target._modelType !== 'dataset')) {
+            throw new Error('[select-data-modal] Cannot open. Not a folder or dataset.');
         }
 
         this.set('currentFolder', target);
@@ -163,7 +174,7 @@ export default Component.extend({
         target.set('selected', selected);
     },
 
-    goBack(currentFolder) {
+    goBack(currentFolder, adapterOptions = { queryParams: { limit: "0" } }) {
         this.set('loading', true);
         this.set('loadError', false);
         this.set('loadingMessage', 'Preparing Files');
@@ -174,13 +185,24 @@ export default Component.extend({
         let parentType = currentFolder.parentCollection;
 
         const self = this;
-        return store.find('folder', parentId).then(parent => {
-            self.set('currentFolder', parent);
-            return self.loadFolder.call(self, parentId, parentType);
-        }).catch(e => {
-            self.set('loadError', true);
-            self.set('loadingMessage', 'Failed to load registered data. Please try again');
-        });
+        if (parentId == null || parentId == this.get('rootFolderId')) {
+            return store.query('dataset', adapterOptions).then(datasets => {
+                let catalogId = this.get('rootFolderId');
+                self.set('loading', false);
+                self.set('currentFolder', O({ id: catalogId, _modelType: 'folder', parentType, catalogId }));
+                self.set('datasets', A(datasets));
+                self.set('folders', A([]));
+                self.set('files', A([]));
+            });
+        } else {
+            return store.find('folder', parentId).then(parent => {
+                self.set('currentFolder', parent);
+                return self.loadFolder.call(self, parentId, parentType);
+            }).catch(e => {
+                self.set('loadError', true);
+                self.set('loadingMessage', 'Failed to load registered data. Please try again');
+            });
+        }
     },
 
     loadFolder(parentId, parentType, adapterOptions = { queryParams: { limit: "0" } }) {
@@ -194,13 +216,14 @@ export default Component.extend({
 
         const self = this;
         return Promise.all([fetchFolders, fetchFiles]).then(([folders, files]) => {
+            self.set('datasets', A([]));
             self.set('folders', A(folders));
             self.set('files', A(files));
             self.set('loading', false);
         });
     },
 
-    addSelectedData(files, folders) {
+    addSelectedData(datasets, files, folders) {
         const self = this;
         const add = f => {
           if (f.selected) {
@@ -211,6 +234,7 @@ export default Component.extend({
                 }
             }
         }
+        datasets.forEach(add);
         files.forEach(add);
         folders.forEach(add);
     },
@@ -224,14 +248,6 @@ export default Component.extend({
         }
         let all = A(this.get('allSelectedItems').concat([]));
         all.forEach(del);
-    },
-
-    loadDataset(adapterOptions = { queryParams: { limit: "0" } }) {
-
-    },
-
-    loadTaleWorkspaces(adapterOptions = { queryParams: { limit: "0" } }) {
-
     },
 
     updateSessionData() {

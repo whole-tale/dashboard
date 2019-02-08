@@ -95,6 +95,11 @@ export default Component.extend({
         }
 
         this.set('fileBreadCrumbs', state.getCurrentFileBreadcrumbs()); // new collection, reset crumbs
+        
+        // Resync data when tale model changes
+        this.addObserver('model', function() {
+            this.resync();
+        });
     },
 
     showSuccessfulCopyNotification(notifier, copier, gerund) {
