@@ -322,7 +322,8 @@ export default Component.extend({
     let component = this;
     let onFail = (e) => {
       // deal with the failure here
-      component.set('errorMessage', e);
+      let errorMessage = (e.responseJSON ? e.responseJSON.message : self.get('defaultErrorMessage'));
+      component.set('errorMessage', errorMessage);
       component.send('openErrorModal');
     };
 
@@ -380,7 +381,8 @@ export default Component.extend({
 
       let onFail = (e) => {
         // deal with the failure here
-        component.set('errorMessage', e);
+        let errorMessage = (e.responseJSON ? e.responseJSON.message : self.get('defaultErrorMessage'));
+        component.set('errorMessage', errorMessage);
         component.send('openErrorModal');
       };
 
