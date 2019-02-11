@@ -15,7 +15,7 @@ export default Ember.Route.extend({
     var slashes = http.concat("//");
     var ishttp = (location.port === '') || (location.port === 80) || (location.port === 443);
     var host = slashes.concat(window.location.hostname) + (ishttp? "": ':'+location.port);
-    var pathSuffix = decodeURIComponent(params.rd) || "";
+    var pathSuffix = decodeURIComponent(params.rd || "");
     // Append to query string if on exists, otherwise add one
     if (pathSuffix.indexOf("?") !== -1) {
       pathSuffix += "&token={girderToken}"
