@@ -51,7 +51,7 @@
                             </thead>
                             <tbody>
                                 {{#each folders as | folder |}}
-                                    {{#unless (eq taleId folder.meta.taleId)}}
+                                    {{#unless (and (eq taleId folder.meta.taleId) (eq rootFolderId currentFolder.id))}}
                                         <tr class="{{if folder.selected 'selected-row'}}"
                                             {{action 'dblClick' folder on='doubleClick'}}
                                             {{action 'onClick' folder on='click'}}>
