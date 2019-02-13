@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import Object, { computed } from '@ember/object';
 import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
-import { next } from '@ember/runloop';
 
 const O = Object.create.bind(Object);
 
@@ -14,11 +13,18 @@ export default Component.extend({
 
     selectedMenuIndex: 0,
     dataSources: A([
-        O({ name: 'Home', description: 'Global directory accessible across all Tales' }),
+        //O({ name: 'Home', description: 'Global directory accessible across all Tales' }),
         O({ name: 'Tale Workspaces', description: 'Other accessible Tales' })
     ]),
     selectedDataSource: O({}),
 
+    canSubmit: computed('rootFolderId', 'currentFolder', function() {
+        let rootFolderId = this.rootFolderId;
+        let currentFolder = this.currentFolder;
+        let currentFolderId = currentFolder != null ? currentFolder.get('id') : null; 
+        return rootFolderId == currentFolderId;
+    }),
+    
     allSelectedItems: A(),
 
     folders: A(),
@@ -117,9 +123,12 @@ export default Component.extend({
         }
 
         this.set('currentFolder', target);
+        
+        let parentCollection = 'folder';
+        let parentId = target.get('id');
 
         const self = this;
-        return this.loadFolder.call(this, target.get('id'), target.get('_modelType')).catch(e => {
+        return this.loadFolder.call(this, parentId, parentCollection).catch(e => {
             self.set('loadError', true);
             self.set('loadingMessage', 'Failed to load registered data. Please try again');
         });
@@ -130,7 +139,7 @@ export default Component.extend({
         target.set('selected', selected);
     },
 
-    goBack(currentFolder) {
+    goBack(currentFolder, adapterOptions = { queryParams: { limit: "0" } }) {
         this.set('loading', true);
         this.set('loadError', false);
         this.set('loadingMessage', 'Preparing Files');
@@ -155,22 +164,35 @@ export default Component.extend({
         this.set('loadError', false);
         this.set('loadingMessage', 'Preparing Files');
 
+        const workspaceRootId = this.get('internalState').workspaceRootId;
         const store = this.get('store');
-        let fetchFolders = store.query('folder', {
-            parentId,
-            parentType,
-            adapterOptions
-        });
-        let fetchFiles = store.query('item', {
-            folderId: parentId
-        });
-
         const self = this;
-        return Promise.all([fetchFolders, fetchFiles]).then(([folders, files]) => {
-            self.set('folders', A(folders));
-            self.set('files', A(files));
-            self.set('loading', false);
-        });
+        
+        if (parentId == workspaceRootId) {
+            return store.query('workspace', {
+                adapterOptions
+            }).then((workspaces) => {
+                // Should be safe to assume that all workspaces are folders
+                self.set('folders', A(workspaces));
+                self.set('files', A([]));
+                self.set('loading', false);
+            })
+        } else {
+            let fetchFolders = store.query('folder', {
+                parentId,
+                parentType,
+                adapterOptions
+            });
+            let fetchFiles = store.query('item', {
+                folderId: parentId
+            });
+            return Promise.all([fetchFolders, fetchFiles]).then(([folders, files]) => {
+                // Folder and files can be returned, separate them accordingly
+                self.set('folders', A(folders));
+                self.set('files', A(files));
+                self.set('loading', false);
+            });
+        }
     },
 
     addSelectedData(files, folders) {
@@ -224,13 +246,15 @@ export default Component.extend({
     },
 
     loadTaleWorkspaces() {
-        let parentId = this.get('userAuth').getCurrentUserID();
-        let parentType = 'folder';
-
+        const self = this;
+        
+        let parentId = self.get('userAuth').getCurrentUserID();
+        let parentCollection = 'folder';
         let workspaceRootId = this.get('internalState').workspaceRootId;
         this.set('rootFolderId', workspaceRootId);
-        this.set('currentFolder', O({ id: workspaceRootId, _modelType: 'folder', parentCollection: parentType, parentId }));
-        return this.loadFolder(workspaceRootId, 'folder');
+        this.set('currentFolder', O({ id: workspaceRootId, _modelType: 'folder', parentCollection, parentId }));
+
+        return self.loadFolder(workspaceRootId, parentCollection);
     },
 
     updateWorkspaceData() {

@@ -517,6 +517,7 @@ export default Component.extend({
                 }
               ]
             */
+            const context = this;
 
             // do something with selected items here ...
             if (listOfSelectedItems) {
@@ -527,7 +528,8 @@ export default Component.extend({
                 let payload = JSON.stringify(resources);
                 const currentWorkspaceFolderId = this.get('currentWorkspaceFolderId');
                 let parentType = 'folder';
-                this.get('apiCall').copyToFolder(currentWorkspaceFolderId, parentType, payload, permanently, this.showSuccessfulCopyNotification, this.showFailedCopyNotification, this);
+                this.get('apiCall').copyToFolder(currentWorkspaceFolderId, parentType, payload, permanently, this.showSuccessfulCopyNotification, this.showFailedCopyNotification, this)
+                context.actions.closeWorkspacesDataModal();
             }
         },
         openWorkspacesDataModal() {
