@@ -1,0 +1,139 @@
+@import 'variables';
+
+.tale-tab-files {
+    height: calc(100vh - (2rem + #{$inverted-menu-height} + #{$footer-height} + 80px + #{$wt-main-row-height}));
+
+    .main-row {
+        padding: 0.5rem 1.6rem;
+        .files-tab-description {
+            .breadcrumbs-container {
+                .breadcrumb {
+                    .fa-plus-circle {
+                        position: absolute;
+                        right: 0;
+                        bottom: 3px;
+                        cursor: pointer;
+                        display: inline;
+                    }
+                    .fa-plus-circle + .ember-view {
+                        display: inline;
+                    }
+                    .folder-menu {
+                        position: absolute;
+                        right: 5px;
+                        top: 35px;
+                        z-index: 10;
+        
+                        .vertical.menu {
+                            width: 190px;
+                            box-shadow: 0px 2px 3px 0px rgba(34, 36, 38, 0.15);
+                            border: 1px solid rgba(34, 36, 38, 0.15);
+                            border-radius: 0.28571429rem;
+                            -webkit-transition: opacity 0.1s ease;
+                            transition: opacity 0.1s ease;
+                            z-index: 11;
+                            will-change: transform, opacity;
+
+                            .header {
+                                margin: 1rem 0 .75rem;
+                                padding: 0 1.14285714rem;
+                                color: rgba(0,0,0,.85);
+                                font-size: .78571429em;
+                                font-weight: 700;
+                                text-transform: uppercase;
+                            }
+                            .item::before {
+                                height: 0;
+                            }
+        
+                            .item {
+                                border: none;
+                                .label {
+                                    background-color: transparent;
+                                    color: black;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .ui.grid:not(.files-tab-description) {
+        .folder-navigator-container {
+            height: auto; // calc(100vh - (2rem + 48px + 0px + #{$footer-height} + 80px + 50px + 51px));
+            border-right: none;
+            box-shadow: none;
+            background: transparent;
+
+
+            .folder-navigator {
+                height: auto;
+                .ui.grid {
+                    height: auto;
+
+                    .ui.vertical.mini.compact.menu {
+                        a.item {
+                            background: rgba(0, 0, 0, 0.05);
+                        }
+                        a.active.item {
+                            background: #e8f3fa;
+                            border-right: 3px solid #2185d0;
+                            border-radius: 0; 
+                        }
+                    }
+
+                    .mobile > .ui.vertical.mini.compact.menu {
+                        a.item {
+                            background: rgba(0, 0, 0, 0.05);
+                            min-height: 40px;
+                            .instructions {
+                                display: none;
+                            }
+                            .icon-wrapper {
+                                padding: 0 1.14285714em;
+                            }
+                        }
+                        a.item:last-child {
+                            border-radius: 0;
+                        }
+                        a.active.item {
+                            background: #e8f3fa;
+                            border-right: 3px solid #2185d0;
+                            border-radius: 0; 
+                        }
+                    }
+                }
+            }
+        }
+
+        .directory-browser-container {
+            .ui.collapsable.grid {
+                height: 100%;
+                .directory-browser {
+                    height: 100%;
+                    margin-right: 3px;
+                    .left.panel.content {
+                        height: 100%;
+                        table {
+                            height: auto;
+                            max-height: 100%;
+                            width: calc(100% - 10px);
+                            margin: 0 10px;
+                            tbody {
+                                max-height: calc(100% - 45px);
+                                overflow-y: auto;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .main-row + .ui.grid {
+        height: calc(100vh - (2rem + #{$inverted-menu-height} + #{$footer-height} + 50px + 80px + #{$wt-main-row-height}));
+    }
+
+}

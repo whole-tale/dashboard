@@ -1,0 +1,80 @@
+@import 'variables';
+
+.manage-page {
+    height: calc(100vh - (2rem + #{$inverted-menu-height} + #{$footer-height} + 80px + #{$wt-main-row-height}));
+
+    .ui.grid:not(.files-tab-description) {
+        .folder-navigator-container {
+            height: auto;
+            border-right: none;
+            box-shadow: none;
+            background: transparent;
+
+            .folder-navigator {
+                height: auto;
+                .ui.grid {
+                    height: auto;
+
+                    .ui.vertical.mini.compact.menu {
+                        a.item {
+                            background: rgba(0, 0, 0, 0.05);
+                        }
+                        a.active.item {
+                            background: #e8f3fa;
+                            border-right: 3px solid #2185d0;
+                            border-radius: 0; 
+                        }
+                    }
+
+                    .mobile > .ui.vertical.mini.compact.menu {
+                        a.item {
+                            background: rgba(0, 0, 0, 0.05);
+                            min-height: 40px;
+                            .instructions {
+                                display: none;
+                            }
+                            .icon-wrapper {
+                                padding: 0 1.14285714em;
+                            }
+                        }
+                        a.item:last-child {
+                            border-radius: 0;
+                        }
+                        a.active.item {
+                            background: #e8f3fa;
+                            border-right: 3px solid #2185d0;
+                            border-radius: 0; 
+                        }
+                    }
+                }
+            }
+        }
+
+        .directory-browser-container {
+            .ui.collapsable.grid {
+                height: 100%;
+                .directory-browser {
+                    height: 100%;
+                    margin-right: 3px;
+                    .left.panel.content {
+                        height: 100%;
+                        table {
+                            height: auto;
+                            max-height: 100%;
+                            width: calc(100% - 10px);
+                            margin: 0 10px;
+                            tbody {
+                                max-height: calc(100% - 45px);
+                                overflow-y: auto;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .main-row + .ui.grid {
+        height: calc(100vh - (2rem + #{$inverted-menu-height} + #{$footer-height} + 80px + #{$wt-main-row-height}));
+    }
+}

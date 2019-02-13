@@ -1,19 +1,19 @@
-import Ember from 'ember';
+import { helper } from '@ember/component/helper';
 
 function iconTemplate(iconName) {
   return '<img class="ui tiny image" style="margin-top: 0; float:left; padding-top: 0; margin-right: 4px; width: 25px" src="' + iconName + '" width="25px">';
 }
 export function fileIconFor(params/*, hash*/) {
   let [filename] = params;
-  console.log(filename);
-  //console.log("Filename being passed in is");
-  //console.log(filename);
+  // console.log(filename);
+  // console.log("Filename being passed in is");
+  // console.log(filename);
 
-  if (filename.length==1) { // array - this is a hack, need to figure this out...
+  if (filename.length === 1) { // array - this is a hack, need to figure this out...
     filename = filename[0];
   }
 
-  if ((filename == null) || (typeof filename  == 'undefined')) {
+  if (!filename) {
     return '<i class="large file outline icon"></i>';
   }
 
@@ -63,4 +63,4 @@ export function fileIconFor(params/*, hash*/) {
   
   // border: 1.5px solid white;
   // border-radius: 15%;
-export default Ember.Helper.helper(fileIconFor);
+export default helper(fileIconFor);

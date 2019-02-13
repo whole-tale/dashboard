@@ -322,7 +322,8 @@ export default Component.extend({
     let component = this;
     let onFail = (e) => {
       // deal with the failure here
-      component.set('errorMessage', e);
+      let errorMessage = (e.responseJSON ? e.responseJSON.message : self.get('defaultErrorMessage'));
+      component.set('errorMessage', errorMessage);
       component.send('openErrorModal');
     };
 
@@ -380,7 +381,8 @@ export default Component.extend({
 
       let onFail = (e) => {
         // deal with the failure here
-        component.set('errorMessage', e);
+        let errorMessage = (e.responseJSON ? e.responseJSON.message : self.get('defaultErrorMessage'));
+        component.set('errorMessage', errorMessage);
         component.send('openErrorModal');
       };
 
@@ -390,8 +392,8 @@ export default Component.extend({
         // Check that the object is a folder/item
         if (x.hasOwnProperty('id')) {
             formattedData.push({
-            'type': x.get('isFolder') ? 'folder' : 'item',
-            'id': x.get('id')
+              'mountPath': '/' + x.get('name'),
+              'itemId': x.get('id')
             });
         }
       });
@@ -399,7 +401,7 @@ export default Component.extend({
       let name = this.get('newTaleName').trim();
       let new_tale = this.get('store').createRecord('tale', {
         "config": {}, //TODO: Implement configuration editor
-        "involatileData": formattedData,
+        "dataSet": formattedData,
         "imageId": this.get('selectedEnvironment').get('_id'),
         "title": name
       });

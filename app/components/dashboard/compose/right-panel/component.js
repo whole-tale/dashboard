@@ -5,7 +5,7 @@ export default Component.extend({
   wtEvents: service(),
   classNameBindings: ['showUpperPanel', 'showLowerPanel'],
   showUpperPanel: true,
-  showLowerPanel: true,
+  showLowerPanel: false,
 
   init() {
     this._super(...arguments);

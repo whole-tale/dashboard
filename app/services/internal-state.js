@@ -7,224 +7,233 @@ import { A } from '@ember/array';
 // these methods use localStorage so they persist beyond sessions ...
 
 export default Service.extend({
-  isAuthenticated: true,
-  store: service(),
-  currentInstanceId: computed({
-    get() {
-      return (localStorage.currentInstanceId && localStorage.currentInstanceId !== 'undefined') ? JSON.parse(localStorage.currentInstanceId) : undefined;
+    isAuthenticated: true,
+    store: service(),
+    currentInstanceId: computed({
+        get() {
+            return (localStorage.currentInstanceId && localStorage.currentInstanceId !== 'undefined') ? JSON.parse(localStorage.currentInstanceId) : undefined;
+        },
+        set(key, value) {
+            localStorage.currentInstanceId = JSON.stringify(value);
+            return value;
+        }
+    }),
+
+    setCurrentNavCommand(val) {
+        localStorage.currentNavCommand = val;
     },
-    set(key, value) {
-      localStorage.currentInstanceId = JSON.stringify(value);
-      return value;
-    }
-  }),
 
-  setCurrentNavCommand: function (val) {
-    localStorage.currentNavCommand = val;
-  },
+    getCurrentNavCommand() {
+        return localStorage.currentNavCommand;
+    },
 
-  getCurrentNavCommand: function () {
-    return localStorage.currentNavCommand;
-  },
+    setCurrentFolderID(val) {
+        localStorage.currentFolderID = val;
+    },
 
-  setCurrentFolderID: function (val) {
-    localStorage.currentFolderID = val;
-  },
+    getCurrentFolderID() {
+        let currentFolderID = localStorage.currentFolderID;
 
-  getCurrentFolderID: function () {
-    let currentFolderID = localStorage.currentFolderID;
-    
-    // Skip checking falsey ID strings
-    if (typeof(currentFolderID) !== "undefined" && currentFolderID) {
-      this.store.findRecord('folder', currentFolderID).then(function(result) {
-        // folder exists - effectively a noop
-        // NOTE: after first lookup, this result is cached in the store
-      }).catch(function(error) {
-        //console.log(`Failed to fetch current folder (${currentFolderID}):`, error);
-        // Set currentFolderID to "undefined" and refresh the page
-        localStorage.removeItem("currentFolderID");
-        currentFolderID = undefined;
-        window.location.reload(true);
-      });
-    }
-    
-    return currentFolderID;
-  },
+        // Skip checking falsey ID strings
+        if (typeof(currentFolderID) !== "undefined" && currentFolderID) {
+            this.store.findRecord('folder', currentFolderID).then(function(result) {
+                // folder exists - effectively a noop
+                // NOTE: after first lookup, this result is cached in the store
+            }).catch(function(error) {
+                // Set currentFolderID to "undefined" and refresh the page
+                localStorage.removeItem("currentFolderID");
+                currentFolderID = undefined;
+                window.location.reload(true);
+            });
+        }
 
-  setCurrentFolderName: function (val) {
-    localStorage.currentFolderName = val;
-  },
+        return currentFolderID;
+    },
 
-  getCurrentFolderName: function () {
-    return localStorage.currentFolderName;
-  },
+    setCurrentFolderName(val) {
+        localStorage.currentFolderName = val;
+    },
 
-  setCurrentParentType: function (val) {
-    localStorage.currentParentType = val;
-  },
+    getCurrentFolderName() {
+        return localStorage.currentFolderName;
+    },
 
-  getCurrentParentType: function () {
-    return localStorage.currentParentType;
-  },
+    setCurrentParentType(val) {
+        localStorage.currentParentType = val;
+    },
 
-  setCurrentFileBreadcrumbs: function (val) {
-    localStorage.currentFileBreadcrumbs = JSON.stringify(val);
-  },
+    getCurrentParentType() {
+        return localStorage.currentParentType;
+    },
 
-  getCurrentFileBreadcrumbs: function () {
-    var bcs = localStorage.currentFileBreadcrumbs;
-    if (!bcs) return null;
-    return JSON.parse(bcs);
-  },
+    setCurrentFileBreadcrumbs(val) {
+        localStorage.currentFileBreadcrumbs = JSON.stringify(val);
+    },
 
-  setCurrentBreadCrumb: function (val) {
-    localStorage.currentBreadCrumb = JSON.stringify(val);
-  },
+    getCurrentFileBreadcrumbs() {
+        let bcs = localStorage.currentFileBreadcrumbs;
+        if (!bcs) return null;
+        return JSON.parse(bcs);
+    },
 
-  getCurrentBreadCrumb: function () {
-    return JSON.parse(localStorage.currentBreadCrumb);
-  },
+    setCurrentBreadCrumb(val) {
+        localStorage.currentBreadCrumb = JSON.stringify(val);
+    },
 
-  setCurrentParentId: function (id) {
-    localStorage.currentParentId = id;
-  },
+    getCurrentBreadCrumb() {
+        return JSON.parse(localStorage.currentBreadCrumb);
+    },
 
-  getCurrentParentId: function () {
-    return localStorage.currentParentId;
-  },
+    setCurrentParentId(id) {
+        localStorage.currentParentId = id;
+    },
 
-  setStaticMenu: function (val) {
-    if (val)
-      localStorage.staticMenu = 1;
-    else
-      localStorage.staticMenu = 0;
-  },
+    getCurrentParentId() {
+        return localStorage.currentParentId;
+    },
 
-  getIsStaticMenu: function () {
-    return (localStorage.staticMenu != 0);
-  },
+    setStaticMenu(val) {
+        if (val)
+            localStorage.staticMenu = 1;
+        else
+            localStorage.staticMenu = 0;
+    },
 
-  addFolderToRecentFolders: function (folderId) {
-    var recentFolders = this.getRecentFolders();
+    getIsStaticMenu() {
+        return (localStorage.staticMenu != 0);
+    },
 
-    if (recentFolders.length > 15) {
-      recentFolders.splice(0, 1); // remove first element (last one in)
-    }
+    addFolderToRecentFolders(folderId) {
+        let recentFolders = this.getRecentFolders();
 
-    recentFolders.push(folderId);
+        if (recentFolders.length > 15) {
+            recentFolders.splice(0, 1); // remove first element (last one in)
+        }
 
-    localStorage.recentFolders = JSON.stringify(recentFolders);
-  },
+        recentFolders.push(folderId);
 
-  removeFolderFromRecentFolders: function (folderId) {
-    var recentFolders = this.getRecentFolders();
+        localStorage.recentFolders = JSON.stringify(recentFolders);
+    },
 
-    recentFolders = recentFolders.reject(id => {
-      return folderId === id;
-    });
+    removeFolderFromRecentFolders(folderId) {
+        let recentFolders = this.getRecentFolders();
 
-    localStorage.recentFolders = JSON.stringify(recentFolders);
-  },
+        recentFolders = recentFolders.reject(id => {
+            return folderId === id;
+        });
 
-  getRecentFolders: function () {
-    var bcs = localStorage.recentFolders;
-    if (!bcs) return [];
-    return JSON.parse(bcs);
-  },
+        localStorage.recentFolders = JSON.stringify(recentFolders);
+    },
 
-  // Get the object that Access Control will be modifying perms for
-  getACLObject() {
-    let aclObj = localStorage.ACLObject;
-    if (!aclObj) return null;
-    return JSON.parse(aclObj)
-  },
+    getRecentFolders() {
+        let bcs = localStorage.recentFolders;
+        if (!bcs) return [];
+        return JSON.parse(bcs);
+    },
 
-  // Sets the object that Access Control will be modifying permissions for
-  setACLObject(aclObj) {
-    localStorage.ACLObject = JSON.stringify(aclObj.toJSON());
-  },
+    // Get the object that Access Control will be modifying perms for
+    getACLObject() {
+        let aclObj = localStorage.ACLObject;
+        if (!aclObj) return null;
+        return JSON.parse(aclObj)
+    },
 
-  getRecentTales() {
-    let recent = localStorage.recentTales;
-    if (!recent) {
-      return A();
-    }
-    return JSON.parse(recent);
-  },
+    // Sets the object that Access Control will be modifying permissions for
+    setACLObject(aclObj) {
+        localStorage.ACLObject = JSON.stringify(aclObj.toJSON());
+    },
 
-  addRecentTale(taleId) {
-    let recent = this.getRecentTales();
+    getRecentTales() {
+        let recent = localStorage.recentTales;
+        if (!recent) {
+            return A();
+        }
+        return JSON.parse(recent);
+    },
 
-    if (recent.length > 15) {
-      recent.splice(0, 1); // remove first element (last one in)
-    }
+    addRecentTale(taleId) {
+        let recent = this.getRecentTales();
 
-    recent.push(taleId);
+        if (recent.length > 15) {
+            recent.splice(0, 1); // remove first element (last one in)
+        }
 
-    localStorage.recentTales = JSON.stringify(recent);
-  },
+        recent.push(taleId);
 
-  removeRecentTale: function (taleId) {
-    var recent = this.getRecentTales();
-    recent = recent.reject(id => {
-      return taleId === id;
-    });
-    localStorage.recentTales = JSON.stringify(recent);
-  },
+        localStorage.recentTales = JSON.stringify(recent);
+    },
 
-  toString: function () {
-    return "CurrentFileBreadcrumbs: " + localStorage.currentFileBreadcrumbs +
-      +", Current Parent Type: " + localStorage.currentParentType +
-      +", Current Folder ID: " + localStorage.currentFolderID +
-      ", CurrentBreadCrumb: " + localStorage.currentBreadCrumb;
-  },
+    removeRecentTale(taleId) {
+        let recent = this.getRecentTales();
+        recent = recent.reject(id => {
+            return taleId === id;
+        });
+        localStorage.recentTales = JSON.stringify(recent);
+    },
 
-  getRecentEnvironments() {
-    let recent = localStorage.recentEnvironments;
-    if (!recent) {
-      return A();
-    }
-    return JSON.parse(recent);
-  },
-  setRecentEnvironments(environments) {
-    environments = environments || A();
-    localStorage.recentEnvironments = JSON.stringify(environments);
-  },
+    toString() {
+        return "CurrentFileBreadcrumbs: " + localStorage.currentFileBreadcrumbs +
+            +", Current Parent Type: " + localStorage.currentParentType +
+            +", Current Folder ID: " + localStorage.currentFolderID +
+            ", CurrentBreadCrumb: " + localStorage.currentBreadCrumb;
+    },
 
-  addRecentEnvironment(environmentId) {
-    let recent = this.getRecentEnvironments();
+    getRecentEnvironments() {
+        let recent = localStorage.recentEnvironments;
+        if (!recent) {
+            return A();
+        }
+        return JSON.parse(recent);
+    },
+    setRecentEnvironments(environments) {
+        environments = environments || A();
+        localStorage.recentEnvironments = JSON.stringify(environments);
+    },
 
-    if (recent.length > 15) {
-      recent.splice(0, 1); // remove first element (last one in)
-    }
+    addRecentEnvironment(environmentId) {
+        let recent = this.getRecentEnvironments();
 
-    recent.push(environmentId);
+        if (recent.length > 15) {
+            recent.splice(0, 1); // remove first element (last one in)
+        }
 
-    localStorage.recentEnvironments = JSON.stringify(recent);
-  },
+        recent.push(environmentId);
 
-  removeRecentEnvironment(environmentId) {
-    let recent = this.getRecentEnvironments();
-    recent = recent.reject(id => {
-      return environmentId === id;
-    });
-    localStorage.recentEnvironments = JSON.stringify(recent);
-  },
+        localStorage.recentEnvironments = JSON.stringify(recent);
+    },
 
-  setSearchString(searchStr) {
-    localStorage.lastSearchStr = searchStr;
-  },
+    removeRecentEnvironment(environmentId) {
+        let recent = this.getRecentEnvironments();
+        recent = recent.reject(id => {
+            return environmentId === id;
+        });
+        localStorage.recentEnvironments = JSON.stringify(recent);
+    },
 
-  getSearchString() {
-    return localStorage.searchStr;
-  },
+    setSearchString(searchStr) {
+        localStorage.lastSearchStr = searchStr;
+    },
 
-  setDataOneAuthenticated: function (authenticated) {
-    localStorage.dataOneAuthenticated = authenticated
-  },
+    getSearchString() {
+        return localStorage.searchStr;
+    },
 
-  getDataOneAuthenticated: function() {
-      return localStorage.dataOneAuthenticated;
-  }
-  
+    setDataOneAuthenticated(authenticated) {
+        localStorage.dataOneAuthenticated = authenticated;
+    },
+
+    getDataOneAuthenticated() {
+        return localStorage.dataOneAuthenticated;
+    },
+
+    workspaceRootId: computed({
+        get() {
+            return (localStorage.workspaceRootId && localStorage.workspaceRootId !== 'undefined') ? JSON.parse(localStorage.workspaceRootId) : undefined;
+        },
+        set(key, value) {
+            localStorage.workspaceRootId = JSON.stringify(value);
+            return value;
+        }
+    })
+
 });

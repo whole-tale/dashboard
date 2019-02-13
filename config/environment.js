@@ -83,7 +83,7 @@ module.exports = function (environment) {
 
   if (environment === 'production') {
     ENV.apiHost = 'apiHOST';
-    ENV.wholeTaleHost = 'https://dashboardHOST';
+    ENV.wholeTaleHost = 'dashboardHOST';
     ENV.dataOneHost = 'dataOneHOST';
     ENV.authProvider = 'authPROVIDER';
   }

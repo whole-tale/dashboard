@@ -8,9 +8,13 @@ import $ from 'jquery';
 
 export default Component.extend({
   layout,
+  classNames: ['directory-browser'],
 
   store: service(),
   internalState: service(),
+  apiCall: service('api-call'),
+  userAuth: service(),
+  folderNavs: service(),
 
   apiUrl: config.apiUrl,
 
@@ -85,7 +89,11 @@ export default Component.extend({
     },
 
     move(file) {
-      let disallowed = this.get('currentNav').command === 'home' ? 'Data' : 'Home';
+      let command = this.get('currentNav').command;
+      let disallowed = 'Data';
+      if(command === 'user_data') {
+        disallowed = 'Home';
+      }
       this.set('disallowed', disallowed);
       this.set('fileToMove', file);
       $('.ui.modal.destinate-folder').modal('show');
@@ -141,6 +149,56 @@ export default Component.extend({
             self.set('folderList', [copy].pushObjects(self.folderList.toArray()).sortBy('name'));
           }
         });
+    },
+
+    copyToHome(item) {
+      const self = this;
+      self.set('loading', true);
+      let parentId = this.get('userAuth').getCurrentUserID();
+      let adapterOptions = { queryParams: { limit: "0" } };
+      let parentType = 'user';
+      let homeNavInfo = this.get('folderNavs').getFolderNavFor('home');
+      let name = homeNavInfo.name;
+      let copier = this;
+      const store = this.get('store');
+      return store.query('folder', { parentId, parentType, name, adapterOptions }).then(homeFolder => {
+          self.set('loading', false);
+          let homeFolderId = homeFolder.content[0].id;
+          
+          let apiCall = self.get('apiCall');
+          let itemId = item.get('id');
+          let resources = { item: [], folder: [] };
+          if(item.get('isFolder')) {
+            resources['folder'].push(itemId);
+          } else {
+            resources['item'].push(itemId);
+          }
+          let payload = JSON.stringify(resources);
+          let success = self.get('showSuccessfulCopyNotification');
+          let fail = self.get('showFailedCopyNotification');
+          apiCall.copyToFolder(homeFolderId, 'folder', payload, false, success, fail, copier);
+      }).catch(() => {
+          self.set('loading', false);
+          self.set('loadError', true);
+          self.set('loadingMessage', 'Failed to load home folder content. Please try again');
+      });
+    },
+    
+    removeDataset(id) {
+      const self = this;
+      this.set('loading', true);
+      this.set('loadError', false);
+      this.get('store').findRecord('dataset', id, { backgroundReload: false }).then(dataset => {
+        console.log("Dataset reference found... deleting:", dataset);
+        dataset.destroyRecord().then(() => {
+          self.set('loading', false);
+          self.set('loadError', true);
+        });
+      }).catch((err) => {
+        console.log("Error:", err);
+        self.set('loading', false);
+        self.set('loadError', true);
+      });
     },
 
     remove(file) {
