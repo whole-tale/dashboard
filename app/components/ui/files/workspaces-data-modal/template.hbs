@@ -36,7 +36,7 @@
                                 {{#if (eq rootFolderId currentFolder.id)}}
                                     <th class="ui sub header collapsing noselect">
                                         {{#if (eq currentFolder.id internalState.workspaceRootId)}}
-                                            Workspace Root Folder
+                                            Select a Tale
                                         {{else}}
                                             Home Folder
                                         {{/if}}
@@ -52,18 +52,23 @@
                             <tbody>
                                 {{#each folders as | folder |}}
                                     {{#unless (and (eq taleId folder.meta.taleId) (eq rootFolderId currentFolder.id))}}
-                                        <tr class="{{if folder.selected 'selected-row'}}"
+                                        <tr class="clickable {{if folder.selected 'selected-row'}}"
                                             {{action 'dblClick' folder on='doubleClick'}}
-                                            {{action 'onClick' folder on='click'}}>
-                                            <td class="collapsing noselect">
+                                            {{action 'onClick' folder on='click'}}
+                                            title={{if (eq rootFolderId currentFolder.id) 
+                                                    'Click to open a Tale Workspace' 
+                                                    'Click to select a folder, double-click to open it'}}>
+                                            <td class="collapsing noselect clickable">
                                                 <i class="folder icon"></i>{{truncate-name folder.name}}
                                             </td>
                                         </tr>
                                     {{/unless}}
                                 {{/each}}
                                 {{#each files as | file |}}
-                                    <tr class="{{if file.selected 'selected-row'}}">
-                                        <td class="collapsing noselect" {{action 'onClick' file on='click'}}>
+                                    <tr class="clickable {{if file.selected 'selected-row'}}"
+                                        {{action 'onClick' file on='click'}}
+                                        title="Click to select a file">
+                                        <td class="collapsing noselect ">
                                             <i class="file icon"></i>{{file.name}}
                                         </td>
                                     </tr>

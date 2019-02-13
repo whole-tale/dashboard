@@ -119,24 +119,35 @@ export default Component.extend({
 
     dblClick(target) {
         if (!target || !target._modelType || target._modelType !== 'folder') {
-            throw new Error('[select-data-modal] Cannot open. Not a folder.');
+            // Only allow the user to double-click folders
+            //throw new Error('[select-data-modal] Cannot open. Not a folder.');
+            return;
         }
-
-        this.set('currentFolder', target);
         
-        let parentCollection = 'folder';
-        let parentId = target.get('id');
-
-        const self = this;
-        return this.loadFolder.call(this, parentId, parentCollection).catch(e => {
-            self.set('loadError', true);
-            self.set('loadingMessage', 'Failed to load registered data. Please try again');
-        });
+        this.set('currentFolder', target);
+        this.get('openFolder')(target, this);
     },
 
     onClick(target) {
-        let selected = !target.get('selected');
-        target.set('selected', selected);
+        if (this.get('rootFolderId') == this.get('currentFolder').get('id')) {
+            // Only allow the user to select files and folders (not an entire Workspace)
+            //throw new Error('[select-data-modal] Cannot select. Not a folder or item.');
+            this.set('currentFolder', target);
+            this.get('openFolder')(target, this);
+        } else {
+            let selected = !target.get('selected');
+            target.set('selected', selected);
+        }
+    },
+    
+    openFolder(target, self = this) {
+        let parentCollection = 'folder';
+        let parentId = target.get('id');
+
+        return self.loadFolder.call(self, parentId, parentCollection).catch(e => {
+            self.set('loadError', true);
+            self.set('loadingMessage', 'Failed to load registered data. Please try again');
+        });
     },
 
     goBack(currentFolder, adapterOptions = { queryParams: { limit: "0" } }) {
