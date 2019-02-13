@@ -183,6 +183,23 @@ export default Component.extend({
           self.set('loadingMessage', 'Failed to load home folder content. Please try again');
       });
     },
+    
+    removeDataset(id) {
+      const self = this;
+      this.set('loading', true);
+      this.set('loadError', false);
+      this.get('store').findRecord('dataset', id, { backgroundReload: false }).then(dataset => {
+        console.log("Dataset reference found... deleting:", dataset);
+        dataset.destroyRecord().then(() => {
+          self.set('loading', false);
+          self.set('loadError', true);
+        });
+      }).catch((err) => {
+        console.log("Error:", err);
+        self.set('loading', false);
+        self.set('loadError', true);
+      });
+    },
 
     remove(file) {
       this.get('internalState').removeFolderFromRecentFolders(file.id);
