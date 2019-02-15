@@ -8,6 +8,7 @@
         <div class="eleven wide column">
             {{ui/files/bread-crumbs 
                 currentNav=currentNav
+                model=model
                 currentBreadCrumb=currentBreadCrumb
                 fileBreadCrumbs=fileBreadCrumbs
                 openUploadDialog="openUploadDialog"
@@ -26,6 +27,7 @@
     <div class="five wide column folder-navigator-container">
         <div class="ui collapsable grid folder-grid">
             {{ui/files/folder-navigator 
+                model=model
                 currentNavCommand=currentNavCommand
                 openUploadDialog="openUploadDialog"
                 openCreateFolderModal="openCreateFolderModal"

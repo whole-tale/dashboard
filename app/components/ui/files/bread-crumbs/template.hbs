@@ -2,7 +2,12 @@
     <div class="ui large breadcrumb">
         <a class="section {{if justDescription 'bold'}}" {{action "navClicked" currentNav}}> {{#if justDescription}} {{currentNav.displayName}} {{else}} {{currentNav.name}} {{/if}}</a>
         {{#if justDescription}}
-            <i class="fas fa-plus-circle icon blue large" onclick={{action 'triggerBreadcrumbAction' currentNav.name}}></i>
+            {{#if (and (lt model.tale._accessLevel 1) (eq currentNav.name 'workspace'))}}
+                <i class="fas fa-plus-circle icon blue large disabled" disabled style="cursor:not-allowed !important;" 
+                    data-tooltip="You do not have write access to this Tale." data-inverted=""></i>
+            {{else}}
+                <i class="fas fa-plus-circle icon blue large" onclick={{action 'triggerBreadcrumbAction' currentNav.name}}></i>
+            {{/if}}
             {{#if displayFoldersMenu}}
                 {{#click-outside action=(action (mut displayFoldersMenu) false)}}
                     <div class="folder-menu">
