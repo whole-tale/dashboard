@@ -186,14 +186,7 @@ export default Component.extend({
 
         const self = this;
         if (parentId == null || parentId == this.get('rootFolderId')) {
-            return store.query('dataset', adapterOptions).then(datasets => {
-                let catalogId = this.get('rootFolderId');
-                self.set('loading', false);
-                self.set('currentFolder', O({ id: catalogId, _modelType: 'folder', parentType, catalogId }));
-                self.set('datasets', A(datasets));
-                self.set('folders', A([]));
-                self.set('files', A([]));
-            });
+            return this.requeryDatasets();
         } else {
             return store.find('folder', parentId).then(parent => {
                 self.set('currentFolder', parent);
