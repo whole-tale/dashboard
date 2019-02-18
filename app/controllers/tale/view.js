@@ -260,11 +260,15 @@ export default Controller.extend({
     approveDelete(model) {
       let component = this;
 
-      model.destroyRecord({
-        reload: true
-      }).then(function () {
-        component.transitionToRoute('browse');
+      let taleId = model.get('_id');
+      this.get('store').findRecord('tale', taleId, { backgroundReload: false }).then(function(tale) {
+        tale.destroyRecord({
+          reload: false
+        }).then(function () {
+          component.transitionToRoute('browse');
+        });
       });
+      
 
       return false;
     },
