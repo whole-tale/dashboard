@@ -271,15 +271,14 @@ export default Component.extend({
                     'resources': payload
                 });
             } else if (nav.command === "user_data") {
-
               let taleId = this.get('model.taleId'); // state.currentInstanceId;
-                let taleDatasetContents = controller.get('store').findRecord('tale', taleId)
-                    .then(tale => {
-                        return tale.get('dataSet').map(dataset => {
-                            let { itemId, mountPath, _modelType } = dataset;
-                            return { id: itemId, name: mountPath, _modelType };
-                        })
-                    });
+              let taleDatasetContents = controller.get('store').findRecord('tale', taleId, { reload: false })
+                .then(tale => {
+                    return tale.get('dataSet').map(dataset => {
+                        let { itemId, mountPath, _modelType } = dataset;
+                        return { id: itemId, name: mountPath, _modelType };
+                    })
+                });
               itemContents = Promise.resolve(A([]));
               folderContents = taleDatasetContents.then(_taleDatasetContents => {
                 newModel.sessionContents = _taleDatasetContents;
@@ -471,7 +470,7 @@ export default Component.extend({
             // Build up our dataSet list
             let dataSet = listOfSelectedItems.map(item => {
                 let {id, name, _modelType} = item;
-                return {itemId: id, mountPath: name, _modelType};
+                return {itemId: id, mountPath: name.replace(/\//g, ''), _modelType};
             });
             this.session.set('dataSet', dataSet);
           
