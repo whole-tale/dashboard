@@ -278,9 +278,13 @@ export default Component.extend({
                 .then(tale => {
                     return tale.get('dataSet').map(dataset => {
                         let { itemId, mountPath, _modelType } = dataset;
+<<<<<<< HEAD
                         // Remove leading slash, if present
                         let name = mountPath[0] === '/' ? mountPath.substring(1) : mountPath;
                         return { id: itemId, name: name, _modelType };
+=======
+                        return { id: itemId, name: mountPath.replace(/\//g, ''), _modelType };
+>>>>>>> 4dcd6595bc2aa72084559dfe9d840fcd34f5f0d9
                     })
                 });
               itemContents = Promise.resolve(A([]));
@@ -474,9 +478,13 @@ export default Component.extend({
             // Build up our dataSet list
             let dataSet = listOfSelectedItems.map(item => {
                 let {id, name, _modelType} = item;
+<<<<<<< HEAD
                 // Remove leading slash, if present
                 let mountPath = name[0] === '/' ? name.substring(1) : name;
                 return {itemId: id, mountPath, _modelType};
+=======
+                return {itemId: id, mountPath: name, _modelType};
+>>>>>>> 4dcd6595bc2aa72084559dfe9d840fcd34f5f0d9
             });
             this.session.set('dataSet', dataSet);
           
