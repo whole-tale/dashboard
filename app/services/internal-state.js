@@ -9,7 +9,6 @@ import { A } from '@ember/array';
 export default Service.extend({
     isAuthenticated: true,
     store: service(),
-    userAuth: service('user-auth'),
     folderNavs: service(),
     currentInstanceId: computed({
         get() {
