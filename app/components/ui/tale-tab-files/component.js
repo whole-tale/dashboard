@@ -51,7 +51,9 @@ export default Component.extend({
     allSelectedItems: computed('model.tale', function(dataSet) {
       return A(this.get('model.tale').get('dataSet').map(item => {
         let {itemId, mountPath, _modelType} = item;
-        return O({id: itemId, name: mountPath.replace(/\//g, ''), _modelType});
+        // Remove leading slash, if present
+        let name = mountPath[0] === '/' ? mountPath.substring(1) : mountPath;
+        return O({id: itemId, name: name, _modelType});
       }));
     }),
 
@@ -276,7 +278,9 @@ export default Component.extend({
                 .then(tale => {
                     return tale.get('dataSet').map(dataset => {
                         let { itemId, mountPath, _modelType } = dataset;
-                        return { id: itemId, name: mountPath, _modelType };
+                        // Remove leading slash, if present
+                        let name = mountPath[0] === '/' ? mountPath.substring(1) : mountPath;
+                        return { id: itemId, name: name, _modelType };
                     })
                 });
               itemContents = Promise.resolve(A([]));
@@ -470,7 +474,9 @@ export default Component.extend({
             // Build up our dataSet list
             let dataSet = listOfSelectedItems.map(item => {
                 let {id, name, _modelType} = item;
-                return {itemId: id, mountPath: name.replace(/\//g, ''), _modelType};
+                // Remove leading slash, if present
+                let mountPath = name[0] === '/' ? name.substring(1) : name;
+                return {itemId: id, mountPath, _modelType};
             });
             this.session.set('dataSet', dataSet);
           
@@ -522,7 +528,7 @@ export default Component.extend({
             if (listOfSelectedItems) {
                 let resources = { item: [], folder: [] };
                 listOfSelectedItems.forEach(f => {
-                    resources[`${f._modelType}`].push(f.id);
+                    resources[f._modelType].push(f.id);
                 });
                 let payload = JSON.stringify(resources);
                 const currentWorkspaceFolderId = this.get('currentWorkspaceFolderId');
