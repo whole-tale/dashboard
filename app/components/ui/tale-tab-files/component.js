@@ -276,7 +276,7 @@ export default Component.extend({
                 .then(tale => {
                     return tale.get('dataSet').map(dataset => {
                         let { itemId, mountPath, _modelType } = dataset;
-                        return { id: itemId, name: mountPath, _modelType };
+                        return { id: itemId, name: mountPath.replace(/\//g, ''), _modelType };
                     })
                 });
               itemContents = Promise.resolve(A([]));
@@ -470,7 +470,7 @@ export default Component.extend({
             // Build up our dataSet list
             let dataSet = listOfSelectedItems.map(item => {
                 let {id, name, _modelType} = item;
-                return {itemId: id, mountPath: name.replace(/\//g, ''), _modelType};
+                return {itemId: id, mountPath: name, _modelType};
             });
             this.session.set('dataSet', dataSet);
           
