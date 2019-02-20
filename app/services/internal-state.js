@@ -9,6 +9,7 @@ import { A } from '@ember/array';
 export default Service.extend({
     isAuthenticated: true,
     store: service(),
+    folderNavs: service(),
     currentInstanceId: computed({
         get() {
             return (localStorage.currentInstanceId && localStorage.currentInstanceId !== 'undefined') ? JSON.parse(localStorage.currentInstanceId) : undefined;
@@ -32,23 +33,25 @@ export default Service.extend({
     },
 
     getCurrentFolderID() {
-        let currentFolderID = localStorage.currentFolderID;
+      // Gets the current selected folder. If an error occurs, return the home
+      // directory
+      let currentFolderID = localStorage.currentFolderID;
+      let self=this;
 
-        // Skip checking falsey ID strings
-        if (typeof(currentFolderID) !== "undefined" && currentFolderID) {
-            this.store.findRecord('folder', currentFolderID).then(function(result) {
-                // folder exists - effectively a noop
-                // NOTE: after first lookup, this result is cached in the store
-            }).catch(function(error) {
-                // Set currentFolderID to "undefined" and refresh the page
-                localStorage.removeItem("currentFolderID");
-                currentFolderID = undefined;
-                window.location.reload(true);
-            });
-        }
-
+      // Skip checking falsey ID strings
+      if (typeof(currentFolderID) !== "undefined" && currentFolderID) {
+        self.store.findRecord('folder', currentFolderID).then(function(result) {
+          // folder exists - effectively a noop
+          // NOTE: after first lookup, this result is cached in the store
+        }).catch(function(error) {
+          return self.folderNavs.getHomeFolder();
+        });
         return currentFolderID;
-    },
+      }
+      else {
+        return self.folderNavs.getHomeFolder();
+      }
+  },
 
     setCurrentFolderName(val) {
         localStorage.currentFolderName = val;
