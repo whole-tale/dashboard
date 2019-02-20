@@ -212,7 +212,7 @@
                                                             {{#if showSelect}}
                                                                 <div class="ui inverted button" {{action 'select' model}}>Select</div>
                                                             {{/if}}
-                                                            {{#if showDelete}}
+                                                            {{#if (and showDelete (gt model._accessLevel 0))}}
                                                                 <a class="ui tiny bottom right attached label" {{action 'attemptDeletion' model}}>
                                                                     <i class="red remove icon"></i>
                                                                 </a>
@@ -308,7 +308,7 @@
                                         {{#if showSelect}}
                                             <div class="ui inverted button" {{action 'select' model}}>Select</div>
                                         {{/if}}
-                                        {{#if showDelete}}
+                                        {{#if (and showDelete (gt model._accessLevel 0))}}
                                             <a class="ui tiny bottom right attached label" {{action 'attemptDeletion' model}}>
                                                 <i class="red remove icon"></i>
                                             </a>
