@@ -6,7 +6,8 @@ import {
 export default Service.extend({
     userAuth: service(),
     internalState: service(),
-
+    store: service(),
+    
     getFolderNavs() {
         const thisUserID = this.get('userAuth').getCurrentUserID();
 
@@ -83,6 +84,23 @@ export default Service.extend({
         obj.set("currentNavTitle", currentNav.name);
         obj.set("currentNav", currentNav);
         return currentNav;
-    }
-
-});
+    },
+    getHomeFolder() {
+      let nav = this.getFolderNavFor('home');
+      this.store.query('folder', {
+        parentId: nav.parentId,
+        parentType: nav.parentType,
+        name: nav.name,
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            limit: "0"
+          }
+        }
+      }).then(folders => {
+        if (folders.length) {
+          let folder_id = folders.content[0].id;
+          return folder_id;}
+        });
+      }
+    });
