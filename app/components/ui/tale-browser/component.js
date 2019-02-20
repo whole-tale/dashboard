@@ -233,6 +233,7 @@ export default Ember.Component.extend({
         // refresh
         component.updateModels(component, component.get('models'));
         component.set('selectedTale', undefined);
+        component.setFilter();
       });
 
       return false;
