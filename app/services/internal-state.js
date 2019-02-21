@@ -39,7 +39,7 @@ export default Service.extend({
       let self=this;
 
       // Skip checking falsey ID strings
-      if (typeof(currentFolderID) !== "undefined" && currentFolderID) {
+      if (typeof(currentFolderID) !== "undefined" && currentFolderID !== "undefined" && currentFolderID) {
         self.store.findRecord('folder', currentFolderID).then(function(result) {
           // folder exists - effectively a noop
           // NOTE: after first lookup, this result is cached in the store
