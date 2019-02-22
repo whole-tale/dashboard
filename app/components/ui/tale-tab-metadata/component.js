@@ -19,6 +19,7 @@ export default Component.extend({
   environments: [],
   licenses: [],
   model: null,
+  publishedURL: 'This Tale is un-published',
   init() {
     this._super(...arguments);
     
