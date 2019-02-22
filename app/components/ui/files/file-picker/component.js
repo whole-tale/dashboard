@@ -11,6 +11,7 @@ const O = EmberObject.create.bind(EmberObject);
 
 export default Component.extend({
   layout,
+  apiCall: service('api-call'),
   store: service(),
   folderNavs: service(),
   userAuth: service(),
@@ -21,54 +22,104 @@ export default Component.extend({
   entryPoint: O({}),
 
   loading: false,
-  root: O({}),
+
+  root: O({id : String(),
+  _modelType: 'folder',
+  folders: A(),
+  files: A(),
+  icon: String()}),
+
+  dataspace: O({}),
+  workspace: O({}),
 
   // ------------------------------------------------------------------------------------------------------------------------------
   init() {
     this._super(...arguments);
     const self = this;
-    this.getTaleFiles().then(() => {
-      let selectionTree = self.get('selectionTree');
-      let userID = self.get('userAuth').getCurrentUserID();
-      self.set('root', O({
-        id : userID,
-        _modelType: "user",
+    console.log(this.taleId)
+    /* 
+    First populate the workspace folder. To do this, we need to wait for the request for the
+    Tale's workspace ID to complete, and then we can call loadAllRelationships.
+    */
+    let success = (workspaceId) => {
+
+      // Create the two folders in the root directory
+      const folderNavs = this.get('folderNavs');
+      let navs = folderNavs.getFolderNavs();
+      let workspace = O({id : workspaceId,
+        _modelType: 'folder',
+        _parent: '0',
+        name: 'Workspace',
         folders: A(),
-        files: A()
-      }));
-  
-      self.loadAllRelationships.call(self, self.root);
-    })
+        files: A(),
+        icon: navs[2].icon
+      });
+
+      let dataspace = O({id : "596cc3b8c894cc00011ae377",
+      _modelType: 'folder',
+      _parent: '0',
+      folders: A(),
+      files: A(),
+      icon: navs[1].icon,
+      name: 'Data',
+    });
+
+      // Update the root with the two folders
+      //let root = self.get('root');
+      //root.folders.pushObject(dataspace);
+      //self.set('root', root);
+
+      self.createWorkspace(self, workspaceId, navs[2].icon)
+
+      //self.set('dataspace', dataspace)
+      self.loadAllRelationships.call(self, self.get('workspace'));
+      //self.loadAllRelationships.call(self, self.dataspace);
+
+/*       self.store.findRecord('tale', self.taleId)
+                    .then(tale => {
+                      let datasetObjects = A();
+                         let dataSets = tale.get('dataSet')
+                          dataSets.forEach(dataset => {
+
+                            // Construct objects for each entry
+                            
+
+                            datasetObjects.pushObject(O({folders: A(),
+                              files: A(),
+                              id: dataset.itemId,
+                              name: dataset.mountPath, 
+                              _modelType: dataset._modelType}))
+                          });
+
+                          // Filter on _modelType and add files to files[]
+                          let dataspace = self.get('dataspace');
+                          dataspace.folders.pushObject(datasetObjects)
+                          let root = self.get('root')
+                          root.folders.pushObject(dataspace)
+                          console.log(root)
+                          self.loadAllRelationships.call(self, self.root);
+                    }); */
+                    
+
+  };
+    let failure = () => alert('Failed to find Tale workspace');
+    self.apiCall.getWorkspaceId(self.taleId, success, failure)
   },
 
-  // ------------------------------------------------------------------------------------------------------------------------------
-  getTaleFiles() {
-    let self = this;
-    let selectionTree = this.get('selectionTree');
-    return this.store.findRecord('tale', this.taleId)
-      .then(tale => {
-        let folderId = tale['folderId'];
-        let queryParams = {
-          'folderId': folderId,
-          'limit': 0,
-          'sort': 'lowerName',
-          'sortdir': 1        
-        };
-        return this.store.findAll('item', {adapterOptions: {queryParams: queryParams}});
-      })
-      .then(items => {
-        items.forEach(i => {
-          selectionTree[i.id] = {
-            check: true,
-            partialCheck: false,
-            // parent: i.get('folderId'),
-            type: 'item'
-          };
-        });
-        self.set('selectionTree', O(selectionTree));
-        self.set('fileList', items);
-      })
-    ;
+  createWorkspace(self, workspaceId, navIcon) {
+    let workspace = O({id : workspaceId,
+      _modelType: 'folder',
+      _parent: '0',
+      name: 'Workspace',
+      folders: A(),
+      files: A(),
+      icon: navIcon
+    });
+
+    let root = self.get('root');
+    root.folders.pushObject(workspace);
+    self.set('root', root);
+    self.set('workspace', workspace);
   },
 
   // ------------------------------------------------------------------------------------------------------------------------------
@@ -91,16 +142,14 @@ export default Component.extend({
     return loadFolders
       .then(folderContents => {
         folderContents = folderContents
-          .filter(f => f.name !== 'Workspace')
-          .map(f => {
+           .map(f => {
             let idx = navs.findIndex(n => n.name === f.name);
             if (idx > -1) {
               f.set('icon', navs[idx].icon);
               f.set('disallowImport', navs[idx].disallowImport);
             }
             return f;
-          })
-        ;
+          });
         folder.set('folders', folderContents);
         return folderContents;
       })
@@ -143,18 +192,16 @@ export default Component.extend({
     const self = this;
 
     this.loadFolders(folder)
-      .then(folders => { 
+      .then(folders => {
         folders.forEach(innerFolder => {   
           innerFolder._parent = folder;
           self.loadAllRelationships.call(self, innerFolder);
         });
-      })
-    ;
-
-    if (folder._modelType === 'folder') {
-      this.loadFiles(folder);
-    }
-  },
+      }).then(()=> {
+        if (folder._modelType === 'folder') {
+        this.loadFiles(folder);
+      }});
+    },
 
   // ------------------------------------------------------------------------------------------------------------------------------
   removeParentsFromInputData(item) {

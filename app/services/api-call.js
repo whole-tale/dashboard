@@ -439,5 +439,31 @@ export default Service.extend({
       });
 
       client.send();
-    }
+    },
+
+      /**
+     * Returns the workspace folder ID for a Tale
+     * @method getWorkspaceId
+     * @param taleId The ID of the Tale
+     * @param success Function to be called on success
+     * @param fail Function to be called when the call fails
+     */
+    getWorkspaceId(taleId, success, fail) {
+      const token = this.get('tokenHandler').getWholeTaleAuthToken();
+      let url = `${config.apiUrl}/workspace/${taleId}`;
+
+      let client = new XMLHttpRequest();
+      client.open('GET', url);
+      client.setRequestHeader("Girder-Token", token);
+      client.addEventListener("load", () => {
+          if (client.status === 200) {
+              const resp = JSON.parse(client.responseText);
+              success(resp._id);
+          } else {
+              fail(client.responseText);
+          }
+      });
+      client.addEventListener("error", fail);
+      client.send();
+  },
   })

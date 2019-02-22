@@ -41,6 +41,8 @@
                                     </a>
                                     <a class="item" {{action "exportTale" model.taleId 'native'}}>
                                       Export as Zip <div class="ui label transparent" ><i class="far fa-file-archive"></i></div>
+                                    <a class="item" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
+                                      Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
                                     </a>
                                     {{#if readyToReleaseFeature}}
                                         <a class="item">
@@ -48,12 +50,6 @@
                                         </a>
                                         <a class="item">
                                             Delete Tale <div class="ui label transparent"><i class="fas fa-trash"></i></div>
-                                        </a>
-                                        <a class="item" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
-                                            Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
-                                        </a>
-                                        <a class="item" {{action "editTaleInfo" model._id}}>
-                                            Edit Tale Info <div class="ui label transparent"><i class="fas fa-edit"></i></div>
                                         </a>
                                     {{/if}}
                                     <a class="item" onclick={{action 'rebuildTale' model.tale._id}}>
