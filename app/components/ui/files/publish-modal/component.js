@@ -51,7 +51,6 @@ export default Component.extend({
   init() {
     this._super(...arguments);
     let self = this;
-
     // Holds an array of objects that the user cannot be exclude from their package
     self.nonOptionalFile = [
       'tale.yaml',
@@ -110,9 +109,6 @@ export default Component.extend({
           self.get('store').findRecord('job', lastJob, {
             reload: true}).then(jobResp => {
               if (jobResp && jobResp.status == 2) {
-              // Then there's already a publishing job running
-              console.log('Publishing job running');
-
               // Check if the job is publishing this particular tale
               self.talePublishing(lastJob);
             } else {
@@ -326,10 +322,9 @@ export default Component.extend({
     self.openPublishAccordion();
     let itemIds = self.prepareItemIds();
 
-    // Called if publishing initialtion failed
+    // Called if the publishing endpoint failed
     let onPublishinitialtionFail = (function (error) {
       // deal with the failure here
-      console.log('Publishing failed: ' + error);
       this.set('publishingMessage', error);
     }).bind(this);
 
@@ -430,7 +425,7 @@ export default Component.extend({
               // Then the job failed with an error
               self.set('publishing', false);
               self.set('publishingSuccess', false);
-              self.set('statusMessage', job.log);
+              self.setErrorStatus(job._id)
               self.set('progress', 100)
               self.set('barColor', "#F83005");
               cancel(currentLoop);
@@ -441,7 +436,6 @@ export default Component.extend({
                 self.set('progress', job.progress.current / 100);
                 self.set('statusMessage', job.progress.message);
               }
-              console.log(job)
             }
           });
       }, 1000);
@@ -454,6 +448,21 @@ export default Component.extend({
     this.set('publishingSuccess', false);
     this.set('progress', 0);
     this.set('publishingMessage', ' ');
+  },
+
+  /* 
+   * Retrieves a human readable error from job/result
+   * 
+   * @method closeModal
+  */
+  setErrorStatus(jobId) {
+    let onGetJobStatusSuccess = (function (message) {
+      this.set('statusMessage', message);
+    }).bind(this);
+
+    this.apiCall.getFinalJobStatus(jobId,
+       onGetJobStatusSuccess,
+       onGetJobStatusSuccess);
   },
 
   actions: {
