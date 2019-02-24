@@ -32,7 +32,7 @@ export default Component.extend({
 
     init() {
       this._super(...arguments);
-      this.set('dataoneEndpoint', config.dataOneHost+'/cn/v2');
+      this.set('dataoneEndpoint', config.dataOneCN);
     },
 
     didInsertElement() {

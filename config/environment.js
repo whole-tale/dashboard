@@ -78,6 +78,7 @@ module.exports = function (environment) {
     ENV.apiHost = 'https://girder.dev.wholetale.org';
     ENV.wholeTaleHost = 'https://dashboard.dev.wholetale.org';
     ENV.dataOneHost = 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2';
+    ENV.dataOneCN = 'https://cn-stage-2.test.dataone.org/cn/v2';
     ENV.authProvider = 'Globus';
   }
 
@@ -85,6 +86,7 @@ module.exports = function (environment) {
     ENV.apiHost = 'apiHOST';
     ENV.wholeTaleHost = 'dashboardHOST';
     ENV.dataOneHost = 'dataOneHOST';
+    ENV.dataOneCN = 'dataOneCN';
     ENV.authProvider = 'authPROVIDER';
   }
 

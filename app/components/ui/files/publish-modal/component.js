@@ -271,7 +271,7 @@ export default Component.extend({
     selectedObjects.forEach(
       function (entry) {
         if (entry.isItem) {
-          itemIds.push(entry.id);
+          itemIds.add(entry.id);
         } else {
           self.getItems(entry.files, itemIds);
         }
@@ -283,7 +283,9 @@ export default Component.extend({
     // Takes the selected items and formats them for the endpoint
     let self = this;
     let selectedData = self.get('inputData');
-    let itemIds = self.getItems(selectedData, []);
+    let itemIds = self.getItems(selectedData, new Set());
+    console.log('From Modal: Selected Data: ');
+    console.log(itemIds);
     return self.joinArray(itemIds);
   },
 
