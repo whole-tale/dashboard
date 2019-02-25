@@ -34,7 +34,6 @@ export default Component.extend({
     let failure = () => alert('Failed to find Tale workspace');
     let success = (workspaceRootId) => {
       let successId = (workspaceId) => {
-        
         // Create the Tale Workspace  folder
         self.set('taleWorkspace', O({
           id : workspaceId,
@@ -74,6 +73,7 @@ export default Component.extend({
           self.loadAllRelationships.call(self, self.get('homeDir'), true).then(()=> {
             root.folders.pushObject(self.get('homeDir'));
 
+            
             // Create the Tale Data folder
             self.set('dataDir', O({
               id : userID,
@@ -101,31 +101,19 @@ export default Component.extend({
                   else if (outer_item._modelType === 'item') {
                     dataDir.files.pushObject(outer_item);
                   }
-                  
                 });
-                });
-                root.folders.pushObject(self.get('dataDir'));
-                self.set('root', root);
+              });
+              root.folders.pushObject(self.get('dataDir'));
+              self.set('root', root);
             });
-
-
-
-
-            
-
-
-      });
+          });
         });
       };
       self.apiCall.getWorkspaceId(self.taleId, successId, failure);
     };
-      self.apiCall.getWorkspaceRootId(success, failure);
-      
-      
-      
+    self.apiCall.getWorkspaceRootId(success, failure);
   },
 
-  
   // ------------------------------------------------------------------------------------------------------------------------------
   loadFolders(folder, rootHome=false) {
     const store = this.get('store');
@@ -155,9 +143,9 @@ export default Component.extend({
             return f;
           });
         folder.set('folders', folderContents);
-        if(!rootHome) {
+/*         if(!rootHome) {
           self.send('checkFolder', folder);
-        }
+        } */
         return folderContents;
       })
     ;
@@ -167,10 +155,7 @@ export default Component.extend({
   loadFiles(folder, rootHome) {
     const store = this.get('store');
     const self = this;
-    if(rootHome) {
-      console.log('Querying for home stuff')
-      console.log(folder)
-    }
+
     let loadFiles = store.query('item', {
       folderId: folder.id,
       reload: true,
@@ -189,10 +174,17 @@ export default Component.extend({
             selectionTree[file.id].parentId = folder.id;
             inputData.addObject(file);
           }
-          file.set('_parent', folder);
-          if(!rootHome) {
-            self.send('checkItem', file);
+          else {
+            selectionTree[file.id]=O({
+              id : file.id,
+              parentId: folder.id,
+              _modelType: "item",
+              name: file.name,
+            })
+            selectionTree[file.id].set('_parent', folder)
           }
+
+          file.set('_parent', folder);
         });
         self.set('inputData', A(inputData));
         self.set('selectionTree', O(selectionTree));
@@ -265,8 +257,6 @@ export default Component.extend({
     // ------------------------------------------------------------------------------------------------------------------------------
     check(item) {
       if (item._modelType === 'folder') {
-        console.log('Checking Folder:')
-        console.log(item.name)
         this.send('checkFolder', item);
       } else if (item._modelType === 'item') {
         this.send('checkItem', item);
@@ -289,8 +279,6 @@ export default Component.extend({
       let inputData = this.get('inputData');
 
       let parent = folder._parent;
-      console.log('Checking Folder:')
-      console.log(folder.name)
      
       selectionTree[folder.id] = {
         check: true,
@@ -298,12 +286,19 @@ export default Component.extend({
         parentId: parent? parent._id: undefined,
         type: 'folder'
       };
-      console.log(selectionTree[folder.id])
-      //self.send('partialCheck', parent);
-
+      self.send('partialCheck', parent);
+      if (folder.files) {
+      folder.files.forEach(file => {
+        this.send('checkItem', file)
+      });
+    }
+    if (folder.folders) {
+      folder.folders.forEach(childFolder => {
+        self.send('checkFolder', childFolder)
+      });
+    }
       inputData.addObject(folder);
       if (parent) {
-        self.send('partialCheck', parent);
         this.removeParentsFromInputData(folder);
       } else {
         self.set('inputData', A(inputData));
@@ -327,6 +322,7 @@ export default Component.extend({
       };
       _.set(selectionTree, `${parent._id}.partialCheck`, true);
       _.set(selectionTree, `${parent._id}.check`, false);
+
       self.set('selectionTree', O(selectionTree));
       inputData.addObject(item);
       if (parent) {
