@@ -75,7 +75,7 @@ export default Service.extend({
 
     getCurrentFileBreadcrumbs() {
         let bcs = localStorage.currentFileBreadcrumbs;
-        if (!bcs) return null;
+        if (!bcs) return [];
         return JSON.parse(bcs);
     },
 

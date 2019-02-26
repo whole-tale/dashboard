@@ -27,12 +27,11 @@
                     </div>
                 {{/click-outside}}
             {{/if}}
-        {{else}}
-            {{#each fileBreadCrumbs as |bc|}}
-                <i class="right chevron icon divider"></i>
-                <a class="section" {{action "breadcrumbClicked" bc}}>{{truncate-breadcrumb bc.name}}</a>
-            {{/each}}
         {{/if}}
+        {{#each fileBreadCrumbs as |bc|}}
+            <i class="right chevron icon divider"></i>
+            <a class="section" {{action "breadcrumbClicked" bc}}>{{truncate-breadcrumb bc.name}}</a>
+        {{/each}}
         {{#if currentBreadCrumb.name}}<i class="right chevron icon divider"></i>{{/if}}
         <div class="active section bold">{{truncate-breadcrumb currentBreadCrumb.name}}</div>
     </div>
@@ -44,7 +43,7 @@
         <div class="fifteen wide column" style="padding: 0; margin: 0;">
             <div class="ui large breadcrumb">
                 <a class="section"> {{currentNavTitle}}</a>
-
+                
                 {{#each fileBreadCrumbs as |bc|}}
                     <a class="section" {{action "breadcrumbClicked" bc}}>{{truncate-breadcrumb bc.name}}</a>
                     <i class="right chevron icon divider"></i>
