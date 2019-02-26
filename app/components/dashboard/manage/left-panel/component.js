@@ -92,12 +92,23 @@ export default Component.extend({
 
     this.set('fileBreadCrumbs', state.getCurrentFileBreadcrumbs()); // new collection, reset crumbs
   },
+  resync() {
+      let nav = this.get('currentNav');
+      this.send('navClicked', nav);
+  },
 
   actions: {
     refresh(adapterOptions = { queryParams: { limit: '0' } }) {
       let state = this.get('internalState');
       let myController = this;
       let itemID = state.getCurrentFolderID();
+      
+      // Short-circuit: Datasets are no longer read from these endpoints
+      let nav = this.get('currentNav');
+      if (nav.command == 'user_data') {
+        myController.resync();
+        return;
+      }
 
       let folderContents = myController.store.query('folder', {
         parentId: itemID,
