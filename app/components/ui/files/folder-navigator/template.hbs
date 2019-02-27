@@ -113,26 +113,24 @@
                                     {{#if useIcons}}<i class="{{nav.icon}} icon big"></i>{{/if}} {{#if useIcons}} {{nav.name}} {{else}} {{nav.displayName}} {{/if}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
                                 </div>
                             </a>
+                        {{else if (and (and (lt model.tale._accessLevel 1) (eq model.tale.public 'false')) (or (eq nav.command "workspace") (eq nav.command "user_data")))}}
+                            <a class="item disabled" disabled {{action "navClicked" nav}} data-tooltip="You do not have read access to this Tale's Workspace." data-inverted="">
+                                <div style="padding-left: 1rem; padding-top: 4px;">
+                                    <span class="instructions">{{#if useIcons}}{{nav.instructions}}{{else}}{{nav.description}}{{/if}}</span>
+                                </div>
+                                <div class="icon-wrapper">
+                                    {{#if useIcons}}<i class="{{nav.icon}} icon big"></i>{{/if}} {{#if useIcons}} {{nav.name}} {{else}} {{nav.displayName}} {{/if}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
+                                </div>
+                            </a>    
                         {{else}}
-                            {{#if (and (and (lt model.tale._accessLevel 1) (eq model.tale.public 'false')) (eq nav.command "workspace"))}}
-                                <a class="item disabled" disabled {{action "navClicked" nav}} data-tooltip="You do not have read access to this Tale's Workspace." data-inverted="">
-                                    <div style="padding-left: 1rem; padding-top: 4px;">
-                                        <span class="instructions">{{#if useIcons}}{{nav.instructions}}{{else}}{{nav.description}}{{/if}}</span>
-                                    </div>
-                                    <div class="icon-wrapper">
-                                        {{#if useIcons}}<i class="{{nav.icon}} icon big"></i>{{/if}} {{#if useIcons}} {{nav.name}} {{else}} {{nav.displayName}} {{/if}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
-                                    </div>
-                                </a>    
-                            {{else}}
-                                <a class="item" {{action "navClicked" nav}}>
-                                    <div style="padding-left: 1rem; padding-top: 4px;">
-                                        <span class="instructions">{{#if useIcons}}{{nav.instructions}}{{else}}{{nav.description}}{{/if}}</span>
-                                    </div>
-                                    <div class="icon-wrapper">
-                                        {{#if useIcons}}<i class="{{nav.icon}} icon big"></i>{{/if}} {{#if useIcons}} {{nav.name}} {{else}} {{nav.displayName}} {{/if}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
-                                    </div>
-                                </a>
-                            {{/if}}
+                            <a class="item" {{action "navClicked" nav}}>
+                                <div style="padding-left: 1rem; padding-top: 4px;">
+                                    <span class="instructions">{{#if useIcons}}{{nav.instructions}}{{else}}{{nav.description}}{{/if}}</span>
+                                </div>
+                                <div class="icon-wrapper">
+                                    {{#if useIcons}}<i class="{{nav.icon}} icon big"></i>{{/if}} {{#if useIcons}} {{nav.name}} {{else}} {{nav.displayName}} {{/if}} <span class="chevron-span"><i class="fas fa-2x fa-chevron-right"></i></span>
+                                </div>
+                            </a>
                         {{/if}}
                     </div>
                 {{/unless}}

@@ -53,7 +53,7 @@ export default AuthenticateRoute.extend({
         reload: true,
         adapterOptions: {
           queryParams: {
-            sort: "lowerName",
+            sort: "created",
             sortdir: "1",
             limit: "50"
           }

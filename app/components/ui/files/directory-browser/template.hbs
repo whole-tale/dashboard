@@ -40,9 +40,11 @@
                                 <a class="item" href="{{apiUrl}}/{{item._modelType}}/{{item.id}}/download?contentDisposition=attachment">
                                     <i class="download icon"></i> Download
                                 </a>
+                                {{#if (gt model.tale._accessLevel 0)}}
                                 <a class="item" href="#" {{action "removeDataset" item.id}}>
                                     <i class="trash icon"></i> Remove
                                 </a>
+                                {{/if}}
                             </div>
                         {{/ui-dropdown}}
                     </td>
@@ -85,29 +87,27 @@
                                 </a>
                                 <i class="dropdown icon"></i>
                                 <div class="menu">
-                                    {{#if (and (eq currentNav.command 'workspace') (lt model.tale._accessLevel 1))}}
-                                        {{!-- <a class="item" {{action "copyToHome" item}}><i class="clone icon"></i> Copy to Home</a> --}}
-                                        <a class="item" href="{{apiUrl}}/item/{{item.id}}/download?contentDisposition=attachment"><i
-                                                class="download icon"></i> Download</a>
-                                    {{else}}
-                                        {{!-- <a class="item" {{action "move" item}}><i class="folder icon"></i> Move To...</a> --}}
-                                        {{#if (eq currentNav.command 'user_data')}}
-                                            <a class="item" href="{{apiUrl}}/folder/{{item.id}}/download?contentDisposition=attachment"><i
-                                                    class="download icon"></i> Download</a>
+                                    {{!-- Only show if Home folder --}}
+                                    {{#if (eq currentNav.command 'home')}}
+                                        <a class="item" {{action "move" item}}><i class="folder icon"></i> Move To...</a>
+                                    {{/if}}
+                                    
+                                    {{!-- Only show if Home folder, or if Workspace with write access --}}
+                                    {{#if (or (and (eq currentNav.command 'workspace') (gt model.tale._accessLevel 0)) (eq currentNav.command 'home'))}}
+                                        <a class="item" {{action "rename" item}}><i class="write square icon"></i>
+                                            Rename...</a>
+                                        {{!-- <a class="item" {{action "share" item}}><i class="share icon"></i> Share</a>--}}
+                                        {{#if (and notInManagePage (eq currentNav.command 'workspace'))}}
+                                            {{!-- <a class="item" {{action "copyToHome" item}}><i class="clone icon"></i> Copy to Home</a> --}}
                                         {{else}}
-                                            <a class="item" {{action "rename" item}}><i class="write square icon"></i>
-                                                Rename...</a>
-                                            {{!-- <a class="item" {{action "share" item}}><i class="share icon"></i> Share</a>--}}
-                                            {{#if (and notInManagePage (eq currentNav.command 'workspace'))}}
-                                                {{!-- <a class="item" {{action "copyToHome" item}}><i class="clone icon"></i> Copy to Home</a> --}}
-                                            {{else}}
-                                                <a class="item" {{action "copy" item}}><i class="clone icon"></i> Copy</a>
-                                                <a class="item" {{action "remove" item}}><i class="trash icon"></i> Remove</a>
-                                            {{/if}}
-                                            <a class="item" href="{{apiUrl}}/folder/{{item.id}}/download?contentDisposition=attachment"><i
-                                                    class="download icon"></i> Download</a>
+                                            <a class="item" {{action "copy" item}}><i class="clone icon"></i> Copy</a>
+                                            <a class="item" {{action "remove" item}}><i class="trash icon"></i> Remove</a>
                                         {{/if}}
                                     {{/if}}
+                                    
+                                    {{!-- Always show Download option --}}
+                                    <a class="item" href="{{apiUrl}}/folder/{{item.id}}/download?contentDisposition=attachment"><i
+                                            class="download icon"></i> Download</a>
                                 </div>
                             {{/ui-dropdown}}
                         {{/if}}
@@ -139,15 +139,10 @@
                                 </a>
                                 <i class="dropdown icon"></i>
                                 <div class="menu">
-                                    {{#if (and (eq currentNav.command 'workspace') (lt model.tale._accessLevel 1))}}
-                                        {{!-- <a class="item" {{action "copyToHome" item}}><i class="clone icon"></i> Copy to Home</a> --}}
-                                        <a class="item" href="{{apiUrl}}/item/{{item.id}}/download?contentDisposition=attachment"><i
-                                                class="download icon"></i> Download</a>
-                                    {{else if (eq currentNav.command 'user_data')}}
-                                        <a class="item" href="{{apiUrl}}/item/{{item.id}}/download?contentDisposition=attachment"><i
-                                                class="download icon"></i> Download</a>
-                                    {{else}}
-                                        {{!-- <a class="item" {{action "move" item}}><i class="folder icon"></i> Move To...</a> --}}
+                                    {{#if (eq currentNav.command 'home')}}
+                                        <a class="item" {{action "move" item}}><i class="folder icon"></i> Move To...</a>
+                                    {{/if}}
+                                    {{#if (or (and (eq currentNav.command 'workspace') (gt model.tale._accessLevel 0)) (eq currentNav.command 'home'))}}
                                         <a class="item" {{action "rename" item}}><i class="write square icon"></i>
                                             Rename...</a>
                                         {{!-- <a class="item" {{action "share" item}}><i class="share icon"></i> Share</a> --}}
@@ -156,10 +151,10 @@
                                         {{else}}
                                             <a class="item" {{action "copy" item}}><i class="clone icon"></i> Copy</a>
                                         {{/if}}
-                                        <a class="item" href="{{apiUrl}}/item/{{item.id}}/download?contentDisposition=attachment"><i
-                                                class="download icon"></i> Download</a>
                                         <a class="item" {{action "remove" item}}><i class="trash icon"></i> Remove</a>
                                     {{/if}}
+                                    <a class="item" href="{{apiUrl}}/item/{{item.id}}/download?contentDisposition=attachment"><i
+                                            class="download icon"></i> Download</a>
                                 </div>
                             {{/ui-dropdown}}
                         {{/if}}
