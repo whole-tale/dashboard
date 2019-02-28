@@ -32,8 +32,8 @@ export default Ember.Route.extend({
           router.set('currentUser', null);
           let returnRoute = this.routerService.router.url;
           
-          // Prevent nexting of multiple "rd" parameters inside each other
-          if (returnRoute.indexOf("?rd=") !== -1) {
+          // Prevent nesting of multiple "rd" parameters, and prevent redirecting to login after login
+          if (returnRoute.indexOf("?rd=") !== -1 || returnRoute.indexOf("login") !== -1) {
             router.transitionTo('login');
           } else {
             router.transitionTo('login', { queryParams: { rd: encodeURIComponent(returnRoute) }});
