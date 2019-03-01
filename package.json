@@ -82,6 +82,7 @@
     "torii": "^0.10.1"
   },
   "dependencies": {
+    "ember-cli-jstree": "^1.0.12",
     "guid": "0.0.12",
     "lodash": "^4.17.10",
     "marked": "^0.3.19",
