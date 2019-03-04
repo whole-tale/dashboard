@@ -134,6 +134,10 @@ export default Component.extend(FullScreenMixin, {
         stop() {
             this.set("model", null);
         },
+        
+        rebuildTale(id) {
+            this.get('apiCall').rebuildTale(id);
+        },
 
         publishTale(modalDialogName, modalContext) {
             // Open Modal

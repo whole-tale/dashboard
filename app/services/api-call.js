@@ -1,5 +1,6 @@
 import config from '../config/environment';
 import Service from '@ember/service';
+import $ from 'jquery';
 import {
     inject as service
 } from '@ember/service';
@@ -351,5 +352,23 @@ export default Service.extend({
         client.addEventListener("error", fail);
 
         client.send();
+    },
+    
+    // Calls PUT /tale/:id/build with the given id
+    rebuildTale(taleId) {
+        return $.ajax({
+            url: `${config.apiUrl}/tale/${taleId}/build`,
+            method: 'PUT',
+            headers: {
+                'Girder-Token': this.get('tokenHandler').getWholeTaleAuthToken()
+            },
+            timeout: 3000, // ms
+            success: function(response) {
+                console.log('Building Tale image:', response);
+            },
+            error: function(err) {
+                console.log('Failed to build Tale image:', err);
+            }
+        });
     }
 });
