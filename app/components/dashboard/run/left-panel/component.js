@@ -135,8 +135,13 @@ export default Component.extend(FullScreenMixin, {
             this.set("model", null);
         },
         
-        rebuildTale(id) {
-            this.get('apiCall').rebuildTale(id);
+        // Calls PUT /instance/:id as a noop to restart the instance
+        restartInstance(instance) {
+            this.get('apiCall').restartInstance(instance);
+        },
+        
+        rebuildTale(taleId) {
+            this.get('apiCall').rebuildTale(taleId);
         },
 
         publishTale(modalDialogName, modalContext) {

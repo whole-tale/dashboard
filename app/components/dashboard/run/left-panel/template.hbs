@@ -63,7 +63,10 @@
                                         </a>
                                     {{/if}}
                                     <a class="item" onclick={{action 'rebuildTale' model.tale._id}}>
-                                        Rebuild Tale <div class="ui label transparent"><i class="fas fa-cog"></i></div>
+                                        Rebuild Tale <div class="ui label transparent"><i class="fas fa-redo-alt"></i></div>
+                                    </a>
+                                    <a class="item" onclick={{action 'restartInstance' model}}>
+                                        Restart Tale <div class="ui label transparent"><i class="fas fa-sync-alt"></i></div>
                                     </a>
                                     <a class="item" onclick={{action 'toggleFullscreen'}}>
                                         View Fullscreen <div class="ui label transparent"><i class="fas fa-expand"></i></div>
