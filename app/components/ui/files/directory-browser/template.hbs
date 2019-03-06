@@ -40,11 +40,11 @@
                                 <a class="item" href="{{apiUrl}}/{{item._modelType}}/{{item.id}}/download?contentDisposition=attachment">
                                     <i class="download icon"></i> Download
                                 </a>
-                                {{#if (gt model.tale._accessLevel 0)}}
+                                {{#unless (or notInManagePage (lt model.tale._accessLevel 1))}}
                                 <a class="item" href="#" {{action "removeDataset" item.id}}>
                                     <i class="trash icon"></i> Remove
                                 </a>
-                                {{/if}}
+                                {{/unless}}
                             </div>
                         {{/ui-dropdown}}
                     </td>
