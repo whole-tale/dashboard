@@ -18,5 +18,6 @@ export default DS.Model.extend({
   "title": DS.attr('string'),
   "updated": DS.attr('date'),
   "dataSet": DS.attr(),
-  "folderId": DS.attr('string')
+  "folderId": DS.attr('string'),
+  "license": DS.attr('string')
 });
