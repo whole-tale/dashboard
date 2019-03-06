@@ -1,6 +1,6 @@
 {
   "name": "wholetale",
-  "version": "0.6.0",
+  "version": "0.7.0dev0",
   "description": "Wholetale dashboard app",
   "private": true,
   "directories": {
