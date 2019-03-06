@@ -14,7 +14,8 @@ export default AuthenticateRoute.extend({
         }
       }),
       tales: this.get('store').findAll('tale', {
-        reload: true,
+        reload: false,
+        backgroundReload: false,
         adapterOptions: {
           queryParams: {
             sort: "created",
