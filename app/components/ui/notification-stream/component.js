@@ -3,6 +3,7 @@ import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import config from '../../../config/environment';
 import layout from './template';
+import JSONBeautify from 'npm:json-beautify';
 
 const EventSource = window.EventSourcePolyfill;
 
@@ -44,14 +45,8 @@ export default Component.extend({
         events.push(event);
         this.set('events', events);
         let json = JSON.parse(event.data)
-        if (json.type == 'job_created' && json.data.title == 'Build Tale Image') {
-            alert("Building Tale Image: " + json.data.args[0]);
-        } else if (json.type == 'job_status') {
-            alert("Tale Building: " + json.data.args[0] + "\nStatus is now " + json.data.status);
-        } else {
-            alert("Unknown job type: " + json);
-            console.log(json);
-        }
+        console.log("JSON data recv'd:", json);
+        alert(event.data);
     },
     onError(error) {
         console.log("EventSource failed.");
