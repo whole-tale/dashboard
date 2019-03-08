@@ -175,7 +175,7 @@ export default Component.extend(FullScreenMixin, {
           const token = self.get('tokenHandler').getWholeTaleAuthToken();
           let url = `${config.apiUrl}/tale/${id}/export`;
           var xhr = new XMLHttpRequest();
-          xhr.open('POST', url, true);
+          xhr.open('GET', url, true);
           xhr.responseType = 'arraybuffer';
           xhr.setRequestHeader("Girder-Token", token);
           self.set('showDimmer', true);
