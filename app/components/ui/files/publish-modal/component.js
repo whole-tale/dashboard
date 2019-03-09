@@ -1,13 +1,10 @@
 import Component from '@ember/component';
 import { A } from '@ember/array';
 import {inject as service} from '@ember/service';
-import EmberObject from '@ember/object';
-import config from '../../../../config/environment';
 import { later } from '@ember/runloop';
 import { cancel } from '@ember/runloop';
 import { none } from '@ember/object/computed';
 import $ from 'jquery';
-const O = EmberObject.create.bind(EmberObject);
 
 export default Component.extend({
   internalState: service(),
@@ -15,8 +12,7 @@ export default Component.extend({
   authRequest: service(),
   store: service(),
   dataoneAuth: service('dataone-auth'),
-  inputData: A(),
-  entryPoint: O({}),
+  selectedNodes: A(),
   // Controls the state of the publish button
   enablePublish: true,
   // The repository that the user has selected
@@ -57,7 +53,7 @@ export default Component.extend({
     let self = this;
     // Holds an array of objects that the user cannot be exclude from their package
     self.nonOptionalFile = [
-      'tale.yaml',
+      'manifest.json',
       'docker-environment.tar.gz',
       'LICENSE',
       'metadata.xml'
@@ -173,9 +169,9 @@ export default Component.extend({
     // Create the popups for the environment files. Files with an extension
     // need to have the period escaped with a double backslash when referencing.
     // Create the tale.yaml popup
-    $('.info.circle.blue.icon.tale\\.yaml').popup({
+    $('.info.circle.blue.icon.manifest\\.json').popup({
       position: 'right center',
-      target: '.info.circle.blue.icon.tale\\.yaml',
+      target: '.info.circle.blue.icon.manifest\\.json',
       hoverable: true,
       html: "This file holds metadata about the tale, such as script execution order and file structure."
     });
@@ -215,27 +211,24 @@ export default Component.extend({
     return result;
   },
 
-  getItems(selectedObjects, itemIds) {
-    let self = this;
-    selectedObjects.forEach(
-      function (entry) {
-        if (entry.isItem) {
-          itemIds.add(entry.id);
-        } else {
-          self.getItems(entry.files, itemIds);
-        }
-      });
-    return itemIds;
-  },
-
   prepareItemIds() {
     // Takes the selected items and formats them for the endpoint
     let self = this;
-    let selectedData = self.get('inputData');
-    let itemIds = self.getItems(selectedData, new Set());
-    console.log('From Modal: Selected Data: ');
-    console.log(itemIds);
-    return self.joinArray(itemIds);
+    let selectedData = self.get('selectedNodes');
+    // The selectedData is a list of jsTree nodes. We want
+    // to iterate over them, extracting the id of each node,
+    // which corresponds to the item ID. 
+    // DEVNOTE: Unlike the workspace, the outer Data folder does not
+    // have an ID, and we need to filter it out.
+    let formattedIds = A();
+    selectedData.forEach((node) => {
+      console.log(node.id)
+      if (!node.icon.includes('folder')) {
+        formattedIds.push(node.id);
+      }
+      
+    });
+    return self.joinArray(formattedIds);
   },
 
   getRepositoryPathFromName(name) {
@@ -259,7 +252,7 @@ export default Component.extend({
    * @method openPublishAccordion
    */
   openPublishAccordion() {
-    $('.ui.accordion').accordion('open', 3);
+    $('.ui.accordion').accordion('open', 2);
   },
 
    /**
