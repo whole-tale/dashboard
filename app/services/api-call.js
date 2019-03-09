@@ -401,8 +401,6 @@ export default Service.extend({
      * @param itemIds An array of items that are being packaged
      * @param repository 
      * @param jwt The user's DataONE JWT token
-     * @param license The spdx of the license
-     * @param provInfo A dictionary specifying any prov information
      * @param success A callback function that is called when the query succeeds
      * @param fail A callback function that is called when the query fails
      */
@@ -410,8 +408,6 @@ export default Service.extend({
     itemIds,
     repository,
     jwt,
-    license,
-    provInfo,
     success,
     fail) {
       var token = this.get('tokenHandler').getWholeTaleAuthToken();
@@ -420,9 +416,7 @@ export default Service.extend({
         'itemIds=' + '[' + itemIds + ']',
         'taleId=' + taleId,
         'remoteMemberNode=' + repository,
-        'authToken=' + jwt,
-        'licenseSPDX=' + license,
-        'provInfo= + {"entryPoint": "null"}'
+        'authToken=' + jwt
       ].join('&');
       let url = config.apiUrl + '/publish/dataone' + queryParams;
 

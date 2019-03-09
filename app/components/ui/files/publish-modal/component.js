@@ -283,15 +283,12 @@ export default Component.extend({
       return false;
     }).bind(this);
     
-    let taleLicense = this.get('tale')['licenseSPDX'];
     // Call the publish endpoint
     self.get("apiCall").publishTale(
       self.get('modalContext'),
       itemIds,
       self.getRepositoryPathFromName(self.get('selectedRepository')),
       self.get('dataoneJWT'),
-      taleLicense,
-      null,
       onPublishinitialtionSuccess,
       onPublishinitialtionFail);
   },
