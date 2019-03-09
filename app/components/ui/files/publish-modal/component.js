@@ -37,9 +37,13 @@ export default Component.extend({
   packageIdentifier: '',
   // The url for the published tale. This is set after publication succeeds
   packageUrl: '',
-  statusMessage: '',
+  // The Tale being published
   tale: none,
+  // Current progress level of the progress bar
   progress: 0,
+  // The message that the user sees below the progress bar
+  statusMessage: '',
+  // Color of the progress bar
   barColor: "#11d850",
 
   /**
@@ -62,35 +66,8 @@ export default Component.extend({
     // A map that connects the repository dropdown to a url
     self.repositories = [{
       name: 'NCEAS Development',
-      url: 'https://dev.nceas.ucsb.edu/knb/d1/mn',
-      licenses: ['cc0', 'ccby4']
+      url: 'https://dev.nceas.ucsb.edu/knb/d1/mn'
     }];
-
-    // Filtered list of licenses that are available for selection. This changes when the user
-    // changes the selected repository.
-    self.availableLicenses = [];
-
-    // The licenses that the user can potentially select
-    self.licenses = {
-      'cc0': {
-        'name': 'Creative Commons Public Domain CCO',
-        'spdx': 'CC0-1.0',
-        'short': 'CC0',
-        'imageName': '/images/CC0.png'
-      },
-      'ccby3': {
-        'name': 'Creative Commons Attribution CC-BY 3.0',
-        'spdx': 'CC-BY-3.0',
-        'short': 'CC-BY3',
-        'imageName': '/images/CC-BY3.png'
-      },
-      'ccby4': {
-        'name': 'Creative Commons Attribution CC-BY 4.0',
-        'spdx': 'CC-BY-4.0',
-        'short': 'CC-BY4',
-        'imageName': '/images/CC-BY4.png'
-      }
-    };
 
     self.get('store').findRecord('tale', self.get('modalContext'), {
         reload: false
@@ -166,7 +143,6 @@ export default Component.extend({
   didInsertElement() {
     let self = this;
     self.set('selectedRepository', self.get('repositories')[0].name);
-    self.setLicenses();
   },
         
   didRender() {
@@ -194,33 +170,6 @@ export default Component.extend({
             "<a href='http://wholetale.readthedocs.io/users_guide/publishing.html' target='_blank'>publishing guide</a>."
     });
 
-    // Create the CC0 popup
-    $('.info.circle.blue.icon.CC0').popup({
-      position: 'right center',
-      target: '.info.circle.blue.icon.CC0',
-      hoverable: true,
-      html: "Place this tale in the public domain and opt out of copyright protection. " +
-            "For more information, visit the <a href='https://spdx.org/licenses/CC0-1.0.html' target='_blank'>CC0 reference page</a>."
-    });
-
-    // Create the CCBY3 popup
-    $('.info.circle.blue.icon.CC-BY3').popup({
-      position: 'right center',
-      target: '.info.circle.blue.icon.CC-BY3',
-      hoverable: true,
-      html: "Require that users properly attribute the authors of this tale with the CCBY 3.0 standards. " +
-            "For more information, visit the <a href='https://spdx.org/licenses/CC-BY-3.0.html' target='_blank'>CCBY3 reference page</a>."
-    });
-
-    // Create the CCBY4 popup
-    $('.info.circle.blue.icon.CC-BY4').popup({
-      position: 'right center',
-      target: '.info.circle.blue.icon.CC-BY4',
-      hoverable: true,
-      html: "Require that users properly attribute the authors of this tale with the CCBY 4.0 standards. " +
-            "For more information, visit the <a href='https://spdx.org/licenses/CC-BY-4.0.html' target='_blank'>CCBY4 reference page</a>."
-    });
-
     // Create the popups for the environment files. Files with an extension
     // need to have the period escaped with a double backslash when referencing.
     // Create the tale.yaml popup
@@ -242,7 +191,7 @@ export default Component.extend({
       position: 'right center',
       target: '.info.circle.blue.icon.LICENSE',
       hoverable: true,
-      html: "Each package is created with a license, which can be selected below."
+      html: "The Tale's license is included in the package. This can be selected from the Tale's metadata view."
     });
     // Create the science_metadata popup
     $('.info.circle.blue.icon.metadata\\.xml').popup({
@@ -340,50 +289,18 @@ export default Component.extend({
       // Return false so the dialog stays open
       return false;
     }).bind(this);
-
+    
+    let taleLicense = this.get('tale')['licenseSPDX'];
     // Call the publish endpoint
     self.get("apiCall").publishTale(
       self.get('modalContext'),
       itemIds,
       self.getRepositoryPathFromName(self.get('selectedRepository')),
       self.get('dataoneJWT'),
-      self.getSelectedLicense(),
+      taleLicense,
       null,
       onPublishinitialtionSuccess,
       onPublishinitialtionFail);
-  },
-
-  getSelectedLicense() {
-    // Returns the id of the selected license
-    let selected_radio = $('input[name=license-radio]:checked').parent();
-    if (selected_radio.length) {
-      return selected_radio[0].id;
-    }
-    //If we can't find a checked radio, default to cc0
-    return this.get('licenses').cc0.spdx;
-  },
-
-  /**
-   * Sets the licenses that the user sees in the GUI
-   * 
-   * @method setLicenses
-   */
-  setLicenses() {
-    // Sets the licenses that the user can choose from, based on the selected repository
-    let self = this;
-    if (self.get('selectedRepository') === 'NCEAS Development') {
-      let availableLicenses = [];
-
-      self.get('repositories')[0].licenses.forEach(function (entry) {
-        let licenses = self.get('licenses');
-        availableLicenses.push(licenses[entry]);
-      });
-      self.set('availableLicenses', availableLicenses);
-    }
-    else {
-      // If for some reason the dropdown isn't set, default to CC0
-      self.set('availableLicenses', [self.get('licenses').cc0]);
-    }
   },
 
   isUrl(s) {
@@ -507,7 +424,6 @@ export default Component.extend({
 
     onRepositoryChange: function () {
       // Called when the user changes the repository
-      this.setLicenses()
     },
 
     denyDataONE() {

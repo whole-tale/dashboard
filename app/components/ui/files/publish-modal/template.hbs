@@ -61,33 +61,6 @@
             </div>
         </div>
     <hr class="publish-hr">
-    {{!-- Accordion menu that lets the user select a license --}}
-    <div class="title">
-        <h2>
-            <i class="fab fa-creative-commons"></i> Usage Rights
-            <span>
-                Choose how you wish your Tale to be stored and reused
-                <i class="dropdown icon"></i>
-            </span>
-        </h2>
-    </div>
-
-    <div class="content">
-        <div class="ui form">
-            <div class="grouped fields">
-                {{#each availableLicenses as |license|}}
-                <div class="field">
-                    <div class="ui radio checkbox {{license.short}}" id="{{license.spdx}}">
-                        <input type="radio" name="license-radio" checked="checked">
-                        <label><img class="ui small image left floated" src="{{license.imageName}}">
-                         {{license.name}} <i class="info circle blue icon {{license.short}}"></i></label> 
-                    </div>
-                </div>
-                {{/each}}
-            </div>
-        </div>
-    </div>
-
     {{#if showPublishing}}
     {{!-- Accordion that shows publishing status --}}
     <hr class="publish-hr">

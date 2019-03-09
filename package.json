@@ -83,6 +83,7 @@
   },
   "dependencies": {
     "event-source-polyfill": "^1.0.5",
+    "ember-cli-jstree": "^1.0.12",
     "guid": "0.0.12",
     "lodash": "^4.17.10",
     "marked": "^0.3.19",

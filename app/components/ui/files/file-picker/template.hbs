@@ -1,2 +1,15 @@
-{{ui/files/file-picker/folder-contents parent=root selectionTree=selectionTree toggleExpandFolder=(action "toggleExpandFolder") 
-  check=(action "check") uncheck=(action "uncheck") checkEntry=(action "checkEntry") uncheckEntry=(action "uncheckEntry") entryPoint=entryPoint}}
+<div class="publishing-tree">
+    {{ember-jstree
+        actionReceiver=jstreeActionReceiver
+        selectedNodes=selectedNodes
+        data=parent
+        plugins=plugins
+        themes=themes
+        checkboxOptions=checkboxOptions
+        contextmenuOptions=contextmenuOptions
+        stateOptions=stateOptions
+        typesOptions=typesOptions
+        searchOptions=searchOptions
+        searchTerm=searchTerm
+    }}
+</div>
