@@ -1,42 +1,69 @@
-<style>
-    #event-notification-stream {
-        position: fixed;
-        top:32px;
-        left:75vw;
-        background: white;
-        border: solid black 2px;
-        border-radius: 5px;
-    }
-    .event-icon{
-        margin: 15px 12px;
-    }
-</style>
-
-<div class="ui feed computer tablet only" id="event-notification-stream">
-    {{#each events as |event index|}}
-      {{#if (gt index 0)}}<hr />{{/if}}
-      <div class="event">
-        <div class="label">
-            {{!-- {{if event.icon event.icon}} --}}
-          <i class="fas fa-2x fa-fw event-icon fa-cog fa-spin"></i>
-        </div>
-        <div class="content">
-          <div class="summary">
-            <a class="user">
-              {{event.data.args}}
-            </a> {{event.data.title}}
-            <div class="date">
-              {{event.data.created}}
+{{#with events}}
+  <style>
+      /* TODO: Move these to .css once finalized */
+      #event-notification-stream {
+          position: fixed;
+          top:32px;
+          left:75vw;
+          background: white;
+          border: solid black 2px;
+          border-radius: 5px;
+          max-height: 40vh;
+          overflow-y: auto;
+      }
+      .event-icon{
+          margin: 15px 12px;
+      }
+  </style>
+  <div class="ui feed computer tablet only" id="event-notification-stream">
+      
+      <button class="ui button" {{action 'markAllAsRead'}}>Mark All as Read</button>
+      
+      {{#each events as |event index|}}
+        {{!-- Ignore everything but build events --}}
+        {{#if (eq event.json.type 'wt_image_build_status')}}
+          {{#if (gt index 0)}}<hr />{{/if}}
+          <div class="event">
+            <div class="label">
+              <i class="fas fa-2x fa-fw fa-wrench event-icon"></i>
+            </div>
+            <div class="content">
+              <div class="summary">
+                  <a class="user">
+                    {{event.json.data._id}}
+                  </a>
+                {{event.json.data.title}}
+                <div class="date">
+                  {{event.created}}
+                </div>
+              </div>
+              <div class="ui grid">
+                <div class="six wide column">
+                  <div class="meta">
+                    <a class="status" style="cursor: not-allowed;">
+                      {{#if (eq event.json.data.imageInfo.status 0)}}
+                        <i class="icon fas fa-fw fa-ban"></i> INVALID
+                      {{else if (eq event.json.data.imageInfo.status 1)}}
+                        <i class="icon fas fa-fw fa-times"></i> UNAVAILABLE
+                      {{else if (eq event.json.data.imageInfo.status 2)}}
+                        <i class="icon fas fa-fw fa-cog fa-spin"></i> BUILDING
+                      {{else if (eq event.json.data.imageInfo.status 3)}}
+                        <i class="icon fas fa-fw fa-check"></i> SUCCESS
+                      {{/if}}
+                    </a>
+                  </div>
+                </div>
+                <div class="six wide column">
+                  <div class="meta">
+                    <a class="logs" style="cursor: not-allowed;">
+                      View Logs
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          {{!--<div class="meta">
-            <a class="like">
-              <i class="like icon"></i> {{event.counter}} Cancels
-            </a>
-          </div>--}}
-        </div>
-      </div>
-    {{/each}}
-    
-    <button onclick={{action 'pushGeneratedEvent'}}></button>
-</div>
+        {{/if}}
+      {{/each}}
+  </div>
+{{/with}}
