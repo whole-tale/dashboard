@@ -2,6 +2,7 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
+import $ from 'jquery';
 import layout from './template';
 
 // Load a polyfill for EventSource to allow passing custom headers (e.g. token)
@@ -11,8 +12,12 @@ export default Component.extend({
     layout,
     notificationStream: service('notification-stream'),
     
+    apiCall: service('api-call'),
+    store: service(),
+    
     events: A([]),
     source: null,
+    selectedEventLogs: [],
     
     didInsertElement() {
         const self = this;
@@ -40,12 +45,6 @@ export default Component.extend({
         self.set('source', null);
     },
     
-    generateEvent(taleName, message) {
-        const self = this;
-        let counter = self.get('events').length;
-        return { 'subject': taleName, 'message': message, 'date': new Date(), 'counter': counter };
-    },
-    
     onMessage(event) {
         const self = this;
         // Parse event data (tale) into JSON
@@ -69,7 +68,33 @@ export default Component.extend({
             const self = this;
             self.get('notificationStream').markAllAsRead();
             self.set('events', A([]));
-        }
+        },
+        
+        restartTaleInstance(tale) {
+            const self = this;
+            const adapterOptions = { queryParams: { limit: "0" } };
+            self.get('store').query('instance', { reload: false, backgroundReload: false, adapterOptions }).then(instances => {
+                instances.forEach(instance => {
+                    if (tale._id == instance.taleId) {
+                        self.get('apiCall').restartInstance(instance);
+                    }
+                });
+            });
+        },
+        
+        openLogViewerModal(event) {
+            const self = this;
+            self.get('store').findRecord('job', event.json.data.imageInfo.jobId).then(job => {
+                self.set('selectedEventLogs', job.log);
+                $('#log-viewer-modal').modal('show');
+            });
+        },
+        
+        closeLogViewerModal(event) {
+            const self = this;
+            self.set('selectedEventLogs', []);
+            $('#log-viewer-modal').modal('hide');
+        },
     }
 });
  

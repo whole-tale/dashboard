@@ -7,10 +7,10 @@ import config from '../config/environment';
 const EventSource = window.EventSourcePolyfill;
 
 export default Service.extend({
-    tokenHandler: service('token-handler'),
     apiHost: config.apiHost,
+    tokenHandler: service('token-handler'),
+    
     source: null,
-    lastRead: localStorage.getItem('lastRead'),
     
     /* Connect if not connected, otherwise return existing instance */
     connect() {
@@ -22,7 +22,7 @@ export default Service.extend({
         }
         
         // Only fetch message since our last acknowledgement
-        const lastRead = this.get('lastRead');
+        const lastRead = localStorage.getItem('lastRead');
         const suffix = lastRead ? '?since=' + encodeURIComponent(lastRead) : '';
         
         // Connect to Girder's notification stream endpoint for SSE
@@ -40,9 +40,8 @@ export default Service.extend({
     },
     
     markAllAsRead() {
-        let rightNow = Math.round(new Date().getTime() / 1000);;
+        let rightNow = Math.round(new Date().getTime() / 1000);
         console.log('Setting lastRead = ', rightNow);
-        this.set('lastRead', rightNow); 
         localStorage.setItem('lastRead', rightNow);
         
         // Reconnect
