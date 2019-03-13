@@ -3,9 +3,10 @@
       /* TODO: Move these to .css once finalized */
       #event-notification-stream {
           position: fixed;
-          top:32px;
-          left:75vw;
-          width:24vw;
+          z-index: 1;
+          top: 32px;
+          left: 75vw;
+          width: 24vw;
           background: #fff;
           box-shadow: 0 0 4px rgba(0,0,0,.2);
           border: 1px solid rgba(0,0,0,.2);
@@ -97,6 +98,6 @@
     <pre>{{selectedEventLogs}}</pre>
   </div>
   <div class="actions">
-    <div class="ui button" {{action 'closeLogViewerModal'}}>Ok</div>
+    <div class="ui button" {{action 'closeLogViewerModal'}}>Done</div>
   </div>
 </div>
