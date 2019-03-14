@@ -95,7 +95,16 @@
     Log Viewer
   </div>
   <div class="scrolling content">
-    <pre>{{selectedEventLogs}}</pre>
+    {{#if selectedEventLogs}}
+      <pre>{{selectedEventLogs}}</pre>
+    {{else}}
+      <div class="ui segment" style="max-height:20vh">
+        <div class="ui active inverted dimmer">
+          <div class="ui text loader">Loading</div>
+        </div>
+        <p></p>
+      </div>
+    {{/if}}
   </div>
   <div class="actions">
     <div class="ui button" {{action 'closeLogViewerModal'}}>Done</div>

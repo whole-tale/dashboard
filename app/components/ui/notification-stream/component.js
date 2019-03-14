@@ -14,9 +14,11 @@ export default Component.extend({
     
     apiCall: service('api-call'),
     store: service(),
+    logInterval: null,
     
     events: A([]),
     source: null,
+    selectedEvent: null,
     selectedEventLogs: [],
     
     didInsertElement() {
@@ -57,10 +59,31 @@ export default Component.extend({
         if (event.json.type == 'wt_image_build_status') {
             events.unshiftObject(event);
             self.set('events', events);
-            console.log("New event:", events);
+            //console.log("New event:", events);
         } else {
-            console.log("Ignoring event:", event);
+            //console.log("Ignoring event:", event);
         }
+    },
+        
+    fetchLogs() {
+        const self = this;
+        const ansi_up = new AnsiUp();
+
+        const event = self.get('selectedEvent');
+        self.get('store').findRecord('job', event.json.data.imageInfo.jobId).then(job => {
+            self.set('selectedEventLogs', job.log);
+        });
+    },
+    
+    // Clear log refresh interval, if one exists
+    clearLogInterval() {
+        const self = this;
+        let interval = self.get('logInterval');
+        if (interval) {
+            clearInterval(interval);
+            interval = null;
+            self.set('logInterval', null);
+        }  
     },
     
     actions: {
@@ -82,16 +105,31 @@ export default Component.extend({
             });
         },
         
+        // Fetch job logs and trigger auto-refresh every 2 seconds
         openLogViewerModal(event) {
             const self = this;
-            self.get('store').findRecord('job', event.json.data.imageInfo.jobId).then(job => {
-                self.set('selectedEventLogs', job.log);
-                $('#log-viewer-modal').modal('show');
-            });
+            
+            self.set('selectedEvent', event);
+            
+            // Clear log refresh interval, if one already exists
+            self.clearLogInterval();
+            
+            // Trigger initial fetch
+            self.fetchLogs();
+            
+            // Trigger auto-refresh every 2 seconds
+            let interval = setInterval(self.fetchLogs.bind(self), 1000);
+            self.set('logInterval', interval);
+            
+            // Show the log viewer modal
+            $('#log-viewer-modal').modal('show');
         },
         
+        // Clears log viewer state and hides the modal
         closeLogViewerModal(event) {
             const self = this;
+            self.clearLogInterval();
+            self.set('selectedEvent', null);
             self.set('selectedEventLogs', []);
             $('#log-viewer-modal').modal('hide');
         },
