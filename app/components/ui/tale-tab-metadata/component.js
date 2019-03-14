@@ -52,7 +52,7 @@ export default Component.extend({
 
   selectDefaultLicense() {
     // Select the license that the Tale currently has
-    const selectedLicense = this.get('model').get('tale').get('license');
+    const selectedLicense = this.get('model').get('tale').get('licenseSPDX');
     this.get('licenses').forEach((license) => {
       if (license.spdx == selectedLicense) {
         $('.ui.icon.selection.dropdown.license').dropdown('set selected', license.spdx);
@@ -82,7 +82,7 @@ export default Component.extend({
 
     setTaleLicense: function(selected) {
       const tale = this.get('model').get('tale');
-      tale.set('license', selected);
+      tale.set('licenseSPDX', selected);
     },
   }
 });
