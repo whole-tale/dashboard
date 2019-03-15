@@ -100,7 +100,7 @@ export default Component.extend(FullScreenMixin, {
 
     authenticateD1(taleId) {
       let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
-      let orcidLogin = config.dataOneHost+'/portal/oauth?action=start&target=';
+      let orcidLogin = config.dataOneCN+'/portal/oauth?action=start&target=';
       window.location.replace(orcidLogin + callback);
     },
 
@@ -150,7 +150,7 @@ export default Component.extend(FullScreenMixin, {
 
         authenticateD1(taleId) {
             let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
-            let orcidLogin = config.dataOneHost+'/portal/oauth?action=start&target=';
+            let orcidLogin = config.dataOneCN+'/portal/oauth?action=start&target=';
             window.location.replace(orcidLogin + callback);
         },
 
