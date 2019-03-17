@@ -16,9 +16,11 @@ import config from '../config/environment';
      // Use the XMLHttpRequest to handle the request
     let xmlHttp = new XMLHttpRequest();
     // Open the request to the the token endpoint, which will return the jwt if logged in
-    // Remove the CN endpoint 
-    let dataoneEndpoint = config.dataOneCN.replace('/cn/v2', '')
-    xmlHttp.open("GET", dataoneEndpoint+'/portal/token', false);
+    let dataoneEndpoint = 'https://cn.dataone.org/portal/token'
+    if (config.dev) {
+      dataoneEndpoint = 'https://cn-stage-2.test.dataone.org/portal/token'
+    }
+    xmlHttp.open("GET", dataoneEndpoint, false);
     // Set the response content type
     xmlHttp.setRequestHeader("Content-Type", "text/xml");
     // Let XMLHttpRequest know to use cookies

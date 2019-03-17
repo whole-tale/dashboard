@@ -98,12 +98,6 @@ export default Component.extend(FullScreenMixin, {
         });
     },
 
-    authenticateD1(taleId) {
-      let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
-      let orcidLogin = config.dataOneCN+'/portal/oauth?action=start&target=';
-      window.location.replace(orcidLogin + callback);
-    },
-
     shouldShowButtons: computed('internalState', 'internalState.currentInstanceId', function () {
         let shouldButtonsAppear = this.get('internalState').currentInstanceId;
         if (shouldButtonsAppear) {
@@ -139,6 +133,15 @@ export default Component.extend(FullScreenMixin, {
             this.get('apiCall').rebuildTale(taleId);
         },
 
+        authenticateD1(taleId) {
+          let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
+          let orcidLogin = 'https://cn.dataone.org/portal/oauth?action=start&target=';
+          if(config.dev) {
+            orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=';
+          }
+          window.location.replace(orcidLogin + callback);
+        },
+
         publishTale(modalDialogName, modalContext) {
             // Open Modal
             this.get('showModal')(modalDialogName, modalContext);
@@ -146,12 +149,6 @@ export default Component.extend(FullScreenMixin, {
 
         denyDataONE() {
             return true;
-        },
-
-        authenticateD1(taleId) {
-            let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
-            let orcidLogin = config.dataOneCN+'/portal/oauth?action=start&target=';
-            window.location.replace(orcidLogin + callback);
         },
 
         openDeleteModal(id) {

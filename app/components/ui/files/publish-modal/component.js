@@ -61,7 +61,7 @@ export default Component.extend({
 
     // A map that connects the repository dropdown to a url
     self.repositories = [{
-      name: 'NCEAS Development',
+      name: 'DataONE Development',
       url: 'https://dev.nceas.ucsb.edu/knb/d1/mn'
     }];
 

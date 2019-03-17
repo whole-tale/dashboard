@@ -27,12 +27,15 @@ export default Component.extend({
     size: '',
     // Controls whether the results section is shown in the UI
     showResults: false,
-    // The DataONE CN endpoint that is used to locate the dataset
-    dataoneEndpoint: '',
+    devUrl: 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2',
+    // URL to the DataONE production server
+    prodUrl: 'https://cn.dataone.org/cn/v2',
+    useDev: false,
+    isDev: false,
 
     init() {
       this._super(...arguments);
-      this.set('dataoneEndpoint', config.dataOneCN);
+      this.set('isDev', config.dev);
     },
 
     didInsertElement() {
@@ -136,6 +139,11 @@ export default Component.extend({
     },
 
     actions: {
+
+      updateDev(value) {
+        // Called if the `use dev` checkbox is clicked
+        this.set('useDev', value);
+    },
         register() {
             this.clearErrors();
             let self = this;
@@ -164,12 +172,17 @@ export default Component.extend({
                 size: this.size
             }]);
 
+            let baseUrl=this.get('prodUrl');
+            if (this.get('useDev')) {
+                baseUrl=this.get('devUrl')
+            }
+
             let url = config.apiUrl + '/dataset/register' + queryParams;
             let options = {
                 method: 'POST',
                 data: {
                     dataMap: dataMap,
-                    base_url: self.get('dataoneEndpoint')
+                    base_url: baseUrl
                 }
             };
 
@@ -208,11 +221,16 @@ export default Component.extend({
 
             let url = config.apiUrl + '/repository/lookup';
 
+            let baseUrl=this.get('prodUrl');
+            if (this.get('useDev')) {
+                baseUrl=this.get('devUrl')
+            }
+
             let options = {
                 method: 'GET',
                 data: {
                     dataId: JSON.stringify(this.searchDataId.split()),
-                    base_url: this.get('dataoneEndpoint')
+                    base_url: baseUrl
                 }
             };
 
