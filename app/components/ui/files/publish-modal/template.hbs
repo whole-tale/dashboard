@@ -6,26 +6,7 @@
     </h2>
 </div>
 <hr class="publish-hr">
-
-    {{!-- Accordion menu that lists tale files which can be (de)selected by the user --}}
     {{#ui-accordion class="accordion-container"}}
-    <div class="title">
-        <h2>
-            <i class="far fa-hdd"></i> Data
-            <span>
-                Select the files needed to fully reproduce your work
-                 <i class="dropdown icon"></i>
-            </span>
-        </h2>
-    </div>
-
-    <div class="content files">
-        <div class="ui basic segment file-picker">
-                {{ui/files/file-picker selectedNodes=selectedNodes taleId=modalContext}}
-        </div>
-    </div>
-
-    <hr class="publish-hr">
     {{!-- Accordion menu that lists the files which cannot be removed by the user --}}
     <div class="title">
         <h2>
@@ -60,7 +41,6 @@
                 </div>
             </div>
         </div>
-    <hr class="publish-hr">
     {{#if showPublishing}}
     {{!-- Accordion that shows publishing status --}}
     <hr class="publish-hr">

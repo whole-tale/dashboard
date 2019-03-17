@@ -398,14 +398,12 @@ export default Service.extend({
      * Publishes a Tale to DataONE
      * @method publishTale
      * @param taleId The ID of the Tale this is being published
-     * @param itemIds An array of items that are being packaged
      * @param repository 
      * @param jwt The user's DataONE JWT token
      * @param success A callback function that is called when the query succeeds
      * @param fail A callback function that is called when the query fails
      */
   publishTale: function (taleId,
-    itemIds,
     repository,
     jwt,
     success,
@@ -413,7 +411,6 @@ export default Service.extend({
       var token = this.get('tokenHandler').getWholeTaleAuthToken();
 
       let queryParams = '?' + [
-        'itemIds=' + '[' + itemIds + ']',
         'taleId=' + taleId,
         'remoteMemberNode=' + repository,
         'authToken=' + jwt

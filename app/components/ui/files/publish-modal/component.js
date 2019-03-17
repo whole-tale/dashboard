@@ -69,12 +69,7 @@ export default Component.extend({
         reload: false
       })
       .then(resp => {
-        // Check if this Tale can be published
         self.set('tale', resp);
-        if (resp.published) {
-          self.talePublished(resp);
-        }
-
         // We want to check if the last publish event is still running
         let lastJob = self.get('internalState').getLastPublishJob();
         
@@ -84,12 +79,15 @@ export default Component.extend({
               if (jobResp && jobResp.status == 2) {
               // Check if the job is publishing this particular tale
               self.talePublishing(lastJob);
-            } else {
-              // Then the job finished, and the Tale may have been published
+            } else if (resp.published) {
+              self.talePublished(resp);
             }
+          }).catch(()=>{
+            
           });
-        } else if (!resp.published){
-          // The Tale hasn't been published and it's not currently being published
+        }
+        else if (resp.published) {
+          self.talePublished(resp);
         }
       });
   },
@@ -127,11 +125,11 @@ export default Component.extend({
   talePublishing(lastJobId) {
     let self = this;
     self.set('showPublishing', true);
-    self.openPublishAccordion();
+ 
     self.set('enablePublish', false);
     self.set('publishing', true);
     self.set('publishingID', lastJobId);
-
+    self.openPublishAccordion();
     // Poll the job queue for the status of the job
     self.handlePublishingStatus();
   },
@@ -211,26 +209,6 @@ export default Component.extend({
     return result;
   },
 
-  prepareItemIds() {
-    // Takes the selected items and formats them for the endpoint
-    let self = this;
-    let selectedData = self.get('selectedNodes');
-    // The selectedData is a list of jsTree nodes. We want
-    // to iterate over them, extracting the id of each node,
-    // which corresponds to the item ID. 
-    // DEVNOTE: Unlike the workspace, the outer Data folder does not
-    // have an ID, and we need to filter it out.
-    let formattedIds = A();
-    selectedData.forEach((node) => {
-      console.log(node.id)
-      if (!node.icon.includes('folder')) {
-        formattedIds.push(node.id);
-      }
-      
-    });
-    return self.joinArray(formattedIds);
-  },
-
   getRepositoryPathFromName(name) {
     // Given a repository name, find the membernode URL
     let repostoryList = this.get('repositories');
@@ -252,7 +230,7 @@ export default Component.extend({
    * @method openPublishAccordion
    */
   openPublishAccordion() {
-    $('.ui.accordion').accordion('open', 2);
+    $('.ui.accordion').accordion('open', 1);
   },
 
    /**
@@ -263,16 +241,14 @@ export default Component.extend({
   initiatePublish: function () {
     let self = this;
     self.set('showPublishing', true);
-    self.openPublishAccordion();
-    let itemIds = self.prepareItemIds();
-
     // Called if the publishing endpoint failed
     let onPublishinitialtionFail = (function (error) {
       // deal with the failure here
       this.set('publishingMessage', error);
+      this.set('progress', 0);
     }).bind(this);
 
-    // Called if publishing initialtion was a success
+    // Called if publishing initiation was a success
     let onPublishinitialtionSuccess = (function (jobId) {
       this.set('publishingID', jobId._id);
       this.get('internalState').setLastPublishJob(jobId._id);
@@ -286,11 +262,16 @@ export default Component.extend({
     // Call the publish endpoint
     self.get("apiCall").publishTale(
       self.get('modalContext'),
-      itemIds,
       self.getRepositoryPathFromName(self.get('selectedRepository')),
       self.get('dataoneJWT'),
       onPublishinitialtionSuccess,
       onPublishinitialtionFail);
+    
+    // Give the UI a chance to render the accordion
+    later((function() {
+      self.openPublishAccordion();
+    }), 1300);
+    
   },
 
   isUrl(s) {
