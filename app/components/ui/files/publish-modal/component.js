@@ -12,7 +12,6 @@ export default Component.extend({
   authRequest: service(),
   store: service(),
   dataoneAuth: service('dataone-auth'),
-  selectedNodes: A(),
   // Controls the state of the publish button
   enablePublish: true,
   // The repository that the user has selected
@@ -63,6 +62,14 @@ export default Component.extend({
     self.repositories = [{
       name: 'DataONE Development',
       url: 'https://dev.nceas.ucsb.edu/knb/d1/mn'
+    },
+    {
+      name: 'DataONE-The Knowledge Network for Biocomplexity',
+      url: 'https://knb.ecoinformatics.org/knb/d1/mn'
+    },
+    {
+      name: 'DataONE-Arctic Data Center',
+      url: 'https://arcticdata.io/metacat/d1/mn'
     }];
 
     self.get('store').findRecord('tale', self.get('modalContext'), {
@@ -395,6 +402,8 @@ export default Component.extend({
 
     onRepositoryChange: function () {
       // Called when the user changes the repository
+      let respText = $('.repository.selection.dropdown.ui.dropdown').dropdown('get text')
+      this.set('selectedRepository', respText);
     },
 
     denyDataONE() {

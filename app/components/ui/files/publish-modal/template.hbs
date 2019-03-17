@@ -80,7 +80,7 @@
 
 <div class="publisher actions">
     {{!-- Dropdown where the user can select which member node to put the package in --}}
-    {{#ui-dropdown class="repository search selection dropdown" allowAdditions=false selected=selectedRepository onChange=(action 'onRepositoryChange')
+    {{#ui-dropdown class="repository selection dropdown" allowAdditions=false selected=selectedRepository onChange=(action 'onRepositoryChange')
     as |execute mapper|}}
     <div class="default text">Target Repository</div>
     <i class="dropdown icon"></i>
