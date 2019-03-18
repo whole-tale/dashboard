@@ -23,7 +23,7 @@ export default Service.extend({
         
         // Only fetch message since our last acknowledgement
         const lastRead = localStorage.getItem('lastRead');
-        const suffix = lastRead ? '?timeout=9999999999&since=' + encodeURIComponent(lastRead) : '?timeout=9999999999';
+        const suffix = lastRead ? '?timeout=40&since=' + encodeURIComponent(lastRead) : '?timeout=40';
         
         // Connect to Girder's notification stream endpoint for SSE
         console.log("Connecting...");

@@ -67,7 +67,6 @@ export default Component.extend({
         
     fetchLogs() {
         const self = this;
-        const ansi_up = new AnsiUp();
 
         const event = self.get('selectedEvent');
         self.get('store').findRecord('job', event.json.data.imageInfo.jobId).then(job => {
