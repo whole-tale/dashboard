@@ -457,32 +457,6 @@ export default Service.extend({
       client.addEventListener("error", fail);
       client.send();
   },
-    /**
-     * Gets a node structure from girder that jsTree can use to show the filesystem
-     * @method getTaleTree
-     * @param taleId The ID of the Tale whose structure is going to be shown
-     * @param success Function to be called on success
-     * @param fail Function to be called when the call fails
-     */
-    getTaleTree(taleId, success, fail) {
-      const token = this.get('tokenHandler').getWholeTaleAuthToken();
-      let url = `${config.apiUrl}/tale/${taleId}/generateTree`;
-
-      let client = new XMLHttpRequest();
-      client.open('GET', url);
-      client.setRequestHeader("Girder-Token", token);
-      client.addEventListener("load", () => {
-          if (client.status === 200) {
-              const resp = JSON.parse(client.responseText);
-              success(resp);
-          } else {
-              fail(client.responseText);
-          }
-      });
-      client.addEventListener("error", fail);
-      client.send();
-    },
-
       /**
      * Returns the ID of the home folder
      * @method getHomeId
