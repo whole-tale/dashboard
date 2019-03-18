@@ -28,8 +28,8 @@ import config from '../config/environment';
     xmlHttp.send(null);
     return xmlHttp.responseText;
   },
-   hasD1JWT: computed('model.taleId', function () {
+   hasD1JWT()  {
     let jwt = this.getDataONEJWT();
     return jwt ? true : false;
-  }),
+  },
  });

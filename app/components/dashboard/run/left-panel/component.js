@@ -118,7 +118,7 @@ export default Component.extend(FullScreenMixin, {
     },
 
     publishModalContext: computed('model.taleId', function () {
-        return { taleId: this.get('model.taleId'), hasD1JWT: this.dataoneAuth.hasD1JWT };
+        return { taleId: this.get('model.taleId'), hasD1JWT: this.dataoneAuth.hasD1JWT() };
     }),
 
     actions: {
