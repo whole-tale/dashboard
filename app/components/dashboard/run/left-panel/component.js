@@ -103,7 +103,7 @@ export default Component.extend(FullScreenMixin, {
     shouldShowButtons: computed('internalState', 'internalState.currentInstanceId', function () {
         let shouldButtonsAppear = this.get('internalState').currentInstanceId;
         if (shouldButtonsAppear) {
-            this.set('SelectedTaleInstance', true);
+            this.set('hasSelectedTaleInstance', true);
         } else {
             this.set('hasSelectedTaleInstance', false);
         }
