@@ -8,6 +8,7 @@ import { A } from '@ember/array';
 import { not } from '@ember/object/computed';
 import $ from 'jquery';
 import layout from './template';
+import { alias } from '@ember/object/computed';
 
 const O = Object.create.bind(Object);
 
@@ -29,6 +30,8 @@ export default Component.extend(FullScreenMixin, {
     workspaceRootId: undefined,
     enablePublish: false,
     session: O({dataSet:A()}),
+    routing: service('-routing'),
+    params: alias('routing.router.currentState.routerJsState.fullQueryParams'),
 
     init() {
         this._super(...arguments);
@@ -90,13 +93,17 @@ export default Component.extend(FullScreenMixin, {
         }
     },
 
-    didInsertElement() {
-        scheduleOnce('afterRender', this, () => {
+    didInsertElement() {      
+      scheduleOnce('afterRender', this, () => {
             // Check if we're coming from an ORCID redirect
             // If ?auth=true
             // Open Modal
-            const modalDialogName = 'ui/files/publish-modal';
-            this.showModal(modalDialogName, this.get('modalContext'));
+            let queryParams = this.get('params')
+            if (queryParams) {
+              if (queryParams.auth === 'true'){
+                this.get('openModal')('ui/files/publish-modal', this.publishModalContext);
+              }
+            }
         });
     },
 
