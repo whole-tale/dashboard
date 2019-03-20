@@ -55,9 +55,6 @@
                                         <a class="item">
                                             Delete Tale <div class="ui label transparent"><i class="fas fa-trash"></i></div>
                                         </a>
-                                        <a class="item">
-                                            Rebuild Tale <div class="ui label transparent"><i class="fas fa-cog"></i></div>
-                                        </a>
                                         <a class="item" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
                                             Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
                                         </a>
@@ -65,6 +62,12 @@
                                             Edit Tale Info <div class="ui label transparent"><i class="fas fa-edit"></i></div>
                                         </a>
                                     {{/if}}
+                                    <a class="item" onclick={{action 'rebuildTale' model.tale._id}}>
+                                        Rebuild Tale <div class="ui label transparent"><i class="fas fa-redo-alt"></i></div>
+                                    </a>
+                                    <a class="item" onclick={{action 'restartInstance' model}}>
+                                        Restart Tale <div class="ui label transparent"><i class="fas fa-sync-alt"></i></div>
+                                    </a>
                                     <a class="item" onclick={{action 'toggleFullscreen'}}>
                                         View Fullscreen <div class="ui label transparent"><i class="fas fa-expand"></i></div>
                                     </a>
