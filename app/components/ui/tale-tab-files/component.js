@@ -376,21 +376,19 @@ export default Component.extend({
             let state = this.get('internalState');
             let crumbs = state.getCurrentFileBreadcrumbs();
 
-            let previousItem = null;
-            let newCrumbs = [];
-            for (let i; i < crumbs.length; ++i) {
-                if (crumbs[i].name === item.get('name'))
+            let newCrumbs = A([]);
+            for (let i = 0; i < crumbs.length; ++i) {
+                if (crumbs[i].name === item.name)
                     break;
                 else {
-                    newCrumbs.append(crumbs[i]);
-                    previousItem = crumbs[i];
+                    newCrumbs.pushObject(crumbs[i]);
                 }
             }
 
             state.setCurrentFileBreadcrumbs(newCrumbs);
             state.setCurrentFolderID(item._id);
             state.setCurrentFolderName(item.name);
-            state.setCurrentBreadCrumb(previousItem); // need to set this because itemClicked is expecting the previous breadcrumb.
+            state.setCurrentBreadCrumb(null);  // no need to set this here, we already have our full breadcrumbs
 
             this.set('currentFolderId', item._id);
 
