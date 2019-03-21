@@ -250,8 +250,15 @@ export default Ember.Component.extend({
 
     launchTale(tale) {
       let component = this;
+      if (tale._accessLevel < 1) {
+        //component.copyTale(tale).then(taleCopy => {
+        component.get('apiCall').copyTale(tale).then(taleCopy => {
+          component.actions.launchTale.call(component, Ember.Object.create(taleCopy));
+        });
+        return;
+      }
 
-      component.set("tale_instantiating_id", tale.id);
+      component.set("tale_instantiating_id", tale._id);
       component.set("tale_instantiating", true);
 
       let onSuccess = function (item) {

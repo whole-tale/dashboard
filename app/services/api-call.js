@@ -354,6 +354,34 @@ export default Service.extend({
         client.send();
     },
     
+    // Calls POST /tale/:id/copy and returns the copied tale
+    copyTale(tale) {
+        return new Promise((resolve, reject) => {
+            if (tale._accessLevel > 0) {
+              // No need to copy, short-circuit
+              resolve(tale);
+            }
+    
+            const token = this.get('tokenHandler').getWholeTaleAuthToken();
+            let url = `${config.apiUrl}/tale/${tale._id}/copy`;
+    
+            let client = new XMLHttpRequest();
+            client.open('POST', url);
+            client.setRequestHeader("Girder-Token", token);
+            client.addEventListener("load", () => {
+                if (client.status === 200) {
+                    const taleCopy = JSON.parse(client.responseText);
+                    resolve(taleCopy);
+                } else {
+                    reject(client.responseText);
+                }
+            });
+            client.addEventListener("error", reject);
+            client.send();
+        });
+    },
+    
+    
     // Calls GET /instance/:id with the given id then immediately
     // calls PUT as a noop to restart the instance
     restartInstance(instance) {
