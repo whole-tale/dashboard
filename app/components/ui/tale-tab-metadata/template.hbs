@@ -39,6 +39,24 @@
     </div>
 
     <div class="inline fields ui grid">
+        <label class="two wide column right aligned">License</label>
+        <div class="field thirteen wide column">
+            <div id="licenseDropdown" class="ui icon selection dropdown license {{if (eq licenses.length 0) "loading"}}">
+                <input name="TaleLicenseSPDX" type="hidden" onchange={{action "setTaleLicense" value="target.value"}}>
+                <i class="dropdown icon"></i>
+                <div class="default text"> Choose a license...</div>
+                <div class="menu">
+                    {{#each licenses as |license|}}
+                        <div class="item" data-value={{license.spdx}}>
+                            {{license.name}}
+                        </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="inline fields ui grid">
         <label class="two wide column right aligned">Date Created</label>
         <div class="field thirteen wide column">
             <span>{{model.tale.created}}</span>
@@ -62,7 +80,7 @@
     <div class="inline fields ui grid">
         <label class="two wide column right aligned">Illustration</label>
         <div class="ui action field thirteen wide column">
-            <input type="text" id="tale-icon" placeholder="Tale Icon" value={{model.tale.illustration}} readonly={{cannotEditTale}} />
+            {{input id=tale-icon value=model.tale.illustration placeholder="http://" readonly=cannotEditTale}}
             <div class="ui buttons">
                 <div class="or"></div>
                 <button class="ui positive blue button" {{action "generateIcon" model.tale}}>Generate Illustration</button>
