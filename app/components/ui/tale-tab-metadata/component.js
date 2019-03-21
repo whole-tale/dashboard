@@ -19,7 +19,7 @@ export default Component.extend({
   environments: [],
   licenses: [],
   model: null,
-  publishedURL: 'This Tale is un-published',
+  publishedURL: 'This Tale has not been published',
   init() {
     this._super(...arguments);
     
@@ -35,6 +35,12 @@ export default Component.extend({
       component.set('licenses', licenses);
       component.selectDefaultLicense();
     });
+
+    const tale = this.get('model').get('tale');
+    let uri = tale.publishedURI;
+    if (tale.publishInfo && tale.publishInfo.length) {
+      this.set('publishedURL', tale.publishInfo[tale.publishInfo.length - 1].uri );
+    }
   },
   
   didRender() {

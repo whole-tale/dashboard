@@ -53,8 +53,9 @@ export default Component.extend({
     // Holds an array of objects that the user cannot be exclude from their package
     self.nonOptionalFile = [
       'manifest.json',
-      'docker-environment.tar.gz',
+      'environment.json',
       'LICENSE',
+      'README.md',
       'metadata.xml'
     ];
 
@@ -79,6 +80,8 @@ export default Component.extend({
         self.set('tale', resp);
         // We want to check if the last publish event is still running
         let lastJob = self.get('internalState').getLastPublishJob();
+
+        alert(tale.publishInfo)
         
         if (lastJob) {
           self.get('store').findRecord('job', lastJob, {
@@ -86,14 +89,14 @@ export default Component.extend({
               if (jobResp && jobResp.status == 2) {
               // Check if the job is publishing this particular tale
               self.talePublishing(lastJob);
-            } else if (resp.published) {
+            } else if (resp.publishInfo.length > 0) {
               self.talePublished(resp);
             }
           }).catch(()=>{
             
           });
         }
-        else if (resp.published) {
+        else if (resp.publishInfo.length > 0) {
           self.talePublished(resp);
         }
       });
@@ -117,8 +120,8 @@ export default Component.extend({
     self.set('progress', 1);
 
     // Fill in the Tale's published identifier and url
-    self.set('packageIdentifier', taleInfo.doi);
-    self.set('packageURL', taleInfo.publishedURI);
+    self.set('packageIdentifier', taleInfo.publishInfo[0].pid);
+    self.set('packageURL', taleInfo.publishInfo[0].uri);
     self.set('statusMessage', 'Your Tale has successfully been published to DataONE.');
   },
 
@@ -314,8 +317,8 @@ export default Component.extend({
                 .then(resp => {
                   // Update UI with Tale information
                   self.set('tale', resp);
-                  self.set('packageIdentifier', resp.doi);
-                  self.set('packageURL', resp.publishedURI);
+                  self.set('packageIdentifier', resp.publishInfo[0].pid);
+                  self.set('packageURL', resp.publishInfo[0].uri);
                   cancel(currentLoop);
                 });
             } else if (job.get('status') === 4) {

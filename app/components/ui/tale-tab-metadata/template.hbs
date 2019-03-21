@@ -88,12 +88,14 @@
         </div>
     </div>
 
+    {{#if publishedURL}}
     <div class="inline fields ui grid">
         <label class="two wide column right aligned">Published Location</label>
         <div class="ui action field thirteen wide column">
-            <span>{{publishedURL}}</span>
+            <a href={{publishedURL}} target="_blank">{{publishedURL}}</a>
         </div>
     </div>
+    {{/if}}
 
     <div class="inline fields ui grid">
         <label class="two wide column right aligned"></label>
