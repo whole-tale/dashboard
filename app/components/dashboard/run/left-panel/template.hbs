@@ -10,7 +10,7 @@
                         <span>{{model.tale.authors}}</span>
                     </div>
                 </div>
-                <div class="right borderless menu">
+                <div class="right borderless menu" {{action 'actionMenuClicked'}}>
                     {{#if readyToReleaseFeature}}
                         <div class="item">
                             <div class="ui blue icon button">
@@ -28,6 +28,7 @@
                             <i class="fas fa-ellipsis-v clickable"></i>
                         </a>
                     </div>
+                    
                     {{#if displayTaleInstanceMenu}}
                         {{#click-outside action=(action (mut displayTaleInstanceMenu) false)}}
                             <div class="tale-instance-menu">
@@ -35,9 +36,14 @@
                                     <a class="item" href="https://wholetale.readthedocs.io/en/stable/users_guide/run.html" target="_blank">
                                         Read the docs <div class="ui label transparent"><i class="fas fa-book"></i></div>
                                     </a>
-                                    <a class="item" {{action "exportTale" model.taleId}}>
-                                        Export <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
-                                    </a>
+                                    <div class="ui left pointing dropdown link item">
+                                      Export
+                                      <div class="menu">
+                                        <div class="item" style="width: 200px; z-index:999;" {{action "exportBag" model.taleId}}>BagIt</div>
+                                        <div class="item" style="width: 200px; z-index:999;" {{action "exportZip" model.taleId}}>Zip</div>
+                                      </div>
+                                      <i class="dropdown icon"></i>
+                                    </div>
                                     {{#if readyToReleaseFeature}}
                                         <a class="item">
                                             Duplicate Tale <div class="ui label transparent"><i class="fas fa-copy"></i></div>
