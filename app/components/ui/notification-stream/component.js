@@ -51,7 +51,7 @@ export default Component.extend({
         const self = this;
         // Parse event data (tale) into JSON
         event.json = JSON.parse(event.data);
-        event.created = new Date(event.json._girderTime * 1000).toLocaleString();
+        event.created = new Date(event.json.time).toLocaleString();
         //console.log("Message recv'd:", event);
         
         // Push new event data

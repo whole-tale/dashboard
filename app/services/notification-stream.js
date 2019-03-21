@@ -23,14 +23,15 @@ export default Service.extend({
         
         // Only fetch message since our last acknowledgement
         const lastRead = localStorage.getItem('lastRead');
-        const suffix = lastRead ? '?timeout=40&since=' + encodeURIComponent(lastRead) : '?timeout=40';
+        const suffix = lastRead ? '?timeout=3600&since=' + encodeURIComponent(lastRead) : '?timeout=3600';
         
         // Connect to Girder's notification stream endpoint for SSE
         console.log("Connecting...");
         const endpoint = self.get('apiHost') + '/api/v1/notification/stream' + suffix;
         const newSource = new EventSource(endpoint, {
           headers: {
-            'Girder-Token': self.get('tokenHandler').getWholeTaleAuthToken()
+            'Girder-Token': self.get('tokenHandler').getWholeTaleAuthToken(),
+            'Connection': 'Keep-Alive'
           }
         });
         
