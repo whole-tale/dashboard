@@ -243,7 +243,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <div style="color: #67c096; font-size: 75%">{{model.authors}}</div>
+                                    <div style="color: #67c096; font-size: 75%">{{tale-authors-to-str model.authors}}</div>
                                 </td>
                                 <td style="text-align: center;">
                                     {{#if (eq tale_instantiating_id model.id)}}
@@ -334,7 +334,7 @@
                             <div style="padding: 4px"></div>
                             <div style="color: #67c096">
                                 {{#if model.authors}}
-                                    {{model.authors}}
+                                    {{tale-authors-to-str model.authors}}
                                 {{else}}
                                     &nbsp;
                                 {{/if}}
