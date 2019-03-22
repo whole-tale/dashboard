@@ -1,12 +1,17 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
+import EmberObject, { computed } from '@ember/object';
+import { A } from '@ember/array';
+import { later, cancel } from '@ember/runloop';
+import $ from 'jquery';
 
-export default Ember.Component.extend({
-  store: Ember.inject.service(),
-  userAuth: Ember.inject.service(),
-  apiCall: Ember.inject.service('api-call'),
-  internalState: Ember.inject.service(),
+export default Component.extend({
+  store: service(),
+  userAuth: service('user-auth'),
+  apiCall: service('api-call'),
+  internalState: service('internal-state'),
   taleInstanceName: "",
-  filteredSet: Ember.A(),
+  filteredSet: A(),
   filters: ['All', 'Mine', 'Published', 'Recent'],
   filter: 'All',
   numberOfModels: 0,
@@ -21,14 +26,16 @@ export default Ember.Component.extend({
   listView: false,
   showFilter: true,
   loadingTales: true,
-  selectedTale: Ember.Object.create({}),
+  selectedTale: EmberObject.create({}),
   message: 'Tales loading. Please, wait.',
+  
+  
 
-  filterObserver: Ember.observer('filter', function () {
+  filterObserver: computed('filter', function () {
     this.setFilter.call(this);
   }),
 
-  modelObserver: Ember.observer('filter', 'model', 'numberOfModels', function () {
+  modelObserver: computed('filter', 'model', 'numberOfModels', function () {
     let guid = this.get('guid');
 
     if (!guid) {
@@ -95,7 +102,7 @@ export default Ember.Component.extend({
         return (recentTales.indexOf(m.get('id')) > -1);
       }));
     } else {
-      this.set('filteredSet', Ember.A());
+      this.set('filteredSet', A());
     }
 
     this.actions.searchFilter.call(this);
@@ -144,7 +151,7 @@ export default Ember.Component.extend({
     },
     toggleFiltersVisibility() {
       let component = this;
-      Ember.run.later(function() {
+      later(function() {
         let newValue = !component.get('showFilter');
         component.set('showFilter', newValue);
       }, 100);
@@ -159,7 +166,7 @@ export default Ember.Component.extend({
       const filteredSet = this.get("filteredSet");
       const component = this;
 
-      let promise = new Ember.RSVP.Promise((resolve) => {
+      let promise = new Promise((resolve, reject) => {
         let searchView = [];
         filteredSet.forEach(model => {
           let title = model.get('title');
@@ -219,7 +226,7 @@ export default Ember.Component.extend({
       }
       component.set('selectedTale', model);
       let selector = `.delete-modal-tale>.ui.delete-modal.modal`;
-      Ember.run.later(() => {
+      later(() => {
         $(selector).modal('show');
       }, 500);
     },
@@ -247,32 +254,80 @@ export default Ember.Component.extend({
     addNew() {
       this.sendAction("onAddNew");
     },
+    
+    closeCopyOnLaunchModal() {
+      const component = this;
+      $('#copy-on-launch-modal').modal('hide');
+      component.set('taleToCopy', null);
+    },
+    
+    openCopyOnLaunchModal(taleToCopy) {
+      const component = this;
+      $('#copy-on-launch-modal').modal('show');
+      component.set('taleToCopy', taleToCopy);
+    },
+    
+    submitCopyAndLaunch(taleToCopy) {
+      const component = this;
+      component.set('copyingTale', true);
+      const originalTale = component.get('taleToCopy');
+      if (originalTale) {
+        component.get('apiCall').copyTale(originalTale).then(taleCopy => {
+          component.set('copyingTale', false);
+          component.actions.closeCopyOnLaunchModal.call(component);
+          
+          // Convert JSON response to an EmberObject
+          let eTaleCopy = EmberObject.create(taleCopy);
+          
+          // Push to models in view
+          // TODO: Detect filtered view?
+          console.log('Adding tale copy:', eTaleCopy);
+          const tales = component.get('modelsInView');
+          tales.pushObject(eTaleCopy);
+          component.set('modelsInView', A(tales));
+          
+          // Launch the newly-copied tale
+          component.actions.launchTale.call(component, eTaleCopy).then(function(arg) {
+            console.log('Tale instance launching!', arg);
+            component.set("tale_instantiating", false);
+            component.set("tale_not_instantiated", false);
+            component.set("tale_instantiated", true);
+          }).catch(function(err) {
+            console.log('Tale instance failed to launch:', err);
+            // deal with the failure here
+            component.set("tale_instantiating", false);
+            component.set("tale_instantiated", true);
+            component.set("tale_not_instantiated", false);
+          });
+        });
+      } else {
+        console.log('No tale to copy... something went wrong!');
+      }
+    },
 
     launchTale(tale) {
       let component = this;
       if (tale._accessLevel < 1) {
-        //component.copyTale(tale).then(taleCopy => {
-        component.get('apiCall').copyTale(tale).then(taleCopy => {
-          component.actions.launchTale.call(component, Ember.Object.create(taleCopy));
-        });
+        // Prompt for confirmation before copying and launching
+        component.actions.openCopyOnLaunchModal.call(component, tale);
         return;
       }
 
-      component.set("tale_instantiating_id", tale._id);
+      component.set("tale_instantiating_id", tale.id);
       component.set("tale_instantiating", true);
 
       let onSuccess = function (item) {
         component.set("tale_instantiating", false);
         component.set("tale_instantiated", true);
 
-        let instance = Ember.Object.create(JSON.parse(item));
+        let instance = EmberObject.create(JSON.parse(item));
 
         component.set("instance", instance);
 
         //Add the new instance to the list of instances in the right panel
         component.get('taleLaunched')();
 
-        Ember.run.later(function () {
+        later(function () {
           // Ensure this component is not destroyed by way of a route transition
           if(!component.isDestroyed){
             component.set("tale_instantiated", false);
@@ -283,13 +338,13 @@ export default Ember.Component.extend({
         let currentLoop = null;
         // Poll the status of the instance every second using recursive iteration
         let startLooping = function(func){
-          return Ember.run.later(function(){
+          return later(function(){
             currentLoop = startLooping(func);
             component.get('store').findRecord('instance', instance.get('_id'), { reload:true })
               .then(model => {
                 if(model.get('status') === 1) {
                   component.get('taleLaunched')();
-                  Ember.run.cancel(currentLoop);
+                  cancel(currentLoop);
                 }
               });
           }, 1000);
@@ -307,7 +362,7 @@ export default Ember.Component.extend({
 
         component.set("error_msg", item.message);
 
-        Ember.run.later(function () {
+        later(function () {
           if(!component.isDestroyed){
             component.set("tale_not_instantiated", false);
             component.set("tale_instantiating_id", 0);
@@ -319,7 +374,7 @@ export default Ember.Component.extend({
       // submit: API
       // httpCommand, taleid, imageId, folderId, instanceId, name, description, isPublic, config
 
-      this.get("apiCall").postInstance(
+      return this.get("apiCall").postInstance(
         tale.get("_id"),
         tale.get("imageId"),
         null,
