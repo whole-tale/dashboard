@@ -10,7 +10,7 @@
                         <span>{{model.tale.authors}}</span>
                     </div>
                 </div>
-                <div class="right borderless menu" {{action 'actionMenuClicked'}}>
+                <div class="right borderless menu">
                     {{#if readyToReleaseFeature}}
                         <div class="item">
                             <div class="ui blue icon button">
@@ -36,16 +36,12 @@
                                     <a class="item" href="https://wholetale.readthedocs.io/en/stable/users_guide/run.html" target="_blank">
                                         Read the docs <div class="ui label transparent"><i class="fas fa-book"></i></div>
                                     </a>
-                                    <div class="item ui left pointing dropdown link item export">
-                                      Export
-                                      <div class="menu export options">
-                                        <div class="item" {{action "exportTale" model.taleId 'bagit'}}>BagIt</div>
-                                        <div class="item" {{action "exportTale" model.taleId 'native'}}>Zip</div>
-                                      </div>
-                                      <div class="ui label transparent">
-                                        <i class="dropdown icon"></i>
-                                      </div>
-                                    </div>
+                                    <a class="item"  {{action "exportTale" model.taleId 'bagit'}}>
+                                      Export as BagIt <div class="ui label transparent"><i class="fas fa-archive"></i></div>
+                                    </a>
+                                    <a class="item" {{action "exportTale" model.taleId 'native'}}>
+                                      Export as Zip <div class="ui label transparent" ><i class="far fa-file-archive"></i></div>
+                                    </a>
                                     {{#if readyToReleaseFeature}}
                                         <a class="item">
                                             Duplicate Tale <div class="ui label transparent"><i class="fas fa-copy"></i></div>
@@ -106,13 +102,4 @@
             </div>
         </div>
     </div>
-
-     {{#if showDimmer}}
-    <div class="ui segment" style="position:fixed; top:25%; width:50%; left:25%; height:35%; z-index:999">
-      <div class="ui active dimmer">
-        <div class="ui indeterminate huge text loader">Zipping your Tale</div>
-    </div>
-    <p></p>
-  </div>
-  {{/if}}
 </div>

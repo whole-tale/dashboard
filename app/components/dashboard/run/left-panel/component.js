@@ -24,8 +24,6 @@ export default Component.extend(FullScreenMixin, {
     hasSelectedTaleInstance: false,
     displayTaleInstanceMenu: false,
     workspaceRootId: undefined,
-    showDimmer: false,
-
     session: O({dataSet:A()}),
 
     init() {
@@ -171,12 +169,6 @@ export default Component.extend(FullScreenMixin, {
           const token = this.get('tokenHandler').getWholeTaleAuthToken();
           let url = `${config.apiUrl}/tale/${id}/export`;
           window.location.assign(url + '?token=' + token + '&taleFormat=' + format);
-        },
-
-        actionMenuClicked() {
-          // We need to initialize the export dropdown each time the 
-          // tale action menu is opened
-          $('.ui.left.pointing.dropdown.link.item').dropdown();
         },
     }
 });
