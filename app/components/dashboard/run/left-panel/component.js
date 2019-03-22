@@ -167,16 +167,10 @@ export default Component.extend(FullScreenMixin, {
             return true;
         },
         
-        exportZip(id) {
+        exportTale(id, format) {
           const token = this.get('tokenHandler').getWholeTaleAuthToken();
           let url = `${config.apiUrl}/tale/${id}/export`;
-          window.open(url + '?token=' + token + '&taleFormat=native', '_newtab');
-        },
-
-        exportBag(id) {
-          const token = this.get('tokenHandler').getWholeTaleAuthToken();
-          let url = `${config.apiUrl}/tale/${id}/export`;
-          window.open(url + '?token=' + token + '&taleFormat=bagit', '_newtab');
+          window.location.assign(url + '?token=' + token + '&taleFormat=' + format);
         },
 
         actionMenuClicked() {
