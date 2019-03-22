@@ -120,8 +120,8 @@ export default Component.extend({
     self.set('progress', 1);
 
     // Fill in the Tale's published identifier and url
-    self.set('packageIdentifier', taleInfo.publishInfo[0].pid);
-    self.set('packageURL', taleInfo.publishInfo[0].uri);
+    self.set('packageIdentifier', taleInfo.publishInfo.slice(-1).pop().pid);
+    self.set('packageURL', taleInfo.publishInfo.slice(-1).pop().uri);
     self.set('statusMessage', 'Your Tale has successfully been published to DataONE.');
   },
 
@@ -317,8 +317,8 @@ export default Component.extend({
                 .then(resp => {
                   // Update UI with Tale information
                   self.set('tale', resp);
-                  self.set('packageIdentifier', resp.publishInfo[0].pid);
-                  self.set('packageURL', resp.publishInfo[0].uri);
+                  self.set('packageIdentifier', resp.publishInfo.slice(-1).pop().pid);
+                  self.set('packageURL', resp.publishInfo.slice(-1).pop().uri);
                   cancel(currentLoop);
                 });
             } else if (job.get('status') === 4) {
