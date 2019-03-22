@@ -8,7 +8,6 @@ import { A } from '@ember/array';
 import { not } from '@ember/object/computed';
 import $ from 'jquery';
 import layout from './template';
-// import hasEmberVersion from 'ember-test-helpers/has-ember-version';
 
 const O = Object.create.bind(Object);
 
@@ -18,13 +17,13 @@ export default Component.extend(FullScreenMixin, {
     router: service('-routing'),
     internalState: service(),
     apiCall: service('api-call'),
+    tokenHandler: service('token-handler'),
     loadError: false,
     model: null,
     wholeTaleHost: config.wholeTaleHost,
     hasSelectedTaleInstance: false,
     displayTaleInstanceMenu: false,
     workspaceRootId: undefined,
-
     session: O({dataSet:A()}),
 
     init() {
@@ -173,6 +172,12 @@ export default Component.extend(FullScreenMixin, {
 
         denyDelete() {
             return true;
+        },
+        
+        exportTale(id, format) {
+          const token = this.get('tokenHandler').getWholeTaleAuthToken();
+          let url = `${config.apiUrl}/tale/${id}/export`;
+          window.location.assign(url + '?token=' + token + '&taleFormat=' + format);
         },
     }
 });
