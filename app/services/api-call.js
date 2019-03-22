@@ -200,44 +200,52 @@ export default Service.extend({
     },
 
     postInstance(taleId, imageId, name, success, fail) {
-        // Creates an instance
-        let token = this.get('tokenHandler').getWholeTaleAuthToken();
-        let url = config.apiUrl + '/instance/';
-        let queryPars = "";
-        if ((taleId == null) && (imageId == null)) {
-            fail("You must provide a tale or an image ID");
-            return;
-        }
-
-        if (taleId == null) {
-            queryPars += "imageId=" + encodeURIComponent(imageId);
-        } else {
-            queryPars += "imageId=" + encodeURIComponent(imageId);
-            queryPars += "&";
-            queryPars += "taleId=" + encodeURIComponent(taleId);
-        }
-        if (name != null) {
-            queryPars += "&";
-            queryPars += "name=" + encodeURIComponent(name);
-        }
-
-        if (queryPars !== "") {
-            url += "?" + queryPars;
-        }
-        let client = new XMLHttpRequest();
-        client.open("post", url);
-        client.setRequestHeader("Girder-Token", token);
-        client.addEventListener("load", function () {
-            if (client.status === 200) {
-                success(client.responseText);
-            } else {
-                fail(client.responseText);
+        const self = this;
+        return new Promise(function(resolve, reject) {
+            // Creates an instance
+            const token = self.get('tokenHandler').getWholeTaleAuthToken();
+            let url = config.apiUrl + '/instance/';
+            let queryPars = "";
+            if ((taleId == null) && (imageId == null)) {
+                fail("You must provide a tale or an image ID");
+                return;
             }
+    
+            if (taleId == null) {
+                queryPars += "imageId=" + encodeURIComponent(imageId);
+            } else {
+                queryPars += "imageId=" + encodeURIComponent(imageId);
+                queryPars += "&";
+                queryPars += "taleId=" + encodeURIComponent(taleId);
+            }
+            if (name != null) {
+                queryPars += "&";
+                queryPars += "name=" + encodeURIComponent(name);
+            }
+    
+            if (queryPars !== "") {
+                url += "?" + queryPars;
+            }
+            let client = new XMLHttpRequest();
+            client.open("post", url);
+            client.setRequestHeader("Girder-Token", token);
+            client.addEventListener("load", function () {
+                if (client.status === 200) {
+                    success(client.responseText);
+                    resolve(client.responseText);
+                } else {
+                    fail(client.responseText);
+                    reject(client.responseText);
+                }
+            });
+    
+            client.addEventListener("error", function(err) {
+                fail(err);
+                reject(err);
+            });
+    
+            client.send();
         });
-
-        client.addEventListener("error", fail);
-
-        client.send();
     },
 
     exportTale(taleId, success, fail) {
