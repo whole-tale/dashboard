@@ -126,6 +126,13 @@ export default Component.extend({
             let state = this.get('internalState');
             let myController = this;
             let itemID = state.getCurrentFolderID();
+      
+            // Short-circuit: Datasets are no longer read from these endpoints
+            let nav = this.get('currentNav');
+            if (nav.command == 'user_data') {
+                myController.resync();
+                return;
+            }
 
             let folderContents = myController.store.query('folder', {
                 parentId: itemID,

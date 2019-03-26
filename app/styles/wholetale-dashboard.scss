@@ -505,6 +505,30 @@ ui.inverted.menu.wt.top {
   background: #2185d0 !important;
 }
 
+/* Export Tale Dropdown */
+
+.ui.left.pointing.dropdown.link.item.export {
+  // Holds the export row
+  width:100%
+}
+
+.ui.left.pointing.dropdown.link.item.export .menu.export.options {
+  // Link that opens more export options
+  width:100%;
+}
+.ui.left.pointing.dropdown.link.item.export .menu.export.options > div {
+  // Each item that is expanded out
+  z-index: 9999; // Make sure the item menu is on top of the environments
+}
+.ui.left.pointing.dropdown.link.item.export .ui.label.transparent {
+  width: 100%;
+}
+.ui.left.pointing.dropdown.link.item.export .ui.label.transparent .dropdown.icon{
+ float: right;
+ width: 10%;
+ margin-left: auto
+}
+
 /* Navigation - Environments panel */
 
 .grey.zone {

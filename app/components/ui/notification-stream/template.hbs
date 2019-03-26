@@ -1,0 +1,112 @@
+{{#with events}}
+  <style>
+      /* TODO: Move these to .css once finalized */
+      #event-notification-stream {
+          position: fixed;
+          z-index: 1;
+          top: 32px;
+          left: 70vw;
+          width: 26vw;
+          background: #fff;
+          box-shadow: 0 0 4px rgba(0,0,0,.2);
+          border: 1px solid rgba(0,0,0,.2);
+          border-radius: 1rem;
+          padding-bottom: 15px;
+          max-height: 40vh;
+          overflow-y: auto;
+      }
+      #ack-all-button {
+          border-radius: 1rem 1rem 0 0;
+      }
+      .event-icon{
+          margin: 15px 12px;
+      }
+  </style>
+  <div class="ui feed computer tablet only" id="event-notification-stream">
+      
+    <button class="ui button fluid" id="ack-all-button" {{action 'markAllAsRead'}}>Mark All as Read</button>
+    
+    {{#each events as |event index|}}
+      {{!-- Ignore everything but build events --}}
+      {{#if (eq event.json.type 'wt_image_build_status')}}
+        {{#if (gt index 0)}}<hr />{{/if}}
+        <div class="event">
+          <div class="label">
+            <i class="fas fa-2x fa-fw fa-wrench event-icon"></i>
+          </div>
+          <div class="content">
+            <div class="summary">
+              {{!-- TODO: Link to "/run/:tale_id" view once that is finished --}}
+              {{!-- {{event.json.data._id}} --}}
+              <a class="user">
+                {{truncate-name event.json.data.title}}
+              </a>
+              {{!--<div>
+                {{#if (eq event.json.data.imageInfo.status 0)}}
+                  Tale image is invalid.
+                {{else if (eq event.json.data.imageInfo.status 1)}}
+                  Tale image is unavailable.
+                {{else if (eq event.json.data.imageInfo.status 2)}}
+                  Building tale image...
+                {{else if (eq event.json.data.imageInfo.status 3)}}
+                  Tale image built successfully!
+                {{/if}}
+              </div>--}}
+              <div class="date">
+                {{event.created}}
+              </div>
+            </div>
+            <div class="ui grid">
+              <div class="eight wide column">
+                <div class="meta">
+                  <a class="status" {{action 'openLogViewerModal' event}}>
+                    {{#if (eq event.json.data.imageInfo.status 0)}}
+                      <i class="icon fas fa-fw fa-ban"></i> INVALID
+                    {{else if (eq event.json.data.imageInfo.status 1)}}
+                      <i class="icon fas fa-fw fa-times"></i> UNAVAILABLE
+                    {{else if (eq event.json.data.imageInfo.status 2)}}
+                      <i class="icon fas fa-fw fa-cog fa-spin"></i> BUILDING
+                    {{else if (eq event.json.data.imageInfo.status 3)}}
+                      <i class="icon fas fa-fw fa-check"></i> SUCCESS
+                    {{/if}}
+                  </a>
+                </div>
+              </div>
+              <div class="eight wide column">
+                <div class="meta">
+                  {{#if (eq event.json.data.imageInfo.status 3)}}
+                    <a class="logs" {{action 'restartTaleInstance' event.json.data}}>
+                      Restart to Use New Image
+                    </a>
+                  {{/if}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {{/if}}
+    {{/each}}
+  </div>
+{{/with}}
+
+<div id="log-viewer-modal" class="ui modal">
+  <div class="ui icon header">
+    <i class="wrench icon"></i>
+    Log Viewer
+  </div>
+  <div class="scrolling content">
+    {{#if selectedEventLogs}}
+      <pre>{{selectedEventLogs}}</pre>
+    {{else}}
+      <div class="ui segment" style="min-height:20vh">
+        <div class="ui active inverted dimmer">
+          <div class="ui text loader">Loading</div>
+        </div>
+        <p></p>
+      </div>
+    {{/if}}
+  </div>
+  <div class="actions">
+    <div class="ui button" {{action 'closeLogViewerModal'}}>Done</div>
+  </div>
+</div>
