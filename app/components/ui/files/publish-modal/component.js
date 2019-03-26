@@ -80,23 +80,22 @@ export default Component.extend({
         self.set('tale', resp);
         // We want to check if the last publish event is still running
         let lastJob = self.get('internalState').getLastPublishJob();
-
-        alert(tale.publishInfo)
         
         if (lastJob) {
           self.get('store').findRecord('job', lastJob, {
-            reload: true}).then(jobResp => {
-              if (jobResp && jobResp.status == 2) {
+            reload: true
+          }).then(jobResp => {
+            if (jobResp && jobResp.status == 2) {
               // Check if the job is publishing this particular tale
               self.talePublishing(lastJob);
             } else if (resp.publishInfo.length > 0) {
               self.talePublished(resp);
             }
           }).catch(()=>{
-            
+             console.log('Error fetching lastJob', lastJob);
           });
         }
-        else if (resp.publishInfo.length > 0) {
+        else if (!resp.publishInfo || resp.publishInfo.length > 0) {
           self.talePublished(resp);
         }
       });
