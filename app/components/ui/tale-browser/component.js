@@ -281,19 +281,16 @@ export default Component.extend({
           
           // Push to models in view
           // TODO: Detect filtered view?
-          console.log('Adding tale copy:', eTaleCopy);
           const tales = component.get('modelsInView');
           tales.pushObject(eTaleCopy);
           component.set('modelsInView', A(tales));
           
           // Launch the newly-copied tale
           component.actions.launchTale.call(component, eTaleCopy).then(function(arg) {
-            console.log('Tale instance launching!', arg);
             component.set("tale_instantiating", false);
             component.set("tale_not_instantiated", false);
             component.set("tale_instantiated", true);
           }).catch(function(err) {
-            console.log('Tale instance failed to launch:', err);
             // deal with the failure here
             component.set("tale_instantiating", false);
             component.set("tale_instantiated", true);
@@ -313,7 +310,7 @@ export default Component.extend({
         return;
       }
 
-      component.set("tale_instantiating_id", tale.id);
+      component.set("tale_instantiating_id", tale._id);
       component.set("tale_instantiating", true);
 
       let onSuccess = function (item) {
@@ -331,9 +328,9 @@ export default Component.extend({
           // Ensure this component is not destroyed by way of a route transition
           if(!component.isDestroyed){
             component.set("tale_instantiated", false);
-            component.set("tale_instantiating_id", 0);
+            component.set("tale_instantiating_id", null);
           }
-        }, 30000);
+        }, 20000);
 
         let currentLoop = null;
         // Poll the status of the instance every second using recursive iteration
@@ -365,7 +362,7 @@ export default Component.extend({
         later(function () {
           if(!component.isDestroyed){
             component.set("tale_not_instantiated", false);
-            component.set("tale_instantiating_id", 0);
+            component.set("tale_instantiating_id", null);
           }
         }, 10000);
 
