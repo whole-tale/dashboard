@@ -79,6 +79,7 @@ module.exports = function (environment) {
     ENV.wholeTaleHost = 'https://dashboard.dev.wholetale.org';
     ENV.dataOneHost = 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2';
     ENV.authProvider = 'Globus';
+    ENV.dev = true;
   }
 
   if (environment === 'production') {
@@ -86,13 +87,12 @@ module.exports = function (environment) {
     ENV.wholeTaleHost = 'dashboardHOST';
     ENV.dataOneHost = 'dataOneHOST';
     ENV.authProvider = 'authPROVIDER';
+    ENV.dev = 'dashboardDev';
   }
 
   ENV.apiPath = 'api/v1';
   ENV.apiUrl = ENV.apiHost + '/' + ENV.apiPath;
-  ENV.orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target='+ENV.authRedirect
   ENV.authRedirect = ENV.wholeTaleHost + '/login-success';
-  ENV.dev = environment === 'development';
 
   return ENV;
 };

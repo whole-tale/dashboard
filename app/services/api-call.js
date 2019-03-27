@@ -393,4 +393,92 @@ export default Service.extend({
             }
         });
     },
-});
+
+    /**
+     * Publishes a Tale to DataONE
+     * @method publishTale
+     * @param taleId The ID of the Tale this is being published
+     * @param repository 
+     * @param jwt The user's DataONE JWT token
+     * @param success A callback function that is called when the query succeeds
+     * @param fail A callback function that is called when the query fails
+     */
+  publishTale: function (taleId,
+    repository,
+    jwt,
+    success,
+    fail) {
+      var token = this.get('tokenHandler').getWholeTaleAuthToken();
+
+      let queryParams = '?' + [
+        'taleId=' + taleId,
+        'remoteMemberNode=' + repository,
+        'authToken=' + jwt
+      ].join('&');
+      let url = config.apiUrl + '/publish/dataone' + queryParams;
+
+      var client = new XMLHttpRequest();
+      client.open('GET', url);
+      client.setRequestHeader("Girder-Token", token);
+
+      client.addEventListener("load", function () {
+        if (client.status === 200) {
+          success(JSON.parse(client.responseText));
+        } else {
+          fail(client.responseText);
+        }
+      });
+
+      client.send();
+    },
+
+      /**
+     * Returns the workspace folder ID for a Tale
+     * @method getWorkspaceId
+     * @param taleId The ID of the Tale
+     * @param success Function to be called on success
+     * @param fail Function to be called when the call fails
+     */
+    getWorkspaceId(taleId, success, fail) {
+      const token = this.get('tokenHandler').getWholeTaleAuthToken();
+      let url = `${config.apiUrl}/workspace/${taleId}`;
+
+      let client = new XMLHttpRequest();
+      client.open('GET', url);
+      client.setRequestHeader("Girder-Token", token);
+      client.addEventListener("load", () => {
+          if (client.status === 200) {
+              const resp = JSON.parse(client.responseText);
+              success(resp._id);
+          } else {
+              fail(client.responseText);
+          }
+      });
+      client.addEventListener("error", fail);
+      client.send();
+  },
+      /**
+     * Returns the ID of the home folder
+     * @method getHomeId
+     * @param success Function to be called on success
+     * @param fail Function to be called when the call fails
+     */
+/*     getHomeId(success, fail) {
+      const token = this.get('tokenHandler').getWholeTaleAuthToken();
+      let url = `${config.apiUrl}/workspace/${taleId}`;
+
+      let client = new XMLHttpRequest();
+      client.open('GET', url);
+      client.setRequestHeader("Girder-Token", token);
+      client.addEventListener("load", () => {
+          if (client.status === 200) {
+              const resp = JSON.parse(client.responseText);
+              success(resp._id);
+          } else {
+              fail(client.responseText);
+          }
+      });
+      client.addEventListener("error", fail);
+      client.send();
+  }, */
+  })

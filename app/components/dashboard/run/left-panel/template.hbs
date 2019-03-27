@@ -11,6 +11,7 @@
                     </div>
                 </div>
                 <div class="right borderless menu">
+
                     {{#if readyToReleaseFeature}}
                         <div class="item">
                             <div class="ui blue icon button">
@@ -28,7 +29,6 @@
                             <i class="fas fa-ellipsis-v clickable"></i>
                         </a>
                     </div>
-                    
                     {{#if displayTaleInstanceMenu}}
                         {{#click-outside action=(action (mut displayTaleInstanceMenu) false)}}
                             <div class="tale-instance-menu">
@@ -42,18 +42,15 @@
                                     <a class="item" {{action "exportTale" model.taleId 'native'}}>
                                       Export as Zip <div class="ui label transparent" ><i class="far fa-file-archive"></i></div>
                                     </a>
+                                    <a class="item" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
+                                      Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
+                                    </a>
                                     {{#if readyToReleaseFeature}}
                                         <a class="item">
                                             Duplicate Tale <div class="ui label transparent"><i class="fas fa-copy"></i></div>
                                         </a>
                                         <a class="item">
                                             Delete Tale <div class="ui label transparent"><i class="fas fa-trash"></i></div>
-                                        </a>
-                                        <a class="item" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
-                                            Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
-                                        </a>
-                                        <a class="item" {{action "editTaleInfo" model._id}}>
-                                            Edit Tale Info <div class="ui label transparent"><i class="fas fa-edit"></i></div>
                                         </a>
                                     {{/if}}
                                     <a class="item" onclick={{action 'rebuildTale' model.tale._id}}>

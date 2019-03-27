@@ -18,7 +18,10 @@
   .warning-modal,
   .ui.compose-error.modal {
     height: 200px;
-
+    top:    0;
+    left:   0;
+    bottom: 0;
+  
     .header {
       .close.icon {
         position: absolute;
@@ -63,6 +66,115 @@
     background-color: #cedce2 !important;
   }
 
+  .scrolling.undetached.dimmable .ui.modal.acl-component.scrolling,
+  .scrolling.undetached.dimmable .ui.modal.harvester.scrolling {
+    min-height: 50vh;
+    height: auto;
+    max-height: 70%;
+    min-width: 50vw;
+    position: fixed;
+    left: 0 !important;
+    margin: 0 auto;
+  
+    .content {
+      height: calc(100% - 64px - 60px);
+      overflow-y: auto;
+    }
+  }
+  
+  /* Publishing Modal */
+
+  .publish-hr {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .ember-modal-dialog {
+    flex-direction: column;
+    display: flex;
+    overflow-y: auto;
+    min-height: 80%;
+    bottom: 100%;
+    width: 60%;
+    margin-bottom: 1em;
+  }
+
+  .small.publisher {
+    position: absolute;
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    min-height: 95%;
+    overflow: auto;
+    flex: 1;
+  }
+
+  // Bottom button row
+  .publisher.actions {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    margin-top: auto;
+  }
+
+  .repository.ui.selection.dropdown {
+    margin-right: auto;
+  }
+
+  .publisher .header {
+    position: relative;
+      letter-spacing: .02rem;
+      -webkit-border-top-left-radius: 1rem;
+      -moz-border-top-left-radius: 1rem;
+      border-top-left-radius: 1rem;
+      -webkit-border-top-right-radius: 1rem;
+      -moz-border-top-right-radius: 1rem;
+      border-top-right-radius: 1rem;
+      height: 100%;
+  }
+  .publisher .main.header img {
+    position: relative;
+      height: 2.25rem;
+      margin: 0 .75rem 0 0;
+      float:left;
+  }
+  .publisher .main.header span {
+    position: relative;
+      font-size: 1.2rem;
+      color: rgba(0,0,0,0.4);
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: .05rem;
+      padding-left: .4rem;
+  }
+  
+  .publisher .title {
+    position: relative;
+      color: rgb(74, 74, 74);
+      letter-spacing: .02rem;
+      -webkit-border-top-left-radius: 1rem;
+      -moz-border-top-left-radius: 1rem;
+      border-top-left-radius: 1rem;
+      -webkit-border-top-right-radius: 1rem;
+      -moz-border-top-right-radius: 1rem;
+      border-top-right-radius: 1rem;
+  }
+  .publisher .title img {
+      height: 2.25rem;
+      margin: 0 .75rem 0 0;
+      float:left;
+  }
+  
+  .publisher .title span {
+      font-size: 1.2rem;
+      color: rgb(107, 104, 104);
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: .05rem;
+      padding-left: .4rem;
+      display: block;
+    }
   table {
     margin-top: 0 !important;
   }
@@ -73,6 +185,16 @@
     padding: 0;
   }
 
+  .accordion-container {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+  
+  .publisher .info.circle.blue.icon.main {
+      float: right;
+  }
+    
   .ui.segment > button,
   .ui.segment > button:active,
   .ui.segment > button:hover,
@@ -423,23 +545,16 @@
 }
 
 .publisher .ui.accordion .content.files {
-  height: 25em;
-}
-
-.publisher .actions {
-  position: fixed;
-  bottom: 0;
-  width: 95%;
-  margin-bottom: 1em;
-}
-
+    height: 50%;
+} 
+  
 .publisher .actions .button {
   float: right;
 }
 
 .ui.basic.segment.file-picker {
-  height: 25em;
-  overflow-x: hidden;
+    height:20em;
+    overflow-x: hidden;
 }
 
 .file-picker.table {
@@ -451,10 +566,10 @@
   width: 0%;
 }
 
-.table.file-picker td {
-  padding: 0.6em;
-  border: none;
-}
+ .table.file-picker td {
+    padding: 0.3em;
+    border: none;
+ }
 
 .table.file-picker tr td {
   border: none;
@@ -467,3 +582,23 @@
 .table.file-picker td:nth-child(2) {
   width: 1rem;
 }
+
+.publisher .progress-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+ .publisher .publish-progressbar {
+    width:50%;
+}
+
+ .publisher .publishing-status-message {
+  display: flex;
+  justify-content: center;
+} 
+
+.publisher .fa-briefcase {
+    margin-left:10px;
+  }

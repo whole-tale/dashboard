@@ -1,15 +1,16 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import config from '../config/environment';
+import $ from 'jquery';
 
-export default Ember.Route.extend({
+export default Route.extend({
   queryParams: {
     rd: {
       refreshModel: true
     }
   },
   routerService: service('-routing'),
-  model: function(params) {
+  model(params) {
     // console.log("In login route");
     var http = location.protocol;
     var slashes = http.concat("//");
@@ -25,6 +26,6 @@ export default Ember.Route.extend({
     var redirectUrl = host + pathSuffix;
     let url = config.apiUrl + '/oauth/provider?redirect=' + encodeURIComponent(redirectUrl);
 
-    return Ember.$.getJSON(url);
+    return $.getJSON(url);
   }
 });

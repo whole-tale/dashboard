@@ -1,5 +1,4 @@
-import Ember from 'ember';
-import moment from 'moment';
+import {helper} from '@ember/component/helper';
 
 const INACTIVE = 0;
 const QUEUED = 1;
@@ -8,7 +7,7 @@ const SUCCESS = 3;
 const ERROR = 4;
 const CANCELED = 5;
 
-export default Ember.Helper.helper(function(params) {
+export default helper(function(params) {
   const [status] = params;
   if (status === INACTIVE) { 
     return 'Inactive';

@@ -1,8 +1,7 @@
-import Ember from 'ember';
-import moment from 'moment';
+import {helper} from '@ember/component/helper';
 
 
-export default Ember.Helper.helper(function(params) {
+export default helper(function(params) {
   let [name] = params;
   if (name == null) return "";
   if (name.length > 100)
