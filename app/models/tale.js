@@ -14,9 +14,10 @@ export default DS.Model.extend({
   "illustration": DS.attr('string'),
   "imageId": DS.attr('string'),
   "public": DS.attr('boolean'),
-  "published": DS.attr('boolean'),
+  "publishInfo": DS.attr(),
   "title": DS.attr('string'),
   "updated": DS.attr('date'),
   "dataSet": DS.attr(),
-  "folderId": DS.attr('string')
+  "folderId": DS.attr('string'),
+  "licenseSPDX": DS.attr('string')
 });

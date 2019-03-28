@@ -1,17 +1,4 @@
 <div class="wt panel manage">
-    {{!-- <div class="wt paddleboard">
-        <h2>
-            <img src="/images/wholetale_logo_sm.png" /> Current Tale
-            {{#if hasSelectedTaleInstance}}
-                <i class="fas fa-expand right floated" style="cursor: pointer;" {{action 'toggleFullscreen'}}></i>
-            {{/if}}
-            {{#if (and (not-eq model.status 0) (and model.iframe (eq internalState.currentInstanceId model._id)))}}
-                <a href="{{model.url}}" target="_blank">
-                    <i class="external alternate right icon" style="cursor: pointer; padding-right: 0.3em; bottom: 4px"></i>
-                </a>
-            {{/if}}
-        </h2>
-    </div> --}}
     {{#unless noInstanceSelected}}
         <div class="wt paddleboard tall header">
             <div class="ui bordlerless menu">
@@ -24,6 +11,7 @@
                     </div>
                 </div>
                 <div class="right borderless menu">
+
                     {{#if readyToReleaseFeature}}
                         <div class="item">
                             <div class="ui blue icon button">
@@ -48,6 +36,15 @@
                                     <a class="item" href="https://wholetale.readthedocs.io/en/stable/users_guide/run.html" target="_blank">
                                         Read the docs <div class="ui label transparent"><i class="fas fa-book"></i></div>
                                     </a>
+                                    <a class="item"  {{action "exportTale" model.taleId 'bagit'}}>
+                                      Export as BagIt <div class="ui label transparent"><i class="fas fa-archive"></i></div>
+                                    </a>
+                                    <a class="item" {{action "exportTale" model.taleId 'native'}}>
+                                      Export as Zip <div class="ui label transparent" ><i class="far fa-file-archive"></i></div>
+                                    </a>
+                                    <a class="item" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
+                                      Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
+                                    </a>
                                     {{#if readyToReleaseFeature}}
                                         <a class="item">
                                             Duplicate Tale <div class="ui label transparent"><i class="fas fa-copy"></i></div>
@@ -55,16 +52,13 @@
                                         <a class="item">
                                             Delete Tale <div class="ui label transparent"><i class="fas fa-trash"></i></div>
                                         </a>
-                                        <a class="item">
-                                            Rebuild Tale <div class="ui label transparent"><i class="fas fa-cog"></i></div>
-                                        </a>
-                                        <a class="item" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
-                                            Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
-                                        </a>
-                                        <a class="item" {{action "editTaleInfo" model._id}}>
-                                            Edit Tale Info <div class="ui label transparent"><i class="fas fa-edit"></i></div>
-                                        </a>
                                     {{/if}}
+                                    <a class="item" onclick={{action 'rebuildTale' model.tale._id}}>
+                                        Rebuild Tale <div class="ui label transparent"><i class="fas fa-redo-alt"></i></div>
+                                    </a>
+                                    <a class="item" onclick={{action 'restartInstance' model}}>
+                                        Restart Tale <div class="ui label transparent"><i class="fas fa-sync-alt"></i></div>
+                                    </a>
                                     <a class="item" onclick={{action 'toggleFullscreen'}}>
                                         View Fullscreen <div class="ui label transparent"><i class="fas fa-expand"></i></div>
                                     </a>
@@ -85,27 +79,6 @@
             </p>
         </div>
     {{/if}}
-
-    {{!-- <div class="ui {{model._id}} modal" style="display: none">
-        <i class="close icon"></i>
-        <div class="header">
-            Really Delete Instance?
-        </div>
-        <div class="image content">
-            <div class="description">
-                <p>This will permanently delete the '{{model.name}}' instance. Continue?</p>
-            </div>
-        </div>
-        <div class="actions">
-            <div class="ui black deny button" {{action 'denyDelete'}}>
-                No
-            </div>
-            <div class="ui positive right labeled icon button" {{action 'approveDelete' model}}>
-                Yes
-                <i class="checkmark icon"></i>
-            </div>
-        </div>
-    </div> --}}
 
     <div class="ui dataone modal" style="display: none">
         <i class="close icon"></i>

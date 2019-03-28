@@ -8,7 +8,7 @@ import { A } from '@ember/array';
 import { not } from '@ember/object/computed';
 import $ from 'jquery';
 import layout from './template';
-// import hasEmberVersion from 'ember-test-helpers/has-ember-version';
+import { alias } from '@ember/object/computed';
 
 const O = Object.create.bind(Object);
 
@@ -17,15 +17,21 @@ export default Component.extend(FullScreenMixin, {
     classNames: ['run-left-panel'],
     router: service('-routing'),
     internalState: service(),
+    userAuth: service('user-auth'),
+    dataoneAuth: service('dataone-auth'),
+    store: service(),
     apiCall: service('api-call'),
+    tokenHandler: service('token-handler'),
     loadError: false,
     model: null,
     wholeTaleHost: config.wholeTaleHost,
     hasSelectedTaleInstance: false,
     displayTaleInstanceMenu: false,
     workspaceRootId: undefined,
-
+    enablePublish: false,
     session: O({dataSet:A()}),
+    routing: service('-routing'),
+    params: alias('routing.router.currentState.routerJsState.fullQueryParams'),
 
     init() {
         this._super(...arguments);
@@ -57,6 +63,7 @@ export default Component.extend(FullScreenMixin, {
         // Similar to Jquery on page load
         // doesn't work because of the handlebars. But even if you unhide the element, the iframes show
         // that they load ok even though some are blocked and some are not.
+        let self = this;
         let frame = document.getElementById('frontendDisplay');
         if (frame) {
             frame.onload = () => {
@@ -73,35 +80,31 @@ export default Component.extend(FullScreenMixin, {
                 iframeWindow.parent.postMessage('message sent', window.location.origin);
             };
         }
+        if(self.model) {
+          self.store.findRecord('tale', self.model.taleId)
+          .then(tale => {
+            if (tale.creatorId === self.userAuth.getCurrentUserID()) {
+              self.set('enablePublish', true);
+            }
+            else {
+              self.set('enablePublish', false);
+            }
+          });
+        }
     },
 
-    didInsertElement() {
-        scheduleOnce('afterRender', this, () => {
+    didInsertElement() {      
+      scheduleOnce('afterRender', this, () => {
             // Check if we're coming from an ORCID redirect
             // If ?auth=true
             // Open Modal
-            const modalDialogName = 'ui/files/publish-modal';
-            this.showModal(modalDialogName, this.get('modalContext'));
+            let queryParams = this.get('params')
+            if (queryParams) {
+              if (queryParams.auth === 'true'){
+                this.get('openModal')('ui/files/publish-modal', this.publishModalContext);
+              }
+            }
         });
-    },
-
-    getDataONEJWT() {
-        /*
-        Queries the DataONE `token` endpoint for the jwt. When a user signs into
-        DataONE a cookie is created, which is checked by `token`. If the cookie wasn't
-        found, then the response will be empty. Otherwise the jwt is returned.
-        */
-
-        // Use the XMLHttpRequest to handle the request
-        let xmlHttp = new XMLHttpRequest();
-        // Open the request to the the token endpoint, which will return the jwt if logged in
-        xmlHttp.open("GET", 'https://cn-stage-2.test.dataone.org/portal/token', false);
-        // Set the response content type
-        xmlHttp.setRequestHeader("Content-Type", "text/xml");
-        // Let XMLHttpRequest know to use cookies
-        xmlHttp.withCredentials = true;
-        xmlHttp.send(null);
-        return xmlHttp.responseText;
     },
 
     shouldShowButtons: computed('internalState', 'internalState.currentInstanceId', function () {
@@ -116,23 +119,36 @@ export default Component.extend(FullScreenMixin, {
 
     noInstanceSelected: not('hasSelectedTaleInstance'),
 
-    hasD1JWT: computed('model.taleId', function () {
-        let jwt = this.getDataONEJWT();
-        return (jwt && jwt.length) ? true : false;
-    }),
-
     showModal(modalDialogName, modalContext) {
         // Open Publish Modal
         this.sendAction('publishTale', modalDialogName, modalContext);
     },
 
     publishModalContext: computed('model.taleId', function () {
-        return { taleId: this.get('model.taleId'), hasD1JWT: this.hasD1JWT };
+        return { taleId: this.get('model.taleId'), hasD1JWT: this.dataoneAuth.hasD1JWT() };
     }),
 
     actions: {
         stop() {
             this.set("model", null);
+        },
+        
+        // Calls PUT /instance/:id as a noop to restart the instance
+        restartInstance(instance) {
+            this.get('apiCall').restartInstance(instance);
+        },
+        
+        rebuildTale(taleId) {
+            this.get('apiCall').rebuildTale(taleId);
+        },
+
+        authenticateD1(taleId) {
+          let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
+          let orcidLogin = 'https://cn.dataone.org/portal/oauth?action=start&target=';
+          if(config.dev) {
+            orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=';
+          }
+          window.location.replace(orcidLogin + callback);
         },
 
         publishTale(modalDialogName, modalContext) {
@@ -142,12 +158,6 @@ export default Component.extend(FullScreenMixin, {
 
         denyDataONE() {
             return true;
-        },
-
-        authenticateD1(taleId) {
-            let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
-            let orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=';
-            window.location.replace(orcidLogin + callback);
         },
 
         openDeleteModal(id) {
@@ -164,6 +174,12 @@ export default Component.extend(FullScreenMixin, {
 
         denyDelete() {
             return true;
+        },
+        
+        exportTale(id, format) {
+          const token = this.get('tokenHandler').getWholeTaleAuthToken();
+          let url = `${config.apiUrl}/tale/${id}/export`;
+          window.location.assign(url + '?token=' + token + '&taleFormat=' + format);
         },
     }
 });

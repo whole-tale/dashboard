@@ -17,7 +17,9 @@ const taleStatus = Object.create({
 export default Component.extend({
   apiHost: config.apiHost,
   environments: [],
+  licenses: [],
   model: null,
+  publishedURL: 'This Tale has not been published',
   init() {
     this._super(...arguments);
     
@@ -27,18 +29,42 @@ export default Component.extend({
       component.set('environments', images);
       component.selectDefaultImageId();
     });
+
+    // Fetch licenses for users to select
+    $.getJSON(this.get('apiHost') + '/api/v1/license/').then(function(licenses) {
+      component.set('licenses', licenses);
+      component.selectDefaultLicense();
+    });
+
+    const tale = this.get('model').get('tale');
+    let uri = tale.publishedURI;
+    if (tale.publishInfo && tale.publishInfo.length) {
+      this.set('publishedURL', tale.publishInfo[tale.publishInfo.length - 1].uri );
+    }
   },
   
   didRender() {
     // Enable the environment dropdown functionality
     $('.ui.dropdown').dropdown();
     this.selectDefaultImageId();
+    $('.ui.icon.selection.dropdown.license').dropdown();
+    this.selectDefaultLicense();
   },
   
   selectDefaultImageId() {
     // Select the current imageId by default
     const selectedImageId = this.get('model').get('tale').get('imageId');
     $('.ui.dropdown').dropdown('set selected', selectedImageId);
+  },
+
+  selectDefaultLicense() {
+    // Select the license that the Tale currently has
+    const selectedLicense = this.get('model').get('tale').get('licenseSPDX');
+    this.get('licenses').forEach((license) => {
+      if (license.spdx == selectedLicense) {
+        $('.ui.icon.selection.dropdown.license').dropdown('set selected', license.spdx);
+      }
+    })
   },
   
   canEditTale: computed('model.tale._accessLevel', function () {
@@ -59,6 +85,11 @@ export default Component.extend({
     setTaleEnvironment: function(selected) {
       const tale = this.get('model').get('tale');
       tale.set('imageId', selected);
+    },
+
+    setTaleLicense: function(selected) {
+      const tale = this.get('model').get('tale');
+      tale.set('licenseSPDX', selected);
     },
   }
 });
