@@ -2,11 +2,13 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
+import EmberObject from '@ember/object';
+import config from '../../../config/environment';
 import $ from 'jquery';
 import layout from './template';
 
 // Load a polyfill for EventSource to allow passing custom headers (e.g. token)
-const EventSource = window.EventSourcePolyfill;
+//const EventSource = window.EventSourcePolyfill;
 
 export default Component.extend({
     layout,
@@ -15,6 +17,7 @@ export default Component.extend({
     apiCall: service('api-call'),
     store: service(),
     logInterval: null,
+    isDev: config.dev,
     
     events: A([]),
     source: null,
@@ -60,8 +63,10 @@ export default Component.extend({
             events.unshiftObject(event);
             self.set('events', events);
             //console.log("New event:", events);
+        } else if (event.json.type == 'wt_error_backend_generic') {
+            console.log("Generic backend encountered:", event);
         } else {
-            //console.log("Ignoring event:", event);
+            console.log("Ignored event type encountered:", event);
         }
     },
         
@@ -108,7 +113,7 @@ export default Component.extend({
         openLogViewerModal(event) {
             const self = this;
             
-            self.set('selectedEvent', event);
+            self.set('selectedEvent', EmberObject.create(event));
             
             // Clear log refresh interval, if one already exists
             self.clearLogInterval();

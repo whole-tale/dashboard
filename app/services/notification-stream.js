@@ -4,12 +4,12 @@ import { A } from '@ember/array';
 import config from '../config/environment';
 
 // Load a polyfill for EventSource to allow passing custom headers (e.g. token)
-const EventSource = window.EventSourcePolyfill;
+//const EventSource = window.EventSourcePolyfill;
 
 export default Service.extend({
     apiHost: config.apiHost,
     tokenHandler: service('token-handler'),
-    
+    timeout: 3600,
     source: null,
     
     /* Connect if not connected, otherwise return existing instance */
@@ -23,17 +23,15 @@ export default Service.extend({
         
         // Only fetch message since our last acknowledgement
         const lastRead = localStorage.getItem('lastRead');
-        const suffix = lastRead ? '?timeout=3600&since=' + encodeURIComponent(lastRead) : '?timeout=3600';
+        const tokenQSP = 'token=' + self.get('tokenHandler').getWholeTaleAuthToken();
+        const timeoutQSP = 'timeout=' + self.timeout;
+        const sinceQSP = lastRead ? 'since=' + encodeURIComponent(lastRead) : ''
+        const querystring = `?${tokenQSP}&${timeoutQSP}&${sinceQSP}`;
         
         // Connect to Girder's notification stream endpoint for SSE
         console.log("Connecting...");
-        const endpoint = self.get('apiHost') + '/api/v1/notification/stream' + suffix;
-        const newSource = new EventSource(endpoint, {
-          headers: {
-            'Girder-Token': self.get('tokenHandler').getWholeTaleAuthToken(),
-            'Connection': 'Keep-Alive'
-          }
-        });
+        const endpoint = self.get('apiHost') + '/api/v1/notification/stream' + querystring;
+        const newSource = new EventSource(endpoint);
         
         self.set('source', newSource);
         
