@@ -3,9 +3,6 @@ import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
 import config from '../config/environment';
 
-// Load a polyfill for EventSource to allow passing custom headers (e.g. token)
-//const EventSource = window.EventSourcePolyfill;
-
 export default Service.extend({
     apiHost: config.apiHost,
     tokenHandler: service('token-handler'),

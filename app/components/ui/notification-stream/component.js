@@ -7,9 +7,6 @@ import config from '../../../config/environment';
 import $ from 'jquery';
 import layout from './template';
 
-// Load a polyfill for EventSource to allow passing custom headers (e.g. token)
-//const EventSource = window.EventSourcePolyfill;
-
 export default Component.extend({
     layout,
     notificationStream: service('notification-stream'),
