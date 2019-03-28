@@ -14,7 +14,7 @@ COPY ember-cli-build.js .
 COPY package.json .
 
 RUN sed -i app/templates/common/footer.hbs \
-        -e "s/{commit}/$(git log --pretty=format:'%h' -n 1)/"
+        -e "s/{commit}/$(git describe --long --tags)/"
 
 RUN unset NODE_ENV && npm -s install
 RUN bower install --allow-root
