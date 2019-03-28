@@ -93,7 +93,7 @@
             </div>
         </div>
         <div class="actions">
-            <div class="ui black deny button" {{action 'denyDataONE'}}>
+            <div class="ui black deny button">
                 Cancel
             </div>
             <div class="ui positive right labeled icon button" {{action 'authenticateD1' model._id}}>
@@ -121,13 +121,13 @@
       <div class="ui form" style="margin-bottom:15px;">
           <div class="inline field">
               <label>Please choose a target repository:</label>
-              {{#ui-dropdown class="repository selection dropdown" allowAdditions=false selected=selectedRepository onChange=(action 'onRepositoryChange')
+              {{#ui-dropdown class=repoDropdownClass allowAdditions=false selected=selectedRepository onChange=(action 'onRepositoryChange')
                 as |execute mapper|}}
                 <div class="default text">Target Repository</div>
                 <i class="dropdown icon"></i>
                 <div class="menu">
                     {{#each repositories as |repo|}}
-                    <div class="item" value={{repo}}>
+                    <div class="item">
                         {{repo.name}}
                     </div>
                     {{/each}}
@@ -166,22 +166,33 @@
     <p>This process allows another user to easily rerun
     your published analysis using the WholeTale platform.</p>
       
-    <div class="ui form" style="height: 140px;">
-      <div class="progress-area">
-        {{#if (eq publishStatus 'in_progress')}}
-          <p class="publishing-now">Your Tale is being published to {{selectedRepository.name}}</p>
-        {{/if}}
-        <div class ="publish-progressbar">
-          {{ember-progress-bar progress=progress options=(hash strokeWidth=3 color=barColor trailColor= "#a5a4a4")}}
-          <div class ="publishing-status-message">
-            {{statusMessage}}
+    <div class="ui form" style="max-height: 140px;">
+      {{#if (eq publishStatus 'in_progress')}}
+          <div class="progress-area">
+            <p class="publishing-now">Your Tale is being published to {{selectedRepository}}</p>
+            <div class="publish-progressbar">
+                {{#ui-progress percent=progress class="teal indicating"}}
+                  <div class="bar"></div>
+                  <div class="label publishing-status-message">
+                    <i class="fas fa-spinner fa-pulse"></i> {{statusMessage}}
+                  </div>
+                {{/ui-progress}}
+            </div>     
+          </div> 
+      {{else if (eq publishStatus 'success')}}
+          <div class="ui positive message" id="publishing-success-message">
+            <div class="header">
+                <a id="publishing-success-label" class="ui green label">SUCCESS</a> {{statusMessage}}
+            </div>
+            <p>Identifier: <a href={{packageURL}} target='_blank'>{{packageIdentifier}}</a></p>
           </div>
-        </div>        
-      </div>
-      {{#if (eq publishStatus 'success')}}
-        <p>Identifier: {{packageIdentifier}}</p>
-        {{log packageURL}}
-        <p>Package URL: <a href={{packageURL}} target='_blank'>{{{packageURL}}}</a></p>
+      {{else if (eq publishStatus 'error')}}
+          <div class="ui negative message" id="publishing-error-message">
+            <div class="header">
+              <a id="publishing-error-label" class="ui red label">ERROR</a> An error was encountered while publishing your Tale.
+            </div>
+            <p>{{statusMessage}}</p>
+          </div>
       {{/if}}
     </div>
   </div>

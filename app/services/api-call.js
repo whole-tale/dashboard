@@ -269,25 +269,25 @@ export default Service.extend({
     * Queries the job result endpoint.
     * @method getFinalJobStatus
     * @param jobId The ID of the job whose status is wanted
-    * @param success Function that is called on success
-    * @param fail Function that is called when the call fails
     */
-    getFinalJobStatus(jobId, success, fail) {
+    getFinalJobStatus(jobId) {
         let token = this.get('tokenHandler').getWholeTaleAuthToken();
         let url = config.apiUrl + '/job/' + jobId + '/result';
 
-        let client = new XMLHttpRequest();
-        client.open('GET', url);
-        client.setRequestHeader("Girder-Token", token);
-        client.addEventListener("load", function () {
-            if (client.status === 200) {
-                success(JSON.parse(client.responseText));
-            } else {
-                fail(client.responseText);
-            }
+        return new Promise((resolve, reject) => {
+            let client = new XMLHttpRequest();
+            client.open('GET', url);
+            client.setRequestHeader("Girder-Token", token);
+            client.addEventListener("load", function () {
+                if (client.status === 200) {
+                    resolve(JSON.parse(client.responseText));
+                } else {
+                    reject(client.responseText);
+                }
+            });
+            client.addEventListener("error", reject);
+            client.send();
         });
-        client.addEventListener("error", fail);
-        client.send();
     },
 
     /**
@@ -400,19 +400,13 @@ export default Service.extend({
      * @param taleId The ID of the Tale this is being published
      * @param repository 
      * @param jwt The user's DataONE JWT token
-     * @param success A callback function that is called when the query succeeds
-     * @param fail A callback function that is called when the query fails
      */
-  publishTale: function (taleId, repository, jwt) {
+  publishTale(taleId, repository, jwt) {
       const token = this.get('tokenHandler').getWholeTaleAuthToken();
-
       return new Promise ((resolve, reject) => {
-          let queryParams = '?' + [
-            'taleId=' + taleId,
-            'remoteMemberNode=' + repository,
-            'authToken=' + jwt
-          ].join('&');
-          let url = config.apiUrl + '/publish/dataone' + queryParams;
+          let url = `${config.apiUrl}/publish/dataone` + 
+            `?taleId=${taleId}&remoteMemberNode=${repository}` + 
+            `&authToken=${jwt}`;
     
           let client = new XMLHttpRequest();
           client.open('GET', url);
@@ -425,6 +419,7 @@ export default Service.extend({
               reject(client.response);
             }
           });
+          client.addEventListener("error", reject);
     
           client.send();
       });

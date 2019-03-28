@@ -17,6 +17,7 @@ export default Component.extend(FullScreenMixin, {
     router: service('-routing'),
     internalState: service(),
     apiCall: service('api-call'),
+    dataoneAuth: service('dataone-auth'),
     tokenHandler: service('token-handler'),
     loadError: false,
     model: null,
@@ -25,7 +26,8 @@ export default Component.extend(FullScreenMixin, {
     displayTaleInstanceMenu: false,
     workspaceRootId: undefined,
     session: O({dataSet:A()}),
-        // Holds an array of objects that the user cannot be exclude from their package
+    
+    // Holds an array of objects that the user cannot be exclude from their package
     nonOptionalFile: [
       'manifest.json',
       'environment.json',
@@ -34,7 +36,7 @@ export default Component.extend(FullScreenMixin, {
       'metadata.xml'
     ],
 
-    // A map that connects the repository dropdown to a url
+    // An array of repositories to list in the dropdown and their matching url
     repositories: [{
       name: 'DataONE Development',
       url: 'https://dev.nceas.ucsb.edu/knb/d1/mn'
@@ -47,6 +49,13 @@ export default Component.extend(FullScreenMixin, {
       name: 'DataONE-Arctic Data Center',
       url: 'https://arcticdata.io/metacat/d1/mn'
     }],
+    
+    repoDropdownClass: computed('publishStatus', function() {
+        let status = this.publishStatus;
+        return (status === 'in_progress' || status === 'success') 
+            ? "repository selection dropdown disabled"
+            : "repository selection dropdown";
+    }),
 
     init() {
         this._super(...arguments);
@@ -94,6 +103,8 @@ export default Component.extend(FullScreenMixin, {
                 iframeWindow.parent.postMessage('message sent', window.location.origin);
             };
         }
+        
+        this.createTooltips();
     },
 
     didInsertElement() {
@@ -104,7 +115,6 @@ export default Component.extend(FullScreenMixin, {
             const modalDialogName = 'ui/files/republish-modal';
             this.showModal(modalDialogName, this.get('modalContext'));
         
-            this.createTooltips();
         });
     },
 
@@ -215,41 +225,43 @@ export default Component.extend(FullScreenMixin, {
     
     getRepositoryPathFromName(name) {
         // Given a repository name, find the membernode URL
-        let repostoryList = this.get('repositories');
-        for (var i = 0; i < repostoryList.length; i++) {
-          if (repostoryList[i].name === name) {
-            return repostoryList[i].url;
+        let repositoryList = this.get('repositories');
+        for (var i = 0; i < repositoryList.length; i++) {
+          if (repositoryList[i].name === name) {
+            return repositoryList[i].url;
           }
         }
     },
     
-    getCurrentPublishJob() {
-        let self = this;
-        return this.get('store').findRecord('job', self.get('publishingID'));
-    },
-    
-    handlePublishingStatus() {
+    handlePublishingStatus(tale, jobId) {
         let self = this;
         let currentLoop = null;
+        console.log('Started publish watch loop.');
         // Poll the status of the instance every second using recursive iteration
         let startLooping = function (func) {
     
           return later(function () {
             currentLoop = startLooping(func);
-            self.store.findRecord('job', self.get('publishingID'), {
+            console.log('Looping: publish watcher.');
+            const store = self.get('model').get('store');
+            store.findRecord('job', jobId, {
                 reload: true
               }).then(job => {
+                console.log(`Looping: publish watcher (status=${job.get('status')})`, job);
                 if (job.get('status') === 3) {
                   if (job.progress) {
-                    self.set('progress', job.progress.current / 100);
+                    console.log(`Success: publish watcher progress complete!`, job);
+                    self.set('progress', job.progress.current);
                     self.set('statusMessage', job.progress.message);
                   }
-    
+                  console.log(`Success: Tale published successfully:`, tale);
+                  self.set('publishStatus', 'success');
                   // The Tale was changed by the job, so fetch it again
-                  self.get('store').findRecord('tale', self.get('modalContext'), {
+                  store.findRecord('tale', tale._id, {
                       reload: true
                     })
                     .then(resp => {
+                      console.log(`Success: Tale cache entry updated:`, tale);
                       // Update UI with Tale information
                       self.set('tale', resp);
                       self.set('packageIdentifier', resp.publishInfo.slice(-1).pop().pid);
@@ -257,6 +269,7 @@ export default Component.extend(FullScreenMixin, {
                       cancel(currentLoop);
                     });
                 } else if (job.get('status') === 4) {
+                  console.log(`Error: publish watcher hit an error:`, job);
                   // Then the job failed with an error
                   self.setErrorStatus(job._id)
                   self.set('progress', 100)
@@ -265,8 +278,10 @@ export default Component.extend(FullScreenMixin, {
                 } else {
                   // Otherwise the job is still running
                   // Update the progressbar
+                  console.log(`Looping: publish watcher still running`, job);
                   if (job.progress) {
-                    self.set('progress', job.progress.current / 100);
+                    console.log(`Looping: publish watcher progress update`, job.progress.current);
+                    self.set('progress', job.progress.current);
                     self.set('statusMessage', job.progress.message);
                   }
                 }
@@ -275,6 +290,32 @@ export default Component.extend(FullScreenMixin, {
         };
         //Start polling
         currentLoop = startLooping();
+    },
+
+    /* 
+     * Retrieves a human readable error from job/result
+     * 
+     * @method closeModal
+     */
+    setErrorStatus(jobId) {
+        const self = this;
+        let onGetJobStatusSuccess = (message) => {
+          self.set('statusMessage', message);
+        };
+    
+        self.set('publishStatus', 'error');
+        return self.apiCall.getFinalJobStatus(jobId)
+            .then(onGetJobStatusSuccess)
+            .catch(onGetJobStatusSuccess);
+    },
+        
+    resetPublishState() {
+        // Reset any leftover previous state
+        this.set('progress', null);
+        this.set('statusMessage', null);
+        this.set('taleToPublish', null);
+        this.set('publishStatus', 'initialized');
+        this.set('progress', 0);
     },
 
     actions: {
@@ -296,10 +337,6 @@ export default Component.extend(FullScreenMixin, {
             this.get('showModal')(modalDialogName, modalContext);
         },
 
-        denyDataONE() {
-            return true;
-        },
-
         authenticateD1(taleId) {
             let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
             let orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=';
@@ -317,10 +354,6 @@ export default Component.extend(FullScreenMixin, {
             this.get('router').transitionTo('run');
             return false;
         },
-
-        denyDelete() {
-            return true;
-        },
         
         exportTale(id, format) {
           const token = this.get('tokenHandler').getWholeTaleAuthToken();
@@ -329,29 +362,34 @@ export default Component.extend(FullScreenMixin, {
         },
         
         openPublishModal(tale) {
+            this.resetPublishState();
+            
             this.set('taleToPublish', tale);
             this.set('selectedRepository', null);
             $('#publish-modal').modal({ 
                 onApprove: () => false,
                 onDeny: () => false
             }).modal('show');
-            this.set('publishStatus', 'initialized');
         },
         
         submitPublish(tale) {
             const self = this;
             console.log('Now publishing:', tale);
             self.set('publishStatus', 'in_progress');
-            
-            const modalContext = self.get('modalContext');
-            const repository = self.getRepositoryPathFromName(self.get('selectedRepository'));
-            const dataOneJWT = self.get('dataoneJWT');    
+            self.set('progress', 0);
+            const targetRepo = self.get('selectedRepository');
+            const repository = self.getRepositoryPathFromName(targetRepo);
+            const dataOneJWT = self.dataoneAuth.getDataONEJWT();
             
             // Call the publish endpoint
-            self.get("apiCall").publishTale(modalContext, repository, dataOneJWT)
-                .then((response) => {
-                    console.log('Published:', response);
-                    self.set('publishStatus', 'success');
+            self.get("apiCall").publishTale(tale._id, repository, dataOneJWT)
+                .then((publishJob) => {
+                    console.log('Submitted for publish:', publishJob);
+                    self.set('publishStatus', 'in_progress');
+                    // Poll the job queue for the status of the job
+                    self.set('progress', 1);
+                    self.set('statusMessage', 'Initializing publish job...');
+                    self.handlePublishingStatus(tale, publishJob._id);
                 })
                 .catch((err) => {
                     console.log('Failed to publish:', err);
@@ -362,14 +400,13 @@ export default Component.extend(FullScreenMixin, {
         },
         
         closePublishModal() {
-            this.set('taleToPublish', null);
             $('#publish-modal').modal('hide');
-            this.set('publishStatus', 'initialized');
+            this.resetPublishState();
         },
         
         onRepositoryChange: function () {
           // Called when the user changes the repository
-          let respText = $('.repository.selection.dropdown.ui.dropdown').dropdown('get value')
+          let respText = $('.repository.selection.dropdown.ui.dropdown').dropdown('get text')
           this.set('selectedRepository', respText);
         },
     }
