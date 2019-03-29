@@ -18,6 +18,7 @@ export default Component.extend(FullScreenMixin, {
     internalState: service(),
     apiCall: service('api-call'),
     dataoneAuth: service('dataone-auth'),
+    dataoneJWT: null,
     tokenHandler: service('token-handler'),
     loadError: false,
     model: null,
@@ -178,7 +179,7 @@ export default Component.extend(FullScreenMixin, {
           hoverable: true,
           html: "Get a citeable DOI by publishing your Tale on <a href='https://www.dataone.org/' target='_blank'>DataONE.</a> " +
                 "For more information on how to publish and cite your tale, visit the " +
-                "<a href='http://wholetale.readthedocs.io/users_guide/publishing.html' target='_blank'>publishing guide</a>."
+                "<a href='https://wholetale.readthedocs.io/en/stable/users_guide/publishing.html' target='_blank'>publishing guide</a>."
         });
     
         // Create the popups for the environment files. Files with an extension
@@ -362,8 +363,15 @@ export default Component.extend(FullScreenMixin, {
         },
         
         openPublishModal(tale) {
-            this.resetPublishState();
+            const jwt = this.getDataONEJWT();
+            if (!jwt) {
+                // reroute to auth
+                $('#dataone-auth-modal').modal('show');
+                return;
+            }
             
+            this.set('dataoneJWT', jwt);
+            this.resetPublishState();
             this.set('taleToPublish', tale);
             this.set('selectedRepository', null);
             $('#publish-modal').modal({ 
@@ -379,7 +387,7 @@ export default Component.extend(FullScreenMixin, {
             self.set('progress', 0);
             const targetRepo = self.get('selectedRepository');
             const repository = self.getRepositoryPathFromName(targetRepo);
-            const dataOneJWT = self.dataoneAuth.getDataONEJWT();
+            const dataOneJWT = this.get('dataoneJWT');
             
             // Call the publish endpoint
             self.get("apiCall").publishTale(tale._id, repository, dataOneJWT)

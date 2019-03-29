@@ -609,6 +609,12 @@
   
 #publish-modal-content {
   padding: 17.5px 21px 17.5px 21px;
+  overflow-y: unset;
+}
+
+#publish-results-panel {
+  max-height: 140px;
+  margin-top: 15px;
 }
 
 #publish-confirmation-button {
@@ -625,4 +631,8 @@
 
 #publishing-error-label {
   margin-right: 5px;
+}
+
+#publish-result {
+  margin-top: 10px;
 }
