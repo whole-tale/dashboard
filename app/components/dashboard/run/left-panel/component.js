@@ -27,7 +27,7 @@ export default Component.extend(FullScreenMixin, {
     displayTaleInstanceMenu: false,
     workspaceRootId: undefined,
     session: O({dataSet:A()}),
-    
+
     // Holds an array of objects that the user cannot be exclude from their package
     nonOptionalFile: [
       'manifest.json',
@@ -54,8 +54,8 @@ export default Component.extend(FullScreenMixin, {
     repoDropdownClass: computed('publishStatus', function() {
         let status = this.publishStatus;
         return (status === 'in_progress' || status === 'success') 
-            ? "repository selection dropdown disabled"
-            : "repository selection dropdown";
+            ? "repository fluid selection dropdown disabled"
+            : "repository fluid selection dropdown";
     }),
 
     init() {
@@ -117,14 +117,16 @@ export default Component.extend(FullScreenMixin, {
             this.showModal(modalDialogName, this.get('modalContext'));
         
         });
+        
+        $('.ui.accordion').accordion({});
     },
 
-    getDataONEJWT() {
-        /*
-        Queries the DataONE `token` endpoint for the jwt. When a user signs into
+    /*
+        Return s the DataONE `token` endpoint for the jwt. When a user signs into
         DataONE a cookie is created, which is checked by `token`. If the cookie wasn't
         found, then the response will be empty. Otherwise the jwt is returned.
-        */
+    */
+    getDataONEJWT() {
 
         // Use the XMLHttpRequest to handle the request
         let xmlHttp = new XMLHttpRequest();
@@ -163,6 +165,7 @@ export default Component.extend(FullScreenMixin, {
     publishModalContext: computed('model.taleId', function () {
         return { taleId: this.get('model.taleId'), hasD1JWT: this.hasD1JWT };
     }),
+
 
     /**
      * Creates the tooltips that appear in the dialog
@@ -237,32 +240,27 @@ export default Component.extend(FullScreenMixin, {
     handlePublishingStatus(tale, jobId) {
         let self = this;
         let currentLoop = null;
-        console.log('Started publish watch loop.');
         // Poll the status of the instance every second using recursive iteration
         let startLooping = function (func) {
     
           return later(function () {
             currentLoop = startLooping(func);
-            console.log('Looping: publish watcher.');
+            
             const store = self.get('model').get('store');
             store.findRecord('job', jobId, {
                 reload: true
               }).then(job => {
-                console.log(`Looping: publish watcher (status=${job.get('status')})`, job);
                 if (job.get('status') === 3) {
                   if (job.progress) {
-                    console.log(`Success: publish watcher progress complete!`, job);
                     self.set('progress', job.progress.current);
                     self.set('statusMessage', job.progress.message);
                   }
-                  console.log(`Success: Tale published successfully:`, tale);
                   self.set('publishStatus', 'success');
                   // The Tale was changed by the job, so fetch it again
                   store.findRecord('tale', tale._id, {
                       reload: true
                     })
                     .then(resp => {
-                      console.log(`Success: Tale cache entry updated:`, tale);
                       // Update UI with Tale information
                       self.set('tale', resp);
                       self.set('packageIdentifier', resp.publishInfo.slice(-1).pop().pid);
@@ -270,7 +268,6 @@ export default Component.extend(FullScreenMixin, {
                       cancel(currentLoop);
                     });
                 } else if (job.get('status') === 4) {
-                  console.log(`Error: publish watcher hit an error:`, job);
                   // Then the job failed with an error
                   self.setErrorStatus(job._id)
                   self.set('progress', 100)
@@ -279,9 +276,7 @@ export default Component.extend(FullScreenMixin, {
                 } else {
                   // Otherwise the job is still running
                   // Update the progressbar
-                  console.log(`Looping: publish watcher still running`, job);
                   if (job.progress) {
-                    console.log(`Looping: publish watcher progress update`, job.progress.current);
                     self.set('progress', job.progress.current);
                     self.set('statusMessage', job.progress.message);
                   }

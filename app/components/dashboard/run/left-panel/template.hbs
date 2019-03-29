@@ -121,7 +121,7 @@
       </p>
       
       <div class="ui form" style="margin-bottom:15px;">
-          <div class="inline field">
+          <div class="required inline field">
               <label>Please choose a target repository:</label>
               {{#ui-dropdown class=repoDropdownClass allowAdditions=false selected=selectedRepository onChange=(action 'onRepositoryChange')
                 as |execute mapper|}}
@@ -138,13 +138,49 @@
           </div>
       </div>
       
-      <small>
-          For more information on what artifacts will be included
-          under the published DOI, please consult the 
-          <a href='https://wholetale.readthedocs.io/en/stable/users_guide/publishing.html'>
-              Publishing Guide.
-          </a>
-      </small>
+      <div class="ui styled fluid accordion">
+          <div class="title" id="publish-details-collapse-header">
+            <small class="ui text muted">More Details
+                <i class="dropdown icon"></i>
+            </small>
+          </div>
+          <div class="content" id="publish-details-collapse">
+            <p class="transition hidden">
+                <p>
+                    Your published Tale will include everything that
+                    has been uploaded to its associated workspace.
+                </p>
+                <p>
+                    The following required files will be generated 
+                    and published along with the Tale itself:
+                </p>
+                <div class="ui list" id="publish-artifact-details">
+                    <div class="item">
+                         <i class="environment folder icon"></i>
+                        <div class="content" style="padding-top:0;padding-bottom:0;">
+                            <div class="environment name header">{{taleToPublish.title}}</div>
+                            <div class="list">
+                                {{#each nonOptionalFile as |file|}}
+                                    <div class="item">
+                                        <label>
+                                            <div class="content" style="padding-top:0;padding-bottom:0;">
+                                                <i class="file icon"></i>
+                                                 {{file}} <i class="info circle blue icon {{file}}"></i> 
+                                            </div>
+                                        </label>
+                                    </div>
+                                {{/each}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p>
+                    This process will allow another user to easily rerun
+                    your published analysis using the WholeTale platform.
+                </p>
+            </p>
+          </div>
+      </div>
       <p></p>
     </div>
       
@@ -181,7 +217,14 @@
       {{/if}}
     </div>
   </div>
-  <div class="actions">
+  <div class="actions">             
+    <small>
+      For more information about publishing, please consult the 
+      <a href='https://wholetale.readthedocs.io/en/stable/users_guide/publishing.html' target='_blank'>
+          Publishing Guide.
+      </a>
+    </small>
+      
     <div class="ui black deny button" {{action 'closePublishModal'}}>
       {{if (eq publishStatus 'success') 'Close' 'Cancel'}}
     </div>
