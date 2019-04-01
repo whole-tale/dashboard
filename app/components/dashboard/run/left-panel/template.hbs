@@ -42,9 +42,12 @@
                                     <a class="item" {{action "exportTale" model.taleId 'native'}}>
                                       Export as Zip <div class="ui label transparent" ><i class="far fa-file-archive"></i></div>
                                     </a>
-                                    <a class="item" {{action 'openPublishModal' model.tale}}>
-                                      Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
-                                    </a>
+                                    {{!-- Only allow Tale Admins to access publish function --}}
+                                    {{#if (gt model.tale._accessLevel 1)}}
+                                        <a class="item" {{action 'openPublishModal' model.tale}}>
+                                          Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
+                                        </a>
+                                    {{/if}}
                                     {{#if readyToReleaseFeature}}
                                         <a class="item">
                                             Duplicate Tale <div class="ui label transparent"><i class="fas fa-copy"></i></div>

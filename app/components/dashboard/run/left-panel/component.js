@@ -170,7 +170,7 @@ export default Component.extend(FullScreenMixin, {
     /**
      * Creates the tooltips that appear in the dialog
      * 
-     * @method create_tooltips
+     * @method createTooltips
      */
     createTooltips() {
         console.log('Creating tooltips...');
@@ -369,12 +369,15 @@ export default Component.extend(FullScreenMixin, {
             this.resetPublishState();
             this.set('taleToPublish', tale);
             this.set('selectedRepository', null);
+            const self = this;
             $('#publish-modal').modal({ 
                 onApprove: () => false,
-                onDeny: () => false
+                onDeny: () => false,
+                onVisible: () => { self.set('selectedRepository', self.get('repositories')[0].name); }
             }).modal('show');
         },
         
+
         submitPublish(tale) {
             const self = this;
             console.log('Now publishing:', tale);
@@ -397,6 +400,9 @@ export default Component.extend(FullScreenMixin, {
                 .catch((err) => {
                     console.log('Failed to publish:', err);
                     self.set('publishStatus', 'error');
+                    if (err && err.message) {
+                        self.set('statusMessage', err.message);
+                    }
                 });
                 
             return false;

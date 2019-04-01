@@ -282,7 +282,7 @@ export default Service.extend({
                 if (client.status === 200) {
                     resolve(JSON.parse(client.responseText));
                 } else {
-                    reject(client.responseText);
+                    reject(JSON.parse(client.responseText));
                 }
             });
             client.addEventListener("error", reject);
@@ -416,7 +416,7 @@ export default Service.extend({
             if (client.status === 200) {
               resolve(JSON.parse(client.response));
             } else {
-              reject(client.response);
+              reject(JSON.parse(client.response));
             }
           });
           client.addEventListener("error", reject);
