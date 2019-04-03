@@ -9,7 +9,7 @@
     <div class="inline fields ui grid">
       <label class="two wide column right aligned">Authors</label>
     </div>
-    {{#each taleAuthors as |author|}}
+    {{#each taleAuthors as |author index|}}
     <div class="inline fields ui grid">
       <label class="two wide column right aligned"></label>
       <div class="field thirteen wide column" id=author.id>
@@ -17,17 +17,17 @@
           <div class="inline fields">
             <label>First Name:</label>
               <div class="field">
-                {{input type="text" name='first-name' value=author.firstName placeholder="Sur Name" }}
+                {{input type="text" name='first-name' value=author.firstName placeholder="First Name" readonly=cannotEditTale }}
               </div>
             <label>Last Name:</label>
             <div class="field">
-              {{input type="text" name='last-name' value=author.lastName placeholder="Family Name" }}
+              {{input type="text" name='last-name' value=author.lastName placeholder="Last Name" readonly=cannotEditTale }}
             </div>
           <label>ORCID:</label>
           <div class="field">
-            {{input type="url" name='orcid-id' placeholder="https://orcid.org/0000-0002-1825-0097"  value=author.orcid }}
+            {{input type="url" name='orcid-id' placeholder="https://orcid.org/0000-0002-1825-0097"  value=author.orcid readonly=cannotEditTale }}
           </div>
-          <i class="fa fa-window-close" aria-hidden="true" style="color: black" {{action 'removeAuthor' author.id}}></i>
+          <i class="fa fa-window-close" aria-hidden="true" {{action 'removeAuthor' index}}></i>
         </div>
       </div>
     </div>
@@ -36,9 +36,9 @@
       
     <div class="inline fields ui grid">
         <label class="two wide column right aligned"></label>
-        <div class="field thirteen wide column">
-            <label></label> <i class="fas fa-plus" style="color: #2185d0; margin-left: 10%;"{{action 'addNewAuthor'}}></i>
-            <span style="color: #2185d0;" {{action 'addNewAuthor'}}>&nbsp;Add another author</span>
+        <div class="field thirteen wide column add-author">
+            <i class="fas fa-plus add-author-icon" {{action 'addNewAuthor'}}></i>
+            <span {{action 'addNewAuthor'}}>&nbsp;Add another author</span>
         </div>
     </div>
 
@@ -137,18 +137,17 @@
     </div>
 </div>
 
-
-<div class="ui metadata-error modal" style="display: none">
+<div class="ui metadata-error modal">
     <div class="header">
         Error While Saving Tale
     </div>
     <div class="image content">
         <div class="description">
-            <p style="text-align: center">{{errorMessage}}</p>
+            <p>{{errorMessage}}</p>
         </div>
     </div>
     <div class="actions">
-        <div class="ui black deny button" {{action 'closeErrorModal'}}>
+        <div class="ui black deny button">
             Close
         </div>
     </div>
