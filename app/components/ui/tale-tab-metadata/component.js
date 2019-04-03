@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import Object, { computed } from '@ember/object';
+import { computed } from '@ember/object';
 import { A } from '@ember/array';
 import $ from 'jquery';
 
@@ -25,10 +25,14 @@ export default Component.extend({
   // An error message that can get set, displayed in the error modal
   errorMessage: String(),
   model: null,
+  // Flag that can be used to tell if the current user has permission to edit the Tale
+  canEditTale: computed('model.tale._accessLevel', function () {
+    return this.get('model') && this.get('model').get('tale') && this.get('model').get('tale').get('_accessLevel') >= taleStatus.WRITE;
+  }).readOnly(),
   cannotEditTale: computed.not('canEditTale').readOnly(),
+
   init() {
     this._super(...arguments);
-
     // Fetch images for user to select an environment
     const component = this;
     $.getJSON(this.get('apiHost') + '/api/v1/image/').then(function(images) {
@@ -47,15 +51,12 @@ export default Component.extend({
     if (tale.publishInfo && tale.publishInfo.length) {
       this.set('publishedURL', tale.publishInfo[tale.publishInfo.length - 1].uri );
     }
+    this.refreshAuthors();
   },
 
-  didInsertElement() {
+  didUpdateAttrs() {
     this._super(...arguments);
-
-    // Re-render the rows by discarding the previous state and
-    // re-adding the authors
-    this.taleAuthors.clear();
-    this.addTaleAuthors();
+    this.refreshAuthors();
   },
 
   didRender() {
@@ -80,90 +81,57 @@ export default Component.extend({
         $('.ui.icon.selection.dropdown.license').dropdown('set selected', license.spdx);
       }
     })
-  },
-  
-  canEditTale: computed('model.tale._accessLevel', function () {
-    return this.get('model') && this.get('model').get('tale') && this.get('model').get('tale').get('_accessLevel') >= taleStatus.WRITE;
-  }).readOnly(),
-      
-   /* 
-    Generates a uui that can assigned to a tale author. Note that this change 
-    allows identification about which author row is being interacted with. This
-    change does not persist to the backend.
+  },    
+
+  /**
+   * Resets the authors section
+   * @method refreshAuthors
    */
-  ID() {
-    let array = new Uint32Array(8)
-    window.crypto.getRandomValues(array)
-    let str = ''
-    for (let i = 0; i < array.length; i++) {
-      str += (i < 2 || i > 5 ? '' : '-') + array[i].toString(16).slice(-4)
-    }
-    return str
+  refreshAuthors() {
+    this.taleAuthors.clear();
+    this.addTaleAuthors();
   },
 
-  /* 
-    Adds the Tale's saved authors to the component property
-    that the handlebars template uses to create rows (this.taleAuthors)
+  /** 
+   * Adds the Tale's saved authors to the component property
+   * that the handlebars template uses to create rows (this.taleAuthors)
+   * @method addTaleAuthors
   */
  addTaleAuthors() {
   let authors = this.get('model').get('tale').authors;
-  
-  for (let i = 0; i < authors.length; i++) {
-    let newAuthor = {
-      'id': this.ID(),
-      'firstName': authors[i].firstName,
-      'lastName': authors[i].lastName,
-      'orcid': authors[i].orcid
-  }
-    this.taleAuthors.pushObject(newAuthor);
-  }
-},
+  this.taleAuthors.pushObjects(authors);
+ },
 
-  /* 
-    Iterates over the array of saved&unsaved authors and makes sure that
-      1. There is at least one author
-      2. All of the authors have a first & last name and and an ORCID
+  /**
+   * Iterates over the array of saved&unsaved authors and makes sure that
+   *   1. There is at least one author
+   *   2. All of the authors have a first & last name and and an ORCID
+   * @method validateAuthors
   */
   validateAuthors () {
     if (this.taleAuthors.length < 1) {
       this.set('errorMessage', 'Your Tale must have at least one author; please add one to the Tale.');
       return false
     }
-    let res = true;
-    this.taleAuthors.forEach((author) => {
+
+    for (let i=0; i<this.taleAuthors.length; i++) {
+      let author =  this.taleAuthors[i];
       if (author.lastName.length < 1) {
         this.set('errorMessage', "There is a Tale author that's missing a last name.");
-        res = false
+        return false;
       }
       if (author.firstName.length < 1 ) {
         this.set('errorMessage', "There is a Tale author that's missing a first name.");
-        res = false;
+        return false;
       }
       if (author.orcid.length < 1) {
         this.set('errorMessage', "There is a Tale author that's missing an ORCID.");
-        res = false;
+        return false;
       }
-    });
-    return res;
+    };
+    return true;
   },
-  
-  /* 
-    There is a discrepency between the Tale 'authors' object and the ones used in the
-    component. The ID field needs to be removed before adding the structure to the model.
-    This method formats the component object and updates the Tale model with it.
-  */
-  addAuthorsTaleModel() {
-    let taleAuthors = []
-    this.taleAuthors.forEach((author) => {
-      taleAuthors.push(
-        {
-          'firstName': author.firstName,
-          'lastName': author.lastName,
-          'orcid': author.orcid
-        })
-      })
-    this.model.tale.set('authors', taleAuthors);
-  },
+
   actions: {
 
     /* 
@@ -179,8 +147,7 @@ export default Component.extend({
 
       // Only update the Tale if the authors are valid
       if (this.validateAuthors()) {
-        // Preform any author formatting
-        this.addAuthorsTaleModel()
+        this.model.tale.set('authors', this.taleAuthors);
         // Request that the Tale model be updated
         tale.save().catch(onFail);
       }
@@ -199,46 +166,41 @@ export default Component.extend({
       tale.set('licenseSPDX', selected);
     },
     
-    /* 
-    Adds a new, blank user to the component authors object, which
-    then gets added as a new row in the UI.
+    /**
+     * Adds a new, blank user to the component authors object, which
+     * then gets added as a new row in the UI.
+     * @method addNewAuthor
     */
     addNewAuthor() {
-      let newAuthor = {
-        'id': this.ID(),
-        'firstName': '',
-        'lastName': '',
-        'orcid':'',
+      if (this.canEditTale) {
+        let newAuthor = {
+          'firstName': '',
+          'lastName': '',
+          'orcid':'',
+        }
+        this.taleAuthors.pushObject(newAuthor)
       }
-      this.taleAuthors.pushObject(newAuthor)
     },
 
-    /* 
-    Removes an author from the component, and is consequentially removed
-    in the UI.
+    /**
+     * Removes an author from the component, and is consequentially removed
+     * in the UI.
+     * @method removeAuthor
     */
     removeAuthor(id) {
-      let currentAuthors = this.get('taleAuthors');
-      let deletedAuthor = currentAuthors.find(o => o.id === id);
-      if(deletedAuthor){
-        let authorLocation = currentAuthors.indexOf(deletedAuthor);
-        if (authorLocation > -1) {
-          this.taleAuthors.removeAt(authorLocation);
-        }
+      if (this.canEditTale) {
+        this.taleAuthors.removeAt(id);
       }
     },
 
-    /* 
-      Open the modal that the user sees when an error occurred or when validation failed.
+    /**
+     * Open the modal that the user sees when an error occurred or when validation failed.
+     * @method openErrorModal
     */
     openErrorModal() {
       let selector = '.ui.metadata-error.modal';
       $(selector).modal('setting', 'closable', true);
       $(selector).modal('show');
-    },
-    
-    closeErrorModal() {
-      return false;
     },
   }
 });
