@@ -80,17 +80,6 @@ export default Component.extend(FullScreenMixin, {
                 iframeWindow.parent.postMessage('message sent', window.location.origin);
             };
         }
-        if(self.model) {
-          self.store.findRecord('tale', self.model.taleId)
-          .then(tale => {
-            if (tale.creatorId === self.userAuth.getCurrentUserID()) {
-              self.set('enablePublish', true);
-            }
-            else {
-              self.set('enablePublish', false);
-            }
-          });
-        }
     },
 
     didInsertElement() {      
