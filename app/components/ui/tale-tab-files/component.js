@@ -410,13 +410,6 @@ export default Component.extend({
         },
 
         //----------------------------------------------------------------------------
-        openModal(modalName) {
-            let modal = $('.ui.' + modalName + '.modal');
-            modal.parent().prependTo($(document.body));
-            modal.modal('show');
-        },
-
-        //----------------------------------------------------------------------------
         insertNewFolder(folder) {
             let parentId = folder.get('parentId');
             let parentType = folder.get('parentCollection');

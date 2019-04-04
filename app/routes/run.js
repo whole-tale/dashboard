@@ -15,12 +15,12 @@ export default AuthenticateRoute.extend({
     });
   },
 
-  afterModel(model, transition) {
+  /*afterModel(model, transition) {
     let queryParams = transition['queryParams'];
     if (queryParams['auth']) {
         model.set('auth', queryParams['auth'])
     }
-  },
+  },*/
 
   actions: {
     onShowInstance (model) {

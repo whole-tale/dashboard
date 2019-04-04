@@ -36,12 +36,6 @@ export default Ember.Component.extend({
 
     actions: {
         // --------------------------------------------------------------------
-        openModal(modalName) {
-          let modal = Ember.$('.ui.'+modalName+'.modal');
-          modal.parent().prependTo(Ember.$(document.body));
-          modal.modal('show');
-        },
-        // --------------------------------------------------------------------
         leftButtonClicked() {
 
         },

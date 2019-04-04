@@ -161,11 +161,6 @@ export default Component.extend({
       this.set('filter', 'All');
       this.setFilter();
     },
-    openModal(modalName) {
-      let modal = $('.ui.' + modalName + '.modal');
-      modal.parent().prependTo($(document.body));
-      modal.modal('show');
-    },
     openDetailsModal(model) {
       let component = this;
       if (model) {

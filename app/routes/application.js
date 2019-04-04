@@ -37,32 +37,14 @@ export default AuthenticateRoute.extend({
     }
   },
   actions: {
+    error(error, transition) {
+      console.log('Error encountered during transition:', error);
+      console.log('   Transition:', transition);
+      return true;
+    },
     toRoute() {
       this.transitionTo.call(this, ...arguments);
       return true;
-    },
-
-    showModal(modalDialogName, modalContext) {
-      if (modalContext.hasD1JWT) {
-        const applicationController = this.controller;
-
-        setProperties(applicationController, {
-          modalDialogName,
-          modalContext: modalContext.taleId,
-          isModalVisible: true
-        });
-      }
-      else {
-        let selector = '.ui.dataone.modal';
-        $(selector).modal('show');
-      }
-      // const applicationController = this.controller;
-
-      // setProperties(applicationController, {
-      //   modalDialogName,
-      //   modalContext,
-      //   isModalVisible: true
-      // });
     },
 
     closeModal() {
