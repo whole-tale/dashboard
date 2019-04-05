@@ -117,14 +117,16 @@
         </div>
     </div>
 
-    {{#if publishedURL}}
     <div class="inline fields ui grid">
         <label class="two wide column right aligned">Published Location</label>
         <div class="ui action field thirteen wide column">
-            <a href={{publishedURL}} target="_blank">{{publishedURL}}</a>
+            {{#if publishedURL}}
+                <a href={{publishedURL}} target="_blank">{{publishedURL}}</a>
+            {{else}}
+                <span>This Tale has not been published</span>
+            {{/if}}
         </div>
     </div>
-    {{/if}}
 
     <div class="inline fields ui grid">
         <label class="two wide column right aligned"></label>
