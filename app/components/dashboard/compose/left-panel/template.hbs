@@ -21,7 +21,12 @@
           </p>
         {{#if importing}}
           <div class ='tale-compose-progressbar'>
-            {{ember-progress-bar progress=progress options=(hash strokeWidth=4 color=barColor trailColor= "#a5a4a4")}}
+            {{#ui-progress value=progress progress=progress total=progressTotal class="teal indicating"}}
+              <div class="bar"></div>
+              <div class="label importing-status-message">
+                <i class="fas fa-spinner fa-pulse"></i> Please Wait...
+              </div>
+            {{/ui-progress}}
           </div>
         {{else}}
           <div class="tale-compose-loader">
