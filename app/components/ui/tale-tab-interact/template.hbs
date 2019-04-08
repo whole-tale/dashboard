@@ -1,8 +1,8 @@
-{{#if (not-eq model.status 0)}}
-    {{#if model.iframe}}
+{{#if (eq model.instance.status 2)}}
+    {{#if model.instance.iframe}}
       <div id="frontendDisplayParent" class="rounded-bottom">
         <iframe id="frontendDisplay"
-                src="{{model.url}}"
+                src="{{model.instance.url}}"
                 class="ui basic segment">
         </iframe>
       </div>
@@ -10,12 +10,16 @@
         <div class="placeholder message">
             <p>
               The compute environment for this Tale must run in a separate browser window.<br/>
-              <a class="ui primary button huge" href="{{model.url}}" target="_blank">Go to new window</a>
+              <a class="ui primary button huge" href="{{model.instance.url}}" target="_blank">Go to new window</a>
             </p>
         </div>
     {{/if}}
-{{else}}
+{{else if (eq model.instance.status 1)}}
   <div class="placeholder message">
     <p>Creating your new Tale...</p>
+  </div>
+{{else}}
+  <div class="placeholder message">
+    <p>Launch this Tale to Interact</p>
   </div>
 {{/if}}

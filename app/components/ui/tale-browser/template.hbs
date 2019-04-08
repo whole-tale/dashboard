@@ -207,7 +207,7 @@
                                                     <div class="content">
                                                         <div class="center">
                                                             {{#if showLink}}
-                                                                {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
+                                                                {{#link-to 'run.view' model._id class="ui inverted button"}}View{{/link-to}}
                                                             {{/if}}
                                                             {{#if showSelect}}
                                                                 <div class="ui inverted button" {{action 'select' model}}>Select</div>
@@ -262,7 +262,7 @@
                                                         <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
                                                     </div>
                                                     <div class="ui buttons">
-                                                      {{#link-to 'run.view' instance._id}}
+                                                      {{#link-to 'run.view' model._id}}
                                                         <div class="ui mini green icon button" style="margin-right: 10px">
                                                           <i class="play icon"></i>
                                                           Go to Tale
@@ -303,7 +303,7 @@
                                 <div class="content">
                                     <div class="center">
                                         {{#if showLink}}
-                                            {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
+                                            {{#link-to 'run.view' model._id class="ui inverted button"}}View{{/link-to}}
                                         {{/if}}
                                         {{#if showSelect}}
                                             <div class="ui inverted button" {{action 'select' model}}>Select</div>
@@ -364,7 +364,7 @@
                                                 <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
 
                                                 <div class="ui buttons">
-                                                    {{#link-to 'run.view' instance._id}}
+                                                    {{#link-to 'run.view' model._id}}
                                                       <div class="ui mini green icon button" style="margin-right: 10px">
                                                         <i class="play icon"></i>
                                                         Go to Tale

@@ -8,20 +8,23 @@ export default Controller.extend({
     let controller = this;
     controller.set("error", "");
 
-    model.forEach(item => {
-      controller.get('store').findRecord('tale', item.get('taleId')).then(tale => {
-        controller.get('store').findRecord('image', tale.get('imageId')).then(image => {
-          item.set('image', image);
-          controller.get('store').findRecord('folder', tale.get('folderId')).
-            then(folder => {
-              item.set('folder', folder);
-            }).catch(() => {
-              let err = controller.get("error") + "<li>Folder with ID " + tale.get('folderId') + " was not found for tale " + tale.get('title') + "!</li>";
-              controller.set("error", err);
-            });
-        }).catch(() => {
-          let err = controller.get("error") + "<li>Image with ID " + tale.get('imageId') + " was not found for tale " + tale.get('title') + "! </li>";
-          controller.set("error", err);
+    model.forEach(tale => {
+      controller.get('store').query('instance', { queryParams: { 'taleId': tale.get('id') } }).then(instances => {
+        instances.forEach(instance => {
+          tale.set('instance', instance);
+          controller.get('store').findRecord('image', tale.get('imageId')).then(image => {
+            tale.set('image', image);
+            controller.get('store').findRecord('folder', tale.get('folderId')).
+              then(folder => {
+                tale.set('folder', folder);
+              }).catch(() => {
+                let err = controller.get("error") + "<li>Folder with ID " + tale.get('folderId') + " was not found for tale " + tale.get('title') + "!</li>";
+                controller.set("error", err);
+              });
+          }).catch(() => {
+            let err = controller.get("error") + "<li>Image with ID " + tale.get('imageId') + " was not found for tale " + tale.get('title') + "! </li>";
+            controller.set("error", err);
+          });
         });
       });
     });

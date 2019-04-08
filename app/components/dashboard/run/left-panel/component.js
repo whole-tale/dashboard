@@ -162,8 +162,8 @@ export default Component.extend(FullScreenMixin, {
         this.sendAction('publishTale', modalDialogName, modalContext);
     },
 
-    publishModalContext: computed('model.taleId', function () {
-        return { taleId: this.get('model.taleId'), hasD1JWT: this.hasD1JWT };
+    publishModalContext: computed('model._id', function () {
+        return { taleId: this.get('model._id'), hasD1JWT: this.dataoneAuth.hasD1JWT() };
     }),
 
 

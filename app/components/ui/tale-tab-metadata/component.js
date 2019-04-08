@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { A } from '@ember/array';
+
 import $ from 'jquery';
 
 import config from '../../../config/environment';
@@ -26,7 +27,7 @@ export default Component.extend({
   model: null,
   // Flag that can be used to tell if the current user has permission to edit the Tale
   canEditTale: computed('model.tale._accessLevel', function () {
-    return this.get('model') && this.get('model').get('tale') && this.get('model').get('tale').get('_accessLevel') >= taleStatus.WRITE;
+    return this.get('model') && this.get('model') && this.get('model').get('_accessLevel') >= taleStatus.WRITE;
   }).readOnly(),
   cannotEditTale: computed.not('canEditTale').readOnly(),
   
@@ -40,6 +41,7 @@ export default Component.extend({
 
   init() {
     this._super(...arguments);
+    
     // Fetch images for user to select an environment
     const component = this;
     $.getJSON(this.get('apiHost') + '/api/v1/image/').then(function(images) {
@@ -55,36 +57,33 @@ export default Component.extend({
 
     this.refreshAuthors();
   },
-
+  
+  didRender() {
+    // Enable dropdown functionality
+    $('.ui.dropdown.image').dropdown();
+    this.selectDefaultImageId();
+    $('.ui.dropdown.license').dropdown();
+    this.selectDefaultLicense();
+  },
+  
   didUpdateAttrs() {
     this._super(...arguments);
     this.refreshAuthors();
   },
-
-  didRender() {
-    // Enable the environment dropdown functionality
-    $('.ui.dropdown').dropdown();
-    this.selectDefaultImageId();
-    $('.ui.icon.selection.dropdown.license').dropdown();
-    this.selectDefaultLicense();
-  },
   
   selectDefaultImageId() {
     // Select the current imageId by default
-    const selectedImageId = this.get('model').get('tale').get('imageId');
-    $('.ui.dropdown').dropdown('set selected', selectedImageId);
+    const selectedImageId = this.get('model').get('imageId');
+    $('.ui.dropdown.image').dropdown('set selected', selectedImageId);
   },
 
   selectDefaultLicense() {
     // Select the license that the Tale currently has
-    const selectedLicense = this.get('model').get('tale').get('licenseSPDX');
-    this.get('licenses').forEach((license) => {
-      if (license.spdx == selectedLicense) {
-        $('.ui.icon.selection.dropdown.license').dropdown('set selected', license.spdx);
-      }
-    })
-  },    
-
+    const selectedLicense = this.get('model').get('licenseSPDX');
+    $('.ui.dropdown.license').dropdown('set selected', selectedLicense);
+  },
+  
+  
   /**
    * Resets the authors section
    * @method refreshAuthors
@@ -100,7 +99,7 @@ export default Component.extend({
    * @method addTaleAuthors
   */
  addTaleAuthors() {
-  let authors = this.get('model').get('tale').authors;
+  let authors = this.get('model').get("authors");
   this.taleAuthors.pushObjects(authors);
  },
 
@@ -133,15 +132,15 @@ export default Component.extend({
     };
     return true;
   },
-
+  
   actions: {
-
+ 
     /* 
       Takes the fields in the UI and updates the Tale model with the new
       values.
     */
     updateTale() {
-      const tale = this.get('model').get('tale');
+      const tale = this.get('model');
       const onFail = (e) => {
         this.set('errorMessage', ('Error saving tale (' + tale['id'] + '):', e));
         this.send('openErrorModal');
@@ -149,7 +148,7 @@ export default Component.extend({
 
       // Only update the Tale if the authors are valid
       if (this.validateAuthors()) {
-        this.model.tale.set('authors', this.taleAuthors);
+        this.model.set('authors', this.taleAuthors);
         // Request that the Tale model be updated
         tale.save().catch(onFail);
       }
@@ -157,52 +156,52 @@ export default Component.extend({
         this.send('openErrorModal');
       }
     },
-
+      
     setTaleEnvironment: function(selected) {
-      const tale = this.get('model').get('tale');
+      const tale = this.get('model');
       tale.set('imageId', selected);
     },
 
     setTaleLicense: function(selected) {
-      const tale = this.get('model').get('tale');
+      const tale = this.get('model');
       tale.set('licenseSPDX', selected);
     },
     
-    /**
-     * Adds a new, blank user to the component authors object, which
-     * then gets added as a new row in the UI.
-     * @method addNewAuthor
-    */
-    addNewAuthor() {
-      if (this.canEditTale) {
-        let newAuthor = {
-          'firstName': '',
-          'lastName': '',
-          'orcid':'',
-        }
-        this.taleAuthors.pushObject(newAuthor)
-      }
-    },
+     /**	
+     * Adds a new, blank user to the component authors object, which	
+     * then gets added as a new row in the UI.	
+     * @method addNewAuthor	
+    */	
+    addNewAuthor() {	
+      if (this.canEditTale) {	
+        let newAuthor = {	
+          'firstName': '',	
+          'lastName': '',	
+          'orcid':'',	
+        }	
+        this.taleAuthors.pushObject(newAuthor)	
+      }	
+    },	
 
-    /**
-     * Removes an author from the component, and is consequentially removed
-     * in the UI.
-     * @method removeAuthor
-    */
-    removeAuthor(id) {
-      if (this.canEditTale) {
-        this.taleAuthors.removeAt(id);
-      }
-    },
+     /**	
+     * Removes an author from the component, and is consequentially removed	
+     * in the UI.	
+     * @method removeAuthor	
+    */	
+    removeAuthor(id) {	
+      if (this.canEditTale) {	
+        this.taleAuthors.removeAt(id);	
+      }	
+    },	
 
-    /**
-     * Open the modal that the user sees when an error occurred or when validation failed.
-     * @method openErrorModal
-    */
-    openErrorModal() {
-      let selector = '.ui.metadata-error.modal';
-      $(selector).modal('setting', 'closable', true);
-      $(selector).modal('show');
+     /**	
+     * Open the modal that the user sees when an error occurred or when validation failed.	
+     * @method openErrorModal	
+    */	
+    openErrorModal() {	
+      let selector = '.ui.metadata-error.modal';	
+      $(selector).modal('setting', 'closable', true);	
+      $(selector).modal('show');	
     },
   }
 });
