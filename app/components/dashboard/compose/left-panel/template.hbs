@@ -17,15 +17,12 @@
     {{#if launchingInstance}}
       <div class="compose-status">
           <p class ="compose-status-message">
-            {{message}}
+            <i class="fas fa-spinner fa-pulse"></i> {{message}}
           </p>
         {{#if importing}}
           <div class ='tale-compose-progressbar'>
             {{#ui-progress value=progress progress=progress total=progressTotal class="teal indicating"}}
               <div class="bar"></div>
-              <div class="label importing-status-message">
-                <i class="fas fa-spinner fa-pulse"></i> Please Wait...
-              </div>
             {{/ui-progress}}
           </div>
         {{else}}
