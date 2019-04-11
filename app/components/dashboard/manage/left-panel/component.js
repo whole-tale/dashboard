@@ -1,8 +1,9 @@
 import TextField from '@ember/component/text-field';
+import { A } from '@ember/array';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { observer, computed } from '@ember/object';
-import Object from '@ember/object';
+import EmberObject from '@ember/object';
 import $ from 'jquery';
 
 function wrapFolder(folderID, folderName) {
@@ -328,15 +329,14 @@ export default Component.extend({
     },
 
     breadcrumbClicked(item) {
-      let state = this.get('internalState');
-      let crumbs = state.getCurrentFileBreadcrumbs();
-      let self = this;
-      let adapterOptions = { queryParams: { limit: "0" } };
+      const state = this.get('internalState');
+      const crumbs = state.getCurrentFileBreadcrumbs();
+      const self = this;
+      const adapterOptions = { queryParams: { limit: "0" } };
 
-      let previousItem = null;
-      let newCrumbs = [];
-      for (let i; i < crumbs.length; ++i) {
-        if (crumbs[i].name === item.get('name')) {
+      const newCrumbs = A([]);
+      for (let i = 0; i < crumbs.length; ++i) {
+        if (crumbs[i].name === item.name) {
           if (i == 0 && this.get('currentNav') == 'user_data') {
             self.set('fileData', { itemContents: [], folderContents: [] });
             self.get('store').query('dataset', { myData: true, adapterOptions }).then(datasets => {
@@ -345,19 +345,18 @@ export default Component.extend({
           }
           break;
         } else {
-          newCrumbs.append(crumbs[i]);
-          previousItem = crumbs[i];
+          newCrumbs.pushObject(crumbs[i]);
         }
       }
 
       state.setCurrentFileBreadcrumbs(newCrumbs);
       state.setCurrentFolderID(item._id);
       state.setCurrentFolderName(item.name);
-      state.setCurrentBreadCrumb(previousItem); // need to set this because itemClicked is expecting the previous breadcrumb.
+      state.setCurrentBreadCrumb(null);  // no need to set this here, we already have our full breadcrumbs
 
       this.set('currentFolderId', item._id);
 
-      this.send('itemClicked', Object.create(item), 'true');
+      this.send('itemClicked', EmberObject.create(item), 'true');
     },
 
     //----------------------------------------------------------------------------

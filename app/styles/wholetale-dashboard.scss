@@ -1244,3 +1244,14 @@ wt.panel .wt.paddleboard.header i {
   margin-left: 8px;
   font-weight: 400;
 }
+
+#instance-deleting-loader {
+  border: none;
+  height: 100%;
+  height: -moz-available;
+  height: -fill-available;
+  height: fill-available;
+  height: stretch;
+  height: -webkit-fill-available;
+  height: -o-fill-available;
+}
