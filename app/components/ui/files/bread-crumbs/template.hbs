@@ -1,40 +1,48 @@
 {{#if isMain}}
-    <div class="ui large breadcrumb">
-        <a class="section {{if justDescription 'bold'}}" {{action "navClicked" currentNav}}> {{#if justDescription}} {{currentNav.displayName}} {{else}} {{currentNav.name}} {{/if}}</a>
-        {{#if justDescription}}
-            {{#if (and (lt model.tale._accessLevel 1) (or (eq currentNav.command 'workspace') (eq currentNav.command 'user_data')))}}
-                <i class="fas fa-plus-circle icon blue large disabled" disabled style="cursor:not-allowed !important;"></i>
-            {{else}}
-                <i class="fas fa-plus-circle icon blue large" onclick={{action 'triggerBreadcrumbAction' currentNav.name}}></i>
-            {{/if}}
-            {{#if displayFoldersMenu}}
-                {{#click-outside action=(action (mut displayFoldersMenu) false)}}
-                    <div class="folder-menu">
-                        <div class="ui vertical left menu transition">
-                            <div class="header">{{currentNav.name}} Options</div>
-                            <a class="item" onclick={{action 'openCreateFolderModal'}}>
-                                New Folder <div class="ui label transparent"><i class="fas fa-folder"></i></div>
-                            </a>
-                            <a class="item" onclick={{action 'openUploadDialog'}}>
-                                Upload File <div class="ui label transparent"><i class="fas fa-upload"></i></div>
-                            </a>
-                            {{#if (eq currentNav.command 'workspace')}}
-                                <a class="item" onclick={{action 'openWorkspacesDataModal'}}>
-                                    Import Tale Data...
+    <div class="ui grid">
+        {{!-- Breadcrumb --}}
+        <div class="fifteen wide column">
+            <div class="ui large breadcrumb">
+                <a class="section {{if justDescription 'bold'}}" {{action "navClicked" currentNav}}> {{#if justDescription}} {{currentNav.displayName}} {{else}} {{currentNav.name}} {{/if}}</a>
+                {{#each fileBreadCrumbs as |bc|}}
+                    <i class="right chevron icon divider"></i>
+                    <a class="section" {{action "breadcrumbClicked" bc}}>{{truncate-breadcrumb bc.name}}</a>
+                {{/each}}
+                {{#if currentBreadCrumb.name}}<i class="right chevron icon divider"></i>{{/if}}
+                <div class="active section bold">{{truncate-breadcrumb currentBreadCrumb.name}}</div>
+            </div>
+        </div>
+        
+        {{!-- Add Button --}}
+        <div class="one wide column">
+            {{#if justDescription}}
+                {{#if (and (lt model.tale._accessLevel 1) (or (eq currentNav.command 'workspace') (eq currentNav.command 'user_data')))}}
+                    <i id="add-item-button" class="fas fa-plus-circle icon blue large disabled" disabled style="cursor:not-allowed !important;"></i>
+                {{else}}
+                    <i id="add-item-button" class="fas fa-plus-circle icon blue large" {{action 'triggerBreadcrumbAction' currentNav.name}}></i>
+                {{/if}}
+                {{#if displayFoldersMenu}}
+                    {{#click-outside action=(action (mut displayFoldersMenu) false)}}
+                        <div id="folder-menu" class="folder-menu">
+                            <div class="ui vertical left menu transition">
+                                <div class="header">{{currentNav.name}} Options</div>
+                                <a class="item" onclick={{action 'openCreateFolderModal'}}>
+                                    New Folder <div class="ui label transparent"><i class="fas fa-folder"></i></div>
                                 </a>
-                            {{/if}}
+                                <a class="item" onclick={{action 'openUploadDialog'}}>
+                                    Upload File <div class="ui label transparent"><i class="fas fa-upload"></i></div>
+                                </a>
+                                {{#if (eq currentNav.command 'workspace')}}
+                                    <a class="item" onclick={{action 'openWorkspacesDataModal'}}>
+                                        Import Tale Data...
+                                    </a>
+                                {{/if}}
+                            </div>
                         </div>
-                    </div>
-                {{/click-outside}}
+                    {{/click-outside}}
+                {{/if}}
             {{/if}}
-        {{else}}
-            {{#each fileBreadCrumbs as |bc|}}
-                <i class="right chevron icon divider"></i>
-                <a class="section" {{action "breadcrumbClicked" bc}}>{{truncate-breadcrumb bc.name}}</a>
-            {{/each}}
-        {{/if}}
-        {{#if currentBreadCrumb.name}}<i class="right chevron icon divider"></i>{{/if}}
-        <div class="active section bold">{{truncate-breadcrumb currentBreadCrumb.name}}</div>
+        </div>
     </div>
 {{else}}
     <div class="ui grid">
@@ -44,7 +52,7 @@
         <div class="fifteen wide column" style="padding: 0; margin: 0;">
             <div class="ui large breadcrumb">
                 <a class="section"> {{currentNavTitle}}</a>
-
+                
                 {{#each fileBreadCrumbs as |bc|}}
                     <a class="section" {{action "breadcrumbClicked" bc}}>{{truncate-breadcrumb bc.name}}</a>
                     <i class="right chevron icon divider"></i>
