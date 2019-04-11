@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import Object, { observer, computed } from '@ember/object';
+import EmberObject, { observer, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
 import { later } from '@ember/runloop';
@@ -29,7 +29,7 @@ export default Component.extend({
   animationRefreshTime: 500, // min ms time between animation refreshes
   guid: null,
   selectedMenuIndex: -1,
-  selectedInstance: Object.create({}),
+  selectedInstance: EmberObject.create({}),
   classNameBindings: ['showSearch'],
 
   filterObserver: observer('searchStr', function () {
@@ -42,23 +42,17 @@ export default Component.extend({
 
   init() {
     this._super(...arguments);
-    let component = this;
-
-    this.get("models").forEach(function (instance) {
-      component.get('store').findRecord('tale', instance.get('taleId'))
-        .then(tale => {
-          instance.set('tale', tale);
-        });
-    });
   },
-  didRender() {},
-  didUpdate() {
+  didRender() {
     let component = this;
     this.get("models").forEach(function (instance) {
-      component.get('store').findRecord('tale', instance.get('taleId'))
-        .then(tale => {
-          instance.set('tale', tale);
-        });
+      component.get('store').findRecord('tale', instance.get('taleId'), { 
+        reload: true, 
+        backgroundReload: false
+      })
+      .then(tale => {
+        instance.set('tale', tale);
+      });
     });
     let selected = component.get('models').filter(model => model.id === component.internalState.currentInstanceId);
     if(!(selected && selected.length)) {
@@ -78,8 +72,9 @@ export default Component.extend({
 
     deselectInstance() {
       let component = this;
-      component.set('selectedInstance', Object.create({}));
+      component.set('selectedInstance', EmberObject.create({}));
       component.set('selectedMenuIndex', -1);
+      component.get('internalState').set('currentInstanceId', undefined);
       // component.get('wtEvents').events.selectEnvironment(this.get('selectedInstance'));
     },
 
@@ -94,19 +89,31 @@ export default Component.extend({
 
     approveDelete(model) {
       let component = this;
+      component.set('deletingInstance', true);
 
       model.destroyRecord({
-        reload: true
+        reload: true,
+        backgroundReload: false
       }).then(function () {
+          let selectedInstanceId = component.get('internalState').get('currentInstanceId');
           component.set('selectedInstance', undefined);
           component.set('selectedMenuIndex', -1);
           // TODO replace this workaround for deletion with something more robust
-          component.get('store').unloadRecord(model);
+          //component.get('store').unloadRecord(model);
           component.get('internalState').set('currentInstanceId', undefined);
           // transition to the run route if the current route is run.view
           let router = component.get('router');
           if(router.get('currentRouteName') === 'run.view'){
-            router.transitionTo('run');
+            // XXX: Workaround for async delete issues - timeout may need to be increased
+            setTimeout(() => {
+              component.actions.deselectInstance.call(component);
+              if (selectedInstanceId === model.get('_id')) {
+                router.transitionTo('run.index');
+              }
+              component.set('deletingInstance', false);
+            }, 2000);
+          } else {
+            component.set('deletingInstance', false);
           }
       });
 
@@ -143,7 +150,7 @@ export default Component.extend({
         });
         if (!selected.length) {
           component.set('selectedMenuIndex', -1);
-          // component.set('selectedInstance', Object.create({}));
+          component.set('selectedInstance', Object.create({}));
           // component.get('wtEvents').events.selectEnvironment(this.get('selectedInstance'));
         }
         // component.updateModels(component, searchView);
