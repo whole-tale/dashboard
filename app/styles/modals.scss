@@ -4,6 +4,10 @@
   top: 20px !important;
   left: 0 !important;
 }
+.scrolling.undetached.dimmable .ui.scrolling.modal {
+  top: 20px !important;
+  left: 0 !important;
+}
 
 .ui.modal {
   position: fixed;
@@ -600,5 +604,47 @@
 } 
 
 .publisher .fa-briefcase {
-    margin-left:10px;
-  }
+  margin-left:10px;
+}
+  
+#publish-modal-content {
+  padding: 17.5px 21px 17.5px 21px;
+  overflow-y: unset;
+}
+
+#publish-results-panel {
+  max-height: 140px;
+  margin-top: 15px;
+}
+
+#publish-confirmation-button {
+  color: #21ba45;
+}
+
+#publishing-success-message {
+  margin-top: 3em 0 0 0;
+}
+
+#publishing-success-label {
+  margin-right: 5px;
+}
+
+#publishing-error-label {
+  margin-right: 5px;
+}
+
+#publish-result {
+  margin-top: 10px;
+}
+
+#publish-artifact-details {
+  padding: 0 0 0 30px;
+}
+
+#publish-details-collapse-header {
+  padding: 5px 14px;
+}
+
+#publish-details-collapse {
+  padding: 5px 14px;
+}

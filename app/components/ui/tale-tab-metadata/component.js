@@ -19,7 +19,6 @@ export default Component.extend({
   environments: [],
   licenses: [],
   model: null,
-  publishedURL: 'This Tale has not been published',
   // Array of author dicts that the template uses to render rows
   taleAuthors: A(),
   // An error message that can get set, displayed in the error modal
@@ -30,6 +29,14 @@ export default Component.extend({
     return this.get('model') && this.get('model').get('tale') && this.get('model').get('tale').get('_accessLevel') >= taleStatus.WRITE;
   }).readOnly(),
   cannotEditTale: computed.not('canEditTale').readOnly(),
+  
+  publishedURL: computed('model.tale', 'model.tale.publishInfo', function() {
+    const tale = this.get('model').get('tale');
+    if (tale.publishInfo && tale.publishInfo.length) {
+       return tale.publishInfo[tale.publishInfo.length - 1].uri;
+    }
+    return null;
+  }),
 
   init() {
     this._super(...arguments);
@@ -46,11 +53,6 @@ export default Component.extend({
       component.selectDefaultLicense();
     });
 
-    const tale = this.get('model').get('tale');
-    let uri = tale.publishedURI;
-    if (tale.publishInfo && tale.publishInfo.length) {
-      this.set('publishedURL', tale.publishInfo[tale.publishInfo.length - 1].uri );
-    }
     this.refreshAuthors();
   },
 

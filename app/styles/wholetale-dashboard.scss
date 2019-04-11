@@ -1240,6 +1240,11 @@ wt.panel .wt.paddleboard.header i {
   }
 }
 
+#event-notification-stream > .event > .content > .summary {
+  margin-left: 8px;
+  font-weight: 400;
+}
+
 #instance-deleting-loader {
   border: none;
   height: 100%;
