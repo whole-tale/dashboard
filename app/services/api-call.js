@@ -1,4 +1,6 @@
 import config from '../config/environment';
+import { later, cancel } from '@ember/runloop';
+import EmberObject from '@ember/object';
 import Service from '@ember/service';
 import $ from 'jquery';
 import {
@@ -6,6 +8,7 @@ import {
 } from '@ember/service';
 
 export default Service.extend({
+    store: service(),
     tokenHandler: service('token-handler'),
     notificationHandler: service('notification-handler'),
     isAuthenticated: true,
@@ -199,45 +202,49 @@ export default Service.extend({
         client.send();
     },
 
-    postInstance(taleId, imageId, name, success, fail) {
-        // Creates an instance
-        let token = this.get('tokenHandler').getWholeTaleAuthToken();
-        let url = config.apiUrl + '/instance/';
-        let queryPars = "";
-        if ((taleId == null) && (imageId == null)) {
-            fail("You must provide a tale or an image ID");
-            return;
-        }
-
-        if (taleId == null) {
-            queryPars += "imageId=" + encodeURIComponent(imageId);
-        } else {
-            queryPars += "imageId=" + encodeURIComponent(imageId);
-            queryPars += "&";
-            queryPars += "taleId=" + encodeURIComponent(taleId);
-        }
-        if (name != null) {
-            queryPars += "&";
-            queryPars += "name=" + encodeURIComponent(name);
-        }
-
-        if (queryPars !== "") {
-            url += "?" + queryPars;
-        }
-        let client = new XMLHttpRequest();
-        client.open("post", url);
-        client.setRequestHeader("Girder-Token", token);
-        client.addEventListener("load", function () {
-            if (client.status === 200) {
-                success(client.responseText);
-            } else {
-                fail(client.responseText);
+    postInstance(taleId, imageId, name) {
+        return new Promise((resolve, reject) => {
+            // Creates an instance
+            let token = this.get('tokenHandler').getWholeTaleAuthToken();
+            let url = config.apiUrl + '/instance/';
+            let queryPars = "";
+            if ((taleId == null) && (imageId == null)) {
+                reject("You must provide a tale or an image ID");
+                return;
             }
+    
+            if (taleId == null) {
+                queryPars += "imageId=" + encodeURIComponent(imageId);
+            } else {
+                queryPars += "imageId=" + encodeURIComponent(imageId);
+                queryPars += "&";
+                queryPars += "taleId=" + encodeURIComponent(taleId);
+            }
+            if (name != null) {
+                queryPars += "&";
+                queryPars += "name=" + encodeURIComponent(name);
+            }
+    
+            if (queryPars !== "") {
+                url += "?" + queryPars;
+            }
+            let client = new XMLHttpRequest();
+            client.open("post", url);
+            client.setRequestHeader("Girder-Token", token);
+            client.addEventListener("load", function () {
+                if (client.status === 200) {
+                    let response = JSON.parse(client.responseText);
+                    resolve(EmberObject.create(response));
+                } else {
+                    let err = JSON.parse(client.responseText);
+                    reject(err);
+                }
+            });
+    
+            client.addEventListener("error", reject);
+    
+            client.send();
         });
-
-        client.addEventListener("error", fail);
-
-        client.send();
     },
 
     exportTale(taleId, success, fail) {
@@ -425,7 +432,7 @@ export default Service.extend({
       });
     },
 
-      /**
+    /**
      * Returns the workspace folder ID for a Tale
      * @method getWorkspaceId
      * @param taleId The ID of the Tale
@@ -449,8 +456,100 @@ export default Service.extend({
       });
       client.addEventListener("error", fail);
       client.send();
-  },
-      /**
+    },
+  
+    /**
+     * Creates and returns an instance of the given Tale.
+     * Best used with the "waitForInstance" helper method below.
+     */
+    startTale(tale) {
+      const self = this;
+      if (tale.instance) {
+        if (tale.instance.status === 1) {
+          // Effectively a noop
+          return this.waitForInstance(tale.instance);
+        } else if (tale.instance.status === 0) {
+          // TODO: Job already created.. watch job status for updates
+          return this.waitForInstance(tale.instance);
+        } else if (tale.instance.status === 2) {
+          // TODO: Job finished, previous instance creation failed
+          return this.stopTale(tale).then(instance => {
+            // TODO: Wait a few seconds for Girder to finish deleting the instance
+          }).then(() => {
+            // Create a new instance
+            return this.postInstance(tale.get("_id"), tale.get("imageId"), null)
+          });
+          return;
+        }
+        
+        // Create Job to launch new instance
+        return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
+      }
+    },
+    
+    /** 
+     * Wait for an instance to reach a certain state. 
+     * By default, we wait for the instance to be "Running".
+     */
+    waitForInstance(instance) {
+        const self = this;
+        return new Promise((resolve, reject) => {
+            let currentLoop = null;
+            
+            // Poll the status of the instance every second using recursive iteration
+            const startLooping = (func) => {
+              return later(() => {
+                currentLoop = startLooping(func);
+                self.get('store').findRecord('instance', instance.get('_id'), {
+                    reload: true
+                }).then(instance => {
+                    if (instance.get('status') === 1) {
+                      cancel(currentLoop);
+                      resolve(instance);
+                    }
+                  });
+              }, 1000);
+            };
+    
+            // Start polling
+            currentLoop = startLooping();
+        });
+    },
+  
+    /**
+     * Shuts down and deletes an instance of the given Tale.
+     * Best used with the "waitForInstance" helper method below.
+     */
+    stopTale(tale) {
+      const self = this;
+      return new Promise((resolve, reject) => {
+          if (tale.instance) {
+            if (tale.instance.status === 2) {
+              // TODO: Previous instance creation failed, proceed with caution
+            } else if (tale.instance.status === 0) {
+              // TODO: Instance is still launching... wait and then shut down
+            }
+              
+            // TODO: Create Job to destroy/cleanup instance
+            self.set('deletingInstance', true);
+            const model = tale.instance;
+            model.destroyRecord({
+                reload: true,
+                backgroundReload: false
+            }).then((response) => {
+                  // TODO replace this workaround for deletion with something more robust
+                  self.get('store').unloadRecord(model);
+                  tale.set('instance', null);
+                  resolve(response);
+            }).catch(err => {
+                reject(err);
+            });
+    
+          } 
+      });
+    },
+  
+    /**
      * Returns the ID of the home folder
      * @method getHomeId
      * @param success Function to be called on success
