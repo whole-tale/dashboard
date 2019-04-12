@@ -14,7 +14,7 @@ const O = EmberObject.create.bind(EmberObject);
 export default Component.extend(FullScreenMixin, {
     layout,
     classNames: ['run-left-panel'],
-    router: service('-routing'),
+    router: service(),
     internalState: service(),
     apiCall: service('api-call'),
     dataoneAuth: service('dataone-auth'),
@@ -22,6 +22,8 @@ export default Component.extend(FullScreenMixin, {
     tokenHandler: service('token-handler'),
     loadError: false,
     model: null,
+    disableStartStop: false,
+    contingencyTimeoutMs: 2000,
     wholeTaleHost: config.wholeTaleHost,
     hasSelectedTaleInstance: false,
     displayTaleInstanceMenu: false,
@@ -326,6 +328,57 @@ export default Component.extend(FullScreenMixin, {
         
         rebuildTale(taleId) {
             this.get('apiCall').rebuildTale(taleId);
+        },
+        
+        startTale() {
+            const self = this;
+            if (!self.model) {
+                console.log('Invalid model', self.model);
+            }
+            
+            // Disable "Start" button - re-enable after a delay?
+            // FIXME: API should handle this case by transitioning Instance state
+            self.set('disableStartStop', true);
+            let contingency = later(() => self.set('disableStartStop', false), self.contingencyTimeoutMs);
+            
+            self.model.set('instance', O({ name: self.model.title, status: 0 }));
+            console.log('Starting Tale:', self.model);
+            
+            // Mock instance creation/startup for now
+            // TODO: self.get('apiCall').launchTale(tale);
+            later(() => {
+                self.model.instance.set('status', 1);
+                self.set('disableStartStop', false);
+                console.log('Tale started!');
+                cancel(contingency);
+            }, 5000);
+        },
+        
+        stopTale() {
+            const self = this;
+            if (!self.model) {
+                console.log('Invalid model', self.model);
+            }
+            
+            // Disable "Stop" button - re-enable after a delay
+            // FIXME: API should handle this case by transitioning Instance state
+            self.set('disableStartStop', true);
+            let contingency = later(() => self.set('disableStartStop', false), self.contingencyTimeoutMs);
+            
+            // Mock instance shutdown/deletion for now
+            // TODO: self.get('apiCall').stopTale(tale);
+            console.log('Stopping Tale:', self.model);
+            self.model.instance.set('status', 0);
+            later(() => {
+                self.model.set('instance', null);
+                self.set('disableStartStop', false);
+                console.log('Tale stopped!');
+                cancel(contingency);
+            }, 5000);
+        },
+        
+        transitionToBrowse() {
+            this.router.transitionTo('browse');
         },
 
         publishTale(modalDialogName, modalContext) {

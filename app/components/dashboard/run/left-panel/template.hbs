@@ -15,12 +15,29 @@
             <div class="right borderless menu">
 
                 <div class="item">
-                    <div class="ui blue icon button">
-                        <i class="fas {{if model.instance 'fa-stop' 'fa-play'}}"></i> {{if model.instance 'Stop' 'Start'}}
-                    </div>
+                    {{#if (and model.instance (eq model.instance.status 1))}}
+                        <div class="ui blue icon button" {{action 'stopTale' model}}>
+                            <i class="fas fa-stop"></i> Stop
+                        </div>
+                    {{else if (and model.instance (eq model.instance.status 2))}}
+                        <div class="ui red icon button" {{action 'stopTale' model}}>
+                            <i class="fas fa-times"></i> Stop
+                        </div>
+                    {{else if model.instance}}
+                        <div class="ui blue icon button {{if disableStartStop 'disabled'}}" 
+                                disabled={{if disableStartStop 'true' 'false'}} 
+                                {{action 'stopTale' model}}
+                                title="Tired of waiting? Click here to shutdown and try again.">
+                            <i class="fas fa-spinner fa-pulse" style="padding-right:0;"></i> Please Wait...
+                        </div>
+                    {{else}}
+                        <div class="ui blue icon button" {{action 'startTale' model}}>
+                            <i class="fas fa-play"></i> Start
+                        </div>
+                    {{/if}}
                 </div>
                 <div class="item">
-                    <div class="ui button">
+                    <div class="ui button" {{action 'transitionToBrowse'}}>
                         Close
                     </div>
                 </div>

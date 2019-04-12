@@ -1,4 +1,4 @@
-{{#if (eq model.instance.status 2)}}
+{{#if (eq model.instance.status 1)}}
     {{#if model.instance.iframe}}
       <div id="frontendDisplayParent" class="rounded-bottom">
         <iframe id="frontendDisplay"
@@ -14,9 +14,9 @@
             </p>
         </div>
     {{/if}}
-{{else if (eq model.instance.status 1)}}
+{{else if (eq model.instance.status 0)}}
   <div class="placeholder message">
-    <p>Creating your new Tale...</p>
+    <p><i class="fas fa-spinner fa-pulse fa-fw"></i> Please Wait</p>
   </div>
 {{else}}
   <div class="placeholder message">
