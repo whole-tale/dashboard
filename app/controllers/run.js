@@ -10,17 +10,13 @@ export default Controller.extend({
 
     model.forEach(tale => {
       controller.get('store').query('instance', { queryParams: { 'taleId': tale.get('id') } }).then(instances => {
-        console.log('Fetched tale instances:', instances);
         instances.forEach(instance => {
           tale.set('instance', instance);
           controller.get('store').findRecord('image', tale.get('imageId')).then(image => {
-            console.log('Fetched tale image:', image);
             tale.set('image', image);
             let folderId = tale.get('folderId')
-            console.log('Fetching tale folder:', folderId);
             controller.get('store').findRecord('folder', folderId).
               then(folder => {
-                console.log(`Fetched tale folder (${folderId}):`, folder);
                 tale.set('folder', folder);
               }).catch((error) => {
                 let err = controller.get("error") + "<li>Folder with ID " + tale.get('folderId') + " was not found for tale " + tale.get('title') + "!</li>";
@@ -33,6 +29,10 @@ export default Controller.extend({
             console.log(`Failed to fetch image for tale (${tale._id}):`, error);
           });
         });
+      }).catch((error) => {
+        let err = controller.get("error") + "<li>Instance(s) not found for tale " + tale.get('title') + "! </li>";
+        controller.set("error", err);
+        console.log(`Failed to fetch instance(s) for tale (${tale._id}):`, error);
       });
     });
   },

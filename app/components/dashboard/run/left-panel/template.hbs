@@ -60,7 +60,7 @@
                                   Export as Zip <div class="ui label transparent" ><i class="far fa-file-archive"></i></div>
                                 </a>
                                 {{!-- Only allow Tale Admins to access publish function --}}
-                                {{#if (gt model.tale._accessLevel 1)}}
+                                {{#if (gt model._accessLevel 1)}}
                                     <a class="item" {{action 'openPublishModal' model}}>
                                       Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
                                     </a>

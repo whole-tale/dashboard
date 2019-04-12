@@ -184,7 +184,6 @@ export default Component.extend({
             if (nav.command === 'workspace') {
                 // gather necessary data before querying folders
                 let workspaceRootId = state.workspaceRootId;
-                console.log('workspaceRootId:', workspaceRootId);
                 // the model is the instance, which has a reference
                 // to the taleId from which it was spun
                 let taleId = this.get('model.id');
@@ -226,7 +225,6 @@ export default Component.extend({
                     return;
                 });
             } else if (nav.command === 'home') {
-                console.log('homeFolderId:', nav.parentId);
                 folderContents = controller.get('store').query('folder', {
                     parentId: nav.parentId,
                     parentType: nav.parentType,

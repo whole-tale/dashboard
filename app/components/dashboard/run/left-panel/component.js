@@ -114,47 +114,10 @@ export default Component.extend(FullScreenMixin, {
             // Open Modal
             const modalDialogName = 'ui/files/republish-modal';
             this.showModal(modalDialogName, this.get('modalContext'));
-            this.createTooltips();
         });
         
         $('.ui.accordion').accordion({});
     },
-
-    /*
-        Return s the DataONE `token` endpoint for the jwt. When a user signs into
-        DataONE a cookie is created, which is checked by `token`. If the cookie wasn't
-        found, then the response will be empty. Otherwise the jwt is returned.
-    */
-    getDataONEJWT() {
-
-        // Use the XMLHttpRequest to handle the request
-        let xmlHttp = new XMLHttpRequest();
-        // Open the request to the the token endpoint, which will return the jwt if logged in
-        xmlHttp.open("GET", 'https://cn-stage-2.test.dataone.org/portal/token', false);
-        // Set the response content type
-        xmlHttp.setRequestHeader("Content-Type", "text/xml");
-        // Let XMLHttpRequest know to use cookies
-        xmlHttp.withCredentials = true;
-        xmlHttp.send(null);
-        return xmlHttp.responseText;
-    },
-
-    shouldShowButtons: computed('internalState', 'internalState.currentInstanceId', function () {
-        let shouldButtonsAppear = this.get('internalState').currentInstanceId;
-        if (shouldButtonsAppear) {
-            this.set('hasSelectedTaleInstance', true);
-        } else {
-            this.set('hasSelectedTaleInstance', false);
-        }
-        return this.get('hasSelectedTaleInstance');
-    }),
-
-    noInstanceSelected: not('hasSelectedTaleInstance'),
-
-    hasD1JWT: computed('model', 'model._id', function () {
-        let jwt = this.getDataONEJWT();
-        return (jwt && jwt.length) ? true : false;
-    }),
 
     showModal(modalDialogName, modalContext) {
         // Open Publish Modal
@@ -164,7 +127,6 @@ export default Component.extend(FullScreenMixin, {
     publishModalContext: computed('model._id', function () {
         return { taleId: this.get('model._id'), hasD1JWT: this.dataoneAuth.hasD1JWT() };
     }),
-
 
     /**
      * Creates the tooltips that appear in the dialog
@@ -416,7 +378,7 @@ export default Component.extend(FullScreenMixin, {
         },
         
         openPublishModal(tale) {
-            const jwt = this.getDataONEJWT();
+            const jwt = this.dataoneAuth.getDataONEJWT();
             if (!jwt) {
                 // reroute to auth
                 $('#dataone-auth-modal').modal('show');
@@ -431,7 +393,10 @@ export default Component.extend(FullScreenMixin, {
             $('#publish-modal').modal({ 
                 onApprove: () => false,
                 onDeny: () => false,
-                onVisible: () => { self.set('selectedRepository', self.get('repositories')[0].name); }
+                onVisible: () => { 
+                    self.set('selectedRepository', self.get('repositories')[0].name);
+                    this.createTooltips();
+                }
             }).modal('show');
         },
         

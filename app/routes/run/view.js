@@ -7,8 +7,7 @@ export default AuthenticateRoute.extend({
   internalState: service(),
   model(params) {
     this._super(params);
-    this.get('internalState').set('currentTaleId', params.tale_id);
-    //this.get('internalState').set('currentInstanceId', params.instance_id);
+    this.get('internalState').set('currentInstanceId', params.tale_id);
     this.set('queryParams', params);
     return RSVP.hash({
       tales: this.get('store').findAll('tale', {

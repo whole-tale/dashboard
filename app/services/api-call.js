@@ -457,29 +457,6 @@ export default Service.extend({
       client.addEventListener("error", fail);
       client.send();
     },
-  
-    /**
-     * Creates and returns an instance of the given Tale.
-     * Best used with the "waitForInstance" helper method below.
-     */
-    startTale(tale) {
-      const self = this;
-      if (tale.instance && (tale.instance.status === 1 || tale.instance.status === 0)) {
-          // Instance already exists, noop and return instance to watch status
-          return new Promise(resolve => resolve(tale.instance));
-      } else if (tale.instance && tale.instance.status === 2) {
-          // TODO: Job finished, previous instance creation failed
-          return this.stopTale(tale).then(instance => {
-            // TODO: Wait a few seconds for Girder to finish deleting the instance
-          }).then(() => {
-            // Create a new instance
-            return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
-          });
-      }
-        
-      // Create Job to launch new instance
-      return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
-    },
     
     /** 
      * Wait for a model to meet a particular condition.
@@ -567,6 +544,29 @@ export default Service.extend({
     },
   
     /**
+     * Creates and returns an instance of the given Tale.
+     * Best used with the "waitForInstance" helper method below.
+     */
+    startTale(tale) {
+      const self = this;
+      if (tale.instance && (tale.instance.status === 1 || tale.instance.status === 0)) {
+          // Instance already exists, noop and return instance to watch status
+          return new Promise(resolve => resolve(tale.instance));
+      } else if (tale.instance && tale.instance.status === 2) {
+          // TODO: Job finished, previous instance creation failed
+          return this.stopTale(tale).then(instance => {
+            // TODO: Wait a few seconds for Girder to finish deleting the instance
+          }).then(() => {
+            // Create a new instance
+            return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
+          });
+      }
+        
+      // Create Job to launch new instance
+      return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
+    },
+  
+    /**
      * Shuts down and deletes an instance of the given Tale.
      * Best used with the "waitForInstance" helper method below.
      */
@@ -587,12 +587,10 @@ export default Service.extend({
                 reload: true,
                 backgroundReload: false
             }).then((response) => {
-                  // TODO replace this workaround for deletion with something more robust
-                  self.get('store').unloadRecord(model);
-                  tale.set('instance', null);
-                  resolve(response);
-            }).catch(err => {
-                reject(err);
+                // TODO replace this workaround for deletion with something more robust
+                self.get('store').unloadRecord(model);
+                tale.set('instance', null);
+                resolve(response);
             });
     
           } 
