@@ -19,14 +19,6 @@ export default AuthenticateRoute.extend({
           }
         }
       }),
-      instances: this.get('store').findAll('instance', {
-        reload: true,
-        adapterOptions: {
-          queryParams: {
-            limit: "0"
-          }
-        }
-      }),
       selected: this.get('store').findRecord('tale', params.tale_id, { reload: true })
     });
   },

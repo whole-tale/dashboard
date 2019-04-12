@@ -23,7 +23,7 @@ export default Component.extend(FullScreenMixin, {
     loadError: false,
     model: null,
     disableStartStop: false,
-    contingencyTimeoutMs: 2000,
+    contingencyTimeoutMs: 30000,
     wholeTaleHost: config.wholeTaleHost,
     hasSelectedTaleInstance: false,
     displayTaleInstanceMenu: false,
@@ -69,16 +69,14 @@ export default Component.extend(FullScreenMixin, {
         } else {
             this.set('hasSelectedTaleInstance', false);
         }
-        if(!state.workspaceRootId) {
-            let controller = this;
-            let apiCallService = this.get('apiCall');
-            let success = (folderId) => {
-                state.set('workspaceRootId', folderId);
-                controller.set('workspaceRootId', folderId);
-            };
-            let failure = () => controller.set('workspaceRootId', undefined);
-            apiCallService.getWorkspaceRootId(success, failure);
-        }
+        let controller = this;
+        let apiCallService = this.get('apiCall');
+        let success = (folderId) => {
+            state.set('workspaceRootId', folderId);
+            controller.set('workspaceRootId', folderId);
+        };
+        let failure = () => controller.set('workspaceRootId', undefined);
+        apiCallService.getWorkspaceRootId(success, failure);
         this.result = {
             CouldNotLoadUrl: 1,
             UrlLoadedButContentCannotBeAccessed: 2,
@@ -107,7 +105,6 @@ export default Component.extend(FullScreenMixin, {
             };
         }
         
-        this.createTooltips();
     },
 
     didInsertElement() {
@@ -117,7 +114,7 @@ export default Component.extend(FullScreenMixin, {
             // Open Modal
             const modalDialogName = 'ui/files/republish-modal';
             this.showModal(modalDialogName, this.get('modalContext'));
-        
+            this.createTooltips();
         });
         
         $('.ui.accordion').accordion({});
@@ -154,7 +151,7 @@ export default Component.extend(FullScreenMixin, {
 
     noInstanceSelected: not('hasSelectedTaleInstance'),
 
-    hasD1JWT: computed('model.taleId', function () {
+    hasD1JWT: computed('model', 'model._id', function () {
         let jwt = this.getDataONEJWT();
         return (jwt && jwt.length) ? true : false;
     }),
@@ -330,7 +327,7 @@ export default Component.extend(FullScreenMixin, {
             this.get('apiCall').rebuildTale(taleId);
         },
         
-        startTale() {
+        startTale(tale) {
             const self = this;
             if (!self.model) {
                 console.log('Invalid model', self.model);
@@ -344,17 +341,24 @@ export default Component.extend(FullScreenMixin, {
             self.model.set('instance', O({ name: self.model.title, status: 0 }));
             console.log('Starting Tale:', self.model);
             
-            // Mock instance creation/startup for now
-            // TODO: self.get('apiCall').launchTale(tale);
-            later(() => {
-                self.model.instance.set('status', 1);
-                self.set('disableStartStop', false);
-                console.log('Tale started!');
-                cancel(contingency);
-            }, 5000);
+        
+            return this.get('apiCall').startTale(tale)
+                .then((instance) => {
+                    self.model.set("instance", instance);
+                    this.get('apiCall').waitForInstance(instance)
+                        .then((instance) => {
+                            self.model.set("instance", instance);
+                            self.get('taleLaunched')();
+                            console.log('Tale instance started!');
+                            cancel(contingency);
+                        }).catch((error) => {
+                            self.set("taleLaunchError", error.message);
+                            console.log('Error starting tale:', error);
+                        }).finally(() => self.set('disableStartStop', false));
+                })
         },
         
-        stopTale() {
+        stopTale(tale) {
             const self = this;
             if (!self.model) {
                 console.log('Invalid model', self.model);
@@ -365,16 +369,20 @@ export default Component.extend(FullScreenMixin, {
             self.set('disableStartStop', true);
             let contingency = later(() => self.set('disableStartStop', false), self.contingencyTimeoutMs);
             
-            // Mock instance shutdown/deletion for now
-            // TODO: self.get('apiCall').stopTale(tale);
             console.log('Stopping Tale:', self.model);
-            self.model.instance.set('status', 0);
-            later(() => {
-                self.model.set('instance', null);
-                self.set('disableStartStop', false);
-                console.log('Tale stopped!');
-                cancel(contingency);
-            }, 5000);
+            return this.get('apiCall').stopTale(tale)
+                .then(response => {
+                    self.model.set('instance', null);
+                    console.log('Tale instance stopped!');
+                    cancel(contingency);
+                }).catch((error) => {
+                    // deal with the failure here
+                    //self.set("tale_instantiating", false);
+                    //self.set("tale_not_instantiated", true);
+            
+                    self.set("error_msg", error.message);
+                    console.log('Error starting tale:', error);
+                  }).finally(() => self.set('disableStartStop', false));
         },
         
         transitionToBrowse() {

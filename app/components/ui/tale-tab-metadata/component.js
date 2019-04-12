@@ -26,13 +26,13 @@ export default Component.extend({
   errorMessage: String(),
   model: null,
   // Flag that can be used to tell if the current user has permission to edit the Tale
-  canEditTale: computed('model.tale._accessLevel', function () {
+  canEditTale: computed('model._accessLevel', function () {
     return this.get('model') && this.get('model') && this.get('model').get('_accessLevel') >= taleStatus.WRITE;
   }).readOnly(),
   cannotEditTale: computed.not('canEditTale').readOnly(),
   
-  publishedURL: computed('model.tale', 'model.tale.publishInfo', function() {
-    const tale = this.get('model').get('tale');
+  publishedURL: computed('model', 'model.publishInfo', function() {
+    const tale = this.get('model');
     if (tale.publishInfo && tale.publishInfo.length) {
        return tale.publishInfo[tale.publishInfo.length - 1].uri;
     }

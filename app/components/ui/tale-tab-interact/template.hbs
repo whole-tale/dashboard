@@ -18,6 +18,11 @@
   <div class="placeholder message">
     <p><i class="fas fa-spinner fa-pulse fa-fw"></i> Please Wait</p>
   </div>
+{{else if taleLaunchError}}
+  <div class="placeholder message">
+    <p>Error launching your tale</p>
+    <p>{{taleLaunchError}}</p>
+  </div>
 {{else}}
   <div class="placeholder message">
     <p>Launch this Tale to Interact</p>
