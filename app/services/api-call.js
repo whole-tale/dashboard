@@ -464,56 +464,106 @@ export default Service.extend({
      */
     startTale(tale) {
       const self = this;
-      if (tale.instance) {
-        if (tale.instance.status === 1) {
-          // Effectively a noop
-          return this.waitForInstance(tale.instance);
-        } else if (tale.instance.status === 0) {
-          // TODO: Job already created.. watch job status for updates
-          return this.waitForInstance(tale.instance);
-        } else if (tale.instance.status === 2) {
+      if (tale.instance && (tale.instance.status === 1 || tale.instance.status === 0)) {
+          // Instance already exists, noop and return instance to watch status
+          return new Promise(resolve => resolve(tale.instance));
+      } else if (tale.instance && tale.instance.status === 2) {
           // TODO: Job finished, previous instance creation failed
           return this.stopTale(tale).then(instance => {
             // TODO: Wait a few seconds for Girder to finish deleting the instance
           }).then(() => {
             // Create a new instance
-            return this.postInstance(tale.get("_id"), tale.get("imageId"), null)
+            return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
           });
-          return;
-        }
-        
-        // Create Job to launch new instance
-        return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
       }
+        
+      // Create Job to launch new instance
+      return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
     },
     
     /** 
-     * Wait for an instance to reach a certain state. 
-     * By default, we wait for the instance to be "Running".
+     * Wait for a model to meet a particular condition.
+     * 
+     * NOTE: You must provide a condition that, upon evaluating to "true", 
+     * will stop the watch loop
      */
-    waitForInstance(instance) {
+    waitFor(model, condition = (response) => true) {
         const self = this;
+        let currentLoop = null;
+        
+        // Test for our condition - if true, stop looping and call the callback
+        const stopLooping = (test, callback) => {
+            if (condition(test)) {
+              cancel(currentLoop);
+              callback(test);
+            }
+        };
+        
         return new Promise((resolve, reject) => {
-            let currentLoop = null;
-            
             // Poll the status of the instance every second using recursive iteration
             const startLooping = (func) => {
               return later(() => {
                 currentLoop = startLooping(func);
-                self.get('store').findRecord('instance', instance.get('_id'), {
+                self.get('store').findRecord(model._modelType, model._id, {
                     reload: true
-                }).then(instance => {
-                    if (instance.get('status') === 1) {
-                      cancel(currentLoop);
-                      resolve(instance);
-                    }
-                  });
+                })
+                .then(response => stopLooping(response, resolve))
+                .catch(err => stopLooping(err, reject));
               }, 1000);
             };
     
             // Start polling
             currentLoop = startLooping();
         });
+    },
+    
+    /** 
+     * Wait for an image to reach a certain status. 
+     * By default, we wait for the image status to be "Available".
+     * 
+     * For reference, see https://github.com/whole-tale/girder_wholetale/blob/master/server/constants.py
+     * 
+     * class ImageStatus(object):
+     *     INVALID = 0
+     *     UNAVAILABLE = 1
+     *     BUILDING = 2
+     *     AVAILABLE = 3
+     */
+    waitForImage(image, targetStatus = 3) {
+        return this.waitFor(image, (image) => image.status === targetStatus)
+    },
+    
+    /** 
+     * Wait for an instance to reach a certain status. 
+     * By default, we wait for the instance status to be "Running".
+     * 
+     * For reference, see https://github.com/whole-tale/girder_wholetale/blob/master/server/constants.py
+     * 
+     * class InstanceStatus(object):
+     *     LAUNCHING = 0
+     *     RUNNING = 1
+     *     ERROR = 2
+     */
+    waitForInstance(instance, targetStatus = 1) {
+        return this.waitFor(instance, (instance) => instance.status === targetStatus)
+    },
+    
+    /** 
+     * Wait for a job to reach a certain status. 
+     * By default, we wait for the job status to be "Success".
+     * 
+     * For reference, see https://github.com/girder/girder/blob/master/plugins/jobs/girder_jobs/constants.py
+     * 
+     * class JobStatus(object):
+     *     INACTIVE = 0
+     *     QUEUED = 1
+     *     RUNNING = 2
+     *     SUCCESS = 3
+     *     ERROR = 4
+     *     CANCELED = 5
+     */
+    waitForJob(job, targetStatus = 3) {
+        return this.waitFor(job, (job) => job.status === targetStatus)
     },
   
     /**

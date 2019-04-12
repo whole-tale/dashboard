@@ -329,8 +329,8 @@ export default Component.extend(FullScreenMixin, {
         
         startTale(tale) {
             const self = this;
-            if (!self.model) {
-                console.log('Invalid model', self.model);
+            if (!tale) {
+                console.log('Invalid tale', tale);
             }
             
             // Disable "Start" button - re-enable after a delay?
@@ -338,16 +338,13 @@ export default Component.extend(FullScreenMixin, {
             self.set('disableStartStop', true);
             let contingency = later(() => self.set('disableStartStop', false), self.contingencyTimeoutMs);
             
-            self.model.set('instance', O({ name: self.model.title, status: 0 }));
-            console.log('Starting Tale:', self.model);
-            
-        
+            console.log('Starting Tale:', tale);
             return this.get('apiCall').startTale(tale)
                 .then((instance) => {
-                    self.model.set("instance", instance);
+                    tale.set("instance", instance);
                     this.get('apiCall').waitForInstance(instance)
                         .then((instance) => {
-                            self.model.set("instance", instance);
+                            tale.set("instance", instance);
                             self.get('taleLaunched')();
                             console.log('Tale instance started!');
                             cancel(contingency);
@@ -360,8 +357,8 @@ export default Component.extend(FullScreenMixin, {
         
         stopTale(tale) {
             const self = this;
-            if (!self.model) {
-                console.log('Invalid model', self.model);
+            if (!tale) {
+                console.log('Invalid tale', tale);
             }
             
             // Disable "Stop" button - re-enable after a delay
@@ -369,10 +366,10 @@ export default Component.extend(FullScreenMixin, {
             self.set('disableStartStop', true);
             let contingency = later(() => self.set('disableStartStop', false), self.contingencyTimeoutMs);
             
-            console.log('Stopping Tale:', self.model);
+            console.log('Stopping Tale:', tale);
             return this.get('apiCall').stopTale(tale)
                 .then(response => {
-                    self.model.set('instance', null);
+                    tale.set('instance', null);
                     console.log('Tale instance stopped!');
                     cancel(contingency);
                 }).catch((error) => {
