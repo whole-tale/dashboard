@@ -1243,7 +1243,6 @@ wt.panel .wt.paddleboard.header i {
 /** Notification Stream styles */
 #event-notification-counter {
   margin-top: 45px !important;
-  z-index: 1;
   border-radius: 999px;
   padding: 2px 4px;
   text-align: center;
@@ -1253,7 +1252,6 @@ wt.panel .wt.paddleboard.header i {
 }
 #event-notification-stream {
   position: fixed;
-  z-index: 2;
   top: 32px;
   left: 70vw;
   width: 26vw;
