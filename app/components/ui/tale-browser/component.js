@@ -1,12 +1,19 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { A } from '@ember/array';
+import { inject as service } from '@ember/service';
+import EmberObject, { observer } from '@ember/object';
+import { later, cancel } from '@ember/runloop';
+import $ from 'jquery';
 
-export default Ember.Component.extend({
-  store: Ember.inject.service(),
-  userAuth: Ember.inject.service(),
-  apiCall: Ember.inject.service('api-call'),
-  internalState: Ember.inject.service(),
+const O = EmberObject.create.bind(EmberObject);
+
+export default Component.extend({
+  store: service(),
+  userAuth: service(),
+  apiCall: service('api-call'),
+  internalState: service(),
   taleInstanceName: "",
-  filteredSet: Ember.A(),
+  filteredSet: A(),
   filters: ['All', 'Mine', 'Published', 'Recent'],
   filter: 'All',
   numberOfModels: 0,
@@ -18,17 +25,36 @@ export default Ember.Component.extend({
   animationRefreshTime: 500, // min ms time between animation refreshes
   item: null,
   guid: null,
+  models: A([]),
+  modelsInView: A([]),
   listView: false,
   showFilter: true,
   loadingTales: true,
-  selectedTale: Ember.Object.create({}),
+  selectedTale: O({}),
   message: 'Tales loading. Please, wait.',
 
-  filterObserver: Ember.observer('filter', function () {
+  filterObserver: observer('filter', function () {
     this.setFilter.call(this);
   }),
+  
+  creatorObserver: observer('modelsInView', function() {
+    this.modelsInView.forEach(tale => {
+      const creatorId = tale.get("creatorId");
+      this.store.findRecord('user', creatorId).then(creator => {
+        tale.set('creator', O({
+          firstName: creator.firstName,
+          lastName: creator.lastName,
+          orcid: ''
+        }));
+      }).catch(err => {
+        let message = `Failed to fetch creator=${tale.creatorId} for tale=${tale._id}:`;
+        console && (console.error && console.error(message, err)) || console.log(message, err);
+        tale.set('creator', O({}));
+      });
+    });
+  }),
 
-  modelObserver: Ember.observer('filter', 'model', 'numberOfModels', function () {
+  modelObserver: observer('filter', 'model', 'numberOfModels', function () {
     let guid = this.get('guid');
 
     if (!guid) {
@@ -95,7 +121,7 @@ export default Ember.Component.extend({
         return (recentTales.indexOf(m.get('id')) > -1);
       }));
     } else {
-      this.set('filteredSet', Ember.A());
+      this.set('filteredSet', A());
     }
 
     this.actions.searchFilter.call(this);
@@ -104,34 +130,34 @@ export default Ember.Component.extend({
 
   updateModels(component, models) {
     if (!models.get('length')) {
-      component.set('modelsInView', []);
+      component.set('modelsInView', A([]));
     }
-    let modelsInView = [];
-    component.get('models').forEach(model => {
-      if (!model.get("icon")) {
-        if (model.get("meta")) {
-          let meta = model.get("meta");
+    let modelsInView = A([]);
+    component.get('models').forEach(tale => {
+      if (!tale.get("icon")) {
+        if (tale.get("meta")) {
+          let meta = tale.get("meta");
           if (meta.get('provider') !== "DataONE")
-            model.set('icon', "/icons/globus-logo-large.png");
+            tale.set('icon', "/icons/globus-logo-large.png");
           else
-            model.set('icon', "/icons/d1-logo-large.png");
+            tale.set('icon', "/icons/d1-logo-large.png");
         } else {
-          model.set('icon', "/images/whole_tale_logo.png");
+          tale.set('icon', "/images/whole_tale_logo.png");
         }
       }
 
-      let description = model.get('description');
+      let description = tale.get('description');
 
       if (!description) {
-        model.set('tagName', "No Description ...");
+        tale.set('tagName', "No Description ...");
       } else {
         if (description.length > 200)
-          model.set('tagName', description.substring(0, 200) + "..");
+          tale.set('tagName', description.substring(0, 200) + "..");
         else
-          model.set('tagName', description);
+          tale.set('tagName', description);
       }
 
-      modelsInView.push(model);
+      modelsInView.pushObject(O(tale));
     });
 
     component.set("modelsInView", modelsInView);
@@ -144,7 +170,7 @@ export default Ember.Component.extend({
     },
     toggleFiltersVisibility() {
       let component = this;
-      Ember.run.later(function() {
+      later(function() {
         let newValue = !component.get('showFilter');
         component.set('showFilter', newValue);
       }, 100);
@@ -159,7 +185,7 @@ export default Ember.Component.extend({
       const filteredSet = this.get("filteredSet");
       const component = this;
 
-      let promise = new Ember.RSVP.Promise((resolve) => {
+      let promise = new Promise((resolve) => {
         let searchView = [];
         filteredSet.forEach(model => {
           let title = model.get('title');
@@ -219,7 +245,7 @@ export default Ember.Component.extend({
       }
       component.set('selectedTale', model);
       let selector = `.delete-modal-tale>.ui.delete-modal.modal`;
-      Ember.run.later(() => {
+      later(() => {
         $(selector).modal('show');
       }, 500);
     },
@@ -258,14 +284,14 @@ export default Ember.Component.extend({
         component.set("tale_instantiating", false);
         component.set("tale_instantiated", true);
 
-        let instance = Ember.Object.create(JSON.parse(item));
+        let instance = O(JSON.parse(item));
 
         component.set("instance", instance);
 
         //Add the new instance to the list of instances in the right panel
         component.get('taleLaunched')();
 
-        Ember.run.later(function () {
+        later(function () {
           // Ensure this component is not destroyed by way of a route transition
           if(!component.isDestroyed){
             component.set("tale_instantiated", false);
@@ -276,13 +302,13 @@ export default Ember.Component.extend({
         let currentLoop = null;
         // Poll the status of the instance every second using recursive iteration
         let startLooping = function(func){
-          return Ember.run.later(function(){
+          return later(function(){
             currentLoop = startLooping(func);
             component.get('store').findRecord('instance', instance.get('_id'), { reload:true })
               .then(model => {
                 if(model.get('status') === 1) {
                   component.get('taleLaunched')();
-                  Ember.run.cancel(currentLoop);
+                  cancel(currentLoop);
                 }
               });
           }, 1000);
@@ -300,7 +326,7 @@ export default Ember.Component.extend({
 
         component.set("error_msg", item.message);
 
-        Ember.run.later(function () {
+        later(function () {
           if(!component.isDestroyed){
             component.set("tale_not_instantiated", false);
             component.set("tale_instantiating_id", 0);

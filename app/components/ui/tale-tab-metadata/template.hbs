@@ -9,36 +9,42 @@
     <div class="inline fields ui grid">
       <label class="two wide column right aligned">Authors</label>
     </div>
-    {{#each taleAuthors as |author index|}}
-    <div class="inline fields ui grid">
-      <label class="two wide column right aligned"></label>
-      <div class="field thirteen wide column" id=author.id>
-        <div class="ui form">
-          <div class="inline fields">
-            <label>First Name:</label>
+    {{#if taleAuthors}}
+        {{#each taleAuthors as |author index|}}
+        <div class="inline fields ui grid">
+          <label class="two wide column right aligned"></label>
+          <div class="field thirteen wide column" id="author-{{index}}">
+            <div class="ui form">
+              <div class="inline fields">
+                <label>First Name:</label>
+                  <div class="field">
+                    {{input type="text" name='first-name' value=author.firstName placeholder="First Name" readonly=cannotEditTale }}
+                  </div>
+                <label>Last Name:</label>
+                <div class="field">
+                  {{input type="text" name='last-name' value=author.lastName placeholder="Last Name" readonly=cannotEditTale }}
+                </div>
+              <label>ORCID:</label>
               <div class="field">
-                {{input type="text" name='first-name' value=author.firstName placeholder="First Name" readonly=cannotEditTale }}
+                {{input type="url" name='orcid-id' placeholder="https://orcid.org/0000-0002-1825-0097"  value=author.orcid readonly=cannotEditTale }}
               </div>
-            <label>Last Name:</label>
-            <div class="field">
-              {{input type="text" name='last-name' value=author.lastName placeholder="Last Name" readonly=cannotEditTale }}
+              <i class="fa fa-window-close" aria-hidden="true" {{action 'removeAuthor' index}}></i>
             </div>
-          <label>ORCID:</label>
-          <div class="field">
-            {{input type="url" name='orcid-id' placeholder="https://orcid.org/0000-0002-1825-0097"  value=author.orcid readonly=cannotEditTale }}
           </div>
-          <i class="fa fa-window-close" aria-hidden="true" {{action 'removeAuthor' index}}></i>
         </div>
       </div>
-    </div>
-  </div>
-  {{/each}}
+      {{/each}}
+    {{else}}
+      <div style="text-align:center">
+        <h4>Created by <span style="color: #67c096">{{tale-authors-to-str taleAuthors model.tale.creator}}</span></h4>
+      </div>
+    {{/if}}
       
     <div class="inline fields ui grid">
         <label class="two wide column right aligned"></label>
         <div class="field thirteen wide column add-author">
             <i class="fas fa-plus add-author-icon" {{action 'addNewAuthor'}}></i>
-            <span {{action 'addNewAuthor'}}>&nbsp;Add another author</span>
+            <span {{action 'addNewAuthor'}}>&nbsp;Add an{{if taleAuthors 'other'}} author</span>
         </div>
     </div>
 
