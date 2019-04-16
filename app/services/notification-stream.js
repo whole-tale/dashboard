@@ -83,8 +83,15 @@ export default Service.extend({
         
         // Push new event data
         let events = self.get('events');
+        const createdEq = (e1, e2) => e1.created === e2.created;
+        const idEq = (e1, e2) => e1.json._id === e2.json._id;
+        const found = events.some(prior => idEq(prior, event) && createdEq(prior, event));
+        
+        // Short-circuit for previously-encountered events
+        // TODO: Handle updates properly
+        if (found) return;
+
         if (event.json.type == 'wt_image_build_status') {
-            // TODO: Handle updates to previous events
             events.unshiftObject(event);
             self.set('events', events);
             console.log("New event:", events);
