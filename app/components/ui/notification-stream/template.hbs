@@ -29,7 +29,7 @@
               <div class="summary">
                 {{!-- TODO: Link to "/run/:tale_id" view once that is finished --}}
                 {{!-- {{event.json.data._id}} --}}
-                <a class="user">
+                <a class="user" {{action 'gotoTale' event.json.data._id}}>
                   {{truncate-name event.json.data.title}}
                 </a>
                 <br>

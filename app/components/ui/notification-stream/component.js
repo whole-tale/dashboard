@@ -106,6 +106,10 @@ export default Component.extend({
             self.set('selectedEventLogs', []);
             $('#log-viewer-modal').modal('hide');
         },
+        
+        gotoTale(taleId) {
+           this.router.transitionTo('run.view', taleId); 
+        },
     }
 });
  
