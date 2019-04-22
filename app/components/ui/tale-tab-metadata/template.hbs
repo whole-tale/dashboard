@@ -74,6 +74,22 @@
     </div>
 
     <div class="inline fields ui grid">
+      <label class="two wide column right aligned">Datasets used</label>
+      {{#each model.tale.dataSetCitation as |citation index|}}
+        {{#if index}}
+          <label class="two wide column right aligned"></label>
+        {{/if}}
+        <div class="field thirteen wide column" style="margin-bottom:10px;">
+          <div class="ui form">
+            {{citation}}
+          </div>
+        </div>
+        {{else}}
+          No citable data
+      {{/each}}
+    </div>
+    
+    <div class="inline fields ui grid">
         <label class="two wide column right aligned">License</label>
         <div class="field thirteen wide column">
             <div id="licenseDropdown" class="ui icon selection dropdown license {{if (eq licenses.length 0) "loading"}}">
