@@ -1,5 +1,9 @@
 import { helper } from '@ember/component/helper';
 
+const authorToStr = function (author) {
+  return `${author.firstName} ${author.lastName}`;
+};
+
     /**
     * Takes a list of authors from the backend and returns a string of first
     * and last names that can be shown in the UI.
@@ -13,21 +17,23 @@ import { helper } from '@ember/component/helper';
     * track of the current position.
     * 
     * @method taleAuthorsToStr
-    * @param params A list of JSON Tale authors [{author1}, {author2}, etc]
+    * @param param0 A list of JSON Tale authors [{author1}, {author2}, etc]
+    * @param param1 A user to display by default if no authors are present (e.g. creator)
     */
 export function taleAuthorsToStr(params/*, hash*/) {
   // String that will be shown to the UI.
-  let allAuthors = String();
-  params = params[0]
-  if(params) {
-    for(let position=0; position<params.length; position++) {
-      let author = params[position];
-      if (position>=1 && position<params.length) {
-        // If there are more than one authors and we aren't at the last one
-        allAuthors += ', '
+  let allAuthors = '';
+  const authors = params[0];
+  const creator = params[1];
+  if (authors && authors.length) {
+    for (let i = 0; i < authors.length; i++) {
+      if (i > 0) {
+         allAuthors += ', ';
       }
-    allAuthors += author.firstName + ' ' + author.lastName;
+      allAuthors += authorToStr(authors[i]);
     }
+  } else if (creator) {
+    allAuthors = authorToStr(creator);
   }
   return allAuthors;
 }
