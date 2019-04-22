@@ -405,7 +405,6 @@ ui.inverted.menu.wt.top {
 
 .ui.vertical.menu.tales .item {
   position: relative;
-  padding: 1em 1em 1.25em 6em;
   border-left: 4px solid transparent;
   min-height: 6.3rem;
 }
@@ -441,8 +440,19 @@ ui.inverted.menu.wt.top {
 }
 
 .ui.vertical.menu.tales .item i {
-  float: right;
   position: relative;
+}
+
+.pull-left {
+  float: left;
+}
+
+.pull-right {
+  float: right;
+}
+
+.tale-instances-name {
+  margin: 1em 1em 1.25em 6em;
 }
 
 .ui.vertical.menu.tales .item p {
@@ -1285,4 +1295,8 @@ wt.panel .wt.paddleboard.header i {
   height: stretch;
   height: -webkit-fill-available;
   height: -o-fill-available;
+}
+
+.tale-instances-item {
+  height: 56px;
 }
