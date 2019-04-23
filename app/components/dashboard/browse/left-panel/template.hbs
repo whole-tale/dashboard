@@ -62,6 +62,7 @@
 {{#if (eq currentTab 'tales')}}
     <div id="tale-tab-contents" class="ui bottom attached active tab segment">
       {{ui/tale-browser models=model
+                        queryParams=model.queryParams
                         paginateOn=6
                         cardsPerRow="three"
                         modelView="run.view"

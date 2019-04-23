@@ -4,7 +4,9 @@
   leftView="dashboard/browse/left-panel"
   rightView=null
 
-  leftModel=model.tales
+  leftModel=model
   rightModelTop=model.instances
   rightModelBottom=null
 }}
+
+{{ui/create-tale-modal computeEnvironments=model.computeEnvironments queryParams=model.queryParams}}

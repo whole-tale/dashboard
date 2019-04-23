@@ -84,6 +84,10 @@ export default Component.extend({
     console.log("Attributes updated");
 
     let models = this.get("models");
+    let queryParams = this.get('queryParams');
+    if (queryParams.uri) {
+      later(this.actions.openCreateNewTaleModal.bind(this), 100);
+    }
     let component = this;
     component.set('loadingTales', false);
     component.set('searchView', models);
@@ -408,6 +412,10 @@ export default Component.extend({
           resetStatusAfterMs(tale, 10000);
         }).catch((err) => handleStopError(tale, err));
       }, 1500);
+    },
+
+    openCreateNewTaleModal() {
+      $('.ui.modal.create-tale').modal('show');
     }
   }
 });
