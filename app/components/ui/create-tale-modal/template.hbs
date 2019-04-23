@@ -1,0 +1,91 @@
+{{#ui-modal class="create-tale" name="createtalemodal" onHide=(action 'clearModal') onShow=(action 'setModalFromQueryParams')}}
+<i class="close icon"></i>
+<div class="header">
+  Create New Tale
+</div>
+<div class="content">
+  <div class="ui sixteen column grid form">
+    <div class="row panel container">
+      <div class="four wide column">
+        <p>Tale name:</p>
+      </div>
+      <div class="twelve wide column">
+        <div class="ui fluid input">
+          {{input type="text" placeholder="Tale name" value=title}}
+        </div>
+      </div>
+    </div>
+    <div class="row panel container">
+      <div class="four wide column">
+        <p>Compute environment:</p>
+      </div>
+      <div class="twelve wide column">
+        {{#ui-dropdown class="fluid selection compute-environment" onChange=(action (mut imageId))}}
+        <div class="default text">Compute Environment</div>
+        <i class="dropdown icon"></i>
+        <div class="menu" tabindex="-1">
+          <div class="header">Official environments</div>
+          {{#each computeEnvironments.official as | env |}}
+          <div class="item" data-value="{{env.id}}">{{env.name}}</div>
+          {{/each}}
+          {{#if computeEnvironments.nonOfficial}} 
+          <div class="divider"></div>
+          <div class="header">Other environments</div>
+            {{#each computeEnvironments.nonOfficial as | env |}}
+            <div class="item" data-value="{{env.id}}">{{env.name}}</div>
+            {{/each}}
+          {{/if}}
+        </div>
+        {{/ui-dropdown}}
+      </div>
+    </div>
+    <div class="row panel container">
+      <div class="four wide column">
+        <p>Input data:*</p>
+      </div>
+      <div class="twelve wide column">
+        <div class="ui fluid action input">
+          {{input type="text" placeholder="Input data" value=dataSet}}
+          <button class="ui button">Select data...</button>
+        </div>
+        <p style="font-style:italic;margin-top:5px;color:#999">*Input data selection is optional at this stage - you can add data after Tale creation using your chosen compute environment, or the Files tab of your running Tale.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="actions">
+  <div class="ui black deny button">Cancel</div>
+  <div class="ui positive icon button" onclick={{action "createNewTaleButton" preventDefault=false bubble=false}}>
+    {{createButtonText}}
+  </div>
+  {{#ui-dropdown class="as-a-button-label"}}
+  <i class="dropdown icon"></i>
+  <div class="menu">
+    <a class="item" {{action "setDefaultAction" 1}}> Create Tale And Launch</a>
+    <a class="item" {{action "setDefaultAction" 0}}> Create Tale </a>
+  </div>
+  {{/ui-dropdown}}
+</div>
+{{/ui-modal}}
+
+<div class="ui compose-error modal" style="display: none">
+  <div class="header">
+    Error Creating Tale
+  </div>
+  <div class="content">
+    <div class="ui grid form">
+      <div class="row panel container">
+        <div class="column">
+          <div class="description">
+              <p style="font-family:'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;font-size:1.1em;">{{errorMessage}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui black deny button">
+      Close
+    </div>
+  </div>
+</div>
