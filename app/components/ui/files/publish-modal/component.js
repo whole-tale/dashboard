@@ -25,7 +25,7 @@ export default Component.extend({
   // Flag that shows/hides the publishing section
   showPublishing: false,
   // Holds any publishing error messages
-  publishingMessage: String(),
+  statusMessage: String(),
   // The publishing job's ID
   publishingID: null,
   // The DOI of the package
@@ -208,16 +208,6 @@ export default Component.extend({
     });
   },
 
-  joinArray(arr) {
-    // Takes an array of the form [num1, num2, num3] and 
-    // returns ["num1", "num2", "num3"]
-    let result = [];
-    arr.forEach(function (item) {
-      result.push(JSON.stringify(item));
-    });
-    return result;
-  },
-
   getRepositoryPathFromName(name) {
     // Given a repository name, find the membernode URL
     let repostoryList = this.get('repositories');
@@ -253,7 +243,7 @@ export default Component.extend({
     // Called if the publishing endpoint failed
     let onPublishinitialtionFail = (function (error) {
       // deal with the failure here
-      this.set('publishingMessage', error);
+      this.set('statusMessage', error);
       this.set('progress', 0);
     }).bind(this);
 
@@ -346,7 +336,7 @@ export default Component.extend({
   clearPublishingState() {
     this.set('publishingSuccess', false);
     this.set('progress', 0);
-    this.set('publishingMessage', ' ');
+    this.set('statusMessage', ' ');
   },
 
   /* 

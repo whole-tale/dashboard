@@ -1,6 +1,8 @@
 import Controller from '@ember/controller';
-import { observer } from '@ember/object';
+import EmberObject, { observer } from '@ember/object';
 import $ from 'jquery';
+
+const O = EmberObject.create.bind(EmberObject);
 
 export default Controller.extend({
   grabData(model) {
@@ -12,13 +14,26 @@ export default Controller.extend({
       controller.get('store').findRecord('tale', item.get('taleId')).then(tale => {
         controller.get('store').findRecord('image', tale.get('imageId')).then(image => {
           item.set('image', image);
-          controller.get('store').findRecord('folder', tale.get('folderId')).
-            then(folder => {
-              item.set('folder', folder);
+          controller.get('store').findRecord('user', tale.get('creatorId')).
+            then(creator => {
+              tale.set('creator', O({
+                firstName: creator.firstName,
+                lastName: creator.lastName,
+                orcid: ''
+              }));
+              item.set('tale', O(tale));
+              controller.get('store').findRecord('folder', tale.get('folderId')).
+              then(folder => {
+                item.set('folder', folder);
+              }).catch(() => {
+                let err = controller.get("error") + "<li>Folder with ID " + tale.get('folderId') + " was not found for tale " + tale.get('title') + "!</li>";
+                controller.set("error", err);
+              });
             }).catch(() => {
-              let err = controller.get("error") + "<li>Folder with ID " + tale.get('folderId') + " was not found for tale " + tale.get('title') + "!</li>";
+              let err = controller.get("error") + "<li>User with ID " + tale.get('creatorId') + " was not found for tale " + tale.get('title') + "!</li>";
               controller.set("error", err);
             });
+          
         }).catch(() => {
           let err = controller.get("error") + "<li>Image with ID " + tale.get('imageId') + " was not found for tale " + tale.get('title') + "! </li>";
           controller.set("error", err);

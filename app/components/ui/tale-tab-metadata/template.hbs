@@ -7,9 +7,44 @@
     </div>
 
     <div class="inline fields ui grid">
-        <label class="two wide column right aligned">Authors</label>
-        <div class="field thirteen wide column">
-            {{input value=model.tale.authors readonly=cannotEditTale}}
+      <label class="two wide column right aligned">Authors</label>
+    </div>
+    {{#if taleAuthors}}
+        {{#each taleAuthors as |author index|}}
+        <div class="inline fields ui grid">
+          <label class="two wide column right aligned"></label>
+          <div class="field thirteen wide column" id="author-{{index}}">
+            <div class="ui form">
+              <div class="inline fields">
+                <label>First Name:</label>
+                  <div class="field">
+                    {{input type="text" name='first-name' value=author.firstName placeholder="First Name" readonly=cannotEditTale }}
+                  </div>
+                <label>Last Name:</label>
+                <div class="field">
+                  {{input type="text" name='last-name' value=author.lastName placeholder="Last Name" readonly=cannotEditTale }}
+                </div>
+              <label>ORCID:</label>
+              <div class="field">
+                {{input type="url" name='orcid-id' placeholder="https://orcid.org/0000-0002-1825-0097"  value=author.orcid readonly=cannotEditTale }}
+              </div>
+              <i class="fa fa-window-close" aria-hidden="true" {{action 'removeAuthor' index}}></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    {{else}}
+      <div style="text-align:center">
+        <h4>Created by <span style="color: #67c096">{{tale-authors-to-str taleAuthors model.tale.creator}}</span></h4>
+      </div>
+    {{/if}}
+      
+    <div class="inline fields ui grid">
+        <label class="two wide column right aligned"></label>
+        <div class="field thirteen wide column add-author">
+            <i class="fas fa-plus add-author-icon" {{action 'addNewAuthor'}}></i>
+            <span {{action 'addNewAuthor'}}>&nbsp;Add an{{if taleAuthors 'other'}} author</span>
         </div>
     </div>
 
@@ -38,6 +73,22 @@
         </div>
     </div>
 
+    <div class="inline fields ui grid">
+      <label class="two wide column right aligned">Datasets used</label>
+      {{#each model.tale.dataSetCitation as |citation index|}}
+        {{#if index}}
+          <label class="two wide column right aligned"></label>
+        {{/if}}
+        <div class="field thirteen wide column" style="margin-bottom:10px;">
+          <div class="ui form">
+            {{citation}}
+          </div>
+        </div>
+        {{else}}
+          No citable data
+      {{/each}}
+    </div>
+    
     <div class="inline fields ui grid">
         <label class="two wide column right aligned">License</label>
         <div class="field thirteen wide column">
@@ -88,14 +139,16 @@
         </div>
     </div>
 
-    {{#if publishedURL}}
     <div class="inline fields ui grid">
         <label class="two wide column right aligned">Published Location</label>
         <div class="ui action field thirteen wide column">
-            <a href={{publishedURL}} target="_blank">{{publishedURL}}</a>
+            {{#if publishedURL}}
+                <a href={{publishedURL}} target="_blank">{{publishedURL}}</a>
+            {{else}}
+                <span>This Tale has not been published</span>
+            {{/if}}
         </div>
     </div>
-    {{/if}}
 
     <div class="inline fields ui grid">
         <label class="two wide column right aligned"></label>
@@ -104,6 +157,22 @@
         </div>
         <div class="field toggle ui checkbox four wide column">
             {{ui-checkbox class="toggle" label="Public?" checked=model.public onChange=(action (mut model.tale.public)) disabled=cannotEditTale}}
+        </div>
+    </div>
+</div>
+
+<div class="ui metadata-error modal">
+    <div class="header">
+        Error While Saving Tale
+    </div>
+    <div class="image content">
+        <div class="description">
+            <p>{{errorMessage}}</p>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            Close
         </div>
     </div>
 </div>

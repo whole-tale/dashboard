@@ -289,7 +289,8 @@ export default Component.extend({
               // The job is running or queued
               if (job.progress) {
                   // Update the component variables related to progress
-                  component.set('progress', job.progress.current/job.progress.total);
+                  component.set('progress', job.progress.current);
+                  component.set('progressTotal', job.progress.total);
                   component.set('message', job.progress.message);
               }
             }

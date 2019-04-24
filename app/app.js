@@ -18,6 +18,14 @@ const App = Application.extend({
 
 loadInitializers(App, config.modulePrefix);
 
+Ember.onerror = (error) => {
+  if (console.error) {
+    console.error(error);
+  } else {
+    console.log("Ember.js encountered an error:", error);
+  }
+};
+
 console.log("The app is running in " + config.environment + " mode");
 console.log("The API is " + config.apiUrl);
 export default App;
