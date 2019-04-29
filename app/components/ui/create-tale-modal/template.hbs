@@ -55,7 +55,7 @@
 </div>
 <div class="actions">
   <div class="ui black deny button">Cancel</div>
-  <div class="ui positive icon button" onclick={{action "createNewTaleButton" preventDefault=false bubble=false}}>
+  <div class="ui positive icon button {{disabled}}" onclick={{action "createNewTaleButton" preventDefault=false bubble=false}}>
     {{createButtonText}}
   </div>
   {{#ui-dropdown class="as-a-button-label"}}

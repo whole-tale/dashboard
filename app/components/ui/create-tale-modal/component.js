@@ -16,6 +16,10 @@ export default Component.extend({
   createButtonText: Ember.computed('createAndLaunch', function() {
     return this.get('createAndLaunch') ? 'Create New Tale and Launch' : 'Create New Tale';
   }),
+
+  disabled: Ember.computed('title', 'imageId', function() {
+    return (this.get('title') && this.get('imageId')) ? '' : 'disabled';
+  }),
   
   defaultErrorMessage: "There was an error while creating your Tale.",
 
