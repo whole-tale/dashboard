@@ -39,9 +39,6 @@ export default Controller.extend({
             controller.set("error", err);
             console.log(`Failed to fetch image for tale (${tale._id}):`, error);
           });
-        }).catch(() => {
-          let err = controller.get("error") + "<li>Image with ID " + tale.get('imageId') + " was not found for tale " + tale.get('title') + "! </li>";
-          controller.set("error", err);
         });
       }).catch((error) => {
         let err = controller.get("error") + "<li>Instance(s) not found for tale " + tale.get('title') + "! </li>";
