@@ -36,7 +36,7 @@
       {{/each}}
     {{else}}
       <div style="text-align:center">
-        <h4>Created by <span style="color: #67c096">{{tale-authors-to-str taleAuthors model.tale.creator}}</span></h4>
+        <h4>Created by <span style="color: #67c096">{{tale-authors-to-str taleAuthors model.creator}}</span></h4>
       </div>
     {{/if}}
       
@@ -75,7 +75,7 @@
 
     <div class="inline fields ui grid">
       <label class="two wide column right aligned">Datasets used</label>
-      {{#each model.tale.dataSetCitation as |citation index|}}
+      {{#each model.dataSetCitation as |citation index|}}
         {{#if index}}
           <label class="two wide column right aligned"></label>
         {{/if}}
