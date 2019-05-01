@@ -1,6 +1,8 @@
 import Controller from '@ember/controller';
-import { observer } from '@ember/object';
+import EmberObject, { observer } from '@ember/object';
 import $ from 'jquery';
+
+const O = EmberObject.create.bind(EmberObject);
 
 export default Controller.extend({
   grabData(model) {
@@ -14,20 +16,32 @@ export default Controller.extend({
           tale.set('instance', instance);
           controller.get('store').findRecord('image', tale.get('imageId')).then(image => {
             tale.set('image', image);
-            let folderId = tale.get('folderId')
-            controller.get('store').findRecord('folder', folderId).
-              then(folder => {
-                tale.set('folder', folder);
-              }).catch((error) => {
-                let err = controller.get("error") + "<li>Folder with ID " + tale.get('folderId') + " was not found for tale " + tale.get('title') + "!</li>";
+            controller.get('store').findRecord('user', tale.get('creatorId'))
+              .then(creator => {
+                tale.set('creator', O({
+                  firstName: creator.firstName,
+                  lastName: creator.lastName,
+                  orcid: ''
+                }));
+                controller.get('store').findRecord('folder', tale.get('folderId'))
+                  .then(folder => {
+                    tale.set('folder', folder);
+                  }).catch(() => {
+                    let err = controller.get("error") + "<li>Folder with ID " + tale.get('folderId') + " was not found for tale " + tale.get('title') + "!</li>";
+                    controller.set("error", err);
+                  });
+              }).catch(() => {
+                let err = controller.get("error") + "<li>User with ID " + tale.get('creatorId') + " was not found for tale " + tale.get('title') + "!</li>";
                 controller.set("error", err);
-                console.log(`Failed to fetch folder for tale (${tale._id}):`, error);
               });
           }).catch((error) => {
             let err = controller.get("error") + "<li>Image with ID " + tale.get('imageId') + " was not found for tale " + tale.get('title') + "! </li>";
             controller.set("error", err);
             console.log(`Failed to fetch image for tale (${tale._id}):`, error);
           });
+        }).catch(() => {
+          let err = controller.get("error") + "<li>Image with ID " + tale.get('imageId') + " was not found for tale " + tale.get('title') + "! </li>";
+          controller.set("error", err);
         });
       }).catch((error) => {
         let err = controller.get("error") + "<li>Instance(s) not found for tale " + tale.get('title') + "! </li>";

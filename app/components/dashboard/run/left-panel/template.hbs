@@ -9,7 +9,7 @@
                 <img class="env" src="{{model.icon}}" />
                 <div class="header name">
                     <h3>{{truncate-name model.title}}</h3>
-                    <span>{{tale-authors-to-str model.authors}}</span>
+                    <span>{{tale-authors-to-str model.tale.authors model.tale.creator}}</span>
                 </div>
             </div>
             <div class="right borderless menu">
