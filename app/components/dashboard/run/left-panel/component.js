@@ -5,7 +5,7 @@ import config from '../../../../config/environment';
 import { scheduleOnce, later, cancel } from '@ember/runloop';
 import EmberObject, { computed } from '@ember/object';
 import { A } from '@ember/array';
-import { not } from '@ember/object/computed';
+import { not, alias } from '@ember/object/computed';
 import $ from 'jquery';
 import layout from './template';
 
@@ -14,7 +14,7 @@ const O = EmberObject.create.bind(EmberObject);
 export default Component.extend(FullScreenMixin, {
     layout,
     classNames: ['run-left-panel'],
-    router: service('-routing'),
+    router: service(),
     internalState: service(),
     apiCall: service('api-call'),
     dataoneAuth: service('dataone-auth'),
@@ -27,6 +27,8 @@ export default Component.extend(FullScreenMixin, {
     displayTaleInstanceMenu: false,
     workspaceRootId: undefined,
     session: O({dataSet:A()}),
+    routing: service('-routing'),
+    params: alias('routing.router.currentState.routerJsState.fullQueryParams'),
 
     // Holds an array of objects that the user cannot be exclude from their package
     nonOptionalFile: [
@@ -110,12 +112,14 @@ export default Component.extend(FullScreenMixin, {
 
     didInsertElement() {
         scheduleOnce('afterRender', this, () => {
-            // Check if we're coming from an ORCID redirect
-            // If ?auth=true
-            // Open Modal
-            const modalDialogName = 'ui/files/republish-modal';
-            this.showModal(modalDialogName, this.get('modalContext'));
-        
+          // Check if we're coming from an ORCID redirect
+          let queryParams = this.get('params')
+          if (queryParams) {
+            if (queryParams.auth === 'true') {
+              this.router.transitionTo({ queryParams: { auth: null }});
+              this.send('openPublishModal', this.model.taleId);
+            }
+          }
         });
         
         $('.ui.accordion').accordion({});
