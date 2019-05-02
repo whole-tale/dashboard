@@ -116,7 +116,8 @@ export default Component.extend(FullScreenMixin, {
           let queryParams = this.get('params')
           if (queryParams) {
             if (queryParams.auth === 'true') {
-              this.send('openPublishModal', this.model.taleId)
+              this.router.transitionTo({ queryParams: { auth: null }});
+              this.send('openPublishModal', this.model.taleId);
             }
           }
         });
