@@ -4,7 +4,7 @@
         padding: 5px !important;
     }
 
-    .item {
+    .search {
         padding: 0 1em;
     }
     .secondary > .header.item {
@@ -133,9 +133,10 @@
     }
 </style>
 
+
 <div class="ui inverted grey">
     {{#if showSearch}}
-        <div class="item">
+        <div class="search">
             <div class="ui mini rounded icon search input">
                 {{input class="prompt" placeholder="Search tales..." value=searchStr key-up="searchFilter"}}
                 <i class="search icon"></i>
