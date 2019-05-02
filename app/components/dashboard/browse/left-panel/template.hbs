@@ -9,18 +9,17 @@
             <a class="item">Create New Environment</a>
         </div>
     </div>
-
-
+    
     {{!-- WT Brand Header --}}
-    <div class="header item wt-brand">
+    <div id="dashboard-brand-header" class="header item wt-brand">
         WHOLE
         <span class="wt-brand-smaller">TALE</span> 
         Dashboard
     </div>
-    
+
     {{!-- Short Introduction --}}
     <div id="introduction-short" class="transition visible">
-      <a class="show_all" data-long-id="id-long" {{action 'showIntroduction'}}>
+      <a id="show-introduction-link" class="clickable" data-long-id="id-long" {{action 'showIntroduction'}}>
         New to WholeTale? Learn more about using the Dashboard...
       </a>
     </div>
@@ -30,28 +29,28 @@
         <p class="first-para">Welcome to the WholeTale Dashboard! Here you can browse Tales published by other WholeTale users, as well as publically available datasets and environments (the buidling blocks of Tales). <i>Click on</i> a Tale to learn more about it. <i>Run</i> the Tale to interact with it. You will be running a private copy, so feel free to modify and remix the Tale (use your own data, edit the code, or change the compute environment).</p>
         <p>On each tab, you can view public tales, data, or environments, or filter to just see your own. Click <i>My Tales</i> to just see Public Tales you've copied, as well as any new Tales you create or that are shared with you by collaborators. Click the button at the top right of each tab to create a Tale, contribute a dataset or configure a custom environment. You may choose to keep these private, or publish them to make them available to other WholeTale users.</p>
         <p>For more information, visit the <a href="https://wholetale.readthedocs.io/users_guide/browse.html"><i class="fas fa-info-circle"></i> WholeTale User Guide</a>. You can quickly access relevant sections of the User Guide throughout WholeTale wherever you see this icon <i class="fas fa-info-circle"></i>.</p>
-          <a id="hide-introduction-link" class="show_less" data-short-id="id-short" {{action 'hideIntroduction'}}>
+          <a id="hide-introduction-link" class="clickable" data-short-id="id-short" {{action 'hideIntroduction'}}>
             Hide introduction
           </a>
     </div>
 </div>
 
 <div id="tale-browser-tabs" class="ui fluid attached three item tabular menu">
-  <div class="item {{if (eq currentTab 'tales') 'active'}}" onclick={{action 'selectTab' 'tales'}}>
+  <div class="clickable item {{if (eq currentTab 'tales') 'active'}}" onclick={{action 'selectTab' 'tales'}}>
        <img src="images/wholetale_logo_sm.png" /> Tales
-   </div>
-  <div class="item {{if (eq currentTab 'data') 'active'}}" onclick={{action 'selectTab' 'data'}}>
+  </div>
+   {{!-- To enable tab: onclick={{action 'selectTab' 'data'}} --}}
+  <div class="not clickable item {{if (eq currentTab 'data') 'active'}}">
        <i class="fa fa-server"></i> Data Catalog
-   </div>
-  <div class="item {{if (eq currentTab 'environments') 'active'}}" onclick={{action 'selectTab' 'environments'}}>
+  </div>
+  {{!-- To enable tab:  onclick={{action 'selectTab' 'environments'}} --}}
+  <div class="not clickable item {{if (eq currentTab 'environments') 'active'}}">
        <i class="fa fa-desktop"></i> Compute Environments
-   </div>
+  </div>
 </div>
 
 {{#if (eq currentTab 'tales')}}
     <div id="tale-tab-contents" class="ui bottom attached active tab segment">
-      <h3>Tales Catalog</h3>
-      
       {{ui/tale-browser models=model 
                         paginateOn=6
                         cardsPerRow="three"
@@ -73,8 +72,7 @@
     </div>
 {{/if}}
 {{#if (eq currentTab 'environments')}}
-    <div id="tale-tab-contents" class="ui bottom attached active tab segment">
-      <h3>Compute Environments</h3>
+    <div id="tale-tab-contents" class="ui bottom attached active tab segment environments-table-wrapper">
       {{ui/compute-environments 
         models=rightModelTop  
         selectedEnvironment=selectedEnvironment 

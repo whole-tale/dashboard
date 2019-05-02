@@ -135,45 +135,32 @@
 
 
 <div class="ui inverted grey">
-    {{#if showSearch}}
-        <div class="search">
-            <div class="ui mini rounded icon search input">
-                {{input class="prompt" placeholder="Search tales..." value=searchStr key-up="searchFilter"}}
-                <i class="search icon"></i>
-            </div>
-            <div class="results"></div>
-        </div>
-        <div class="ui secondary stackable menu" style="margin: 0 10px;">
-            <div class="header item">
-                <i class="filter inverted large icon" {{action "toggleFiltersVisibility"}}></i>
-                {{#if showFilter}}
-                    {{#ui-dropdown class="selection" selected=filter onChange=(action (mut filter))}}
-                        <div class="default text">Apply Filter</div>
-                        <i class="dropdown icon"></i>
-                        <div class="menu">
-                            {{#each filters as |_filter|}}
-                                <div class="item" data-value="{{_filter}}">
-                                    {{_filter}}
-                                </div>
-                            {{/each}}
-                        </div>
-                    {{/ui-dropdown}}
-                {{else}}
-                    <div class="filter-option">
-                        <button class="btn btn-info filter-pill" type="button" data-dismiss="alert">
-                            <span class="filter-text">{{filter}}</span> <i class="icon close" aria-hidden="true" {{action "removeCurrentFilter"}}></i>
-                        </button>
-                    </div>
-                {{/if}}
-                <span class="item aligned right">
-                    <button class="ui button tertiary" {{action "toggleListView"}}>Switch to {{#if (eq listView true)}}cards{{else}}list{{/if}} view</button>
-                </span>
+    <div class="ui grid">
+        <div class="twelve wide column" id="tale-filters">
+            <div class="ui compact secondary menu">
+                <a class="item clickable tale-filter-item {{if (eq currentTab 'all') 'active'}}" {{action 'selectFilter' 'all'}}>
+                    All Tales
+                </a>
+                {{!-- To enable tab:  {{action 'selectFilter' 'mine'}} --}}
+                <a class="item not clickable tale-filter-item {{if (eq currentTab 'mine') 'active'}}">
+                    My Tales
+                </a>
             </div>
         </div>
-    {{/if}}
+        <div class="four wide column">
+            <div id="tale-search" class="search">
+                <div class="ui icon search input">
+                    {{input class="prompt" placeholder="Search tales..." value=searchStr key-up="searchFilter"}}
+                    <i class="search icon"></i>
+                </div>
+                <div class="results"></div>
+            </div>
+        </div>
+    </div>
+    
     {{#unless modelsInView.length}}
         <div class="ui center aligned segment" style="color: black;">
-            There are no tales to display for applied filter: {{filter}}
+            There are no tales to display for applied filter: {{currentTab}}
         </div>
     {{/unless}}
     {{#if loadingTales}}
@@ -203,6 +190,8 @@
                                 <td>
                                     <div class="card">
                                         <div class="content" style="color: #515151">
+                                            <div class="left floated meta">{{if model.copyOfTale 'Copied Tale' 'Original Tale'}}</div>
+                                            <div class="left floated meta">{{if model.public 'PUBLIC' 'PRIVATE'}}</div>
                                             <div class="blurring dimmable fluid image" style="min-height: 48px;">
                                                 <div class="ui dimmer">
                                                     <div class="content">
@@ -296,10 +285,14 @@
                 </table>
             </div>
         {{else}}
-            <div class="ui {{cardsPerRow}} doubling selectable cards {{guid}}" style="padding: 5px 20px 5px 20px; margin-bottom: 1em;">
+            <div class="ui {{cardsPerRow}} doubling selectable cards {{guid}} tales-table-wrapper" style="padding: 5px 20px 5px 20px; margin-bottom: 1em;">
                 {{#each modelsInView as |model|}}
                     <div class="card">
-                        <div class="blurring dimmable fluid image" style="min-height: 250px;">
+                        <div class="content tale-card-header">
+                            <div class="right floated meta">{{if model.public 'PUBLIC' 'PRIVATE'}}</div>
+                            <div class="left floated meta">{{if model.copyOfTale 'Copied Tale' 'Original Tale'}}</div>
+                        </div>
+                        <div class="blurring dimmable fluid image" style="min-height: 150px;">
                             <div class="ui dimmer">
                                 <div class="content">
                                     <div class="center">
@@ -318,7 +311,7 @@
                                 </div>
                             </div>
 
-                            <img src="{{model.illustration}}" height="400" style="height: 400px;" alt="Research Image" class="pic" />
+                            <img src="{{model.illustration}}" height="150" style="height: 150px;" alt="Research Image" class="pic" />
                             <span class="zoom-icon">
                                 <img src="{{model.icon}}" width="80" style="width: 80px;" alt="Compute Icon">
                             </span>
@@ -334,8 +327,11 @@
                             </div>
                             <div style="padding: 4px"></div>
                             <div style="color: #67c096">
-                                {{tale-authors-to-str model.authors model.creator}}
+                                by {{tale-authors-to-str model.authors model.creator}}
                             </div>
+                            
+                            {{!-- 
+                            
                             <div style="padding: 8px"></div>
                             <div class="ui right aligned grid" style="padding: 0; float: right;">
                                 <div class="right aligned row" style="padding: 0">
@@ -383,6 +379,8 @@
                                     </div>
                                 </div>
                             {{/if}}
+                            
+                            --}}
                         </div>
                     </div>
                 {{/each}}

@@ -7,17 +7,25 @@ export default Component.extend(FullScreenMixin, {
 
   currentTab: 'tales',
   
+  didInsertElement() {
+    $('#show-introduction-link').transition('glow');
+  },
+  
   actions: {
     selectTab(tabName) {
       this.set('currentTab', tabName);
     },
     showIntroduction() {
-      $('#introduction-short').transition('slide up');
-      $('#introduction-long').transition('slide down');
+      $('#dashboard-brand-header').transition('fly up');
+      $('#introduction-short').transition('fly up');
+      $('#introduction-long').transition('fly down');
+      $('#hide-introduction-link').transition('glow');
     },
     hideIntroduction() {
-      $('#introduction-short').transition('slide up');
-      $('#introduction-long').transition('slide down');
+      $('#dashboard-brand-header').transition('fly down');
+      $('#introduction-short').transition('fly down');
+      $('#introduction-long').transition('fly up');
+      $('#show-introduction-link').transition('glow');
     },
     gotoPublish : function(name) {
       scroll(0,0);

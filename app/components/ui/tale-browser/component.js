@@ -8,6 +8,7 @@ import $ from 'jquery';
 const O = EmberObject.create.bind(EmberObject);
 
 export default Component.extend({
+  currentTab: 'all',
   store: service(),
   userAuth: service(),
   apiCall: service('api-call'),
