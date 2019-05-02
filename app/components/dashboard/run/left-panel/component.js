@@ -14,7 +14,7 @@ const O = EmberObject.create.bind(EmberObject);
 export default Component.extend(FullScreenMixin, {
     layout,
     classNames: ['run-left-panel'],
-    router: service('-routing'),
+    router: service(),
     internalState: service(),
     apiCall: service('api-call'),
     dataoneAuth: service('dataone-auth'),
