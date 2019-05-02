@@ -11,35 +11,33 @@ export default Controller.extend({
     controller.set("error", "");
 
     model.forEach(tale => {
-      controller.get('store').query('instance', { queryParams: { 'taleId': tale.get('id') } }).then(instances => {
-        instances.forEach(instance => {
-          tale.set('instance', instance);
-          controller.get('store').findRecord('image', tale.get('imageId')).then(image => {
-            tale.set('image', image);
-            controller.get('store').findRecord('user', tale.get('creatorId'))
-              .then(creator => {
-                tale.set('creator', O({
-                  firstName: creator.firstName,
-                  lastName: creator.lastName,
-                  orcid: ''
-                }));
-                controller.get('store').findRecord('folder', tale.get('folderId'))
-                  .then(folder => {
-                    tale.set('folder', folder);
-                  }).catch(() => {
-                    let err = controller.get("error") + "<li>Folder with ID " + tale.get('folderId') + " was not found for tale " + tale.get('title') + "!</li>";
-                    controller.set("error", err);
-                  });
-              }).catch(() => {
-                let err = controller.get("error") + "<li>User with ID " + tale.get('creatorId') + " was not found for tale " + tale.get('title') + "!</li>";
-                controller.set("error", err);
-              });
+      controller.get('store').query('instance', { 'taleId': tale.get('id') }).then(instances => {
+        tale.set('instance', instances.length > 0 ? instances[0] : null);
+        controller.get('store').findRecord('image', tale.get('imageId')).then(image => {
+          tale.set('image', image);
+          controller.get('store').findRecord('user', tale.get('creatorId'))
+            .then(creator => {
+              tale.set('creator', O({
+                firstName: creator.firstName,
+                lastName: creator.lastName,
+                orcid: ''
+              }));
+              controller.get('store').findRecord('folder', tale.get('folderId'))
+                .then(folder => {
+                  tale.set('folder', folder);
+                }).catch(() => {
+                  let err = controller.get("error") + "<li>Folder with ID " + tale.get('folderId') + " was not found for tale " + tale.get('title') + "!</li>";
+                  controller.set("error", err);
+                });
+            }).catch(() => {
+              let err = controller.get("error") + "<li>User with ID " + tale.get('creatorId') + " was not found for tale " + tale.get('title') + "!</li>";
+              controller.set("error", err);
+            });
           }).catch((error) => {
             let err = controller.get("error") + "<li>Image with ID " + tale.get('imageId') + " was not found for tale " + tale.get('title') + "! </li>";
             controller.set("error", err);
             console.log(`Failed to fetch image for tale (${tale._id}):`, error);
           });
-        });
       }).catch((error) => {
         let err = controller.get("error") + "<li>Instance(s) not found for tale " + tale.get('title') + "! </li>";
         controller.set("error", err);
