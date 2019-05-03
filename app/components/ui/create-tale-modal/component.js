@@ -53,7 +53,7 @@ export default Component.extend({
       this.set('importing', false);
       this.set('datasetAPI', null);
       this.set('imageId', null);
-      this.set('dataSet', null);
+      this.set('dataSet', []);
       this.set('title', null);
       $('.ui.dropdown.compute-environment').dropdown('clear');
     },
