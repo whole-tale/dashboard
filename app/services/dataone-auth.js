@@ -1,25 +1,29 @@
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
-import { computed } from '@ember/object';
-import config from '../config/environment';
  export default Service.extend({
   tokenHandler: service('token-handler'),
   store: service(),
   authRequest: service(),
   isAuthenticated: true,
-   getDataONEJWT() {
-    /*
-    Queries the DataONE `token` endpoint for the jwt. When a user signs into
-    DataONE a cookie is created, which is checked by `token`. If the cookie wasn't
-    found, then the response will be empty. Otherwise the jwt is returned.
+  devCN: 'https://cn-stage-2.test.dataone.org/portal',
+  prodCN: 'https://cn.dataone.org/portal',
+
+    /**
+     * Queries the DataONE `token` endpoint for the jwt. When a user signs into
+     * DataONE a cookie is created, which is checked by `token`. If the cookie wasn't
+     * found, then the response will be empty. Otherwise the jwt is returned.
+     *
+     * @method getDataONEJWT
+     * @param isProduction Flag set to true when production should be interfaced
     */
-     // Use the XMLHttpRequest to handle the request
+   getDataONEJWT(isProduction) {
     let xmlHttp = new XMLHttpRequest();
-    // Open the request to the the token endpoint, which will return the jwt if logged in
-    let dataoneEndpoint = 'https://cn.dataone.org/portal/token'
-    if (config.dev) {
-      dataoneEndpoint = 'https://cn-stage-2.test.dataone.org/portal/token'
+    let dataoneEndpoint = this.devCN
+    if (isProduction) {
+      dataoneEndpoint = this.prodCN
     }
+    dataoneEndpoint+='/token'
+    console.log('From getDataONEJWT', dataoneEndpoint)
     xmlHttp.open("GET", dataoneEndpoint, false);
     // Set the response content type
     xmlHttp.setRequestHeader("Content-Type", "text/xml");
@@ -28,8 +32,18 @@ import config from '../config/environment';
     xmlHttp.send(null);
     return xmlHttp.responseText;
   },
+
+
    hasD1JWT()  {
     let jwt = this.getDataONEJWT();
     return jwt ? true : false;
   },
+
+  getEndpoint(isProduction) {
+    let dataoneEndpoint = this.devCN;
+    if (isProduction) {
+      dataoneEndpoint = this.prodCN;
+    }
+    return dataoneEndpoint;
+  }
  });

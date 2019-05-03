@@ -400,13 +400,15 @@ export default Service.extend({
      * @param taleId The ID of the Tale this is being published
      * @param repository 
      * @param jwt The user's DataONE JWT token
+     * @param isProduction Flag set to true when publishing to a production server
      */
-  publishTale(taleId, repository, jwt) {
+  publishTale(taleId, repository, jwt, isProduction) {
       const token = this.get('tokenHandler').getWholeTaleAuthToken();
       return new Promise ((resolve, reject) => {
           let url = `${config.apiUrl}/publish/dataone` + 
             `?taleId=${taleId}&remoteMemberNode=${repository}` + 
-            `&authToken=${jwt}`;
+            `&authToken=${jwt}` +
+            `&isProduction=${isProduction}`;
     
           let client = new XMLHttpRequest();
           client.open('GET', url);
