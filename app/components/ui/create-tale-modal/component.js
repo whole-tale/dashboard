@@ -153,5 +153,6 @@ export default Component.extend({
     } catch(e) {
       this.handleError({responseJSON:{message:e+""}});
     }
+    this.router.transitionTo({queryParams: {environment: null, name: null, uri: null, api: null}});
   }
 });
