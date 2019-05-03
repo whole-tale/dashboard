@@ -137,7 +137,7 @@
 <div class="ui inverted grey">
     <div class="ui grid">
         <div class="twelve wide column" id="tale-filters">
-            <div class="ui compact secondary menu">
+            <div id="tale-filter-items" class="ui compact menu">
                 <a class="item clickable tale-filter-item {{if (eq currentTab 'all') 'active'}}" {{action 'selectFilter' 'all'}}>
                     All Tales
                 </a>
@@ -201,11 +201,6 @@
                                                             {{/if}}
                                                             {{#if showSelect}}
                                                                 <div class="ui inverted button" {{action 'select' model}}>Select</div>
-                                                            {{/if}}
-                                                            {{#if (and showDelete (gt model._accessLevel 0))}}
-                                                                <a class="ui tiny bottom right attached label" {{action 'attemptDeletion' model}}>
-                                                                    <i class="red remove icon"></i>
-                                                                </a>
                                                             {{/if}}
                                                         </div>
                                                     </div>
@@ -288,7 +283,7 @@
             <div class="ui {{cardsPerRow}} doubling selectable cards {{guid}} tales-table-wrapper" style="padding: 5px 20px 5px 20px; margin-bottom: 1em;">
                 {{#each modelsInView as |model|}}
                     <div class="card">
-                        <div class="content tale-card-header">
+                        <div class="extra content">
                             <div class="right floated meta">{{if model.public 'PUBLIC' 'PRIVATE'}}</div>
                             <div class="left floated meta">{{if model.copyOfTale 'Copied Tale' 'Original Tale'}}</div>
                         </div>
@@ -322,13 +317,23 @@
                             <div style="text-transform: uppercase; color: #ba975e;font-weight: 700;">{{model.category}}</div>
                             <div style="font-weight: 700; font-size: 120%; padding: 0 0 5px 0"> {{truncate-name model.title}} </div>
 
-                            <div style="height:120px; overflow: scroll;">
+                            <div style="height:60px; overflow:none;">
                                 {{convert-markdown model.description}}
                             </div>
                             <div style="padding: 4px"></div>
-                            <div style="color: #67c096">
-                                by {{tale-authors-to-str model.authors model.creator}}
+                            <div>
+                                by <span style="color: #67c096">{{tale-authors-to-str model.authors model.creator}}</span>
                             </div>
+                        </div>
+                        <div class="extra content">
+                            <span class="right floated">
+                                <i class="icon trash"></i>
+                            </span>
+                            <span style="color:#2185d0">
+                                <i class="stop icon"></i>
+                                Stop Tale
+                            </span>
+                        </div>
                             
                             {{!-- 
                             
@@ -381,7 +386,6 @@
                             {{/if}}
                             
                             --}}
-                        </div>
                     </div>
                 {{/each}}
             </div>
