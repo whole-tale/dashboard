@@ -39,18 +39,20 @@ export default Component.extend({
   
   creatorObserver: observer('modelsInView', function() {
     this.modelsInView.forEach(tale => {
-      const creatorId = tale.get("creatorId");
-      this.store.findRecord('user', creatorId).then(creator => {
-        tale.set('creator', O({
-          firstName: creator.firstName,
-          lastName: creator.lastName,
-          orcid: ''
-        }));
-      }).catch(err => {
-        let message = `Failed to fetch creator=${tale.creatorId} for tale=${tale._id}:`;
-        console && (console.error && console.error(message, err)) || console.log(message, err);
-        tale.set('creator', O({}));
-      });
+      if (tale && tale.id) {
+        const creatorId = tale.get("creatorId");
+        this.store.findRecord('user', creatorId).then(creator => {
+          tale.set('creator', O({
+            firstName: creator.firstName,
+            lastName: creator.lastName,
+            orcid: ''
+          }));
+        }).catch(err => {
+          let message = `Failed to fetch creator=${tale.creatorId} for tale=${tale._id}:`;
+          console && (console.error && console.error(message, err)) || console.log(message, err);
+          tale.set('creator', O({}));
+        });
+      }
     });
   }),
 
@@ -129,35 +131,35 @@ export default Component.extend({
   },
 
   updateModels(component, models) {
-    if (!models.get('length')) {
-      component.set('modelsInView', A([]));
-    }
     let modelsInView = A([]);
-    component.get('models').forEach(tale => {
-      if (!tale.get("icon")) {
-        if (tale.get("meta")) {
-          let meta = tale.get("meta");
-          if (meta.get('provider') !== "DataONE")
-            tale.set('icon', "/icons/globus-logo-large.png");
-          else
-            tale.set('icon', "/icons/d1-logo-large.png");
-        } else {
-          tale.set('icon', "/images/whole_tale_logo.png");
+    models.forEach(tale => {
+      if (tale && tale._id) {
+        
+        if (!tale.get("icon")) {
+          if (tale.get("meta")) {
+            let meta = tale.get("meta");
+            if (meta.get('provider') !== "DataONE")
+              tale.set('icon', "/icons/globus-logo-large.png");
+            else
+              tale.set('icon', "/icons/d1-logo-large.png");
+          } else {
+            tale.set('icon', "/images/whole_tale_logo.png");
+          }
         }
+  
+        let description = tale.get('description');
+  
+        if (!description) {
+          tale.set('tagName', "No Description ...");
+        } else {
+          if (description.length > 200)
+            tale.set('tagName', description.substring(0, 200) + "..");
+          else
+            tale.set('tagName', description);
+        }
+  
+        modelsInView.pushObject(O(tale));
       }
-
-      let description = tale.get('description');
-
-      if (!description) {
-        tale.set('tagName', "No Description ...");
-      } else {
-        if (description.length > 200)
-          tale.set('tagName', description.substring(0, 200) + "..");
-        else
-          tale.set('tagName', description);
-      }
-
-      modelsInView.pushObject(O(tale));
     });
 
     component.set("modelsInView", modelsInView);
@@ -188,9 +190,11 @@ export default Component.extend({
       let promise = new Promise((resolve, reject) => {
         let searchView = [];
         filteredSet.forEach(model => {
-          let title = model.get('title');
-          if (new RegExp(searchStr, "i").test(title)) {
-            searchView.push(model);
+          if (model && model.id) {
+            let title = model.get('title');
+            if (new RegExp(searchStr, "i").test(title)) {
+              searchView.push(model);
+            }
           }
         });
         component.set('loadingTales', false);
@@ -213,7 +217,7 @@ export default Component.extend({
       if (model) {
         model.set('name', model.get('title'));
         let taleId = model.get('_id');
-        let instances = component.get('store').query('instance', {
+        component.get('store').query('instance', {
           taleId: taleId,
           reload: true,
           adapterOptions: {
@@ -275,35 +279,57 @@ export default Component.extend({
     },
 
     launchTale(tale) {
-      let component = this;
-
-      component.set('tale_instantiating_id', tale.id);
-      component.set('tale_instantiating', true);
+      const component = this;
+      
+      // Cancel existing state reset, if one exists
+      let resetRequest = tale.get('launchResetRequest');
+      if (resetRequest) {
+        cancel(resetRequest);
+      }
+      
+      // Reset state manually when re-launching
+      tale.set('launchError', null);
+      tale.set('launchStatus', 'starting');
+      tale.set('launchResetRequest', null);
+      
+      let resetStatusAfterMs = (tale, delay) => {
+        let resetRequest = later(() => {
+          if (!component.isDestroyed) {
+            console.log('Resetting tale status:', tale);
+            tale.set('launchError', null);
+            tale.set('launchStatus', null);
+            tale.set('launchResetRequest', null);
+          }
+        }, delay);
+        tale.set('launchResetRequest', resetRequest);
+      };
+    
+      let handleLaunchError = (tale, err) => {
+        // deal with the failure here
+        tale.set('launchStatus', 'error');
+        tale.set('launchError', err.message || err);
+        if (console && console.error) {
+          console.error('Failed to launch Tale', err);
+        } else {
+          console.log('Failed to launch Tale', err);
+        }
+        
+        resetStatusAfterMs(tale, 10000);
+      };
 
       return this.get('apiCall').startTale(tale)
           .then((instance) => {
-            component.set("instance", instance)
+            tale.set('instance', instance)
             this.get('apiCall').waitForInstance(instance)
               .then((instance) => {
-                component.set("instance", instance);
+                tale.set('instance', instance);
                 component.get('taleLaunched')();
-              })
-              .catch((err) => {
-                // deal with the failure here
-                component.set("tale_instantiating", false);
-                component.set("tale_not_instantiated", true);
-                let error = JSON.parse(err);
-        
-                component.set("error_msg", error.message);
-        
-                later(function () {
-                  if(!component.isDestroyed){
-                    component.set("tale_not_instantiated", false);
-                    component.set("tale_instantiating_id", 0);
-                  }
-                }, 10000);
-              });
-          });
+                tale.set('launchError', null);
+                tale.set('launchStatus', 'started');
+                console.log('Tale is now started:', tale);
+                resetStatusAfterMs(tale, 10000);
+              }).catch((err) => handleLaunchError(tale, err));
+          }).catch((err) => handleLaunchError(tale, err));
     }
   }
 });

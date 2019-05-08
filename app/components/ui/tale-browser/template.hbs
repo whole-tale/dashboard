@@ -246,44 +246,44 @@
                                     <div style="color: #67c096; font-size: 75%">{{tale-authors-to-str model.authors model.creator}}</div>
                                 </td>
                                 <td style="text-align: center;">
-                                    {{#if (eq tale_instantiating_id model.id)}}
-                                        {{#if tale_instantiating}}
-                                            <div class="ui segment" style="height:75%;">
-                                                <div class="ui active inverted dimmer">
-                                                    <div class="ui text loader" style="font-size:1rem;">Launching Tale {{truncate-name model.title}}</div>
+                                    {{model.launchStatus}}
+                                    {{#if (eq model.launchStatus 'starting')}}
+                                        <div class="ui segment" style="height:75%;">
+                                            <div class="ui active inverted dimmer">
+                                                <div class="ui text loader" style="font-size:1rem;">Launching Tale {{truncate-name model.title}}</div>
+                                            </div>
+                                        </div>
+                                    {{/if}}
+                                    {{#if (eq model.launchStatus 'started')}}
+                                        <div class="ui green icon message">
+                                            <div class="content">
+                                                <div class="header">
+                                                    <i class="checkmark icon"></i>
+                                                    <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
+                                                </div>
+                                                <div class="ui buttons">
+                                                  {{#link-to 'run.view' model._id}}
+                                                    <div class="ui mini green icon button" style="margin-right: 10px">
+                                                      <i class="play icon"></i>
+                                                      Go to Tale
+                                                    </div>
+                                                  {{/link-to}}
                                                 </div>
                                             </div>
-                                        {{/if}}
-                                        {{#if tale_instantiated}}
-                                            <div class="ui green icon message">
-                                                <div class="content">
-                                                    <div class="header">
-                                                        <i class="checkmark icon"></i>
-                                                        <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
-                                                    </div>
-                                                    <div class="ui buttons">
-                                                      {{#link-to 'run.view' model._id}}
-                                                        <div class="ui mini green icon button" style="margin-right: 10px">
-                                                          <i class="play icon"></i>
-                                                          Go to Tale
-                                                        </div>
-                                                      {{/link-to}}
-                                                    </div>
+                                        </div>
+                                    {{/if}}
+                                    {{#if (eq model.launchStatus 'error')}}
+                                        <div class="ui red icon message">
+                                            <i class="remove circle icon"></i>
+                                            <div class="content">
+                                                <div class="header">
+                                                    <p>The Tale '{{truncate-name model.title}}' could not be launched !</p>
+                                                    <p>{{model.launchError}}</p>
                                                 </div>
                                             </div>
-                                        {{/if}}
-                                        {{#if tale_not_instantiated}}
-                                            <div class="ui red icon message">
-                                                <i class="remove circle icon"></i>
-                                                <div class="content">
-                                                    <div class="header">
-                                                        The Tale '{{truncate-name model.name}}' could not be launched !
-                                                        <br> {{error_msg}}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {{/if}}
-                                    {{else}}
+                                        </div>
+                                    {{/if}}
+                                    {{#if (not model.launchStatus)}}
                                         <div class="ui mini green icon button" {{action 'launchTale' model}}>
                                             <i class="play round icon"></i>
                                         </div>
@@ -344,45 +344,43 @@
                                     </div>
                                 </div>
                             </div>
-                            {{#if (eq tale_instantiating_id model.id)}}
-                                {{#if tale_instantiating}}
-                                    <div class="ui segment" style="height:100px">
-                                        <div class="ui active inverted dimmer">
-                                            <div class="ui text loader">Launching Tale {{truncate-name model.title}}</div>
-                                        </div>
+                            {{#if (eq model.launchStatus 'starting')}}
+                                <div class="ui segment" style="height:100px">
+                                    <div class="ui active inverted dimmer">
+                                        <div class="ui text loader">Launching Tale {{truncate-name model.title}}</div>
                                     </div>
-                                {{/if}}
-                                {{#if tale_instantiated}}
-                                    <div class="ui green icon message">
-                                        <i class="checkmark icon"></i>
-                                        <div class="content">
-                                            <div class="header">
-                                                <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
+                                </div>
+                            {{/if}}
+                            {{#if (eq model.launchStatus 'started')}}
+                                <div class="ui green icon message">
+                                    <i class="checkmark icon"></i>
+                                    <div class="content">
+                                        <div class="header">
+                                            <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
 
-                                                <div class="ui buttons">
-                                                    {{#link-to 'run.view' model._id}}
-                                                      <div class="ui mini green icon button" style="margin-right: 10px">
-                                                        <i class="play icon"></i>
-                                                        Go to Tale
-                                                      </div>
-                                                    {{/link-to}}
-                                                </div>
+                                            <div class="ui buttons">
+                                                {{#link-to 'run.view' model._id}}
+                                                  <div class="ui mini green icon button" style="margin-right: 10px">
+                                                    <i class="play icon"></i>
+                                                    Go to Tale
+                                                  </div>
+                                                {{/link-to}}
+                                            </div>
 
-                                            </div>
                                         </div>
                                     </div>
-                                {{/if}}
-                                {{#if tale_not_instantiated}}
-                                    <div class="ui red icon message">
-                                        <i class="remove circle icon"></i>
-                                        <div class="content">
-                                            <div class="header">
-                                                The Tale '{{truncate-name model.name}}' could not be launched !
-                                                <br> {{error_msg}}
-                                            </div>
+                                </div>
+                            {{/if}}
+                            {{#if (eq model.launchStatus 'error')}}
+                                <div class="ui red icon message">
+                                    <i class="remove circle icon"></i>
+                                    <div class="content">
+                                        <div class="header">
+                                            The Tale '{{truncate-name model.title}}' could not be launched !
+                                            <br> {{error_msg}}
                                         </div>
                                     </div>
-                                {{/if}}
+                                </div>
                             {{/if}}
                         </div>
                     </div>
