@@ -317,9 +317,12 @@ export default Component.extend(FullScreenMixin, {
                             cancel(contingency);
                         }).catch((error) => {
                             self.set("taleLaunchError", error.message);
-                            console.log('Error starting tale:', error);
+                            console.log('Error waiting for Tale to start:', error);
                         }).finally(() => self.set('disableStartStop', false));
-                })
+                }).catch((error) => {
+                    self.set("taleLaunchError", error.message);
+                    console.log('Error starting tale:', error);
+                });
         },
         
         stopTale(tale) {

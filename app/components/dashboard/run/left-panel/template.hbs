@@ -30,6 +30,10 @@
                                 title="Tired of waiting? Click here to shutdown and try again.">
                             <i class="fas fa-spinner fa-pulse" style="padding-right:0;"></i> Please Wait...
                         </div>
+                    {{else if taleLaunchError}}
+                        <div class="ui blue icon button" {{action 'startTale' model}}>
+                            <i class="fas fa-exclamation-circle"></i> Start
+                        </div>
                     {{else}}
                         <div class="ui blue icon button" {{action 'startTale' model}}>
                             <i class="fas fa-play"></i> Start
