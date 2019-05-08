@@ -5,21 +5,12 @@ import RSVP from 'rsvp';
 export default AuthenticateRoute.extend({
   queryParams: {auth: false},
   internalState: service(),
+  apiCall: service('api-call'),
   model(params) {
-    this._super(params);
+    this._super(...arguments);
     this.get('internalState').set('currentInstanceId', params.tale_id);
-    this.set('queryParams', params);
-    return RSVP.hash({
-      tales: this.get('store').findAll('tale', {
-        reload: true,
-        adapterOptions: {
-          queryParams: {
-            limit: "0"
-          }
-        }
-      }),
-      selected: this.get('store').findRecord('tale', params.tale_id, { reload: true })
-    });
+    //this.set('queryParams', params);
+    return this.apiCall.fetchTaleData(params.tale_id);
   },
   actions: {
     error(error, transition) {

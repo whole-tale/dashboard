@@ -7,6 +7,8 @@ import {
     inject as service
 } from '@ember/service';
 
+const O = EmberObject.create.bind(EmberObject);
+
 export default Service.extend({
     store: service(),
     tokenHandler: service('token-handler'),
@@ -594,6 +596,33 @@ export default Service.extend({
             });
     
           } 
+      });
+    },
+  
+    fetchTaleData(taleId) {
+      const self = this;
+      const store = self.get('store');
+      return store.findRecord('tale', taleId).then(tale => {
+          store.query('instance', { 'taleId': tale.get('id') }).then(instances => {
+            tale.set('instance', instances.firstObject);
+            store.findRecord('image', tale.get('imageId')).then(image => {
+              tale.set('image', image);
+              store.findRecord('user', tale.get('creatorId')).then(creator => {
+                tale.set('creator', O({
+                  firstName: creator.firstName,
+                  lastName: creator.lastName,
+                  orcid: ''
+                }));
+                let folderId = tale.get('folderId');
+                if (folderId) {
+                    store.findRecord('folder', folderId).then(folder => {
+                      tale.set('folder', folder);
+                    }).catch((error) => console.log(`Failed to fetch folder for tale (${tale._id}):`, error));
+                }
+              }).catch((error) => console.log(`Failed to fetch creator for tale (${tale._id}):`, error));
+            }).catch((error) => console.log(`Failed to fetch image for tale (${tale._id}):`, error));
+          }).catch((error) => console.log(`Failed to fetch instance(s) for tale (${tale._id}):`, error));
+          return tale;
       });
     },
   
