@@ -41,18 +41,17 @@ export default Component.extend({
   creatorObserver: observer('modelsInView', function() {
     this.modelsInView.forEach(tale => {
       if (tale && tale.id) {
-        const creatorId = tale.get("creatorId");
-        this.store.findRecord('user', creatorId).then(creator => {
-          tale.set('creator', O({
-            firstName: creator.firstName,
-            lastName: creator.lastName,
-            orcid: ''
-          }));
-        }).catch(err => {
-          let message = `Failed to fetch creator=${tale.creatorId} for tale=${tale._id}:`;
-          console && (console.error && console.error(message, err)) || console.log(message, err);
-          tale.set('creator', O({}));
-        });
+        this.apiCall.fetchTaleData(tale.id, false);
+      }
+    });
+  }),
+  
+  instancePoller: observer('modelsInView', 'instances', function() {
+    // When instance models change, check if we need to poll
+    this.modelsInView.forEach(model => {
+      // If we see an instance that is "Launching", poll until it completes
+      if (model.instance && model.instance.status === 0) {
+        this.apiCall.waitForInstance(model.instance);
       }
     });
   }),
@@ -213,28 +212,17 @@ export default Component.extend({
       this.sendAction('action', model); // sends to compose.js controller, action itemSelected, based on template spec.
     },
 
-    attemptDeletion(model) {
+    attemptDeletion(tale) {
       let component = this;
-      if (model) {
-        model.set('name', model.get('title'));
-        let taleId = model.get('_id');
-        component.get('store').query('instance', {
-          taleId: taleId,
-          reload: true,
-          adapterOptions: {
-            queryParams: {
-              limit: "0"
-            }
-          }
-        }).then((instances) => {
-          if (instances && instances.length) {
-            let message = `There ${instances.length === 1 ? "is" : "are"} ${instances.length} running instance${instances.length === 1 ? "" : "s"} associated to this tale.`;
+      if (tale) {
+        let instance = tale.get('instance');
+        if (instance) {
+            let message = `There is at least one running instance associated to this Tale. You must shut it down before deleting the Tale.`;
             component.set('cannotDeleteMessage', message);
             component.actions.openWarningModal.call(this);
-          } else {
-            component.actions.openDeleteModal.call(this, model);
-          }
-        });
+        } else {
+            component.actions.openDeleteModal.call(this, tale);
+        }
       }
     },
 
@@ -243,12 +231,9 @@ export default Component.extend({
       $(selector).modal('show');
     },
 
-    openDeleteModal(model) {
+    openDeleteModal(tale) {
       let component = this;
-      if (model) {
-        model.set('name', model.get('title'));
-      }
-      component.set('selectedTale', model);
+      component.set('selectedTale', tale);
       let selector = `.delete-modal-tale>.ui.delete-modal.modal`;
       later(() => {
         $(selector).modal('show');
@@ -279,8 +264,8 @@ export default Component.extend({
       this.sendAction("onAddNew");
     },
 
-    launchTale(tale) {
-      const component = this;
+    startTale(tale) {
+      const self = this;
       
       // Cancel existing state reset, if one exists
       let resetRequest = tale.get('launchResetRequest');
@@ -293,9 +278,10 @@ export default Component.extend({
       tale.set('launchStatus', 'starting');
       tale.set('launchResetRequest', null);
       
+      // TODO: Abstract this to reusable helper?
       let resetStatusAfterMs = (tale, delay) => {
         let resetRequest = later(() => {
-          if (!component.isDestroyed) {
+          if (!self.isDestroyed) {
             console.log('Resetting tale status:', tale);
             tale.set('launchError', null);
             tale.set('launchStatus', null);
@@ -305,6 +291,7 @@ export default Component.extend({
         tale.set('launchResetRequest', resetRequest);
       };
     
+      // TODO: Abstract this to reusable helper?
       let handleLaunchError = (tale, err) => {
         // deal with the failure here
         tale.set('launchStatus', 'error');
@@ -318,19 +305,65 @@ export default Component.extend({
         resetStatusAfterMs(tale, 10000);
       };
 
-      return this.get('apiCall').startTale(tale)
+      return this.apiCall.startTale(tale).then((instance) => {
+        tale.set('instance', instance)
+        this.apiCall.waitForInstance(instance)
           .then((instance) => {
-            tale.set('instance', instance)
-            this.get('apiCall').waitForInstance(instance)
-              .then((instance) => {
-                tale.set('instance', instance);
-                component.get('taleLaunched')();
-                tale.set('launchError', null);
-                tale.set('launchStatus', 'started');
-                console.log('Tale is now started:', tale);
-                resetStatusAfterMs(tale, 10000);
-              }).catch((err) => handleLaunchError(tale, err));
+            tale.set('instance', instance);
+            self.get('taleLaunched')();
+            tale.set('launchError', null);
+            tale.set('launchStatus', 'started');
+            console.log('Tale is now started:', tale);
+            resetStatusAfterMs(tale, 10000);
           }).catch((err) => handleLaunchError(tale, err));
+      }).catch((err) => handleLaunchError(tale, err));
+    },
+    
+    stopTale(tale) {
+      const self = this;
+      
+      // Reset state manually when re-launching
+      tale.set('launchError', null);
+      tale.set('launchStatus', 'stopping');
+      tale.set('launchResetRequest', null);
+      
+      // TODO: Abstract this to reusable helper?
+      let resetStatusAfterMs = (tale, delay) => {
+        let resetRequest = later(() => {
+          if (!self.isDestroyed) {
+            console.log('Resetting tale status:', tale);
+            tale.set('launchError', null);
+            tale.set('launchStatus', null);
+            tale.set('launchResetRequest', null);
+          }
+        }, delay);
+        tale.set('launchResetRequest', resetRequest);
+      };
+    
+      // TODO: Abstract this to reusable helper?
+      let handleStopError = (tale, err) => {
+        // deal with the failure here
+        tale.set('launchStatus', 'error');
+        tale.set('launchError', err.message || err);
+        if (console && console.error) {
+          console.error('Failed to stop Tale', err);
+        } else {
+          console.log('Failed to stop Tale', err);
+        }
+        
+        resetStatusAfterMs(tale, 10000);
+      };
+      
+      // Add an artificial delay to make the user feel good
+      tale.instance.set('status', 0);
+      later(() => {
+        this.apiCall.stopTale(tale).then((instance) => {
+          tale.set('launchError', null);
+          tale.set('launchStatus', null);
+          console.log('Tale is now stopped:', tale);
+          resetStatusAfterMs(tale, 10000);
+        }).catch((err) => handleStopError(tale, err));
+      }, 1500);
     }
   }
 });

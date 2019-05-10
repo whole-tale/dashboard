@@ -16,14 +16,16 @@ export default Component.extend(FullScreenMixin, {
       this.set('currentTab', tabName);
     },
     showIntroduction() {
-      $('#dashboard-brand-header').transition('fly up');
       $('#introduction-short').transition('fly up');
+      $('#tales-table').addClass('tales-table-long-intro');
+      $('#tales-table').removeClass('tales-table-short-intro');
       $('#introduction-long').transition('fly down');
       $('#hide-introduction-link').transition('glow');
     },
     hideIntroduction() {
-      $('#dashboard-brand-header').transition('fly down');
       $('#introduction-short').transition('fly down');
+      $('#tales-table').addClass('tales-table-short-intro');
+      $('#tales-table').removeClass('tales-table-long-intro');
       $('#introduction-long').transition('fly up');
       $('#show-introduction-link').transition('glow');
     },

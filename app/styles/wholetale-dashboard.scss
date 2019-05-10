@@ -6,7 +6,7 @@
 
 /* Variables */
 $inverted-menu-bg: rgb(30, 46, 68);
-$inverted-menu-height: 48px;
+$inverted-menu-height: 58px;
 $main-menu-bg: rgb(206, 220, 226);
 $main-menu-height: 0px;//64px;
 $nav-vertical-menu-bg: rgb(243, 243, 243);
@@ -16,8 +16,16 @@ $bottom-separation: 2.5rem;
 $footer-height: 94px;
 $left-panel-padding: 38px;
 $wt-paddleboard-panel-tall-height: 63px;
-$wt-dashboard-header: 22px + 16px + 40px + 23px + 20px;
-$wt-dashboard-intro: 155px;
+$wt-dashboard-header: 38px;
+$wt-dashboard-intro: 197px;
+$wt-dashboard-tabs: 54px;
+$wt-dashboard-search-filters: 40px;
+
+$wt-viewport: calc(100vh - (#{$inverted-menu-height} + #{$footer-height}));
+
+$wt-tale-card-image-height: 160px;
+$wt-tale-card-extra-content-height: 41px;
+$wt-tale-card-title-height: 177px;
 
 $mobile-screen: 690px;
 $tablet-screen: 995px;
@@ -1361,7 +1369,7 @@ wt.panel .wt.paddleboard.header i {
 }
 
 .environments-table-wrapper {
-    height: calc(100vh - (2.5rem + 48px + 64px + 94px + 50px + 30px + 86px + 2em));
+    height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + 64px + 94px + 50px + 30px + 86px + 2em));
     overflow-y: auto;
 }
 
@@ -1393,4 +1401,49 @@ wt.panel .wt.paddleboard.header i {
   -webkit-transition: color 0.1s ease;
   transition: color 0.1s ease;
   border-radius: 0.28571429rem;
+}
+
+.ui.basic.button.borderless {
+	-webkit-box-shadow: none !important;
+	-moz-box-shadow: none !important;
+	box-shadow: none !important;
+}
+
+.ui.basic.buttons.borderless {
+	border: none !important;
+}
+
+.tale.card {
+  height: calc(#{$wt-tale-card-image-height} + (2 * #{$wt-tale-card-extra-content-height}) + #{$wt-tale-card-title-height});
+}
+
+.tale.image {
+  height: #{$wt-tale-card-image-height};
+}
+
+.tale.title {
+  height: #{$wt-tale-card-title-height};
+}
+
+.tale.extra.content {
+  height: #{$wt-tale-card-extra-content-height};
+}
+
+.tales-table-long-intro {
+    height: calc(#{$wt-viewport} - (#{$wt-dashboard-intro} + #{$wt-dashboard-tabs} + #{$wt-dashboard-search-filters} + 80px));
+    overflow-y: auto;
+}
+
+.tales-table-short-intro {
+    height: calc(#{$wt-viewport} - (#{$wt-dashboard-header} + #{$wt-dashboard-tabs} + #{$wt-dashboard-search-filters} + 40px));
+    overflow-y: auto;
+}
+
+#tales-table {
+  cursor: inherit;
+}
+
+.disabled {
+  cursor: not-allowed !important;
+  opacity: .45 !important;
 }

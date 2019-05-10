@@ -10,7 +10,7 @@
         </div>
     </div>
     
-    {{!-- WT Brand Header --}}
+    {{!-- WT Brand Dashboard Header --}}
     <div id="dashboard-brand-header" class="header item wt-brand">
         WHOLE
         <span class="wt-brand-smaller">TALE</span> 
@@ -51,7 +51,7 @@
 
 {{#if (eq currentTab 'tales')}}
     <div id="tale-tab-contents" class="ui bottom attached active tab segment">
-      {{ui/tale-browser models=model 
+      {{ui/tale-browser models=model
                         paginateOn=6
                         cardsPerRow="three"
                         modelView="run.view"
