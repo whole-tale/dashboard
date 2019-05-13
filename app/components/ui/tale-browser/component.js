@@ -115,7 +115,7 @@ export default Component.extend({
       this.set('filteredSet', models.filter(m => m.get('creatorId') === userId));
     } else if (filter === 'Published') {
       this.set('filteredSet', models.filter(m => {
-        return m.get('published') === true;
+        return m.get('publishInfo').length;
       }));
     } else if (filter === 'Recent') {
       const recentTales = this.get('internalState').getRecentTales();

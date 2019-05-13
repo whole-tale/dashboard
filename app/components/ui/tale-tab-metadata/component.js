@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
 
 import $ from 'jquery';
@@ -16,6 +17,7 @@ const taleStatus = Object.create({
 
 
 export default Component.extend({
+  store: service(),
   apiHost: config.apiHost,
   environments: [],
   licenses: [],
@@ -203,5 +205,21 @@ export default Component.extend({
       $(selector).modal('setting', 'closable', true);	
       $(selector).modal('show');	
     },
+
+    /**
+     * Generates an illustration for the tale.
+     * @method generateIcon
+    */
+    generateIcon() {
+      this.get('store').query('sils', {
+        text: encodeURI(this.taleAuthors)
+      })
+        .then(sils => {
+          sils.forEach(result => {
+            let tale = this.get('model').get('tale');
+            tale.set('illustration', result.get('icon'));
+          })
+        });
+    },    
   }
 });
