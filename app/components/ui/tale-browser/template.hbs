@@ -312,9 +312,11 @@
                             </div>
                         </div>
                         <div class="extra content">
-                            <div class="ui right floated compact basic icon buttons borderless {{if model.instance 'disabled'}}" style="cursor:not-allowed!important;">
+                            <div class="ui right floated compact basic icon buttons borderless {{if model.instance 'disabled'}}">
                                 <button class="ui secondary button borderless" {{action 'attemptDeletion' model}}
-                                        data-tooltip="{{if model.instance 'You must shut down your running instances to delete this Tale' 'Delete this Tale'}}">
+                                        style="cursor:{{if model.instance 'not-allowed' 'pointer'}}!important;"
+                                        data-tooltip="{{if model.instance 'You must shut down your running instances to delete this Tale' 'Delete this Tale'}}"
+                                        data-position="top right">
                                     <i class="icon trash"></i>
                                 </button>
                             </div>
@@ -324,7 +326,7 @@
                                     Stop Tale
                                 </button>
                             {{else if (and model.instance (eq model.instance.status 0))}}
-                                <button class="ui basic primary loading compact button disabled" disabled="true">
+                                <button class="ui basic primary loading compact button" disabled="true">
                                     <i class="fas fa-pulse fa-spinner icon"></i>
                                     Please Wait
                                 </button>
