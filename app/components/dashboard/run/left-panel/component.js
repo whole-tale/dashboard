@@ -43,18 +43,18 @@ export default Component.extend(FullScreenMixin, {
     // An array of repositories to list in the dropdown and their matching url
     repositories: [{
       name: 'DataONE Development',
-      url: 'https://dev.nceas.ucsb.edu/knb/d1/mn',
-      isProduction: false
+      memberNode: 'https://dev.nceas.ucsb.edu/knb/d1/mn',
+      coordinatingNode: 'https://cn-stage-2.test.dataone.org/cn/v2'
     },
     {
       name: 'DataONE-The Knowledge Network for Biocomplexity',
-      url: 'https://knb.ecoinformatics.org/knb/d1/mn',
-      isProduction: true
+      memberNode: 'https://knb.ecoinformatics.org/knb/d1/mn',
+      coordinatingNode: 'https://cn.dataone.org/cn/v2'
     },
     {
       name: 'DataONE-Arctic Data Center',
-      url: 'https://arcticdata.io/metacat/d1/mn',
-      isProduction: true
+      memberNode: 'https://arcticdata.io/metacat/d1/mn',
+      coordinatingNode: 'https://cn.dataone.org/cn/v2'
     }],
     
     repoDropdownClass: computed('publishStatus', function() {
@@ -340,9 +340,9 @@ export default Component.extend(FullScreenMixin, {
           window.location.assign(url + '?token=' + token + '&taleFormat=' + format);
         },
         
-        authenticateD1(taleId, isProduction) {
+        authenticateD1(taleId, coordinatingNode) {
           let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
-          let endpoint = this.dataoneAuth.getEndpoint(isProduction)
+          let endpoint = this.dataoneAuth.getPortalEndpoint(coordinatingNode)
           endpoint += '/oauth?action=start&target=';
           window.location.replace(endpoint + callback);
       },
@@ -366,7 +366,7 @@ export default Component.extend(FullScreenMixin, {
             let targetRepo = self.get('selectedRepositoryName');
             let repository = self.getRepositoryFromName(targetRepo);
 
-            let dataOneJWT = this.dataoneAuth.getDataONEJWT(repository.isProduction)
+            let dataOneJWT = this.dataoneAuth.getDataONEJWT(repository.coordinatingNode)
             if (!dataOneJWT) {
               // reroute to auth
               $('#dataone-auth-modal').modal('show');
@@ -377,7 +377,7 @@ export default Component.extend(FullScreenMixin, {
             self.set('progress', 0);            
 
             // Call the publish endpoint
-            self.get("apiCall").publishTale(tale._id, repository.url, dataOneJWT, repository.isProduction)
+            self.get("apiCall").publishTale(tale._id, repository.memberNode, repository.coordinatingNode, dataOneJWT)
                 .then((publishJob) => {
                     console.log('Submitted for publish:', publishJob);
                     self.set('publishStatus', 'in_progress');

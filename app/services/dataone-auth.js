@@ -5,8 +5,6 @@ import { inject as service } from '@ember/service';
   store: service(),
   authRequest: service(),
   isAuthenticated: true,
-  devCN: 'https://cn-stage-2.test.dataone.org/portal',
-  prodCN: 'https://cn.dataone.org/portal',
 
     /**
      * Queries the DataONE `token` endpoint for the jwt. When a user signs into
@@ -14,15 +12,12 @@ import { inject as service } from '@ember/service';
      * found, then the response will be empty. Otherwise the jwt is returned.
      *
      * @method getDataONEJWT
-     * @param isProduction Flag set to true when production should be interfaced
+     * @param dataoneEndpoint The Coordinating node address (with the version)
     */
-   getDataONEJWT(isProduction) {
+   getDataONEJWT(dataoneEndpoint) {
     let xmlHttp = new XMLHttpRequest();
-    let dataoneEndpoint = this.devCN
-    if (isProduction) {
-      dataoneEndpoint = this.prodCN
-    }
-    dataoneEndpoint+='/token'
+
+    dataoneEndpoint = this.getPortalEndpoint(dataoneEndpoint)+'/token'
     console.log('From getDataONEJWT', dataoneEndpoint)
     xmlHttp.open("GET", dataoneEndpoint, false);
     // Set the response content type
@@ -39,11 +34,13 @@ import { inject as service } from '@ember/service';
     return jwt ? true : false;
   },
 
-  getEndpoint(isProduction) {
-    let dataoneEndpoint = this.devCN;
-    if (isProduction) {
-      dataoneEndpoint = this.prodCN;
-    }
-    return dataoneEndpoint;
+    /**
+     * Takes a coordinating node and returns the portal endpoint.
+     *
+     * @method getPortalEndpoint
+     * @param coordinatingNode The Coordinating node address (with the version)
+    */
+  getPortalEndpoint(coordinatingNode) {
+    return coordinatingNode.replace('cn/v2', 'portal')
   }
  });
