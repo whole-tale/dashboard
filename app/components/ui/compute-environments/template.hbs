@@ -30,8 +30,8 @@
             <div class="ui vertical menu fluid tales">
                 <a class="item {{if (eq model.id selectedEnvironment.id) 'active-class'}}" {{action 'selectEnvironment' model index}}>
                     <img src="{{model.icon}}" />
-                    <i class="fas fa-info blue" {{action 'openDetailsModal' model bubbles=false}}></i>
-                    <p>{{model.name}}</p>
+                    <i class="fas fa-info right floated blue icon" {{action 'openDetailsModal' model bubbles=false}}></i>
+                    <p class="environment-label">{{model.name}}</p>
                 </a>
             </div>
         {{/each}}
