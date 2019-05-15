@@ -162,8 +162,6 @@ export default Component.extend(FullScreenMixin, {
      * @method createTooltips
      */
     createTooltips() {
-        console.log('Creating tooltips...');
-        
         // Create the popup in the main title
         $('.info.circle.blue.icon.main').popup({
           position: 'right center',

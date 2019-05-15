@@ -18,7 +18,6 @@ import { inject as service } from '@ember/service';
     let xmlHttp = new XMLHttpRequest();
 
     dataoneEndpoint = this.getPortalEndpoint(dataoneEndpoint)+'/token'
-    console.log('From getDataONEJWT', dataoneEndpoint)
     xmlHttp.open("GET", dataoneEndpoint, false);
     // Set the response content type
     xmlHttp.setRequestHeader("Content-Type", "text/xml");
