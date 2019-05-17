@@ -35,8 +35,10 @@ export default Component.extend(FullScreenMixin, {
     session: O({dataSet:A()}),
     routing: service('-routing'),
     params: alias('routing.router.currentState.routerJsState.fullQueryParams'),
+    // An array of repositories to list in the dropdown and their matching url
+    repositories: [],
+    // The repository that is currently selected in the dropdown
     selectedRepository: '',
-
     // Holds an array of objects that the user cannot be exclude from their package
     nonOptionalFile: [
       'manifest.json',
@@ -45,23 +47,6 @@ export default Component.extend(FullScreenMixin, {
       'README.md',
       'metadata.xml'
     ],
-
-    // An array of repositories to list in the dropdown and their matching url
-    repositories: [{
-      name: 'DataONE Development',
-      memberNode: 'https://dev.nceas.ucsb.edu/knb/d1/mn',
-      coordinatingNode: 'https://cn-stage-2.test.dataone.org/cn/v2'
-    },
-    {
-      name: 'DataONE-The Knowledge Network for Biocomplexity',
-      memberNode: 'https://knb.ecoinformatics.org/knb/d1/mn',
-      coordinatingNode: 'https://cn.dataone.org/cn/v2'
-    },
-    {
-      name: 'DataONE-Arctic Data Center',
-      memberNode: 'https://arcticdata.io/metacat/d1/mn',
-      coordinatingNode: 'https://cn.dataone.org/cn/v2'
-    }],
     
     repoDropdownClass: computed('publishStatus', function() {
         let status = this.publishStatus;
@@ -308,7 +293,6 @@ export default Component.extend(FullScreenMixin, {
             .catch(onGetJobStatusSuccess);
     },
 
-
     /**
      * Resets the state of the publish modal properties
      *
@@ -320,6 +304,57 @@ export default Component.extend(FullScreenMixin, {
         this.set('taleToPublish', null);
         this.set('publishStatus', 'initialized');
         this.set('progress', 0);
+        this.setShownRepositories();
+        this.set('selectedRepository', this.get('repositories')[0]);
+    },
+
+    /**
+     * Filters the possible repositories to the ones that should
+     * be shown to the user.
+     * 
+     * @method setShownRepositories
+     */
+    setShownRepositories() {
+
+      // An array of possible repositories to publish to
+      let repositories = [
+        {
+          name: 'DataONE Development',
+          memberNode: 'https://dev.nceas.ucsb.edu/knb/d1/mn',
+          coordinatingNode: 'https://cn-stage-2.test.dataone.org/cn/v2',
+          isProduction: false
+        },
+        {
+          name: 'DataONE-The Knowledge Network for Biocomplexity',
+          memberNode: 'https://knb.ecoinformatics.org/knb/d1/mn',
+          coordinatingNode: 'https://cn.dataone.org/cn/v2',
+          isProduction: true
+        },
+        {
+          name: 'DataONE-Arctic Data Center',
+          memberNode: 'https://arcticdata.io/metacat/d1/mn',
+          coordinatingNode: 'https://cn.dataone.org/cn/v2',
+          isProduction: true
+        }
+      ];
+
+      // An array of the repositories that we show
+      let displayedRepositories = [];
+
+      // When we're on a development deployment, only show development nodes
+      if(config.dev) {
+        repositories.forEach(repository => {
+          if(!repository.isProduction) {
+            displayedRepositories.push(repository);
+          }
+        })
+      }
+      else {
+        // Otherwise show all repositories
+        displayedRepositories = repositories;
+      }
+      this.set('repositories', displayedRepositories);
+
     },
 
     actions: {
@@ -385,7 +420,7 @@ export default Component.extend(FullScreenMixin, {
             $('#publish-modal').modal({ 
                 onApprove: () => false,
                 onDeny: () => false,
-                onVisible: () => { self.set('selectedRepository', self.get('repositories')[0]); }
+                onVisible: () => false,
             }).modal('show');
         },
         
