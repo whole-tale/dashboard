@@ -214,16 +214,6 @@ export default Component.extend(FullScreenMixin, {
         });
     },
     
-    getRepositoryFromName(name) {
-        // Given a repository name, find the membernode URL
-        let repositoryList = this.get('repositories');
-        for (var i = 0; i < repositoryList.length; i++) {
-          if (repositoryList[i].name === name) {
-            return repositoryList[i];
-          }
-        }
-    },
-    
     handlePublishingStatus(tale, jobId) {
         let self = this;
         let currentLoop = null;
@@ -337,10 +327,16 @@ export default Component.extend(FullScreenMixin, {
           let url = `${config.apiUrl}/tale/${id}/export`;
           window.location.assign(url + '?token=' + token + '&taleFormat=' + format);
         },
-        
-        authenticateD1(taleId, coordinatingNode) {
-          let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
-          let endpoint = this.dataoneAuth.getPortalEndpoint(coordinatingNode)
+
+        /**
+        * Redirect to the selected repository's authentication portal.
+        *
+        * @method authenticateD1
+        * @param instanceId The ID of the running instance
+        */
+        authenticateD1(instanceId) {
+          let callback = `${this.get('wholeTaleHost')}/run/${instanceId}?auth=true`;
+          let endpoint = this.dataoneAuth.getPortalEndpoint(this.selectedRepository.coordinatingNode)
           endpoint += '/oauth?action=start&target=';
           window.location.replace(endpoint + callback);
       },
@@ -348,23 +344,19 @@ export default Component.extend(FullScreenMixin, {
         openPublishModal(tale) {          
             this.resetPublishState();
             this.set('taleToPublish', tale);
-            this.set('selectedRepositoryName', null);
             const self = this;
             $('#publish-modal').modal({ 
                 onApprove: () => false,
                 onDeny: () => false,
-                onVisible: () => { self.set('selectedRepositoryName', self.get('repositories')[0].name); }
+                onVisible: () => { self.set('selectedRepository', self.get('repositories')[0]); }
             }).modal('show');
         },
         
         submitPublish(tale) {
             const self = this;
-            console.log('Now publishing:', tale);
 
-            let targetRepo = self.get('selectedRepositoryName');
-            let repository = self.getRepositoryFromName(targetRepo);
-
-            let dataOneJWT = this.dataoneAuth.getDataONEJWT(repository.coordinatingNode)
+            let repository = this.selectedRepository;
+            let dataOneJWT = this.dataoneAuth.getDataONEJWT(repository.coordinatingNode);
             if (!dataOneJWT) {
               // reroute to auth
               $('#dataone-auth-modal').modal('show');
@@ -399,13 +391,17 @@ export default Component.extend(FullScreenMixin, {
             $('#publish-modal').modal('hide');
             this.resetPublishState();
         },
-        
+
+        /**
+        * Called when the user selects a repository in the dropdown menu.
+        *
+        * @method onRepositoryChange
+        */
         onRepositoryChange: function () {
-          // Called when the user changes the repository
-          let respText = $('.repository.selection.dropdown.ui.dropdown').dropdown('get text')
-          this.set('selectedRepositoryName', respText);
-          let repository = this.getRepositoryFromName(respText);
-          this.set('selectedRepository', repository)
+          let repositoryName = $('.repository.selection.dropdown.ui.dropdown').dropdown('get text');
+          console.log('Selected '+ repositoryName + ' for publishing');
+          let repository = this.get('repositories').find((repo) => repo.name === repositoryName);
+          this.set('selectedRepository', repository);
         },
     }
 });
