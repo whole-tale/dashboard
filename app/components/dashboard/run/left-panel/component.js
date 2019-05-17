@@ -11,6 +11,12 @@ import layout from './template';
 
 const O = EmberObject.create.bind(EmberObject);
 
+/**
+ * Responsible for the run page view. It contains logic for
+ * tale exporting and publishing.
+ *
+ * @class RunLeftPanelComponent
+*/
 export default Component.extend(FullScreenMixin, {
     layout,
     classNames: ['run-left-panel'],
@@ -90,10 +96,14 @@ export default Component.extend(FullScreenMixin, {
         };
     },
 
+    /**
+     * Similar to Jquery on page load doesn't work
+     * because of the handlebars. But even if you unhide the element,
+     * the iframes show that they load ok even though some are blocked and some are not.
+     *
+     * @method didRender
+    */
     didRender() {
-        // Similar to Jquery on page load
-        // doesn't work because of the handlebars. But even if you unhide the element, the iframes show
-        // that they load ok even though some are blocked and some are not.
         let frame = document.getElementById('frontendDisplay');
         if (frame) {
             frame.onload = () => {
@@ -114,6 +124,13 @@ export default Component.extend(FullScreenMixin, {
         this.createTooltips();
     },
 
+  
+    /**
+     * Used to check for the ?auth=true query parameter and potentially
+     * open the publish modal
+     *
+     * @method didInsertElement
+    */
     didInsertElement() {
         scheduleOnce('afterRender', this, () => {
           // Check if we're coming from an ORCID redirect
@@ -160,7 +177,7 @@ export default Component.extend(FullScreenMixin, {
      * Creates the tooltips that appear in the dialog
      * 
      * @method createTooltips
-     */
+    */
     createTooltips() {
         // Create the popup in the main title
         $('.info.circle.blue.icon.main').popup({
@@ -214,6 +231,15 @@ export default Component.extend(FullScreenMixin, {
         });
     },
     
+
+    /**
+     * Handles querying the backend for the publishing job status and updating
+     * the progress bar.
+     *
+     * @method handlePublishingStatus
+     * @param tale The Tale that is being published
+     * @param joId The ID of the job that is responsible for publishing
+    */
     handlePublishingStatus(tale, jobId) {
         let self = this;
         let currentLoop = null;
@@ -265,11 +291,11 @@ export default Component.extend(FullScreenMixin, {
         currentLoop = startLooping();
     },
 
-    /* 
+    /**
      * Retrieves a human readable error from job/result
      * 
-     * @method closeModal
-     */
+     * @method setErrorStatus
+    */
     setErrorStatus(jobId) {
         const self = this;
         let onGetJobStatusSuccess = (message) => {
@@ -281,9 +307,14 @@ export default Component.extend(FullScreenMixin, {
             .then(onGetJobStatusSuccess)
             .catch(onGetJobStatusSuccess);
     },
-        
+
+
+    /**
+     * Resets the state of the publish modal properties
+     *
+     * @method resetPublishState
+    */
     resetPublishState() {
-        // Reset any leftover previous state
         this.set('progress', null);
         this.set('statusMessage', null);
         this.set('taleToPublish', null);
@@ -329,10 +360,10 @@ export default Component.extend(FullScreenMixin, {
         },
 
         /**
-        * Redirect to the selected repository's authentication portal.
-        *
-        * @method authenticateD1
-        * @param instanceId The ID of the running instance
+         * Redirect to the selected repository's authentication portal.
+         *
+         * @method authenticateD1
+         * @param instanceId The ID of the running instance
         */
         authenticateD1(instanceId) {
           let callback = `${this.get('wholeTaleHost')}/run/${instanceId}?auth=true`;
@@ -341,6 +372,12 @@ export default Component.extend(FullScreenMixin, {
           window.location.replace(endpoint + callback);
       },
 
+        /**
+         * Opens the publishing modal and sets initial state.
+         *
+         * @method openPublishModal
+         * @param tale The Tale that is going to be published
+        */
         openPublishModal(tale) {          
             this.resetPublishState();
             this.set('taleToPublish', tale);
@@ -352,6 +389,13 @@ export default Component.extend(FullScreenMixin, {
             }).modal('show');
         },
         
+        /**
+         * Retrieves the user's JWT, handles routing to ORCID if needed, and
+         * sends relevant information to the backend to start publishing,
+         *
+         * @method submitPublish
+         * @param tale The Tale that is going to be published
+        */
         submitPublish(tale) {
             const self = this;
 
@@ -387,15 +431,21 @@ export default Component.extend(FullScreenMixin, {
             return false;
         },
         
+        /**
+         * Closes the publishing modal and resets the state so that the user
+         * sees a fresh state when it's re-opened
+         *
+         * @method closePublishModal
+        */
         closePublishModal() {
             $('#publish-modal').modal('hide');
             this.resetPublishState();
         },
 
         /**
-        * Called when the user selects a repository in the dropdown menu.
-        *
-        * @method onRepositoryChange
+         * Called when the user selects a repository in the dropdown menu.
+         *
+         * @method onRepositoryChange
         */
         onRepositoryChange: function () {
           let repositoryName = $('.repository.selection.dropdown.ui.dropdown').dropdown('get text');
