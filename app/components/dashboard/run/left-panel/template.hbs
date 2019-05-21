@@ -126,7 +126,7 @@
       <div class="ui form" style="margin-bottom:15px;">
           <div class="required inline field">
               <label>Please choose a target repository:</label>
-              {{#ui-dropdown class=repoDropdownClass allowAdditions=false selected=selectedRepository onChange=(action 'onRepositoryChange')
+              {{#ui-dropdown class=repoDropdownClass allowAdditions=false selected=selectedRepositoryName onChange=(action 'onRepositoryChange')
                 as |execute mapper|}}
                 <div class="default text">Target Repository</div>
                 <i class="dropdown icon"></i>
@@ -192,7 +192,7 @@
           <div class="ui blue message progress-area" id="publishing-progress-message">
             <p class="header publishing-now">
                 <a id="publishing-success-label" class="ui blue label">IN PROGRESS</a>
-                Your Tale is being published to {{selectedRepository}}
+                Your Tale is being published to {{selectedRepository.name}}
             </p>
             <div class="publish-progressbar">
                 {{#ui-progress percent=progress class="teal indicating"}}
@@ -232,8 +232,8 @@
       {{if (eq publishStatus 'success') 'Close' 'Cancel'}}
     </div>
     <div class="ui positive right labeled icon button 
-        {{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress') (eq selectedRepository null))) 'disabled'}}" 
-        disabled="{{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress') (eq selectedRepository null))) 'true' 'false'}}"
+        {{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress') (eq selectedRepositoryName null))) 'disabled'}}" 
+        disabled="{{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress') (eq selectedRepositoryName null))) 'true' 'false'}}"
         {{action 'submitPublish' taleToPublish}}>
       {{if (or (eq publishStatus 'initialized') (eq publishStatus 'error')) 'Publish'}}
       {{if (eq publishStatus 'success') 'Published'}}

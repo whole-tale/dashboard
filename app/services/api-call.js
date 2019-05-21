@@ -398,15 +398,17 @@ export default Service.extend({
      * Publishes a Tale to DataONE
      * @method publishTale
      * @param taleId The ID of the Tale this is being published
-     * @param repository 
+     * @param memberNode 
      * @param jwt The user's DataONE JWT token
+     * @param coordinatingNode The Coordinating node that overlooks the member node
      */
-  publishTale(taleId, repository, jwt) {
+  publishTale(taleId, memberNode, coordinatingNode, jwt) {
       const token = this.get('tokenHandler').getWholeTaleAuthToken();
       return new Promise ((resolve, reject) => {
           let url = `${config.apiUrl}/publish/dataone` + 
-            `?taleId=${taleId}&remoteMemberNode=${repository}` + 
-            `&authToken=${jwt}`;
+            `?taleId=${taleId}&remoteMemberNode=${memberNode}` + 
+            `&authToken=${jwt}` +
+            `&coordinatingNode=${coordinatingNode}`;
     
           let client = new XMLHttpRequest();
           client.open('GET', url);

@@ -11,14 +11,20 @@ import layout from './template';
 
 const O = EmberObject.create.bind(EmberObject);
 
+/**
+ * Responsible for the run page view. It contains logic for
+ * tale exporting and publishing.
+ *
+ * @class RunLeftPanelComponent
+*/
 export default Component.extend(FullScreenMixin, {
     layout,
     classNames: ['run-left-panel'],
     router: service(),
     internalState: service(),
+    store: service(),
     apiCall: service('api-call'),
     dataoneAuth: service('dataone-auth'),
-    dataoneJWT: null,
     tokenHandler: service('token-handler'),
     loadError: false,
     model: null,
@@ -29,7 +35,10 @@ export default Component.extend(FullScreenMixin, {
     session: O({dataSet:A()}),
     routing: service('-routing'),
     params: alias('routing.router.currentState.routerJsState.fullQueryParams'),
-
+    // An array of repositories to list in the dropdown and their matching url
+    repositories: [],
+    // The repository that is currently selected in the dropdown
+    selectedRepository: '',
     // Holds an array of objects that the user cannot be exclude from their package
     nonOptionalFile: [
       'manifest.json',
@@ -38,20 +47,6 @@ export default Component.extend(FullScreenMixin, {
       'README.md',
       'metadata.xml'
     ],
-
-    // An array of repositories to list in the dropdown and their matching url
-    repositories: [{
-      name: 'DataONE Development',
-      url: 'https://dev.nceas.ucsb.edu/knb/d1/mn'
-    },
-    {
-      name: 'DataONE-The Knowledge Network for Biocomplexity',
-      url: 'https://knb.ecoinformatics.org/knb/d1/mn'
-    },
-    {
-      name: 'DataONE-Arctic Data Center',
-      url: 'https://arcticdata.io/metacat/d1/mn'
-    }],
     
     repoDropdownClass: computed('publishStatus', function() {
         let status = this.publishStatus;
@@ -86,10 +81,14 @@ export default Component.extend(FullScreenMixin, {
         };
     },
 
+    /**
+     * Similar to Jquery on page load doesn't work
+     * because of the handlebars. But even if you unhide the element,
+     * the iframes show that they load ok even though some are blocked and some are not.
+     *
+     * @method didRender
+    */
     didRender() {
-        // Similar to Jquery on page load
-        // doesn't work because of the handlebars. But even if you unhide the element, the iframes show
-        // that they load ok even though some are blocked and some are not.
         let frame = document.getElementById('frontendDisplay');
         if (frame) {
             frame.onload = () => {
@@ -110,38 +109,30 @@ export default Component.extend(FullScreenMixin, {
         this.createTooltips();
     },
 
+  
+    /**
+     * Used to check for the ?auth=true query parameter and potentially
+     * open the publish modal
+     *
+     * @method didInsertElement
+    */
     didInsertElement() {
         scheduleOnce('afterRender', this, () => {
           // Check if we're coming from an ORCID redirect
           let queryParams = this.get('params')
           if (queryParams) {
             if (queryParams.auth === 'true') {
-              this.router.transitionTo({ queryParams: { auth: null }});
-              this.send('openPublishModal', this.model.taleId);
-            }
+              this.get('store').findRecord('tale', this.model.taleId, {
+                reload: true
+              })
+              .then(resp => {
+              this.send('openPublishModal', resp)
+            })
           }
-        });
-        
+          }
+        })   
+
         $('.ui.accordion').accordion({});
-    },
-
-    /*
-        Return s the DataONE `token` endpoint for the jwt. When a user signs into
-        DataONE a cookie is created, which is checked by `token`. If the cookie wasn't
-        found, then the response will be empty. Otherwise the jwt is returned.
-    */
-    getDataONEJWT() {
-
-        // Use the XMLHttpRequest to handle the request
-        let xmlHttp = new XMLHttpRequest();
-        // Open the request to the the token endpoint, which will return the jwt if logged in
-        xmlHttp.open("GET", 'https://cn-stage-2.test.dataone.org/portal/token', false);
-        // Set the response content type
-        xmlHttp.setRequestHeader("Content-Type", "text/xml");
-        // Let XMLHttpRequest know to use cookies
-        xmlHttp.withCredentials = true;
-        xmlHttp.send(null);
-        return xmlHttp.responseText;
     },
 
     shouldShowButtons: computed('internalState', 'internalState.currentInstanceId', function () {
@@ -156,10 +147,6 @@ export default Component.extend(FullScreenMixin, {
 
     noInstanceSelected: not('hasSelectedTaleInstance'),
 
-    hasD1JWT: computed('model.taleId', function () {
-        let jwt = this.getDataONEJWT();
-        return (jwt && jwt.length) ? true : false;
-    }),
 
     showModal(modalDialogName, modalContext) {
         // Open Publish Modal
@@ -167,7 +154,7 @@ export default Component.extend(FullScreenMixin, {
     },
 
     publishModalContext: computed('model.taleId', function () {
-        return { taleId: this.get('model.taleId'), hasD1JWT: this.hasD1JWT };
+        return { taleId: this.get('model.taleId'), hasD1JWT: this.dataoneAuth.hasD1JWT };
     }),
 
 
@@ -175,10 +162,8 @@ export default Component.extend(FullScreenMixin, {
      * Creates the tooltips that appear in the dialog
      * 
      * @method createTooltips
-     */
+    */
     createTooltips() {
-        console.log('Creating tooltips...');
-        
         // Create the popup in the main title
         $('.info.circle.blue.icon.main').popup({
           position: 'right center',
@@ -231,16 +216,15 @@ export default Component.extend(FullScreenMixin, {
         });
     },
     
-    getRepositoryPathFromName(name) {
-        // Given a repository name, find the membernode URL
-        let repositoryList = this.get('repositories');
-        for (var i = 0; i < repositoryList.length; i++) {
-          if (repositoryList[i].name === name) {
-            return repositoryList[i].url;
-          }
-        }
-    },
-    
+
+    /**
+     * Handles querying the backend for the publishing job status and updating
+     * the progress bar.
+     *
+     * @method handlePublishingStatus
+     * @param tale The Tale that is being published
+     * @param joId The ID of the job that is responsible for publishing
+    */
     handlePublishingStatus(tale, jobId) {
         let self = this;
         let currentLoop = null;
@@ -292,11 +276,11 @@ export default Component.extend(FullScreenMixin, {
         currentLoop = startLooping();
     },
 
-    /* 
+    /**
      * Retrieves a human readable error from job/result
      * 
-     * @method closeModal
-     */
+     * @method setErrorStatus
+    */
     setErrorStatus(jobId) {
         const self = this;
         let onGetJobStatusSuccess = (message) => {
@@ -308,14 +292,69 @@ export default Component.extend(FullScreenMixin, {
             .then(onGetJobStatusSuccess)
             .catch(onGetJobStatusSuccess);
     },
-        
+
+    /**
+     * Resets the state of the publish modal properties
+     *
+     * @method resetPublishState
+    */
     resetPublishState() {
-        // Reset any leftover previous state
         this.set('progress', null);
         this.set('statusMessage', null);
         this.set('taleToPublish', null);
         this.set('publishStatus', 'initialized');
         this.set('progress', 0);
+        this.setShownRepositories();
+        this.set('selectedRepository', this.get('repositories')[0]);
+    },
+
+    /**
+     * Filters the possible repositories to the ones that should
+     * be shown to the user.
+     * 
+     * @method setShownRepositories
+     */
+    setShownRepositories() {
+
+      // An array of possible repositories to publish to
+      let repositories = [
+        {
+          name: 'DataONE Development',
+          memberNode: 'https://dev.nceas.ucsb.edu/knb/d1/mn',
+          coordinatingNode: 'https://cn-stage-2.test.dataone.org/cn/v2',
+          isProduction: false
+        },
+        {
+          name: 'DataONE-The Knowledge Network for Biocomplexity',
+          memberNode: 'https://knb.ecoinformatics.org/knb/d1/mn',
+          coordinatingNode: 'https://cn.dataone.org/cn/v2',
+          isProduction: true
+        },
+        {
+          name: 'DataONE-Arctic Data Center',
+          memberNode: 'https://arcticdata.io/metacat/d1/mn',
+          coordinatingNode: 'https://cn.dataone.org/cn/v2',
+          isProduction: true
+        }
+      ];
+
+      // An array of the repositories that we show
+      let displayedRepositories = [];
+
+      // When we're on a development deployment, only show development nodes
+      if(config.dev) {
+        repositories.forEach(repository => {
+          if(!repository.isProduction) {
+            displayedRepositories.push(repository);
+          }
+        })
+      }
+      else {
+        // Otherwise show all repositories
+        displayedRepositories = repositories;
+      }
+      this.set('repositories', displayedRepositories);
+
     },
 
     actions: {
@@ -337,12 +376,6 @@ export default Component.extend(FullScreenMixin, {
             this.get('showModal')(modalDialogName, modalContext);
         },
 
-        authenticateD1(taleId) {
-            let callback = `${this.get('wholeTaleHost')}/run/${taleId}?auth=true`;
-            let orcidLogin = 'https://cn-stage-2.test.dataone.org/portal/oauth?action=start&target=';
-            window.location.replace(orcidLogin + callback);
-        },
-
         openDeleteModal(id) {
             let selector = '.ui.' + id + '.modal';
             $(selector).modal('show');
@@ -360,39 +393,60 @@ export default Component.extend(FullScreenMixin, {
           let url = `${config.apiUrl}/tale/${id}/export`;
           window.location.assign(url + '?token=' + token + '&taleFormat=' + format);
         },
-        
-        openPublishModal(tale) {
-            const jwt = this.getDataONEJWT();
-            if (!jwt) {
-                // reroute to auth
-                $('#dataone-auth-modal').modal('show');
-                return;
-            }
-            
-            this.set('dataoneJWT', jwt);
+
+        /**
+         * Redirect to the selected repository's authentication portal.
+         *
+         * @method authenticateD1
+         * @param instanceId The ID of the running instance
+        */
+        authenticateD1(instanceId) {
+          let callback = `${this.get('wholeTaleHost')}/run/${instanceId}?auth=true`;
+          let endpoint = this.dataoneAuth.getPortalEndpoint(this.selectedRepository.coordinatingNode)
+          endpoint += '/oauth?action=start&target=';
+          window.location.replace(endpoint + callback);
+      },
+
+        /**
+         * Opens the publishing modal and sets initial state.
+         *
+         * @method openPublishModal
+         * @param tale The Tale that is going to be published
+        */
+        openPublishModal(tale) {          
             this.resetPublishState();
             this.set('taleToPublish', tale);
-            this.set('selectedRepository', null);
             const self = this;
             $('#publish-modal').modal({ 
                 onApprove: () => false,
                 onDeny: () => false,
-                onVisible: () => { self.set('selectedRepository', self.get('repositories')[0].name); }
+                onVisible: () => false,
             }).modal('show');
         },
         
-
+        /**
+         * Retrieves the user's JWT, handles routing to ORCID if needed, and
+         * sends relevant information to the backend to start publishing,
+         *
+         * @method submitPublish
+         * @param tale The Tale that is going to be published
+        */
         submitPublish(tale) {
             const self = this;
-            console.log('Now publishing:', tale);
+
+            let repository = this.selectedRepository;
+            let dataOneJWT = this.dataoneAuth.getDataONEJWT(repository.coordinatingNode);
+            if (!dataOneJWT) {
+              // reroute to auth
+              $('#dataone-auth-modal').modal('show');
+              return;
+          }
+
             self.set('publishStatus', 'in_progress');
-            self.set('progress', 0);
-            const targetRepo = self.get('selectedRepository');
-            const repository = self.getRepositoryPathFromName(targetRepo);
-            const dataOneJWT = this.get('dataoneJWT');
-            
+            self.set('progress', 0);            
+
             // Call the publish endpoint
-            self.get("apiCall").publishTale(tale._id, repository, dataOneJWT)
+            self.get("apiCall").publishTale(tale._id, repository.memberNode, repository.coordinatingNode, dataOneJWT)
                 .then((publishJob) => {
                     console.log('Submitted for publish:', publishJob);
                     self.set('publishStatus', 'in_progress');
@@ -412,15 +466,27 @@ export default Component.extend(FullScreenMixin, {
             return false;
         },
         
+        /**
+         * Closes the publishing modal and resets the state so that the user
+         * sees a fresh state when it's re-opened
+         *
+         * @method closePublishModal
+        */
         closePublishModal() {
             $('#publish-modal').modal('hide');
             this.resetPublishState();
         },
-        
+
+        /**
+         * Called when the user selects a repository in the dropdown menu.
+         *
+         * @method onRepositoryChange
+        */
         onRepositoryChange: function () {
-          // Called when the user changes the repository
-          let respText = $('.repository.selection.dropdown.ui.dropdown').dropdown('get text')
-          this.set('selectedRepository', respText);
+          let repositoryName = $('.repository.selection.dropdown.ui.dropdown').dropdown('get text');
+          console.log('Selected '+ repositoryName + ' for publishing');
+          let repository = this.get('repositories').find((repo) => repo.name === repositoryName);
+          this.set('selectedRepository', repository);
         },
     }
 });
