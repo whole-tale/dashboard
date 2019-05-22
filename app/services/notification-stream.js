@@ -79,7 +79,6 @@ export default Service.extend({
         // Parse event data (tale) into JSON
         event.json = JSON.parse(event.data);
         event.created = new Date(event.json.time).toLocaleString();
-        //console.log("Message recv'd:", event);
         
         // Push new event data
         let events = self.get('events');
@@ -92,15 +91,33 @@ export default Service.extend({
         if (found) return;
 
         if (event.json.type == 'wt_image_build_status') {
-            events.unshiftObject(event);
+            // Determine if we already have a notification regarding this Tale
+            let existing = events.find(evt => event.json.data._id === evt.json.data._id);
+            if (existing && event.created > existing.created) {
+                // Overwrite existing event with new one
+                let index = events.indexOf(existing);
+                events.replace(index, 1, event);
+                console.log(`Notification (${event.json._id}): updated event ${event.json.data._id}`, events);
+            } else {
+                // Add a new event
+                events.unshiftObject(event);
+                console.log(`Notification (${event.json._id}): new event ${event.json.data._id}`, events);
+            }
             self.set('events', events);
-            console.log("New event:", events);
             self.set('showNotificationStream', true);
-        } else if (event.json.type == 'wt_error_backend_generic') {
-            // NOTE: This is currently unused
-            console.log("Generic backend encountered:", event);
+        //} else if (event.json.type == 'wt_error_backend_generic') {
+        //    // NOTE: This is currently unused
+        //    console.log("Generic backend encountered:", event);
+        } else if (event.json.data.message) {
+            // Handle displaying progress updates for Import Tale
+            console.log(`Notification (${event.json._id}): Import Tale progress update: ${event.json.data.message} - ${event.json.data.current}/${event.json.data.total}`, event);
+        } else if (event.json.data.text) {
+            // Handle build log updates
+            // FIXME: Why are these sent as notifications? 
+            // FIXME: These logs are not displayed in the UI, and are currently fetched on demand when requested
+            console.log(`Notification (${event.json._id}): Log update encountered: ${event.json.data.text}`, event);
         } else {
-            console.log("Ignored event type encountered:", event);
+            console.log(`Notification (${event.json._id}): Job event (${event.json.data._id}) encountered: ${event.json.data.title} -> ${event.json.data.status}`, event);
         }
     },
 });
