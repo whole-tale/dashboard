@@ -23,6 +23,16 @@ export default AuthenticateRoute.extend({
             limit: "0"
           }
         }
+      }),
+      datasets: this.get('store').findAll('dataset', {
+        reload: true,
+        adapterOptions: {
+          queryParams: {
+            sort: "created",
+            sortdir: "1",
+            limit: "0"
+          }
+        }
       })
     });
   }

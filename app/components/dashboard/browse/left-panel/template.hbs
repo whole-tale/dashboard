@@ -39,8 +39,7 @@
   <div class="clickable item {{if (eq currentTab 'tales') 'active'}}" onclick={{action 'selectTab' 'tales'}}>
        <img src="images/wholetale_logo_sm.png" /> Tales
   </div>
-   {{!-- To enable tab: onclick={{action 'selectTab' 'data'}} --}}
-  <div class="not clickable item {{if (eq currentTab 'data') 'active'}}">
+  <div class="clickable item {{if (eq currentTab 'data') 'active'}}" onclick={{action 'selectTab' 'data'}}>
        <i class="fa fa-server"></i> Data Catalog
   </div>
   {{!-- To enable tab:  onclick={{action 'selectTab' 'environments'}} --}}
@@ -51,7 +50,7 @@
 
 {{#if (eq currentTab 'tales')}}
     <div id="tale-tab-contents" class="ui bottom attached active tab segment">
-      {{ui/tale-browser models=model
+      {{ui/tale-browser models=model.tales
                         paginateOn=6
                         cardsPerRow="three"
                         modelView="run.view"
@@ -69,12 +68,13 @@
 {{#if (eq currentTab 'data')}}
     <div id="tale-tab-contents" class="ui bottom attached active tab segment">
       <h3>Data Catalog</h3>
+      {{ui/data-catalog model=model.datasets}}
     </div>
 {{/if}}
 {{#if (eq currentTab 'environments')}}
     <div id="tale-tab-contents" class="ui bottom attached active tab segment environments-table-wrapper">
       {{ui/compute-environments 
-        models=rightModelTop  
+        models=model  
         selectedEnvironment=selectedEnvironment 
         onLeftModelChange=(action "onLeftModelChange") }}
     </div>
