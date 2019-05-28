@@ -1,38 +1,78 @@
 <div class="ui grid">
-  <div class="ui divided items">
-    {{#if (eq datasets.length 0)}}
-      No data has been registered.. Register datasets to see them listed here
-    {{/if}}
-    {{#each datasets as |dataset|}}
-      <div class="item">
-        <div class="ui tiny image">
-          {{#if (eq dataset.provider "HTTPS")}}
-            {{!-- TODO: Add an HTTPS icon? --}}
-          {{else if (eq dataset.provider "Dataverse")}}
-            {{!-- TODO: Add a Dataverse icon --}}
-          {{else if (eq dataset.provider "DataONE")}}
-            <img src="/icons/DataONE_icon.jpg">
-          {{else if (eq dataset.provider "Globus")}}
-            <img src="/icons/Globus_icon.png">
-          {{else}}
-            {{!-- TODO: Add an "unknown source" icon? --}}
-          {{/if}}
+  
+  <div class="row">
+    <div class="four wide column">
+        <div class="ui compact menu">
+            <a class="item clickable {{if (eq currentTab 'all') 'active'}}" {{action 'selectFilter' 'all'}}>
+                All External Data
+            </a>
+            {{!-- To enable tab:  {{action 'selectFilter' 'mine'}} --}}
+            <a class="item not clickable {{if (eq currentTab 'mine') 'active'}}">
+                My External Data
+            </a>
         </div>
-        <div class="middle aligned content">
-          {{dataset.name}}
+    </div>
+    
+    {{!-- Explicitly specify middle space --}}
+    <div class="eight wide column"></div>
+    
+    <div class="two wide column">
+      <div class="ui fluid search">
+        <div class="ui icon input">
+          <input class="prompt" type="text" placeholder="Search Data...">
+          <i class="search icon"></i>
         </div>
-        <div class="meta">
-          <span class="identifier">
-            {{!-- TODO: how should we handle HTTPS provider here if we can't reform the full URL --}}
-            <a href="https://doi.org/{{dataset.identifier}}">{{dataset.identifier}}</a>
-          </span>
-            {{!-- TODO: reuse file size helper logic --}}
-          <span class="size">{{dataset.size}}</span>
-        </div>
+        <div class="results"></div>
       </div>
-    {{/each}}
+    </div>
+    
+    <div class="two wide column">
+      <button class="ui right floated labeled primary icon button">
+        <i class="plus icon"></i>
+        Add Data
+      </button>
+    </div>
+  </div>
+    
+  <div class="row">
+    <div class="sixteen wide column">
+      <div class="ui divided items">
+        {{#if (eq datasets.length 0)}}
+          No data has been registered.. Register datasets to see them listed here
+        {{/if}}
+        
+        {{#each datasets as |dataset|}}
+          <div class="item">
+            <div class="ui tiny image">
+              {{#if (eq dataset.provider "HTTPS")}}
+                {{!-- TODO: Add an HTTPS icon? --}}
+              {{else if (eq dataset.provider "Dataverse")}}
+                {{!-- TODO: Add a Dataverse icon --}}
+              {{else if (eq dataset.provider "DataONE")}}
+                <img width="30" height="30" alt="DataONE" style="border-radius:20px" src="/icons/d1-logo-large.png">
+              {{else if (eq dataset.provider "Globus")}}
+                <img width="30" height="30" alt="Globus" style="background:blue;border-radius:8px" src="/icons/globus-logo-large.png">
+              {{else}}
+                {{!-- TODO: Add an "unknown source" icon? --}}
+              {{/if}}
+            </div>
+            <div class="middle aligned content">
+              {{dataset.name}}
+            </div>
+            <div class="middle aligned meta">
+              <span class="identifier">
+                {{!-- TODO: how should we handle HTTPS provider here if we can't reform the full URL --}}
+                <a href="https://doi.org/{{dataset.identifier}}">{{dataset.identifier}}</a>
+              </span>
+                {{!-- TODO: reuse file size helper logic --}}
+              <span class="size">{{dataset.size}}</span>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </div>
   </div>
 </div>
 
-{{!-- TODO: Wire to create button, ensure still working --}}
+{{!-- TODO: Wire up to create button, ensure still working --}}
 {{ui/files/registration-modal onRegisterData=(action "refresh")}}
