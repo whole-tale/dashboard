@@ -1,7 +1,7 @@
-import Ember from 'ember';
+import {helper} from '@ember/component/helper';
 
 export function ucfirst(params/*, hash*/) {
   return params.charAt(0).toUpperCase() + params.slice(1);
 }
 
-export default Ember.Helper.helper(ucfirst);
+export default helper(ucfirst);

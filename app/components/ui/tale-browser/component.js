@@ -1,15 +1,18 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import EmberObject, { computed } from '@ember/object';
+import EmberObject, { computed, observer} from '@ember/object';
 import { A } from '@ember/array';
 import { later, cancel } from '@ember/runloop';
 import $ from 'jquery';
+
+const O = EmberObject.create.bind(EmberObject);
 
 export default Component.extend({
   store: service(),
   userAuth: service('user-auth'),
   apiCall: service('api-call'),
   internalState: service('internal-state'),
+
   taleInstanceName: "",
   filteredSet: A(),
   filters: ['All', 'Mine', 'Published', 'Recent'],
@@ -23,19 +26,36 @@ export default Component.extend({
   animationRefreshTime: 500, // min ms time between animation refreshes
   item: null,
   guid: null,
+  models: A([]),
+  modelsInView: A([]),
   listView: false,
   showFilter: true,
   loadingTales: true,
-  selectedTale: EmberObject.create({}),
+  selectedTale: O({}),
   message: 'Tales loading. Please, wait.',
   
-  
-
-  filterObserver: computed('filter', function () {
+  filterObserver: observer('filter', function () {
     this.setFilter.call(this);
   }),
+  
+  creatorObserver: observer('modelsInView', function() {
+    this.modelsInView.forEach(tale => {
+      const creatorId = tale.get("creatorId");
+      this.store.findRecord('user', creatorId).then(creator => {
+        tale.set('creator', O({
+          firstName: creator.firstName,
+          lastName: creator.lastName,
+          orcid: ''
+        }));
+      }).catch(err => {
+        let message = `Failed to fetch creator=${tale.creatorId} for tale=${tale._id}:`;
+        console && (console.error && console.error(message, err)) || console.log(message, err);
+        tale.set('creator', O({}));
+      });
+    });
+  }),
 
-  modelObserver: computed('filter', 'model', 'numberOfModels', function () {
+  modelObserver: observer('filter', 'model', 'numberOfModels', function () {
     let guid = this.get('guid');
 
     if (!guid) {
@@ -94,7 +114,7 @@ export default Component.extend({
       this.set('filteredSet', models.filter(m => m.get('creatorId') === userId));
     } else if (filter === 'Published') {
       this.set('filteredSet', models.filter(m => {
-        return m.get('published') === true;
+        return m.get('publishInfo').length;
       }));
     } else if (filter === 'Recent') {
       const recentTales = this.get('internalState').getRecentTales();
@@ -111,34 +131,34 @@ export default Component.extend({
 
   updateModels(component, models) {
     if (!models.get('length')) {
-      component.set('modelsInView', []);
+      component.set('modelsInView', A([]));
     }
-    let modelsInView = [];
-    component.get('models').forEach(model => {
-      if (!model.get("icon")) {
-        if (model.get("meta")) {
-          let meta = model.get("meta");
+    let modelsInView = A([]);
+    component.get('models').forEach(tale => {
+      if (!tale.get("icon")) {
+        if (tale.get("meta")) {
+          let meta = tale.get("meta");
           if (meta.get('provider') !== "DataONE")
-            model.set('icon', "/icons/globus-logo-large.png");
+            tale.set('icon', "/icons/globus-logo-large.png");
           else
-            model.set('icon', "/icons/d1-logo-large.png");
+            tale.set('icon', "/icons/d1-logo-large.png");
         } else {
-          model.set('icon', "/images/whole_tale_logo.png");
+          tale.set('icon', "/images/whole_tale_logo.png");
         }
       }
 
-      let description = model.get('description');
+      let description = tale.get('description');
 
       if (!description) {
-        model.set('tagName', "No Description ...");
+        tale.set('tagName', "No Description ...");
       } else {
         if (description.length > 200)
-          model.set('tagName', description.substring(0, 200) + "..");
+          tale.set('tagName', description.substring(0, 200) + "..");
         else
-          model.set('tagName', description);
+          tale.set('tagName', description);
       }
 
-      modelsInView.push(model);
+      modelsInView.pushObject(O(tale));
     });
 
     component.set("modelsInView", modelsInView);
@@ -317,7 +337,7 @@ export default Component.extend({
         component.set("tale_instantiating", false);
         component.set("tale_instantiated", true);
 
-        let instance = EmberObject.create(JSON.parse(item));
+        let instance = O(JSON.parse(item));
 
         component.set("instance", instance);
 

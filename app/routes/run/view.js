@@ -3,10 +3,12 @@ import { inject as service } from '@ember/service';
 import RSVP from 'rsvp';
 
 export default AuthenticateRoute.extend({
+  queryParams: {auth: false},
   internalState: service(),
   model(params) {
     this._super(params);
     this.get('internalState').set('currentInstanceId', params.instance_id);
+    this.set('queryParams', params)
     return RSVP.hash({
       instances: this.get('store').findAll('instance', {
         reload: true,

@@ -75,7 +75,7 @@ export default Service.extend({
 
     getCurrentFileBreadcrumbs() {
         let bcs = localStorage.currentFileBreadcrumbs;
-        if (!bcs) return null;
+        if (!bcs) return [];
         return JSON.parse(bcs);
     },
 
@@ -237,6 +237,15 @@ export default Service.extend({
             localStorage.workspaceRootId = JSON.stringify(value);
             return value;
         }
-    })
+    }),
+    
+    setLastPublishJob(jobId) {
+      // Set the ID of the last publishing job
+      localStorage.lastPublishJob = jobId;
+    },
+
+    getLastPublishJob() {
+      return localStorage.lastPublishJob;
+    }
 
 });

@@ -19,31 +19,47 @@
         </div>
     {{/if}}
     <div class="tales-list">
-        {{#each models as |instance index|}}
-            <div class="ui vertical menu fluid tales">
-                <a class="item {{if (and internalState.currentInstanceId (eq internalState.currentInstanceId instance._id)) 'active'}}" {{action 'transitionToRun' instance index preventDefault=true}}>
-                        <img src="{{instance.tale.illustration}}" />
-                        <img src="{{instance.tale.icon}}" class="env" />
-                        {{#unless (eq instance.status 0)}}
-                            <i class="times icon" {{action 'openDeleteModal' instance bubbles=false}}></i>
-                        {{/unless}}
-                        <p>{{truncate-name instance.name}}</p>
-                    {{#if (eq instance.status 0)}}
-                        <span style="position: absolute; left: 45%; top: 20%; opacity: .7; z-index: 1">
-                            <i class="fa fa-4x fa-circle-notch fa-spin" aria-hidden="true"></i>
-                        </span>
-                    {{/if}}
-                </a>
+        {{#if deletingInstance}}
+            <div id="instance-deleting-loader" class="ui segment">
+              <p></p>
+              <div class="ui active inverted dimmer">
+                <div class="ui huge loader"></div>
+              </div>
             </div>
         {{else}}
-            <div class="ui vertical menu fluid tales">
-                <div class="ui grid">
-                    <div class="center aligned sixteen wide column">
-                        <div style="padding: 45% 0;font-style:italic;">No tales have been launched</div>
+            {{#each models as |instance index|}}
+                <div class="ui vertical menu fluid tales">
+                    <a class="item tale-instances-item {{if (and internalState.currentInstanceId (eq internalState.currentInstanceId instance._id)) 'active'}}" {{action 'transitionToRun' instance index preventDefault=true}}>
+                        <div class="ui grid">
+                            <div class="three wide column">
+                                {{#if (eq instance.status 0)}}
+                                    <i class="fa fa-4x fa-circle-notch fa-spin" aria-hidden="true"></i>
+                                {{else}}
+                                    <img src="{{instance.tale.illustration}}" />
+                                    <img src="{{instance.tale.icon}}" class="env" />
+                                {{/if}}
+                            </div>
+                            <div class="twelve wide column">
+                                <p>{{truncate-name instance.name}}</p>
+                            </div>
+                            <div class="one wide column">
+                                {{#unless (eq instance.status 0)}}
+                                    <i class="times icon" {{action 'openDeleteModal' instance bubbles=false}}></i>
+                                {{/unless}}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {{else}}
+                <div class="ui vertical menu fluid tales">
+                    <div class="ui grid">
+                        <div class="center aligned sixteen wide column">
+                            <div style="padding: 45% 0;font-style:italic;">No tales have been launched</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {{/each}}
+            {{/each}}
+        {{/if}}
     </div>
 </div>
 

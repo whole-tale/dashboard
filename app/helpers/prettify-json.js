@@ -1,6 +1,6 @@
-import Ember from 'ember';
+import { helper } from '@ember/component/helper';
 import JSONBeautify from 'npm:json-beautify';
 
-export default Ember.Helper.helper(function(params) {
+export default helper(function(params) {
   return JSONBeautify(params, null, 2, 80);
 });

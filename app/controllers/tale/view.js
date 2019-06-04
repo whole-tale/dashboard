@@ -44,6 +44,17 @@ export default Controller.extend({
     console.log("Controller model hook is called from nested tale 'view'");
     let model = this.get('model'); // this is assigned but never used!
   }),
+  creatorObserver: observer('model.creatorId', function() {
+    const model = this.get('model');
+    const creatorId = model.get("creatorId");
+    this.store.findRecord('user', creatorId).then(creator => {
+      this.get("model").set('creator', {
+        firstName: creator.firstName,
+        lastName: creator.lastName,
+        orcid: ''
+      });
+    })
+  }),
   isOwner: computed('model.creatorId', 'user_id', function () {
     const user_id = this.get("user_id");
     const creator_id = this.get("model").get("creatorId");

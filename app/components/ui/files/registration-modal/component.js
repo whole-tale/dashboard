@@ -1,19 +1,19 @@
-import Ember from 'ember';
-import layout from './template';
-import RSVP from 'rsvp';
+import { inject as service } from '@ember/service';
+import { A } from '@ember/array';
 import EventStream from 'npm:sse.js';
-
 import config from '../../../../config/environment';
+import Component from '@ember/component';
+import $ from 'jquery';
+import { later } from '@ember/runloop';
 
-export default Ember.Component.extend({
-    layout,
-    authRequest: Ember.inject.service(),
-    userAuth: Ember.inject.service(),
-    internalState: Ember.inject.service(),
-    tokenHandler: Ember.inject.service(),
-    notificationHandler: Ember.inject.service(),
+export default Component.extend({
+    authRequest: service(),
+    userAuth: service(),
+    internalState: service(),
+    tokenHandler: service(),
+    notificationHandler: service(),
 
-    datasources: Ember.A(),
+    datasources: A(),
     num_results: -1,
     error: false,
     errorMessage: '',
@@ -25,14 +25,18 @@ export default Ember.Component.extend({
     repository: '',
     // Size of the package found
     size: '',
-    // When set to true, the backend will search the DataONE dev server
-    useDev: '',
     // Controls whether the results section is shown in the UI
     showResults: false,
-    // URL to the Development member node
     devUrl: 'https://dev.nceas.ucsb.edu/knb/d1/mn/v2',
     // URL to the DataONE production server
     prodUrl: 'https://cn.dataone.org/cn/v2',
+    useDev: false,
+    isDev: false,
+
+    init() {
+      this._super(...arguments);
+      this.set('isDev', config.dev);
+    },
 
     didInsertElement() {
         this._super(...arguments);
@@ -47,8 +51,8 @@ export default Ember.Component.extend({
     },
 
     disableRegister() {
-        Ember.$('.icon.register').removeClass('checkmark');
-        Ember.$('.ui.positive.register.button').addClass('disabled');
+        $('.icon.register').removeClass('checkmark');
+        $('.ui.positive.register.button').addClass('disabled');
     },
 
     enableRegister(dataId) {
@@ -62,8 +66,8 @@ export default Ember.Component.extend({
         this.set('repository', ds.repository);
         this.set('size', ds.size);
 
-        Ember.$('.icon.register').addClass('checkmark');
-        Ember.$('.ui.positive.register.button').removeClass('disabled');
+        $('.icon.register').addClass('checkmark');
+        $('.ui.positive.register.button').removeClass('disabled');
     },
 
     clearModal() {
@@ -79,10 +83,10 @@ export default Ember.Component.extend({
     },
     
     clearResults() {
-        Ember.$('#harvester-dropdown').dropdown('clear');
+        $('#harvester-dropdown').dropdown('clear');
         this.set('showResults', false);
         this.set('num_results', -1);
-        this.set('datasources', Ember.A());
+        this.set('datasources', A());
     },
 
     clearPackageResults() {
@@ -94,12 +98,12 @@ export default Ember.Component.extend({
     },
 
     clearSearch() {
-        Ember.$('#searchbox').val('');
+      $('#searchbox').val('');
     },
 
     didRender() {
         let self = this;
-        Ember.$('#harvester-dropdown').dropdown({
+        $('#harvester-dropdown').dropdown({
             onChange: function(dataId) {
                 if(!dataId || dataId === "") {
                     self.disableRegister();
@@ -136,11 +140,10 @@ export default Ember.Component.extend({
 
     actions: {
 
-        updateDev(value) {
-            // Called if the `use dev` checkbox is clicked
-            this.set('useDev', value);
-        },
-
+      updateDev(value) {
+        // Called if the `use dev` checkbox is clicked
+        this.set('useDev', value);
+    },
         register() {
             this.clearErrors();
             let self = this;
@@ -241,21 +244,20 @@ export default Ember.Component.extend({
                     if(rep.length === 1) {
                         let name = self.datasources[0].name;
                         let dataId = self.datasources[0].dataId;
-                        Ember.run.later(self, function() {
-                            Ember.$('#harvester-dropdown').dropdown('set text', name);
-                            Ember.$('#harvester-dropdown').dropdown('set value', dataId);
+                        later(self, function() {
+                            $('#harvester-dropdown').dropdown('set text', name);
+                            $('#harvester-dropdown').dropdown('set value', dataId);
                         }, 250);
                     }
                     else {
-                        Ember.$('#harvester-dropdown').dropdown('set visible');
-                        Ember.$('#harvester-dropdown').dropdown('set active');
-                        let menu = Ember.$('#harvester-dropdown .menu');
+                        $('#harvester-dropdown').dropdown('set visible');
+                        $('#harvester-dropdown').dropdown('set active');
+                        let menu = $('#harvester-dropdown .menu');
                         menu.removeClass('hidden');
                         menu.addClass('transition visible');
                     }
                 })
                 .catch(e => {
-                    console.log("Error: " + e);
                     self.set('error', true);
                     self.set('errorMessage', 'No matching results found.');
                     self.disableRegister();

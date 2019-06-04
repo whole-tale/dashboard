@@ -277,25 +277,25 @@ export default Service.extend({
     * Queries the job result endpoint.
     * @method getFinalJobStatus
     * @param jobId The ID of the job whose status is wanted
-    * @param success Function that is called on success
-    * @param fail Function that is called when the call fails
     */
-    getFinalJobStatus(jobId, success, fail) {
+    getFinalJobStatus(jobId) {
         let token = this.get('tokenHandler').getWholeTaleAuthToken();
         let url = config.apiUrl + '/job/' + jobId + '/result';
 
-        let client = new XMLHttpRequest();
-        client.open('GET', url);
-        client.setRequestHeader("Girder-Token", token);
-        client.addEventListener("load", function () {
-            if (client.status === 200) {
-                success(JSON.parse(client.responseText));
-            } else {
-                fail(client.responseText);
-            }
+        return new Promise((resolve, reject) => {
+            let client = new XMLHttpRequest();
+            client.open('GET', url);
+            client.setRequestHeader("Girder-Token", token);
+            client.addEventListener("load", function () {
+                if (client.status === 200) {
+                    resolve(JSON.parse(client.responseText));
+                } else {
+                    reject(JSON.parse(client.responseText));
+                }
+            });
+            client.addEventListener("error", reject);
+            client.send();
         });
-        client.addEventListener("error", fail);
-        client.send();
     },
 
     /**
@@ -429,4 +429,87 @@ export default Service.extend({
             }
         });
     },
-});
+
+    /**
+     * Publishes a Tale to DataONE
+     * @method publishTale
+     * @param taleId The ID of the Tale this is being published
+     * @param memberNode 
+     * @param jwt The user's DataONE JWT token
+     * @param coordinatingNode The Coordinating node that overlooks the member node
+     */
+  publishTale(taleId, memberNode, coordinatingNode, jwt) {
+      const token = this.get('tokenHandler').getWholeTaleAuthToken();
+      return new Promise ((resolve, reject) => {
+          let url = `${config.apiUrl}/publish/dataone` + 
+            `?taleId=${taleId}&remoteMemberNode=${memberNode}` + 
+            `&authToken=${jwt}` +
+            `&coordinatingNode=${coordinatingNode}`;
+    
+          let client = new XMLHttpRequest();
+          client.open('GET', url);
+          client.setRequestHeader("Girder-Token", token);
+    
+          client.addEventListener("load", function() {
+            if (client.status === 200) {
+              resolve(JSON.parse(client.response));
+            } else {
+              reject(JSON.parse(client.response));
+            }
+          });
+          client.addEventListener("error", reject);
+    
+          client.send();
+      });
+    },
+
+      /**
+     * Returns the workspace folder ID for a Tale
+     * @method getWorkspaceId
+     * @param taleId The ID of the Tale
+     * @param success Function to be called on success
+     * @param fail Function to be called when the call fails
+     */
+    getWorkspaceId(taleId, success, fail) {
+      const token = this.get('tokenHandler').getWholeTaleAuthToken();
+      let url = `${config.apiUrl}/workspace/${taleId}`;
+
+      let client = new XMLHttpRequest();
+      client.open('GET', url);
+      client.setRequestHeader("Girder-Token", token);
+      client.addEventListener("load", () => {
+          if (client.status === 200) {
+              const resp = JSON.parse(client.responseText);
+              success(resp._id);
+          } else {
+              fail(client.responseText);
+          }
+      });
+      client.addEventListener("error", fail);
+      client.send();
+  },
+      /**
+     * Returns the ID of the home folder
+     * @method getHomeId
+     * @param success Function to be called on success
+     * @param fail Function to be called when the call fails
+     */
+/*     getHomeId(success, fail) {
+      const token = this.get('tokenHandler').getWholeTaleAuthToken();
+      let url = `${config.apiUrl}/workspace/${taleId}`;
+
+      let client = new XMLHttpRequest();
+      client.open('GET', url);
+      client.setRequestHeader("Girder-Token", token);
+      client.addEventListener("load", () => {
+          if (client.status === 200) {
+              const resp = JSON.parse(client.responseText);
+              success(resp._id);
+          } else {
+              fail(client.responseText);
+          }
+      });
+      client.addEventListener("error", fail);
+      client.send();
+  }, */
+  })

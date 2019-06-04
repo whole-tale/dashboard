@@ -86,7 +86,7 @@ export default Component.extend({
 
   /**
    * Resets the GUI.
-   * @method getFinalJobStatus
+   * @method setDefaults
    */
   setDefaults() {
     // Set default values of mutable variables
@@ -227,6 +227,10 @@ export default Component.extend({
 
                 component.get('router').transitionTo('run.view', instanceId);
               }
+            },
+            err => {
+                component.set('errorMessage', err);
+                component.send('openErrorModal');
             });
         }, 1000);
       };
@@ -276,12 +280,13 @@ export default Component.extend({
 
                 /* Get the ID of the instance by getting the job status and then
                 transition to the run page, using the ID. */
-                component.get('apiCall').getFinalJobStatus(jobId,
+                component.get('apiCall').getFinalJobStatus(jobId).then(
                     function(res) {
                         component.get('router').transitionTo('run.view', res.instance._id);
                     },
                     function() {
                         component.set('errorMessage', self.get('defaultErrorMessage'));
+                        component.send('openErrorModal');
                     }
                 );   
             }
@@ -289,19 +294,21 @@ export default Component.extend({
               // The job is running or queued
               if (job.progress) {
                   // Update the component variables related to progress
-                  component.set('progress', job.progress.current/job.progress.total);
+                  component.set('progress', job.progress.current);
+                  component.set('progressTotal', job.progress.total);
                   component.set('message', job.progress.message);
               }
             }
             else {
               // The job was canceled or resulted in an error
-              component.get('apiCall').getFinalJobStatus(jobId,
+              component.get('apiCall').getFinalJobStatus(jobId).then(
                 function(res) {
                   component.set('errorMessage', res);
                   component.send('openErrorModal');
                 },
-              function() {
+                function() {
                   component.set('errorMessage', self.get('defaultErrorMessage'));
+                  component.send('openErrorModal');
                 });
 
               // Stop querying the job endpoint
@@ -312,7 +319,7 @@ export default Component.extend({
     };
     //Start polling
     jobUpdateLoop = startLooping();
-},
+  },
 
   /**
    * Handles asking the backend to spawn a new tale import job.

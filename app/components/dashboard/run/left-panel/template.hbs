@@ -1,17 +1,4 @@
 <div class="wt panel manage">
-    {{!-- <div class="wt paddleboard">
-        <h2>
-            <img src="/images/wholetale_logo_sm.png" /> Current Tale
-            {{#if hasSelectedTaleInstance}}
-                <i class="fas fa-expand right floated" style="cursor: pointer;" {{action 'toggleFullscreen'}}></i>
-            {{/if}}
-            {{#if (and (not-eq model.status 0) (and model.iframe (eq internalState.currentInstanceId model._id)))}}
-                <a href="{{model.url}}" target="_blank">
-                    <i class="external alternate right icon" style="cursor: pointer; padding-right: 0.3em; bottom: 4px"></i>
-                </a>
-            {{/if}}
-        </h2>
-    </div> --}}
     {{#unless noInstanceSelected}}
         <div class="wt paddleboard tall header">
             <div class="ui bordlerless menu">
@@ -20,10 +7,11 @@
                     <img class="env" src="{{model.tale.icon}}" />
                     <div class="header name">
                         <h3>{{truncate-name model.name}}</h3>
-                        <span>{{model.tale.authors}}</span>
+                        <span>{{tale-authors-to-str model.tale.authors model.tale.creator}}</span>
                     </div>
                 </div>
                 <div class="right borderless menu">
+
                     {{#if readyToReleaseFeature}}
                         <div class="item">
                             <div class="ui blue icon button">
@@ -48,18 +36,24 @@
                                     <a class="item" href="https://wholetale.readthedocs.io/en/stable/users_guide/run.html" target="_blank">
                                         Read the docs <div class="ui label transparent"><i class="fas fa-book"></i></div>
                                     </a>
+                                    <a class="item"  {{action "exportTale" model.taleId 'bagit'}}>
+                                      Export as BagIt <div class="ui label transparent"><i class="fas fa-archive"></i></div>
+                                    </a>
+                                    <a class="item" {{action "exportTale" model.taleId 'native'}}>
+                                      Export as Zip <div class="ui label transparent" ><i class="far fa-file-archive"></i></div>
+                                    </a>
+                                    {{!-- Only allow Tale Admins to access publish function --}}
+                                    {{#if (gt model.tale._accessLevel 1)}}
+                                        <a class="item" {{action 'openPublishModal' model.tale}}>
+                                          Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
+                                        </a>
+                                    {{/if}}
                                     {{#if readyToReleaseFeature}}
                                         <a class="item">
                                             Duplicate Tale <div class="ui label transparent"><i class="fas fa-copy"></i></div>
                                         </a>
                                         <a class="item">
                                             Delete Tale <div class="ui label transparent"><i class="fas fa-trash"></i></div>
-                                        </a>
-                                        <a class="item" {{action (route-action 'showModal' 'ui/files/publish-modal' publishModalContext )}}>
-                                            Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
-                                        </a>
-                                        <a class="item" {{action "editTaleInfo" model._id}}>
-                                            Edit Tale Info <div class="ui label transparent"><i class="fas fa-edit"></i></div>
                                         </a>
                                     {{/if}}
                                     <a class="item" onclick={{action 'rebuildTale' model.tale._id}}>
@@ -89,28 +83,7 @@
         </div>
     {{/if}}
 
-    {{!-- <div class="ui {{model._id}} modal" style="display: none">
-        <i class="close icon"></i>
-        <div class="header">
-            Really Delete Instance?
-        </div>
-        <div class="image content">
-            <div class="description">
-                <p>This will permanently delete the '{{model.name}}' instance. Continue?</p>
-            </div>
-        </div>
-        <div class="actions">
-            <div class="ui black deny button" {{action 'denyDelete'}}>
-                No
-            </div>
-            <div class="ui positive right labeled icon button" {{action 'approveDelete' model}}>
-                Yes
-                <i class="checkmark icon"></i>
-            </div>
-        </div>
-    </div> --}}
-
-    <div class="ui dataone modal" style="display: none">
+    <div id="dataone-auth-modal" class="ui dataone modal">
         <i class="close icon"></i>
         <div class="header">
             Log into DataONE
@@ -123,7 +96,7 @@
             </div>
         </div>
         <div class="actions">
-            <div class="ui black deny button" {{action 'denyDataONE'}}>
+            <div class="ui black deny button">
                 Cancel
             </div>
             <div class="ui positive right labeled icon button" {{action 'authenticateD1' model._id}}>
@@ -132,4 +105,140 @@
             </div>
         </div>
     </div>
+</div>
+
+<div id="publish-modal" class="ui publish modal">
+  <div class="header">
+      Publish Tale
+  </div>
+  <div id="publish-modal-content" class="content">
+    <div class="description">
+        
+      <p>
+          Publishing will create an immutable copy of your Tale with a DOI.
+          <i class="info circle blue icon main"></i>
+      </p>
+      <p>
+          This process will allow another user to easily rerun
+          your published analysis using the WholeTale platform.
+      </p>
+      
+      <div class="ui form" style="margin-bottom:15px;">
+          <div class="required inline field">
+              <label>Please choose a target repository:</label>
+              {{#ui-dropdown class=repoDropdownClass allowAdditions=false selected=selectedRepositoryName onChange=(action 'onRepositoryChange')
+                as |execute mapper|}}
+                <div class="default text">Target Repository</div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    {{#each repositories as |repo|}}
+                    <div class="item">
+                        {{repo.name}}
+                    </div>
+                    {{/each}}
+                </div>
+              {{/ui-dropdown}}
+          </div>
+      </div>
+      
+      <div class="ui styled fluid accordion">
+          <div class="title" id="publish-details-collapse-header">
+            <small class="ui text muted">More Details
+                <i class="dropdown icon"></i>
+            </small>
+          </div>
+          <div class="content" id="publish-details-collapse">
+            <p class="transition hidden">
+                <p>
+                    Your published Tale will include everything that
+                    has been uploaded to its associated workspace.
+                </p>
+                <p>
+                    The following required files will be generated 
+                    and published along with the Tale itself:
+                </p>
+                <div class="ui list" id="publish-artifact-details">
+                    <div class="item">
+                         <i class="environment folder icon"></i>
+                        <div class="content" style="padding-top:0;padding-bottom:0;">
+                            <div class="environment name header">{{taleToPublish.title}}</div>
+                            <div class="list">
+                                {{#each nonOptionalFile as |file|}}
+                                    <div class="item">
+                                        <label>
+                                            <div class="content" style="padding-top:0;padding-bottom:0;">
+                                                <i class="file icon"></i>
+                                                 {{file}} <i class="info circle blue icon {{file}}"></i> 
+                                            </div>
+                                        </label>
+                                    </div>
+                                {{/each}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p>
+                    This process will allow another user to easily rerun
+                    your published analysis using the WholeTale platform.
+                </p>
+            </p>
+          </div>
+      </div>
+      <p></p>
+    </div>
+      
+    <div id="publish-results-panel" class="ui form">
+      {{#if (eq publishStatus 'in_progress')}}
+          <div class="ui blue message progress-area" id="publishing-progress-message">
+            <p class="header publishing-now">
+                <a id="publishing-success-label" class="ui blue label">IN PROGRESS</a>
+                Your Tale is being published to {{selectedRepository.name}}
+            </p>
+            <div class="publish-progressbar">
+                {{#ui-progress percent=progress class="teal indicating"}}
+                  <div class="bar"></div>
+                  <div class="label publishing-status-message">
+                    <i class="fas fa-spinner fa-pulse"></i> {{statusMessage}}
+                  </div>
+                {{/ui-progress}}
+            </div>     
+          </div> 
+      {{else if (eq publishStatus 'success')}}
+          <div class="ui positive message" id="publishing-success-message">
+            <div class="header">
+                <a id="publishing-success-label" class="ui green label">SUCCESS</a> {{statusMessage}}
+            </div>
+            <p id="publish-result">Identifier: <a href={{packageURL}} target='_blank'>{{packageIdentifier}}</a></p>
+          </div>
+      {{else if (eq publishStatus 'error')}}
+          <div class="ui negative message" id="publishing-error-message">
+            <div class="header">
+              <a id="publishing-error-label" class="ui red label">ERROR</a> An error was encountered while publishing your Tale.
+            </div>
+            <p id="publish-result">{{statusMessage}}</p>
+          </div>
+      {{/if}}
+    </div>
+  </div>
+  <div class="actions">             
+    <small>
+      For more information about publishing, please consult the 
+      <a href='https://wholetale.readthedocs.io/en/stable/users_guide/publishing.html' target='_blank'>
+          Publishing Guide.
+      </a>
+    </small>
+      
+    <div class="ui black deny button" {{action 'closePublishModal'}}>
+      {{if (eq publishStatus 'success') 'Close' 'Cancel'}}
+    </div>
+    <div class="ui positive right labeled icon button 
+        {{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress') (eq selectedRepositoryName null))) 'disabled'}}" 
+        disabled="{{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress') (eq selectedRepositoryName null))) 'true' 'false'}}"
+        {{action 'submitPublish' taleToPublish}}>
+      {{if (or (eq publishStatus 'initialized') (eq publishStatus 'error')) 'Publish'}}
+      {{if (eq publishStatus 'success') 'Published'}}
+      {{if (eq publishStatus 'in_progress') 'Publishing...'}}
+      <i class="fas fa-fw {{if (eq publishStatus 'in_progress') 'fa-spinner fa-pulse' 'fa-check'}} icon"></i>
+    </div>
+  </div>
 </div>
