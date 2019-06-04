@@ -14,7 +14,7 @@
           {{#unless event.hidden}}
             {{#if (eq event.json.type 'wt_progress')}}
               <tr class="{{if (eq event.json.data.state 'active') 'active'}}" title="Last update: {{event.updated}}">
-                <td width="30%">{{event.json.data.title}}</td>
+                <td width="30%"><label class="ui label">{{event.json.data.title}}</label></td>
                 <td width="60%">
                   {{#if (eq event.json.data.state 'active')}}
                     <div class="ui tiny indicating progress event-progress nomargin">
@@ -34,17 +34,15 @@
                   {{/if}}
                 </td>
                 <td width="10%">
-                  {{#if (eq event.json.data.state 'active')}}
-                    <button class="ui tiny primary basic right floated button">
-                      Cancel
+                    <button {{action 'openLogViewerModal' event}} class="ui tiny primary basic right floated button">
+                      View Logs
                     </button>
-                  {{else}}
+                  {{!--{{else}}
                     <div class="ui tiny basic icon right floated buttons">
                       <button class="ui tiny secondary basic right floated button">
                         <i class="ui fas fa-fw fa-ellipsis-v icon"></i>
                       </button>
-                    </div>
-                  {{/if}}
+                    </div>--}}
                 </td>
               </tr>
               
@@ -55,10 +53,10 @@
     {{/if}}
     
     <div class="ui grid nomargin" id="notification-stream-button-bar">
-      <div class="eight wide column">
+      {{!--<div class="eight wide column">
         <button class="ui basic primary fluid button" id="view-past-events-button" {{action 'viewPastEvents'}}>Past Tasks</button>
-      </div>
-      <div class="eight wide column">
+      </div>--}}
+      <div class="sixteen wide column">
         <button class="ui basic secondary fluid button" id="ack-all-events-button" {{action 'markAllAsRead'}}>Mark All as Read</button>
       </div>
     </div>
