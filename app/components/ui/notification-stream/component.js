@@ -59,6 +59,11 @@ export default Component.extend({
     },
     
     actions: {
+        hideMessage(event) {
+            const self = this;
+            self.get('notificationStream').hideMessage(event);
+        },
+        
         markAllAsRead() {
             const self = this;
             self.get('notificationStream').markAllAsRead();

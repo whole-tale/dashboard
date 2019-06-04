@@ -1263,27 +1263,40 @@ wt.panel .wt.paddleboard.header i {
 #event-notification-stream {
   position: fixed;
   top: 32px;
-  left: 70vw;
-  width: 26vw;
+  left: 55vw;
+  width: 40vw;
   background: #fff;
   box-shadow: 0 0 4px rgba(0,0,0,.2);
   border: 1px solid rgba(0,0,0,.2);
-  border-radius: 1rem;
-  padding-bottom: 15px;
+  border-radius: 0;
   max-height: 40vh;
   overflow-y: auto;
+}
+.event-meta {
+  padding-right:20px !important;
+  width:100% !important;
+}
+.event-stream-date {
+  float:right !important;
+  padding-right:20px !important;
+}
+#event-stream-header {
+  padding: 6px;
+}
+.nomargin {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.event-progress >.label {
+  margin-top: 0;
+  width: unset;
 }
 #event-notification-stream > .event > .content > .summary {
   margin-left: 8px;
   font-weight: 400;
 }
-#ack-all-events-button {
-  border-radius: 1rem 1rem 0 0;
-}
-.event-icon {
-  padding:0 !important;
-  margin: 9px 12px !important;
-  font-size: 2.5em !important;
+#notification-stream > button {
+  border-radius: 0;
 }
 
 #instance-deleting-loader {
