@@ -44,7 +44,7 @@ export default Component.extend({
         const event = self.get('selectedEvent');
         self.get('store').findRecord('job', event.json.data.resource.jobs[0]).then(job => {
             if (job && job.log) {
-                self.set('selectedEventLogs', job.log.join('\n'));
+                self.set('selectedEventLogs', job.log.join(''));
             }
         });
     },
