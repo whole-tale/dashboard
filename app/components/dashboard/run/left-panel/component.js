@@ -125,11 +125,13 @@ export default Component.extend(FullScreenMixin, {
                 reload: true
               })
               .then(resp => {
-              this.send('openPublishModal', resp)
-            })
+                this.send('openPublishModal', resp)
+              });
+            }
           }
-          }
-        })   
+        }); 
+       $('.ui.accordion').accordion({});
+    },
 
     showModal(modalDialogName, modalContext) {
         // Open Publish Modal
@@ -455,11 +457,9 @@ export default Component.extend(FullScreenMixin, {
          * Opens the publishing modal and sets initial state.
          *
          * @method openPublishModal
-         * @param tale The Tale that is going to be published
         */
-        openPublishModal(tale) {          
+        openPublishModal() {          
             this.resetPublishState();
-            this.set('taleToPublish', tale);
             const self = this;
             $('#publish-modal').modal({ 
                 onApprove: () => false,
@@ -476,9 +476,8 @@ export default Component.extend(FullScreenMixin, {
          * sends relevant information to the backend to start publishing,
          *
          * @method submitPublish
-         * @param tale The Tale that is going to be published
         */
-        submitPublish(tale) {
+        submitPublish() {
             const self = this;
 
             let repository = this.selectedRepository;
@@ -490,7 +489,8 @@ export default Component.extend(FullScreenMixin, {
           }
 
             self.set('publishStatus', 'in_progress');
-            self.set('progress', 0);            
+            self.set('progress', 0);   
+            const tale = self.get('model');
 
             // Call the publish endpoint
             self.get("apiCall").publishTale(tale._id, repository.memberNode, repository.coordinatingNode, dataOneJWT)

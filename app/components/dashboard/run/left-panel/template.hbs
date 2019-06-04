@@ -65,7 +65,7 @@
                                 </a>
                                 {{!-- Only allow Tale Admins to access publish function --}}
                                 {{#if (gt model._accessLevel 1)}}
-                                    <a class="item" {{action 'openPublishModal' model}}>
+                                    <a class="item" {{action 'openPublishModal'}}>
                                       Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
                                     </a>
                                 {{/if}}
@@ -247,7 +247,7 @@
     <div class="ui positive right labeled icon button 
         {{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress') (eq selectedRepositoryName null))) 'disabled'}}" 
         disabled="{{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress') (eq selectedRepositoryName null))) 'true' 'false'}}"
-        {{action 'submitPublish' taleToPublish}}>
+        {{action 'submitPublish'}}>
       {{if (or (eq publishStatus 'initialized') (eq publishStatus 'error')) 'Publish'}}
       {{if (eq publishStatus 'success') 'Published'}}
       {{if (eq publishStatus 'in_progress') 'Publishing...'}}
