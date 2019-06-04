@@ -12,6 +12,7 @@ export default Service.extend({
     tokenHandler: service('token-handler'),
     timeout: 3600,
     source: null,
+    store: service(),
     events: A([]),
     
     showNotificationStream: false,
@@ -52,7 +53,7 @@ export default Service.extend({
     
     /* Updates "lastRead" to now, then reconnects */
     markAllAsRead() {
-        let rightNow = Math.round(new Date().getTime() / 1000);
+        const rightNow = Math.round(new Date().getTime() / 1000);
         DEBUG && console.log('Setting lastRead = ', rightNow);
         localStorage.setItem('lastRead', rightNow);
         
@@ -67,7 +68,7 @@ export default Service.extend({
     /* Close if possible, otherwise noop */
     close() {
         const self = this;
-        let source = self.get('source');
+        const source = self.get('source');
         if (source != null && source.readyState == EventSource.CLOSED) {
             DEBUG && VERBOSE && console.log('Closing connection...');
             source.close();
@@ -87,23 +88,30 @@ export default Service.extend({
         event.updated = new Date(event.json.updated).toLocaleString();
         
         // Push new event data
-        let events = self.get('events');
-        //const createdEq = (e1, e2) => e1.created === e2.created;
-        //const idEq = (e1, e2) => e1.json._id === e2.json._id;
-        //const found = events.some(prior => idEq(prior, event) && createdEq(prior, event));
-        
-        // Short-circuit for previously-encountered events
-        // TODO: Handle updates properly
-        //if (found) return;
-
+        const events = self.get('events');
         if (event.json.type == 'wt_progress' && event.json.data.resource.type.startsWith('wt_')) {
             console.log(`Notification (${event.json._id}): progress update: ${event.json.data.message} - ${event.json.data.current}/${event.json.data.total}`, event);
         
+            // Attempt to use instanceId/taleId to attach the tale to its related event
+            const taleId = event.json.data.resource.tale_id;
+            const instanceId = event.json.data.resource.instance_id;
+            if (taleId) {
+                this.store.findRecord('tale', taleId).then((tale) => {
+                    event.json.data.resource.tale = tale;
+                });
+            } else if (instanceId) {
+                this.store.findRecord('instance', instanceId).then((instance) => {
+                    this.store.findRecord('tale', instance.taleId).then((tale) => {
+                        event.json.data.resource.tale = tale;
+                    });
+                });
+            } 
+            
             // Determine if we already have a notification regarding this Tale
             let existing = events.find(evt => event.json._id === evt.json._id);
             if (existing && event.updated > existing.updated) {
                 // Overwrite existing event with new one
-                let index = events.indexOf(existing);
+                const index = events.indexOf(existing);
                 events.replace(index, 1, event);
                 console.log(`Notification (${event.json._id}): updated event`, events);
             } else if (!existing) {

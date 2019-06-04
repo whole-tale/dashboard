@@ -14,8 +14,9 @@
           {{#unless event.hidden}}
             {{#if (eq event.json.type 'wt_progress')}}
               <tr class="{{if (eq event.json.data.state 'active') 'active'}}" title="Last update: {{event.updated}}">
-                <td width="30%"><label class="ui label">{{event.json.data.title}}</label></td>
-                <td width="60%">
+                <td width="20%"><label class="ui label">{{event.json.data.title}}</label></td>
+                <td width="30%">{{truncate-name event.json.data.resource.tale.title}}</td>
+                <td width="40%">
                   {{#if (eq event.json.data.state 'active')}}
                     <div class="ui tiny indicating progress event-progress nomargin">
                       {{#ui-progress progress=event.json.data.current value=event.json.data.current
@@ -37,7 +38,7 @@
                     <button {{action 'openLogViewerModal' event}} class="ui tiny primary basic right floated button">
                       View Logs
                     </button>
-                  {{!--{{else}}
+                  {{!--
                     <div class="ui tiny basic icon right floated buttons">
                       <button class="ui tiny secondary basic right floated button">
                         <i class="ui fas fa-fw fa-ellipsis-v icon"></i>
