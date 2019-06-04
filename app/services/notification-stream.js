@@ -74,50 +74,54 @@ export default Service.extend({
         }
     },
     
+    hideMessage(event) {
+        event.hidden = true;
+    },
+    
     onMessage(event) {
         const self = this;
+        
         // Parse event data (tale) into JSON
         event.json = JSON.parse(event.data);
         event.created = new Date(event.json.time).toLocaleString();
+        event.updated = new Date(event.json.updated).toLocaleString();
         
         // Push new event data
         let events = self.get('events');
-        const createdEq = (e1, e2) => e1.created === e2.created;
-        const idEq = (e1, e2) => e1.json._id === e2.json._id;
-        const found = events.some(prior => idEq(prior, event) && createdEq(prior, event));
+        //const createdEq = (e1, e2) => e1.created === e2.created;
+        //const idEq = (e1, e2) => e1.json._id === e2.json._id;
+        //const found = events.some(prior => idEq(prior, event) && createdEq(prior, event));
         
         // Short-circuit for previously-encountered events
         // TODO: Handle updates properly
-        if (found) return;
+        //if (found) return;
 
-        if (event.json.type == 'wt_image_build_status') {
+        if (event.json.type == 'wt_progress' && event.json.data.resource.type.startsWith('wt_')) {
+            console.log(`Notification (${event.json._id}): progress update: ${event.json.data.message} - ${event.json.data.current}/${event.json.data.total}`, event);
+        
             // Determine if we already have a notification regarding this Tale
-            let existing = events.find(evt => event.json.data._id === evt.json.data._id);
-            if (existing && event.created > existing.created) {
+            let existing = events.find(evt => event.json._id === evt.json._id);
+            if (existing && event.updated > existing.updated) {
                 // Overwrite existing event with new one
                 let index = events.indexOf(existing);
                 events.replace(index, 1, event);
-                console.log(`Notification (${event.json._id}): updated event ${event.json.data._id}`, events);
-            } else {
+                console.log(`Notification (${event.json._id}): updated event`, events);
+            } else if (!existing) {
                 // Add a new event
                 events.unshiftObject(event);
-                console.log(`Notification (${event.json._id}): new event ${event.json.data._id}`, events);
+                console.log(`Notification (${event.json._id}): new event`, events);
             }
             self.set('events', events);
             self.set('showNotificationStream', true);
-        //} else if (event.json.type == 'wt_error_backend_generic') {
-        //    // NOTE: This is currently unused
-        //    console.log("Generic backend encountered:", event);
         } else if (event.json.data.message) {
-            // Handle displaying progress updates for Import Tale
-            console.log(`Notification (${event.json._id}): Import Tale progress update: ${event.json.data.message} - ${event.json.data.current}/${event.json.data.total}`, event);
+            // Handle displaying progress updates for tasks
         } else if (event.json.data.text) {
             // Handle build log updates
             // FIXME: Why are these sent as notifications? 
             // FIXME: These logs are not displayed in the UI, and are currently fetched on demand when requested
-            console.log(`Notification (${event.json._id}): Log update encountered: ${event.json.data.text}`, event);
+            //console.log(`Notification (${event.json._id}): Log update encountered: ${event.json.data.text}`, event);
         } else {
-            console.log(`Notification (${event.json._id}): Job event (${event.json.data._id}) encountered: ${event.json.data.title} -> ${event.json.data.status}`, event);
+            //console.log(`Ignored notification (${event.json._id}): Job event (${event.json.data._id}) encountered: ${event.json.data.title} -> ${event.json.data.status}`, event);
         }
     },
 });
