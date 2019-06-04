@@ -405,7 +405,6 @@ ui.inverted.menu.wt.top {
 
 .ui.vertical.menu.tales .item {
   position: relative;
-  padding: 1em 1em 1.25em 6em;
   border-left: 4px solid transparent;
   min-height: 6.3rem;
 }
@@ -441,8 +440,19 @@ ui.inverted.menu.wt.top {
 }
 
 .ui.vertical.menu.tales .item i {
-  float: right;
   position: relative;
+}
+
+.pull-left {
+  float: left;
+}
+
+.pull-right {
+  float: right;
+}
+
+.tale-instances-name {
+  margin: 1em 1em 1.25em 6em;
 }
 
 .ui.vertical.menu.tales .item p {
@@ -1240,9 +1250,40 @@ wt.panel .wt.paddleboard.header i {
   }
 }
 
+/** Notification Stream styles */
+#event-notification-counter {
+  margin-top: 45px !important;
+  border-radius: 999px;
+  padding: 2px 4px;
+  text-align: center;
+}
+#event-notification-placeholder {
+  margin-top: 40px;
+}
+#event-notification-stream {
+  position: fixed;
+  top: 32px;
+  left: 70vw;
+  width: 26vw;
+  background: #fff;
+  box-shadow: 0 0 4px rgba(0,0,0,.2);
+  border: 1px solid rgba(0,0,0,.2);
+  border-radius: 1rem;
+  padding-bottom: 15px;
+  max-height: 40vh;
+  overflow-y: auto;
+}
 #event-notification-stream > .event > .content > .summary {
   margin-left: 8px;
   font-weight: 400;
+}
+#ack-all-events-button {
+  border-radius: 1rem 1rem 0 0;
+}
+.event-icon {
+  padding:0 !important;
+  margin: 9px 12px !important;
+  font-size: 2.5em !important;
 }
 
 #instance-deleting-loader {
@@ -1254,4 +1295,12 @@ wt.panel .wt.paddleboard.header i {
   height: stretch;
   height: -webkit-fill-available;
   height: -o-fill-available;
+}
+
+.tale-instances-item {
+  height: 56px;
+}
+
+.environment-label {
+  margin-left: 75px !important;
 }

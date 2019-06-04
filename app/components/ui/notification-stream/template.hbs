@@ -1,147 +1,133 @@
-{{#with events}}
-  <style>
-      /* TODO: Move these to .css once finalized */
-      #event-notification-stream {
-          position: fixed;
-          z-index: 1;
-          top: 32px;
-          left: 70vw;
-          width: 26vw;
-          background: #fff;
-          box-shadow: 0 0 4px rgba(0,0,0,.2);
-          border: 1px solid rgba(0,0,0,.2);
-          border-radius: 1rem;
-          padding-bottom: 15px;
-          max-height: 40vh;
-          overflow-y: auto;
-      }
-      #ack-all-button {
-          border-radius: 1rem 1rem 0 0;
-      }
-      .event-icon{
-          margin: 15px 12px;
-      }
-  </style>
+{{#if notificationStream.showNotificationStream}}
   <div class="ui feed computer tablet only" id="event-notification-stream">
       
-    <button class="ui button fluid" id="ack-all-button" {{action 'markAllAsRead'}}>Mark All as Read</button>
+    <button class="ui button fluid" id="ack-all-events-button" {{action 'markAllAsRead'}}>Mark All as Read</button>
     
-    {{#each events as |event index|}}
-      {{!-- Ignore everything but build events --}}
-      {{#if (eq event.json.type 'wt_image_build_status')}}
-        {{#if (gt index 0)}}<hr />{{/if}}
-        <div class="event">
-          <div class="label">
-            {{#if (eq event.json.data.imageInfo.status 0)}}
-              <i class="fas fa-2x fa-fw fa-warning event-icon"></i>
-            {{else if (eq event.json.data.imageInfo.status 1)}}
-              <i class="fas fa-2x fa-fw fa-times event-icon"></i>
-            {{else if (eq event.json.data.imageInfo.status 2)}}
-              <i class="fas fa-2x fa-fw fa-cog fa-spin event-icon"></i>
-            {{else if (eq event.json.data.imageInfo.status 3)}}
-              <i class="fas fa-2x fa-fw fa-check event-icon"></i>
-            {{/if}}
-          </div>
-          <div class="content">
-            <div class="summary">
-              {{!-- TODO: Link to "/run/:tale_id" view once that is finished --}}
-              {{!-- {{event.json.data._id}} --}}
-              <a class="user">
-                {{truncate-name event.json.data.title}}
-              </a>
-              <br>
-              <div>
-                {{#if (eq event.json.data.imageInfo.status 0)}}
-                  Tale image is invalid.
-                {{else if (eq event.json.data.imageInfo.status 1)}}
-                  Tale image is unavailable.
-                {{else if (eq event.json.data.imageInfo.status 2)}}
-                  Building tale image...
-                {{else if (eq event.json.data.imageInfo.status 3)}}
-                  Tale image built successfully!
-                {{/if}}
-              </div>
-              <div class="date">
-                {{event.created}}
-              </div>
-            </div>
-            <div class="ui grid">
-              <div class="six wide column">
-                <div class="meta">
-                  <a class="status" {{action 'openLogViewerModal' event}}>
-                    View Logs
-                  </a>
-                </div>
-              </div>
-              <div class="ten wide column">
-                <div class="meta">
-                  {{#if (eq event.json.data.imageInfo.status 3)}}
-                    <a class="logs" {{action 'restartTaleInstance' event.json.data}}>
-                      Restart to Use New Image
-                    </a>
-                  {{/if}}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      {{else if (eq event.json.type 'wt_error_backend_generic')}}
-        <div class="event">
-          <div class="label">
-            <i class="fas fa-2x fa-fw fa-ban event-icon"></i>
-          </div>
-          <div class="content">
-            <div class="summary">
-              <a class="ui red label">ERROR</a> An error was encountered.
-              <div class="date">
-                {{event.created}}
-              </div>
-              <div class="meta">
-                {{#if isDev}}
-                  {{#if event.json.data.message}}
-                    {{event.json.data.message}}
-                  {{else}}
-                    {{event.json.data}}
-                  {{/if}}
-                {{else}}
-                   Please report this error to an administrator.
-                   {{#if event.json.data.code}}
-                     Error code: {{event.json.data.code}}
-                   {{/if}}
-                {{/if}}
-              </div>
-            </div>
-          </div>
-        </div>
-      {{/if}}
-    {{/each}}
-  </div>
-{{/with}}
-
-<div id="log-viewer-modal" class="ui modal">
-  <div class="ui icon header">
-    <i class="fas icon
-    {{if (eq selectedEvent.status 0) 'fa-pause-circle'}}
-    {{if (eq selectedEvent.status 1) 'fa-hourglass-half fa-pulse'}}
-    {{if (eq selectedEvent.status 2) 'fa-cog fa-spin'}}
-    {{if (eq selectedEvent.status 3) 'fa-check'}}
-    {{if (eq selectedEvent.status 4) 'fa-ban'}}
-    {{if (eq selectedEvent.status 5) 'fa-times'}}"></i>
-    Log Viewer
-  </div>
-  <div class="scrolling content">
-    {{#if selectedEventLogs}}
-      <pre>{{selectedEventLogs}}</pre>
-    {{else}}
-      <div class="ui segment" style="min-height:20vh">
-        <div class="ui active inverted dimmer">
-          <div class="ui text loader">Loading</div>
-        </div>
-        <p></p>
+    {{#if (eq notificationStream.events.length 0)}}
+      <div id="event-notification-placeholder" class="placeholder message">
+        <i class="huge check circle icon"></i>
+        <p>No new events</p>
       </div>
+    {{else}}
+      {{#each notificationStream.events as |event index|}}
+        {{!-- Ignore everything but build events --}}
+        {{#if (eq event.json.type 'wt_image_build_status')}}
+          {{#if (gt index 0)}}<hr />{{/if}}
+          <div class="event">
+            <div class="label">
+              {{#if (eq event.json.data.imageInfo.status 0)}}
+                <i class="event-icon huge warning icon"></i>
+              {{else if (eq event.json.data.imageInfo.status 1)}}
+                <i class="event-icon huge ban icon"></i>
+              {{else if (eq event.json.data.imageInfo.status 2)}}
+                <i class="event-icon huge cog loading icon"></i>
+              {{else if (eq event.json.data.imageInfo.status 3)}}
+                <i class="event-icon huge check icon"></i>
+              {{/if}}
+            </div>
+            <div class="content">
+              <div class="summary">
+                {{!-- TODO: Link to "/run/:tale_id" view once that is finished --}}
+                {{!-- {{event.json.data._id}} --}}
+                <a class="user" {{action 'gotoTale' event.json.data._id}}>
+                  {{truncate-name event.json.data.title}}
+                </a>
+                <br>
+                <div>
+                  {{#if (eq event.json.data.imageInfo.status 0)}}
+                    Tale image is invalid.
+                  {{else if (eq event.json.data.imageInfo.status 1)}}
+                    Tale image is unavailable.
+                  {{else if (eq event.json.data.imageInfo.status 2)}}
+                    Building tale image...
+                  {{else if (eq event.json.data.imageInfo.status 3)}}
+                    Tale image built successfully!
+                  {{/if}}
+                </div>
+                <div class="date">
+                  {{event.created}}
+                </div>
+              </div>
+              <div class="ui grid">
+                <div class="six wide column">
+                  <div class="meta">
+                    <a class="status" {{action 'openLogViewerModal' event}}>
+                      View Logs
+                    </a>
+                  </div>
+                </div>
+                <div class="ten wide column">
+                  <div class="meta">
+                    {{#if (eq event.json.data.imageInfo.status 3)}}
+                      <a class="logs" {{action 'restartTaleInstance' event.json.data}}>
+                        Restart to Use New Image
+                      </a>
+                    {{/if}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {{else if (eq event.json.type 'wt_error_backend_generic')}}
+        
+        {{!-- NOTE: This is currently unused --}}
+          <div class="event">
+            <div class="label">
+              <i class="fas fa-2x fa-fw fa-ban event-icon"></i>
+            </div>
+            <div class="content">
+              <div class="summary">
+                <a class="ui red label">ERROR</a> An error was encountered.
+                <div class="date">
+                  {{event.created}}
+                </div>
+                <div class="meta">
+                  {{#if DEBUG}}
+                    {{#if event.json.data.message}}
+                      {{event.json.data.message}}
+                    {{else}}
+                      {{event.json.data}}
+                    {{/if}}
+                  {{else}}
+                     Please report this error to an administrator.
+                     {{#if event.json.data.code}}
+                       Error code: {{event.json.data.code}}
+                     {{/if}}
+                  {{/if}}
+                </div>
+              </div>
+            </div>
+          </div>
+        {{/if}}
+      {{/each}}
     {{/if}}
   </div>
-  <div class="actions">
-    <div class="ui button" {{action 'closeLogViewerModal'}}>Done</div>
+    
+  <div id="log-viewer-modal" class="ui modal">
+    <div class="ui icon header">
+      <i class="fas icon
+      {{if (eq selectedEvent.status 0) 'fa-pause-circle'}}
+      {{if (eq selectedEvent.status 1) 'fa-hourglass-half fa-pulse'}}
+      {{if (eq selectedEvent.status 2) 'fa-cog fa-spin'}}
+      {{if (eq selectedEvent.status 3) 'fa-check'}}
+      {{if (eq selectedEvent.status 4) 'fa-ban'}}
+      {{if (eq selectedEvent.status 5) 'fa-times'}}"></i>
+      Log Viewer
+    </div>
+    <div class="scrolling content">
+      {{#if selectedEventLogs}}
+        <pre>{{selectedEventLogs}}</pre>
+      {{else}}
+        <div class="ui segment" style="min-height:20vh">
+          <div class="ui active inverted dimmer">
+            <div class="ui text loader">Loading</div>
+          </div>
+          <p></p>
+        </div>
+      {{/if}}
+    </div>
+    <div class="actions">
+      <div class="ui button" {{action 'closeLogViewerModal'}}>Done</div>
+    </div>
   </div>
-</div>
+{{/if}}
