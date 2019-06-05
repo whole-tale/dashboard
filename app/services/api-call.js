@@ -426,8 +426,23 @@ export default Service.extend({
           client.send();
       });
     },
+    
+    getPastNotifications(sinceMs) {
+        const since = new Date(sinceMs).toISOString();
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: `${config.apiUrl}/notification?since=${since}`,
+                headers: {
+                    'Girder-Token': this.get('tokenHandler').getWholeTaleAuthToken()
+                },
+                timeout: 3000,
+                success: resolve,
+                error: reject
+            });
+        });
+    },
 
-      /**
+    /**
      * Returns the workspace folder ID for a Tale
      * @method getWorkspaceId
      * @param taleId The ID of the Tale

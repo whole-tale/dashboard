@@ -2,7 +2,7 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
-import EmberObject, { computed } from '@ember/object';
+import EmberObject from '@ember/object';
 import config from '../../../config/environment';
 import $ from 'jquery';
 import layout from './template';
@@ -61,6 +61,14 @@ export default Component.extend({
     },
     
     actions: {
+        toggleShowNotifications() {
+            this.notificationStream.toggleShowNotifications();
+        },
+        
+        togglePastEvents() {
+            this.notificationStream.togglePastEvents();
+        },
+    
         hideMessage(event) {
             const self = this;
             self.get('notificationStream').hideMessage(event);

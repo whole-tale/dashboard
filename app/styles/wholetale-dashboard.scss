@@ -1258,18 +1258,20 @@ wt.panel .wt.paddleboard.header i {
   text-align: center;
 }
 #event-notification-placeholder {
-  margin-top: 40px;
+  padding-top: 40px;
 }
 #event-notification-stream {
   position: fixed;
-  top: 32px;
-  left: 40vw;
+  top: 48px;
+  left: 38vw;
   width: 55vw;
   background: #fff;
   box-shadow: 0 0 4px rgba(0,0,0,.2);
   border: 1px solid rgba(0,0,0,.2);
   border-radius: 0;
-  max-height: 40vh;
+}
+#event-notification-scroller {
+  height: 40vh;
   overflow-y: auto;
 }
 .event-meta {

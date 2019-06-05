@@ -1,11 +1,12 @@
 import Service from '@ember/service';
-import { computed } from '@ember/object';
+import { observer, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
 import config from '../config/environment';
 
 const DEBUG = config.dev;
 const VERBOSE = false;
+const dayMs = 24 * 60 * 60 * 1000;
 
 export default Service.extend({
     apiHost: config.apiHost,
@@ -13,9 +14,67 @@ export default Service.extend({
     timeout: 3600,
     source: null,
     store: service(),
+    apiCall: service('api-call'),
     events: A([]),
+    lastMessage: null,
+    
+    allEvents: computed('events', 'pastEvents', 'lastMessage', function() {
+        if (this.showPastEvents) {
+            return this.events.concat(this.pastEvents.filter((event) => {
+                // Avoid displaying the same event as both current and past
+                return !this.events.find(evt => evt._id === event._id);
+            }));
+        } else {
+            return this.events;
+        }
+    }),
     
     showNotificationStream: false,
+    showPastEvents: false,
+    
+    pastEvents: A([]),
+    selectedFilter: 0,
+    pastEventFilters: [
+        {
+            label: '7 Days',
+            valueMs: 7 * dayMs
+        },
+        {
+            label: '3 Days',
+            valueMs: 3 * dayMs
+        },
+        {
+            label: 'Today',
+            valueMs: 1 * dayMs
+        }
+        
+    ],
+    
+    filterObserver: observer('showPastEvents', 'selectedFilter', function() {
+        const self = this;
+        const deltaMs = this.pastEventFilters[this.selectedFilter].valueMs;
+        const sinceMs = Date.now() - deltaMs;
+        self.apiCall.getPastNotifications(sinceMs).then(events => {
+            let sorted = events.sort((e1, e2) => {
+              // This is a comparison function that will result in dates being sorted in
+              // DESCENDING order.
+              if (e1.updatedTime > e2.updatedTime) return -1;
+              if (e1.updatedTime < e2.updatedTime) return 1;
+              return 0;
+            });
+            events.forEach(self.attachTaleData.bind(self));
+            self.set('pastEvents', sorted);
+        });
+    }),
+    
+    toggleShowNotifications() {
+        this.set('showNotificationStream', !this.showNotificationStream);
+    },
+    
+    togglePastEvents() {
+        this.set('showPastEvents', !this.showPastEvents);
+    },
+    
     
     /* Connect if not connected, otherwise return existing connection */
     connect() {
@@ -79,57 +138,92 @@ export default Service.extend({
         event.hidden = true;
     },
     
+    
+    attachTaleData(event) {
+        const self = this;
+        
+        // NOTE: there is a difference in format between the two endpoints
+        // /notification and /notification/stream return different formats    
+        let evt = event || event;
+        
+        // Short-circuit if this event does not contain a resource
+        if (!evt.data.resource) {
+            return;
+        }
+        
+        // Attempt to use instanceId/taleId to attach the tale to its related event
+        const taleId = evt.data.resource.tale_id;
+        const instanceId = evt.data.resource.instance_id;
+        if (taleId) {
+            evt.data.resource.tale = self.store.peekRecord('tale', taleId);
+        } else if (instanceId) { 
+            // XXX: this branch shouldn't be necessary, "restart tale" should send us tale_id as well
+            const instance = self.store.peekRecord('instance', instanceId);
+            if (instance) {
+                evt.data.resource.tale = self.store.peekRecord('tale', instance.taleId);
+            } else {
+                evt.data.resource.tale = { title: 'ERROR: Tale not found' }
+                self.store.findRecord('instance', instanceId).then(instance => {
+                    evt.data.resource.tale = self.store.peekRecord('tale', instance.taleId);
+                });
+            }
+        } else {
+            console.log('Warning: Unable to attach tale data to notification_id=' + event._id);
+        }
+    },
+    
     onMessage(event) {
         const self = this;
         
+        self.set('lastMessage', Date.now());
+        
         // Parse event data (tale) into JSON
-        event.json = JSON.parse(event.data);
-        event.created = new Date(event.json.time).toLocaleString();
-        event.updated = new Date(event.json.updated).toLocaleString();
+        event = JSON.parse(event.data);
+        //event.created = new Date(event.time).toLocaleString();
+        //event.updated = new Date(event.updated).toLocaleString();
         
         // Push new event data
         const events = self.get('events');
-        if (event.json.type == 'wt_progress' && event.json.data.resource.type.startsWith('wt_')) {
-            console.log(`Notification (${event.json._id}): progress update: ${event.json.data.message} - ${event.json.data.current}/${event.json.data.total}`, event);
+        if (event.type == 'wt_progress' && event.data.resource.type.startsWith('wt_')) {
+            console.log(`Notification (${event._id}): progress update: ${event.data.message} - ${event.data.current}/${event.data.total}`, event);
         
-            // Attempt to use instanceId/taleId to attach the tale to its related event
-            const taleId = event.json.data.resource.tale_id;
-            const instanceId = event.json.data.resource.instance_id;
-            if (taleId) {
-                this.store.findRecord('tale', taleId).then((tale) => {
-                    event.json.data.resource.tale = tale;
-                });
-            } else if (instanceId) {
-                this.store.findRecord('instance', instanceId).then((instance) => {
-                    this.store.findRecord('tale', instance.taleId).then((tale) => {
-                        event.json.data.resource.tale = tale;
-                    });
-                });
-            } 
+            this.attachTaleData(event);
             
             // Determine if we already have a notification regarding this Tale
-            let existing = events.find(evt => event.json._id === evt.json._id);
+            let existing = events.find(evt => event._id === evt._id);
             if (existing && event.updated > existing.updated) {
-                // Overwrite existing event with new one
-                const index = events.indexOf(existing);
-                events.replace(index, 1, event);
-                console.log(`Notification (${event.json._id}): updated event`, events);
+                // Overwrite existing current event with new one
+                events.replace(events.indexOf(existing), 1, event);
+                console.log(`Notification (${event._id}): updated unread event`, events);
+                
+                // Overwrite existing past event with new one
+                if (self.showPastEvents) {
+                    const pExisting = self.pastEvents.find(evt => event._id === evt._id);
+                    if (pExisting) {
+                        self.pastEvents.replace(self.pastEvents.indexOf(pExisting), 1, event);
+                        console.log(`Notification (${event._id}): updated read event`, events);
+                    }
+                }
             } else if (!existing) {
                 // Add a new event
                 events.unshiftObject(event);
-                console.log(`Notification (${event.json._id}): new event`, events);
+                console.log(`Notification (${event._id}): new unread event`, events);
+                
+                if (self.showPastEvents) {
+                    self.pastEvents.unshiftObject(event);
+                }
             }
             self.set('events', events);
             self.set('showNotificationStream', true);
-        } else if (event.json.data.message) {
+        } else if (event.data.message) {
             // Handle displaying progress updates for tasks
-        } else if (event.json.data.text) {
+        } else if (event.data.text) {
             // Handle build log updates
             // FIXME: Why are these sent as notifications? 
             // FIXME: These logs are not displayed in the UI, and are currently fetched on demand when requested
-            //console.log(`Notification (${event.json._id}): Log update encountered: ${event.json.data.text}`, event);
+            //console.log(`Notification (${event._id}): Log update encountered: ${event.data.text}`, event);
         } else {
-            //console.log(`Ignored notification (${event.json._id}): Job event (${event.json.data._id}) encountered: ${event.json.data.title} -> ${event.json.data.status}`, event);
+            //console.log(`Ignored notification (${event._id}): Job event (${event.data._id}) encountered: ${event.data.title} -> ${event.data.status}`, event);
         }
     },
 });

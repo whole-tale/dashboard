@@ -125,8 +125,7 @@ export default Controller.extend({
       this.set('mobileMenuDisplay', displayMobileMenu);
     },
     toggleShowNotifications() {
-      this.notificationStream.set('showNotificationStream', 
-        !this.notificationStream.showNotificationStream); 
+      this.notificationStream.toggleShowNotifications();
     },
   }
 
