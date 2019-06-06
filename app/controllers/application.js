@@ -12,6 +12,7 @@ export default Controller.extend({
   userAuth: service('user-auth'),
   internalState: service('internal-state'),
   notificationHandler: service('notification-handler'),
+  notificationStream: service('notification-stream'),
   tokenHandler: service(),
 
   user: computed(function() {
@@ -122,7 +123,11 @@ export default Controller.extend({
     toggleMobileMenu() {
       let displayMobileMenu = !this.get('mobileMenuDisplay');
       this.set('mobileMenuDisplay', displayMobileMenu);
-    }
+    },
+    toggleShowNotifications() {
+      this.notificationStream.set('showNotificationStream', 
+        !this.notificationStream.showNotificationStream); 
+    },
   }
 
 });

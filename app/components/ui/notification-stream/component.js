@@ -2,21 +2,21 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { A } from '@ember/array';
-import EmberObject from '@ember/object';
+import EmberObject, { computed } from '@ember/object';
 import config from '../../../config/environment';
 import $ from 'jquery';
 import layout from './template';
 
 export default Component.extend({
     layout,
-    notificationStream: service('notification-stream'),
     
+    notificationStream: service('notification-stream'),
     apiCall: service('api-call'),
     store: service(),
-    logInterval: null,
-    isDev: config.dev,
     
-    events: A([]),
+    logInterval: null,
+    DEBUG: config.dev,
+    
     source: null,
     selectedEvent: null,
     selectedEventLogs: [],
@@ -25,15 +25,7 @@ export default Component.extend({
         const self = this;
         const source = self.get('notificationStream').connect();
         
-        source.onopen = () => console.log("Connected to event server.");
-        source.onmessage = self.onMessage.bind(this);
-        source.onerror = (err) => {
-            console.log("EventSource failed:", err);
-            this.get('notificationStream').close();
-        };
-        
         self.set('source', source);
-        self.set('events', A([]));
     },
     
     willDestroyElement() {
@@ -43,36 +35,17 @@ export default Component.extend({
             source.close();
         }
         
-        self.set('events', A([]));
         self.set('source', null);
-    },
-    
-    onMessage(event) {
-        const self = this;
-        // Parse event data (tale) into JSON
-        event.json = JSON.parse(event.data);
-        event.created = new Date(event.json.time).toLocaleString();
-        //console.log("Message recv'd:", event);
-        
-        // Push new event data
-        let events = self.get('events');
-        if (event.json.type == 'wt_image_build_status') {
-            events.unshiftObject(event);
-            self.set('events', events);
-            //console.log("New event:", events);
-        } else if (event.json.type == 'wt_error_backend_generic') {
-            console.log("Generic backend encountered:", event);
-        } else {
-            console.log("Ignored event type encountered:", event);
-        }
     },
         
     fetchLogs() {
         const self = this;
 
         const event = self.get('selectedEvent');
-        self.get('store').findRecord('job', event.json.data.imageInfo.jobId).then(job => {
-            self.set('selectedEventLogs', job.log);
+        self.get('store').findRecord('job', event.json.data.resource.jobs[0]).then(job => {
+            if (job && job.log) {
+                self.set('selectedEventLogs', job.log.join(''));
+            }
         });
     },
     
@@ -88,20 +61,26 @@ export default Component.extend({
     },
     
     actions: {
+        hideMessage(event) {
+            const self = this;
+            self.get('notificationStream').hideMessage(event);
+        },
+        
         markAllAsRead() {
             const self = this;
             self.get('notificationStream').markAllAsRead();
-            self.set('events', A([]));
         },
         
         restartTaleInstance(tale) {
             const self = this;
-            const adapterOptions = { queryParams: { limit: "0" } };
-            self.get('store').query('instance', { reload: false, backgroundReload: false, adapterOptions }).then(instances => {
+            const adapterOptions = { queryParams: { limit: "0", taleId: tale._id } };
+            self.get('store').query('instance', { 
+                reload: false, 
+                backgroundReload: false, 
+                adapterOptions 
+            }).then(instances => {
                 instances.forEach(instance => {
-                    if (tale._id == instance.taleId) {
-                        self.get('apiCall').restartInstance(instance);
-                    }
+                    self.get('apiCall').restartInstance(instance);
                 });
             });
         },
@@ -133,6 +112,10 @@ export default Component.extend({
             self.set('selectedEvent', null);
             self.set('selectedEventLogs', []);
             $('#log-viewer-modal').modal('hide');
+        },
+        
+        gotoTale(taleId) {
+           this.router.transitionTo('run.view', taleId); 
         },
     }
 });

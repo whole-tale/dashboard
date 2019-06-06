@@ -5,7 +5,7 @@ export default DS.Model.extend({
   _modelType: DS.attr('string'),
   created: DS.attr('date'),
   interval: DS.attr('number'),
-  log: DS.attr('string'),
+  log: DS.attr(),
   parentId: DS.attr('string'),
   progress: DS.attr(),
   public: DS.attr('boolean'),

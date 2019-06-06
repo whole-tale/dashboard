@@ -37,6 +37,6 @@ export default Controller.extend({
       let modal = $('.ui.harvester.modal');
       modal.parent().prependTo($(document.body));
       modal.modal('show');
-    }
+    },
   }
 });

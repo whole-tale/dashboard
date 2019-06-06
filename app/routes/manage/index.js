@@ -44,7 +44,6 @@ export default AuthenticateRoute.extend({
 
     var folderContents = {};
     var itemContents = Deferred();
-
     if (!folderID || folderID === "null") {
       let nav = this.get('folderNavs').getFolderNavFor('home');
       folderContents = this.get('store').query('folder', {
@@ -83,7 +82,6 @@ export default AuthenticateRoute.extend({
         }
       });
     } else {
-      console.log("Folder != null, so loading folder and items");
       folderContents = this.get('store').query('folder', {
         parentId: folderID,
         parentType: 'folder',
@@ -93,6 +91,9 @@ export default AuthenticateRoute.extend({
             limit: "0"
           }
         }
+      }).catch((err) => {
+        console.log('Failed to get folder', err);
+        return;
       });
       itemContents.resolve(this.get('store').query('item', {
         folderId: folderID,
@@ -102,8 +103,10 @@ export default AuthenticateRoute.extend({
             limit: "0"
           }
         }
-      }));
-      console.log("Folder != null, leaving");
+      }).catch((err) => {
+        console.log('Failed to get items', err);
+        return;
+      }))
     }
     return RSVP.hash({
       folderContents: folderContents,
