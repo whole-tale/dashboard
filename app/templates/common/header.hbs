@@ -55,7 +55,7 @@
             </a>
             <a class="item wt thin not-nav" target="_blank" {{action 'toggleShowNotifications'}}
               href="#" data-tooltip="Show or hide server notifications." data-position="bottom right">
-                <i class="exclamation circle white large icon"></i>
+                <i class="tasks white large icon"></i>
                 {{#if (gt notificationStream.events.length 0)}}
                     <div id="event-notification-counter" class="floating ui red label">
                         {{ notificationStream.events.length }}
@@ -109,7 +109,7 @@
                         </li>
                         <li class="bm-menu-item">
                             <a target="_blank" {{action 'toggleShowNotifications'}}>
-                                <i class="info circle black icon"></i> {{if showNotificationStream 'Hide' 'Show'}} Notifications
+                                <i class="tasks black icon"></i> {{if showNotificationStream 'Hide' 'Show'}} Notifications
                             </a>
                         </li>
                         <li class="bm-menu-item">
