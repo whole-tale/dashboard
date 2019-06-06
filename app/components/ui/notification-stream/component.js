@@ -42,8 +42,10 @@ export default Component.extend({
         const self = this;
 
         const event = self.get('selectedEvent');
-        self.get('store').findRecord('job', event.json.data.imageInfo.jobId).then(job => {
-            self.set('selectedEventLogs', job.log);
+        self.get('store').findRecord('job', event.json.data.resource.jobs[0]).then(job => {
+            if (job && job.log) {
+                self.set('selectedEventLogs', job.log.join(''));
+            }
         });
     },
     
@@ -59,6 +61,11 @@ export default Component.extend({
     },
     
     actions: {
+        hideMessage(event) {
+            const self = this;
+            self.get('notificationStream').hideMessage(event);
+        },
+        
         markAllAsRead() {
             const self = this;
             self.get('notificationStream').markAllAsRead();
