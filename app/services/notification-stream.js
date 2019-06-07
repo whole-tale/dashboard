@@ -43,7 +43,7 @@ export default Service.extend({
         newSource.onerror = (err) => {
             (console && console.error && console.error("EventSource failed:", err))
                 || console.log("EventSource failed:", err);
-            self.get('notificationStream').close();
+            self.close();
         };  
         
         self.set('source', newSource);
