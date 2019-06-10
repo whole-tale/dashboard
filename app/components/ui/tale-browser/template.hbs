@@ -248,9 +248,11 @@
                                 <td style="text-align: center;">
                                     {{model.launchStatus}}
                                     {{#if (eq model.launchStatus 'starting')}}
-                                        <div class="ui segment" style="height:75%;">
-                                            <div class="ui active inverted dimmer">
-                                                <div class="ui text loader" style="font-size:1rem;">Launching Tale {{truncate-name model.title}}</div>
+                                        <div class="ui message">
+                                            <div class="ui segment" style="height:75%;">
+                                                <div class="ui active inverted dimmer">
+                                                    <div class="ui text loader" style="font-size:1rem;">Launching Tale {{truncate-name model.title}}</div>
+                                                </div>
                                             </div>
                                         </div>
                                     {{/if}}
@@ -377,7 +379,7 @@
                                     <div class="content">
                                         <div class="header">
                                             The Tale '{{truncate-name model.title}}' could not be launched !
-                                            <br> {{error_msg}}
+                                            <br> {{model.launchError}}
                                         </div>
                                     </div>
                                 </div>
