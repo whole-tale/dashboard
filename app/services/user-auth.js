@@ -4,6 +4,7 @@ import { inject as service } from '@ember/service';
 
 export default Service.extend({
   tokenHandler: service('token-handler'),
+  notificationStream: service('notification-stream'),
   store: service(),
   authRequest: service(),
 
@@ -61,6 +62,8 @@ export default Service.extend({
         // console.log(e);
       })
       .finally(() => {
+        self.get('notificationStream').set('showNotificationStream', false);
+        self.get('notificationStream').close();
         self.get('tokenHandler').releaseWholeTaleCookie();
         localStorage.currentUserID = null;
         localStorage.clear();
