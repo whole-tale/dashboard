@@ -344,7 +344,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{#if (eq tale_instantiating_id model.id)}}
+                            {{#if (eq tale_instantiating_id model._id)}}
                                 {{#if tale_instantiating}}
                                     <div class="ui segment" style="height:100px">
                                         <div class="ui active inverted dimmer">
@@ -412,4 +412,27 @@
             Close
         </div>
     </div>
+</div>
+
+<div id="copy-on-launch-modal" class="ui small modal">
+  <i class="close icon"></i>
+  <div class="header">
+    <i class="fas fa-exclamation-triangle icon"></i>
+    Insufficient Access
+  </div>
+  <div class="content">
+    <p>You do not have sufficient access to launch this Tale, but you can create your own copy!</p>
+    <p></p>
+    <p>Create a copy of this Tale and launch it now?</p>
+  </div>
+  <div class="actions">
+    <div class="ui black deny button" {{action 'closeCopyOnLaunchModal'}}>
+      <i class="remove icon"></i>
+      Cancel
+    </div>
+    <div class="ui positive right labeled icon button" {{action 'submitCopyAndLaunch' taleToCopy}}>
+      Copy and Launch
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
 </div>

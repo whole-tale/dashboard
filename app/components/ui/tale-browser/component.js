@@ -1,7 +1,7 @@
 import Component from '@ember/component';
-import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
-import EmberObject, { observer } from '@ember/object';
+import EmberObject, { computed, observer} from '@ember/object';
+import { A } from '@ember/array';
 import { later, cancel } from '@ember/runloop';
 import $ from 'jquery';
 
@@ -9,9 +9,10 @@ const O = EmberObject.create.bind(EmberObject);
 
 export default Component.extend({
   store: service(),
-  userAuth: service(),
+  userAuth: service('user-auth'),
   apiCall: service('api-call'),
-  internalState: service(),
+  internalState: service('internal-state'),
+
   taleInstanceName: "",
   filteredSet: A(),
   filters: ['All', 'Mine', 'Published', 'Recent'],
@@ -32,7 +33,7 @@ export default Component.extend({
   loadingTales: true,
   selectedTale: O({}),
   message: 'Tales loading. Please, wait.',
-
+  
   filterObserver: observer('filter', function () {
     this.setFilter.call(this);
   }),
@@ -185,7 +186,7 @@ export default Component.extend({
       const filteredSet = this.get("filteredSet");
       const component = this;
 
-      let promise = new Promise((resolve) => {
+      let promise = new Promise((resolve, reject) => {
         let searchView = [];
         filteredSet.forEach(model => {
           let title = model.get('title');
@@ -273,11 +274,63 @@ export default Component.extend({
     addNew() {
       this.sendAction("onAddNew");
     },
+    
+    closeCopyOnLaunchModal() {
+      const component = this;
+      $('#copy-on-launch-modal').modal('hide');
+      component.set('taleToCopy', null);
+    },
+    
+    openCopyOnLaunchModal(taleToCopy) {
+      const component = this;
+      $('#copy-on-launch-modal').modal('show');
+      component.set('taleToCopy', taleToCopy);
+    },
+    
+    submitCopyAndLaunch(taleToCopy) {
+      const component = this;
+      component.set('copyingTale', true);
+      const originalTale = component.get('taleToCopy');
+      if (originalTale) {
+        component.get('apiCall').copyTale(originalTale).then(taleCopy => {
+          component.set('copyingTale', false);
+          component.actions.closeCopyOnLaunchModal.call(component);
+          
+          // Convert JSON response to an EmberObject
+          let eTaleCopy = EmberObject.create(taleCopy);
+          
+          // Push to models in view
+          // TODO: Detect filtered view?
+          const tales = component.get('modelsInView');
+          tales.pushObject(eTaleCopy);
+          component.set('modelsInView', A(tales));
+          
+          // Launch the newly-copied tale
+          component.actions.launchTale.call(component, eTaleCopy).then(function(arg) {
+            component.set("tale_instantiating", false);
+            component.set("tale_not_instantiated", false);
+            component.set("tale_instantiated", true);
+          }).catch(function(err) {
+            // deal with the failure here
+            component.set("tale_instantiating", false);
+            component.set("tale_instantiated", true);
+            component.set("tale_not_instantiated", false);
+          });
+        });
+      } else {
+        console.log('No tale to copy... something went wrong!');
+      }
+    },
 
     launchTale(tale) {
       let component = this;
+      if (tale._accessLevel < 1) {
+        // Prompt for confirmation before copying and launching
+        component.actions.openCopyOnLaunchModal.call(component, tale);
+        return;
+      }
 
-      component.set("tale_instantiating_id", tale.id);
+      component.set("tale_instantiating_id", tale._id);
       component.set("tale_instantiating", true);
 
       let onSuccess = function (item) {
@@ -295,9 +348,9 @@ export default Component.extend({
           // Ensure this component is not destroyed by way of a route transition
           if(!component.isDestroyed){
             component.set("tale_instantiated", false);
-            component.set("tale_instantiating_id", 0);
+            component.set("tale_instantiating_id", null);
           }
-        }, 30000);
+        }, 20000);
 
         let currentLoop = null;
         // Poll the status of the instance every second using recursive iteration
@@ -329,7 +382,7 @@ export default Component.extend({
         later(function () {
           if(!component.isDestroyed){
             component.set("tale_not_instantiated", false);
-            component.set("tale_instantiating_id", 0);
+            component.set("tale_instantiating_id", null);
           }
         }, 10000);
 
@@ -338,7 +391,7 @@ export default Component.extend({
       // submit: API
       // httpCommand, taleid, imageId, folderId, instanceId, name, description, isPublic, config
 
-      this.get("apiCall").postInstance(
+      return this.get("apiCall").postInstance(
         tale.get("_id"),
         tale.get("imageId"),
         null,
