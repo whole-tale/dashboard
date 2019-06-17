@@ -171,7 +171,7 @@
                             <th style="color: #515151">Title</th>
                             <th style="color: #515151">Description</th>
                             <th style="color: #515151">Author</th>
-                            <th style="color: #515151; text-align: center;">Launch</th>
+                            <th style="color: #515151; text-align: center;">Run</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -223,9 +223,11 @@
                                 <td style="text-align: center;">
                                     {{model.launchStatus}}
                                     {{#if (eq model.launchStatus 'starting')}}
-                                        <div class="ui segment" style="height:75%;">
-                                            <div class="ui active inverted dimmer">
-                                                <div class="ui text loader" style="font-size:1rem;">Launching Tale {{truncate-name model.title}}</div>
+                                        <div class="ui message">
+                                            <div class="ui segment" style="height:75%;">
+                                                <div class="ui active inverted dimmer">
+                                                    <div class="ui text loader" style="font-size:1rem;">Running Tale {{truncate-name model.title}}</div>
+                                                </div>
                                             </div>
                                         </div>
                                     {{/if}}
@@ -234,7 +236,7 @@
                                             <div class="content">
                                                 <div class="header">
                                                     <i class="checkmark icon"></i>
-                                                    <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
+                                                    <p>The Tale '{{truncate-name model.title}}' is now running !</p>
                                                 </div>
                                                 <div class="ui buttons">
                                                   {{#link-to 'run.view' model._id}}
@@ -252,7 +254,7 @@
                                             <i class="remove circle icon"></i>
                                             <div class="content">
                                                 <div class="header">
-                                                    <p>The Tale '{{truncate-name model.title}}' could not be launched !</p>
+                                                    <p>The Tale '{{truncate-name model.title}}' could not be run !</p>
                                                     <p>{{model.launchError}}</p>
                                                 </div>
                                             </div>
@@ -350,14 +352,14 @@
                                 <div class="right aligned row" style="padding: 0">
                                     <div class="ui right aligned mini green labeled icon button" {{action 'launchTale' model}}>
                                         <i class="play icon"></i>
-                                        Launch
+                                        Run
                                     </div>
                                 </div>
                             </div>
                             {{#if (eq model.launchStatus 'starting')}}
                                 <div class="ui segment" style="height:100px">
                                     <div class="ui active inverted dimmer">
-                                        <div class="ui text loader">Launching Tale {{truncate-name model.title}}</div>
+                                        <div class="ui text loader">Running Tale {{truncate-name model.title}}</div>
                                     </div>
                                 </div>
                             {{/if}}
@@ -366,7 +368,7 @@
                                     <i class="checkmark icon"></i>
                                     <div class="content">
                                         <div class="header">
-                                            <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
+                                            <p>The Tale '{{truncate-name model.title}}' is now running !</p>
 
                                             <div class="ui buttons">
                                                 {{#link-to 'run.view' model._id}}
@@ -386,8 +388,8 @@
                                     <i class="remove circle icon"></i>
                                     <div class="content">
                                         <div class="header">
-                                            The Tale '{{truncate-name model.title}}' could not be launched !
-                                            <br> {{error_msg}}
+                                            The Tale '{{truncate-name model.title}}' could not be run !
+                                            <br> {{model.launchError}}
                                         </div>
                                     </div>
                                 </div>
@@ -421,4 +423,27 @@
             Close
         </div>
     </div>
+</div>
+
+<div id="copy-on-launch-modal" class="ui small modal">
+  <i class="close icon"></i>
+  <div class="header">
+    <i class="fas fa-exclamation-triangle icon"></i>
+    Insufficient Access
+  </div>
+  <div class="content">
+    <p>You do not have sufficient access to run this Tale, but you can create your own copy!</p>
+    <p></p>
+    <p>Create a copy of this Tale and run the copy now?</p>
+  </div>
+  <div class="actions">
+    <div class="ui black deny button" {{action 'closeCopyOnLaunchModal'}}>
+      <i class="remove icon"></i>
+      Cancel
+    </div>
+    <div class="ui positive right labeled icon button" {{action 'submitCopyAndLaunch' taleToCopy}}>
+      Copy and Run
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
 </div>
