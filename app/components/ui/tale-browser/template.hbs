@@ -193,7 +193,7 @@
                             <th style="color: #515151">Title</th>
                             <th style="color: #515151">Description</th>
                             <th style="color: #515151">Author</th>
-                            <th style="color: #515151; text-align: center;">Launch</th>
+                            <th style="color: #515151; text-align: center;">Run</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -251,7 +251,7 @@
                                         <div class="ui message">
                                             <div class="ui segment" style="height:75%;">
                                                 <div class="ui active inverted dimmer">
-                                                    <div class="ui text loader" style="font-size:1rem;">Launching Tale {{truncate-name model.title}}</div>
+                                                    <div class="ui text loader" style="font-size:1rem;">Running Tale {{truncate-name model.title}}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -261,7 +261,7 @@
                                             <div class="content">
                                                 <div class="header">
                                                     <i class="checkmark icon"></i>
-                                                    <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
+                                                    <p>The Tale '{{truncate-name model.title}}' is now running !</p>
                                                 </div>
                                                 <div class="ui buttons">
                                                   {{#link-to 'run.view' model._id}}
@@ -279,7 +279,7 @@
                                             <i class="remove circle icon"></i>
                                             <div class="content">
                                                 <div class="header">
-                                                    <p>The Tale '{{truncate-name model.title}}' could not be launched !</p>
+                                                    <p>The Tale '{{truncate-name model.title}}' could not be run !</p>
                                                     <p>{{model.launchError}}</p>
                                                 </div>
                                             </div>
