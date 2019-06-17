@@ -140,31 +140,27 @@ export default Service.extend({
     
     
     attachTaleData(event) {
-        const self = this;
-        
-        // NOTE: there is a difference in format between the two endpoints
-        // /notification and /notification/stream return different formats    
-        let evt = event || event;
+        const self = this;  
         
         // Short-circuit if this event does not contain a resource
-        if (!evt.data.resource) {
+        if (!event.data.resource) {
             return;
         }
         
         // Attempt to use instanceId/taleId to attach the tale to its related event
-        const taleId = evt.data.resource.tale_id;
-        const instanceId = evt.data.resource.instance_id;
+        const taleId = event.data.resource.tale_id;
+        const instanceId = event.data.resource.instance_id;
         if (taleId) {
-            evt.data.resource.tale = self.store.peekRecord('tale', taleId);
+            event.data.resource.tale = self.store.peekRecord('tale', taleId);
         } else if (instanceId) { 
             // XXX: this branch shouldn't be necessary, "restart tale" should send us tale_id as well
             const instance = self.store.peekRecord('instance', instanceId);
             if (instance) {
-                evt.data.resource.tale = self.store.peekRecord('tale', instance.taleId);
+                event.data.resource.tale = self.store.peekRecord('tale', instance.taleId);
             } else {
-                evt.data.resource.tale = { title: 'ERROR: Tale not found' }
+                event.data.resource.tale = { title: 'ERROR: Tale not found' }
                 self.store.findRecord('instance', instanceId).then(instance => {
-                    evt.data.resource.tale = self.store.peekRecord('tale', instance.taleId);
+                    event.data.resource.tale = self.store.peekRecord('tale', instance.taleId);
                 });
             }
         } else {
@@ -179,8 +175,6 @@ export default Service.extend({
         
         // Parse event data (tale) into JSON
         event = JSON.parse(event.data);
-        //event.created = new Date(event.time).toLocaleString();
-        //event.updated = new Date(event.updated).toLocaleString();
         
         // Push new event data
         const events = self.get('events');
@@ -215,13 +209,6 @@ export default Service.extend({
             }
             self.set('events', events);
             self.set('showNotificationStream', true);
-        } else if (event.data.message) {
-            // Handle displaying progress updates for tasks
-        } else if (event.data.text) {
-            // Handle build log updates
-            // FIXME: Why are these sent as notifications? 
-            // FIXME: These logs are not displayed in the UI, and are currently fetched on demand when requested
-            //console.log(`Notification (${event._id}): Log update encountered: ${event.data.text}`, event);
         } else {
             //console.log(`Ignored notification (${event._id}): Job event (${event.data._id}) encountered: ${event.data.title} -> ${event.data.status}`, event);
         }
