@@ -43,7 +43,7 @@ export default Service.extend({
         newSource.onerror = (err) => {
             (console && console.error && console.error("EventSource failed:", err))
                 || console.log("EventSource failed:", err);
-            self.get('notificationStream').close();
+            self.close();
         };  
         
         self.set('source', newSource);
@@ -69,7 +69,7 @@ export default Service.extend({
     close() {
         const self = this;
         const source = self.get('source');
-        if (source != null && source.readyState == EventSource.CLOSED) {
+        if (source != null && source.readyState != EventSource.CLOSED) {
             DEBUG && VERBOSE && console.log('Closing connection...');
             source.close();
         }
