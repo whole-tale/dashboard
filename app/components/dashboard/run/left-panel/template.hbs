@@ -23,7 +23,7 @@
                         <div class="ui red icon button" {{action 'stopTale' model}}>
                             <i class="fas fa-times"></i> Stop
                         </div>
-                    {{else if model.instance}}
+                    {{else if taleTransitioning}}
                         <div class="ui blue icon button {{if disableStartStop 'disabled'}}" 
                                 disabled={{if disableStartStop 'true' 'false'}} 
                                 {{action 'stopTale' model}}

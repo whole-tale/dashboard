@@ -29,6 +29,7 @@ export default Component.extend(FullScreenMixin, {
     loadError: false,
     model: null,
     disableStartStop: false,
+    taleTransitioning: false,
     contingencyTimeoutMs: 30000,
     wholeTaleHost: config.wholeTaleHost,
     hasSelectedTaleInstance: false,
@@ -363,6 +364,7 @@ export default Component.extend(FullScreenMixin, {
             
             // Disable "Start" button - re-enable after a delay?
             // FIXME: API should handle this case by transitioning Instance state
+            self.set('taleTransitioning', true);
             self.set('disableStartStop', true);
             let contingency = later(() => self.set('disableStartStop', false), self.contingencyTimeoutMs);
             
@@ -379,7 +381,10 @@ export default Component.extend(FullScreenMixin, {
                         }).catch((error) => {
                             self.set("taleLaunchError", error.message);
                             console.log('Error waiting for Tale to start:', error);
-                        }).finally(() => self.set('disableStartStop', false));
+                        }).finally(() => {
+                            self.set('disableStartStop', false);
+                            self.set('taleTransitioning', false);
+                        });
                 }).catch((error) => {
                     self.set("taleLaunchError", error.message);
                     console.log('Error starting tale:', error);
@@ -388,29 +393,28 @@ export default Component.extend(FullScreenMixin, {
         
         stopTale(tale) {
             const self = this;
-            if (!tale) {
-                console.log('Invalid tale', tale);
-            }
             
             // Disable "Stop" button - re-enable after a delay
             // FIXME: API should handle this case by transitioning Instance state
+            self.set('taleTransitioning', true);
             self.set('disableStartStop', true);
-            let contingency = later(() => self.set('disableStartStop', false), self.contingencyTimeoutMs);
             
             console.log('Stopping Tale:', tale);
             return this.get('apiCall').stopTale(tale)
                 .then(response => {
-                    tale.set('instance', null);
                     console.log('Tale instance stopped!');
-                    cancel(contingency);
+                    tale.set('instance', null);
+                    later(() => {
+                      self.set('disableStartStop', false);
+                      self.set('taleTransitioning', false);
+                    }, 6000);
                 }).catch((error) => {
                     // deal with the failure here
-                    //self.set("tale_instantiating", false);
-                    //self.set("tale_not_instantiated", true);
-            
                     self.set("error_msg", error.message);
                     console.log('Error starting tale:', error);
-                  }).finally(() => self.set('disableStartStop', false));
+                    self.set('disableStartStop', false);
+                    self.set('taleTransitioning', false);
+                });
         },
         
         transitionToBrowse() {
