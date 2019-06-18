@@ -355,11 +355,55 @@ export default Component.extend(FullScreenMixin, {
         rebuildTale(taleId) {
             this.get('apiCall').rebuildTale(taleId);
         },
+    
+        closeCopyOnLaunchModal() {
+          const component = this;
+          $('#copy-on-launch-modal').modal('hide');
+          component.set('taleToCopy', null);
+        },
+    
+        openCopyOnLaunchModal(taleToCopy) {
+          const component = this;
+          $('#copy-on-launch-modal').modal('show');
+          component.set('taleToCopy', taleToCopy);
+        },
+        
+        submitCopyAndLaunch(taleToCopy) {
+          const self = this;
+          
+          self.set('copyingTale', true);
+          const originalTale = self.get('taleToCopy');
+          if (originalTale) {
+            self.get('apiCall').copyTale(originalTale).then(taleCopy => {
+              self.set('copyingTale', false);
+              self.actions.closeCopyOnLaunchModal.call(self);
+              
+              // Convert JSON response to an EmberObject
+              let eTaleCopy = EmberObject.create(taleCopy);
+              
+              // Push to models in view
+              // TODO: Detect filtered view?
+              const tales = self.get('modelsInView');
+              tales.pushObject(eTaleCopy);
+              self.set('modelsInView', A(tales));
+              
+              // Launch the newly-copied tale
+              self.actions.startTale.call(self, eTaleCopy);
+              
+              // Navigate to new Tale's Run view
+              this.get('router').transitionTo('run', eTaleCopy._id);
+            });
+          } else {
+            console.log('No tale to copy... something went wrong!');
+          }
+        },
         
         startTale(tale) {
             const self = this;
-            if (!tale) {
-                console.log('Invalid tale', tale);
+            if (tale._accessLevel < 1) {
+              // Prompt for confirmation before copying and launching
+              self.actions.openCopyOnLaunchModal.call(self, tale);
+              return;
             }
             
             // Disable "Start" button - re-enable after a delay?

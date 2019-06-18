@@ -1,0 +1,22 @@
+<div id="copy-on-launch-modal" class="ui small modal">
+  <i class="close icon"></i>
+  <div class="header">
+    <i class="fas fa-exclamation-triangle icon"></i>
+    Insufficient Access
+  </div>
+  <div class="content">
+    <p>You do not have sufficient access to run this Tale, but you can create your own copy!</p>
+    <p></p>
+    <p>Create a copy of this Tale and run the copy now?</p>
+  </div>
+  <div class="actions">
+    <div class="ui black deny button" {{action 'closeCopyOnLaunchModal'}}>
+      <i class="remove icon"></i>
+      Cancel
+    </div>
+    <div class="ui positive right labeled icon button" {{action 'submitCopyAndLaunch' tale}}>
+      Copy and Run
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>
