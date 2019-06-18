@@ -316,7 +316,7 @@ export default Component.extend({
       const self = this;
       if (tale._accessLevel < 1) {
         // Prompt for confirmation before copying and launching
-        component.actions.openCopyOnLaunchModal.call(component, tale);
+        self.actions.openCopyOnLaunchModal.call(self, tale);
         return;
       }
 
@@ -349,13 +349,9 @@ export default Component.extend({
         // deal with the failure here
         tale.set('launchStatus', 'error');
         tale.set('launchError', err.message || err);
-        if (console && console.error) {
-          console.error('Failed to launch Tale', err);
-        } else {
-          console.log('Failed to launch Tale', err);
-        }
         
         resetStatusAfterMs(tale, 10000);
+        console.error('Failed to launch Tale', err);
       };
 
       return this.apiCall.startTale(tale).then((instance) => {

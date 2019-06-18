@@ -221,7 +221,6 @@
                                     <div style="color: #67c096; font-size: 75%">{{tale-authors-to-str model.authors model.creator}}</div>
                                 </td>
                                 <td style="text-align: center;">
-                                    {{model.launchStatus}}
                                     {{#if (eq model.launchStatus 'starting')}}
                                         <div class="ui message">
                                             <div class="ui segment" style="height:75%;">
@@ -230,8 +229,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    {{/if}}
-                                    {{#if (eq model.launchStatus 'started')}}
+                                    {{else if (eq model.launchStatus 'started')}}
                                         <div class="ui green icon message">
                                             <div class="content">
                                                 <div class="header">
@@ -248,8 +246,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    {{/if}}
-                                    {{#if (eq model.launchStatus 'error')}}
+                                    {{else if (eq model.launchStatus 'error')}}
                                         <div class="ui red icon message">
                                             <i class="remove circle icon"></i>
                                             <div class="content">
@@ -259,8 +256,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    {{/if}}
-                                    {{#if (not model.launchStatus)}}
+                                    {{else if (not model.launchStatus)}}
                                         <div class="ui mini green icon button" {{action 'launchTale' model}}>
                                             <i class="play round icon"></i>
                                         </div>
@@ -322,25 +318,28 @@
                                     <i class="icon trash"></i>
                                 </button>
                             </div>
-                            {{#if (and model.instance (eq model.instance.status 1))}}
+                            {{#if (eq model.launchStatus 'started')}}
                                 <button class="ui basic primary compact button borderless" {{action 'stopTale' model}}>
                                     <i class="stop icon"></i>
                                     Stop Tale
                                 </button>
-                            {{else if (and model.instance (eq model.instance.status 0))}}
+                            {{else if (or (eq model.launchStatus 'starting') (eq model.launchStatus 'stopping'))}}
                                 <button class="ui basic primary loading compact button" disabled="true">
                                     <i class="fas fa-pulse fa-spinner icon"></i>
                                     Please Wait
                                 </button>
-                            {{else if (and model.instance (eq model.instance.status 2))}}
-                                <button class="ui basic negative compact button borderless" {{action 'stopTale' model}}>
+                            {{else if (eq model.launchStatus 'error')}}
+                                <button class="ui basic negative compact button borderless" {{action 'startTale' model}}>
                                     <i class="exclamation circle icon"></i>
                                     Error
                                 </button>
-                            {{else}}
+                                {{#if model.launchError}}
+                                    <small class="ui red label">{{model.launchError}}</small>
+                                {{/if}}
+                            {{else if (not model.launchStatus)}}
                                 <button class="ui basic primary compact button borderless" {{action 'startTale' model}}>
                                     <i class="play icon"></i>
-                                    Start Tale
+                                    Run Tale
                                 </button>
                             {{/if}}
                         </div>
