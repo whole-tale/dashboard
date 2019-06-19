@@ -1,13 +1,23 @@
 <div class="wt-dash">
 
     {{!-- Create New Tale button --}}
-    <div class="ui dropdown button primary" style="float:right" tabindex="0">
-        Create New...
-        <div class="menu" tabindex="-1">
-            <a class="item">Create New Tale</a>
-            <a class="item">Add Dataset</a>
-            <a class="item">Create New Environment</a>
+    <div class="ui floating labeled icon dropdown primary button" style="float:right" tabindex="0">
+      <i class="plus icon"></i>
+      <span class="text">Create New...</span>
+      <div class="menu">
+        <div class="item" {{action 'transitionToCompose'}}>
+          <img class="ui avatar image" src="images/wholetale_logo_sm.png" style="height: 14px;width: 14px;vertical-align: middle;">
+          Create New Tale
         </div>
+        <div class="item not clickable">
+          <i class="fas fa-server icon"></i>
+          Add Dataset
+        </div>
+        <div class="item not clickable">
+          <i class="fas fa-desktop icon"></i>
+          Create New Environment
+        </div>
+      </div>
     </div>
     
     {{!-- WT Brand Dashboard Header --}}
