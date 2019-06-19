@@ -221,7 +221,7 @@
                                     <div style="color: #67c096; font-size: 75%">{{tale-authors-to-str model.authors model.creator}}</div>
                                 </td>
                                 <td style="text-align: center;">
-                                    {{#if (eq model.launchStatus 'starting')}}
+                                    {{#if (or (eq model.launchStatus 'starting') (and model.instance (eq model.instance.status 0)))}}
                                         <div class="ui message">
                                             <div class="ui segment" style="height:75%;">
                                                 <div class="ui active inverted dimmer">
@@ -229,7 +229,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    {{else if (eq model.launchStatus 'started')}}
+                                    {{else if (or (eq model.launchStatus 'started') (and model.instance (eq model.instance.status 1)))}}
                                         <div class="ui green icon message">
                                             <div class="content">
                                                 <div class="header">
@@ -246,7 +246,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    {{else if (eq model.launchStatus 'error')}}
+                                    {{else if (or (eq model.launchStatus 'error') (and model.instance (eq model.instance.status 2)))}}
                                         <div class="ui red icon message">
                                             <i class="remove circle icon"></i>
                                             <div class="content">
@@ -256,7 +256,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    {{else if (not model.launchStatus)}}
+                                    {{else if (or (not model.launchStatus) (not model.instance))}}
                                         <div class="ui mini green icon button" {{action 'launchTale' model}}>
                                             <i class="play round icon"></i>
                                         </div>
@@ -310,25 +310,25 @@
                             </div>
                         </div>
                         <div class="extra content">
-                            <div class="ui right floated compact basic icon buttons borderless {{if model.instance 'disabled'}}">
-                                <button class="ui secondary button borderless" {{action 'attemptDeletion' model}}
+                            <div class="ui right floated compact basic icon buttons borderless {{if (or model.instance (lt model._accessLevel 1)) 'disabled'}}">
+                                <button class="ui secondary button borderless {{if (or model.instance (lt model._accessLevel 1)) 'disabled'}}" {{action 'attemptDeletion' model}}
                                         style="cursor:{{if model.instance 'not-allowed' 'pointer'}}!important;"
-                                        data-tooltip="{{if model.instance 'You must shut down your running instances to delete this Tale' 'Delete this Tale'}}"
+                                        data-tooltip="{{if model.instance 'You must shut down your running instances to delete this Tale' 'Delete this Tale'}}{{if (lt model._accessLevel 1) 'You do not own this Tale'}}"
                                         data-position="top right">
                                     <i class="icon trash"></i>
                                 </button>
                             </div>
-                            {{#if (eq model.launchStatus 'started')}}
-                                <button class="ui basic primary compact button borderless" {{action 'stopTale' model}}>
-                                    <i class="stop icon"></i>
-                                    Stop Tale
-                                </button>
-                            {{else if (or (eq model.launchStatus 'starting') (eq model.launchStatus 'stopping'))}}
+                            {{#if (or (or (eq model.launchStatus 'starting') (eq model.launchStatus 'stopping')) (and model.instance (eq model.instance.status 0)))}}
                                 <button class="ui basic primary loading compact button" disabled="true">
                                     <i class="fas fa-pulse fa-spinner icon"></i>
                                     Please Wait
                                 </button>
-                            {{else if (eq model.launchStatus 'error')}}
+                            {{else if (or (eq model.launchStatus 'started') (and model.instance (eq model.instance.status 1)))}}
+                                <button class="ui basic primary compact button borderless" {{action 'stopTale' model}}>
+                                    <i class="stop icon"></i>
+                                    Stop Tale
+                                </button>
+                            {{else if (or (eq model.launchStatus 'error') (and model.instance (eq model.instance.status 2)))}}
                                 <button class="ui basic negative compact button borderless" {{action 'startTale' model}}>
                                     <i class="exclamation circle icon"></i>
                                     Error
@@ -336,7 +336,7 @@
                                 {{#if model.launchError}}
                                     <small class="ui red label">{{model.launchError}}</small>
                                 {{/if}}
-                            {{else if (not model.launchStatus)}}
+                            {{else if (or (not model.launchStatus) (not model.instance))}}
                                 <button class="ui basic primary compact button borderless" {{action 'startTale' model}}>
                                     <i class="play icon"></i>
                                     Run Tale
