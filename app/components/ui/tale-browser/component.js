@@ -278,34 +278,64 @@ export default Component.extend({
     },
     
     submitCopyAndLaunch(taleToCopy) {
-      const component = this;
-      component.set('copyingTale', true);
-      const originalTale = component.get('taleToCopy');
+      const self = this;
+      self.set('copyingTale', true);
+      const originalTale = self.get('taleToCopy');
       if (originalTale) {
-        component.get('apiCall').copyTale(originalTale).then(taleCopy => {
-          component.set('copyingTale', false);
-          component.actions.closeCopyOnLaunchModal.call(component);
+        self.get('apiCall').copyTale(originalTale).then(taleCopy => {
+          self.set('copyingTale', false);
+          self.actions.closeCopyOnLaunchModal.call(self);
           
           // Convert JSON response to an EmberObject
           let eTaleCopy = EmberObject.create(taleCopy);
           
           // Push to models in view
           // TODO: Detect filtered view?
-          const tales = component.get('modelsInView');
+          const tales = self.get('modelsInView');
           tales.pushObject(eTaleCopy);
-          component.set('modelsInView', A(tales));
+          self.set('modelsInView', A(tales));
+          
+          // Reset state manually when re-launching
+          eTaleCopy.set('launchError', null);
+          eTaleCopy.set('launchStatus', 'starting');
+          eTaleCopy.set('launchResetRequest', null);
+      
+            
+          // TODO: Abstract this to reusable helper?
+          let resetStatusAfterMs = (tale, delay) => {
+            let resetRequest = later(() => {
+              if (!self.isDestroyed) {
+                console.log('Resetting tale status:', tale);
+                tale.set('launchError', null);
+                tale.set('launchStatus', null);
+                tale.set('launchResetRequest', null);
+              }
+            }, delay);
+            tale.set('launchResetRequest', resetRequest);
+          };
+        
+          // TODO: Abstract this to reusable helper?
+          let handleLaunchError = (tale, err) => {
+            // deal with the failure here
+            tale.set('launchStatus', 'error');
+            tale.set('launchError', err.message || err);
+            
+            resetStatusAfterMs(tale, 10000);
+            console.error('Failed to launch Tale', err);
+          };
           
           // Launch the newly-copied tale
-          component.actions.launchTale.call(component, eTaleCopy).then(function(arg) {
-            component.set("tale_instantiating", false);
-            component.set("tale_not_instantiated", false);
-            component.set("tale_instantiated", true);
-          }).catch(function(err) {
-            // deal with the failure here
-            component.set("tale_instantiating", false);
-            component.set("tale_instantiated", true);
-            component.set("tale_not_instantiated", false);
-          });
+          return this.apiCall.startTale(eTaleCopy).then((instance) => {
+            eTaleCopy.set('instance', instance);
+            this.apiCall.waitForInstance(instance).then((instance) => {
+                eTaleCopy.set('instance', instance);
+                self.get('taleLaunched')();
+                eTaleCopy.set('launchError', null);
+                eTaleCopy.set('launchStatus', 'started');
+                console.log('Tale is now started:', eTaleCopy);
+                resetStatusAfterMs(eTaleCopy, 10000);
+              }).catch((err) => handleLaunchError(eTaleCopy, err));
+          }).catch((err) => handleLaunchError(eTaleCopy, err));
         });
       } else {
         console.log('No tale to copy... something went wrong!');
