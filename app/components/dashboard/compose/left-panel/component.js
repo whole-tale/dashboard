@@ -211,7 +211,7 @@ export default Component.extend({
   launchTale(tale) {
     let component = this;
     let onSuccess = function (item) {
-      const instance = Object.create(JSON.parse(item));
+      const instance = Object.create(item);
       const instanceId = instance._id;
       let instanceQueryLoop = null;
       // Poll the status of the instance every second using recursive iteration
