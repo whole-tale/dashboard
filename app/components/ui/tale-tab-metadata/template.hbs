@@ -2,12 +2,12 @@
     <div class="inline fields ui grid">
         <label class="two wide column right aligned">Title</label>
         <div class="field thirteen wide column">
-            {{input value=model.tale.title placeholder="Enter a title..." readonly=cannotEditTale}}
+            {{input value=model.title placeholder="Enter a title..." readonly=cannotEditTale}}
         </div>
     </div>
 
     <div class="inline fields ui grid">
-      <label class="two wide column right aligned">Authors</label>
+        <label class="two wide column right aligned">Authors</label>
     </div>
     {{#if taleAuthors}}
         {{#each taleAuthors as |author index|}}
@@ -36,7 +36,7 @@
       {{/each}}
     {{else}}
       <div style="text-align:center">
-        <h4>Created by <span style="color: #67c096">{{tale-authors-to-str taleAuthors model.tale.creator}}</span></h4>
+        <h4>Created by <span style="color: #67c096">{{tale-authors-to-str taleAuthors model.creator}}</span></h4>
       </div>
     {{/if}}
       
@@ -51,14 +51,14 @@
     <div class="inline fields ui grid">
         <label class="two wide column right aligned">Category</label>
         <div class="field thirteen wide column">
-            {{input value=model.tale.category placeholder="Choose a category..."  readonly=cannotEditTale}}
+            {{input value=model.category placeholder="Choose a category..."  readonly=cannotEditTale}}
         </div>
     </div>
 
     <div class="inline fields ui grid">
         <label class="two wide column right aligned">Environment</label>
         <div class="field thirteen wide column">
-            <div id="environmentDropdown" class="ui icon selection dropdown {{if (eq environments.length 0) "loading"}}">
+            <div id="environmentDropdown" class="ui icon selection dropdown image {{if (eq environments.length 0) "loading"}}">
                 <input name="TaleImageId" type="hidden" onchange={{action "setTaleEnvironment" value="target.value"}}>
                 <i class="dropdown icon"></i>
                 <div class="default text"> Choose an environment...</div>
@@ -75,7 +75,7 @@
 
     <div class="inline fields ui grid">
       <label class="two wide column right aligned">Datasets used</label>
-      {{#each model.tale.dataSetCitation as |citation index|}}
+      {{#each model.dataSetCitation as |citation index|}}
         {{#if index}}
           <label class="two wide column right aligned"></label>
         {{/if}}
@@ -110,28 +110,28 @@
     <div class="inline fields ui grid">
         <label class="two wide column right aligned">Date Created</label>
         <div class="field thirteen wide column">
-            <span>{{model.tale.created}}</span>
+            <span>{{model.created}}</span>
         </div>
     </div>
 
     <div class="inline fields ui grid">
         <label class="two wide column right aligned">Last Updated</label>
         <div class="field thirteen wide column">
-            <span>{{model.tale.updated}}</span>
+            <span>{{model.updated}}</span>
         </div>
     </div>
 
     <div class="inline fields ui grid">
         <label class="two wide column right aligned">Description</label>
         <div class="thirteen wide column">
-            {{ui/markdown-editor markdownValue=model.tale.description}}
+            {{ui/markdown-editor markdownValue=model.description}}
         </div>
     </div>
 
     <div class="inline fields ui grid">
         <label class="two wide column right aligned">Illustration</label>
         <div class="ui action field thirteen wide column">
-            {{input id=tale-icon value=model.tale.illustration placeholder="http://" readonly=cannotEditTale}}
+            {{input id=tale-icon value=model.illustration placeholder="http://" readonly=cannotEditTale}}
             <div class="ui buttons">
                 <div class="or"></div>
                 <button class="ui positive blue button" {{action "generateIcon"}}>Generate Illustration</button>
@@ -156,7 +156,7 @@
             <button {{action "updateTale"}} class="ui blue submit button" type="submit" disabled={{cannotEditTale}}>Save</button>
         </div>
         <div class="field toggle ui checkbox four wide column">
-            {{ui-checkbox class="toggle" label="Public?" checked=model.public onChange=(action (mut model.tale.public)) disabled=cannotEditTale}}
+            {{ui-checkbox class="toggle" label="Public?" checked=model.public onChange=(action (mut model.public)) disabled=cannotEditTale}}
         </div>
     </div>
 </div>

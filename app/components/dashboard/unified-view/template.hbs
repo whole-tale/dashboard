@@ -1,10 +1,12 @@
 <div class="ui stretched stackable grid">
   <div class="row panel container">
-    <div class="eleven wide column">
+    <div class="{{if rightView 'eleven' 'sixteen'}} wide column">
       {{component leftView model=leftModel taleLaunched=(action "taleLaunched") openModal=(route-action 'showModal')}}
     </div>
-    <div class="five wide column">
-      {{component rightView rightModelTop=rightModelTop rightModelBottom=rightModelBottom onLeftModelChange=(action "onLeftModelChange") selectedEnvironment=selectedEnvironment}}
-    </div>
+    {{#if rightView}}
+      <div class="five wide column">
+        {{component rightView rightModelTop=rightModelTop rightModelBottom=rightModelBottom onLeftModelChange=(action "onLeftModelChange") selectedEnvironment=selectedEnvironment}}
+      </div>
+    {{/if}}
   </div>
 </div>

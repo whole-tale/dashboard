@@ -1,87 +1,100 @@
+{{#link-to 'browse'}}
+    <i class="fas fa-chevron-left"></i> Return to Dashboard
+{{/link-to}}
 <div class="wt panel manage">
-    {{#unless noInstanceSelected}}
-        <div class="wt paddleboard tall header">
-            <div class="ui bordlerless menu">
-                <div class="item">
-                    <img class="illustration" src="{{model.tale.illustration}}" />
-                    <img class="env" src="{{model.tale.icon}}" />
-                    <div class="header name">
-                        <h3>{{truncate-name model.name}}</h3>
-                        <span>{{tale-authors-to-str model.tale.authors model.tale.creator}}</span>
-                    </div>
-                </div>
-                <div class="right borderless menu">
-
-                    {{#if readyToReleaseFeature}}
-                        <div class="item">
-                            <div class="ui blue icon button">
-                                <i class="fas fa-stop"></i> Stop
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ui button">
-                                Close
-                            </div>
-                        </div>
-                    {{/if}}
-                    <div class="item">
-                        <a onclick={{action (mut displayTaleInstanceMenu) (not displayTaleInstanceMenu)}}>
-                            <i class="fas fa-ellipsis-v clickable"></i>
-                        </a>
-                    </div>
-                    {{#if displayTaleInstanceMenu}}
-                        {{#click-outside action=(action (mut displayTaleInstanceMenu) false)}}
-                            <div class="tale-instance-menu">
-                                <div class="ui vertical left menu transition">
-                                    <a class="item" href="https://wholetale.readthedocs.io/en/stable/users_guide/run.html" target="_blank">
-                                        Read the docs <div class="ui label transparent"><i class="fas fa-book"></i></div>
-                                    </a>
-                                    <a class="item"  {{action "exportTale" model.taleId 'bagit'}}>
-                                      Export as BagIt <div class="ui label transparent"><i class="fas fa-archive"></i></div>
-                                    </a>
-                                    <a class="item" {{action "exportTale" model.taleId 'native'}}>
-                                      Export as Zip <div class="ui label transparent" ><i class="far fa-file-archive"></i></div>
-                                    </a>
-                                    {{!-- Only allow Tale Admins to access publish function --}}
-                                    {{#if (gt model.tale._accessLevel 1)}}
-                                        <a class="item" {{action 'openPublishModal' model.tale}}>
-                                          Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
-                                        </a>
-                                    {{/if}}
-                                    {{#if readyToReleaseFeature}}
-                                        <a class="item">
-                                            Duplicate Tale <div class="ui label transparent"><i class="fas fa-copy"></i></div>
-                                        </a>
-                                        <a class="item">
-                                            Delete Tale <div class="ui label transparent"><i class="fas fa-trash"></i></div>
-                                        </a>
-                                    {{/if}}
-                                    <a class="item" onclick={{action 'rebuildTale' model.tale._id}}>
-                                        Rebuild Tale <div class="ui label transparent"><i class="fas fa-redo-alt"></i></div>
-                                    </a>
-                                    <a class="item" onclick={{action 'restartInstance' model}}>
-                                        Restart Tale <div class="ui label transparent"><i class="fas fa-sync-alt"></i></div>
-                                    </a>
-                                    <a class="item" onclick={{action 'toggleFullscreen'}}>
-                                        View Fullscreen <div class="ui label transparent"><i class="fas fa-expand"></i></div>
-                                    </a>
-                                </div>
-                            </div>
-                        {{/click-outside}}
-                    {{/if}}
+    <div class="wt paddleboard tall header">
+        <div class="ui bordlerless menu">
+            <div class="item">
+                <img class="illustration" src="{{model.illustration}}" />
+                <img class="env" src="{{model.icon}}" />
+                <div class="header name">
+                    <h3>{{truncate-name model.title}}</h3>
+                    <span>{{tale-authors-to-str model.authors model.creator}}</span>
                 </div>
             </div>
+            <div class="right borderless menu">
+
+                <div class="item">
+                    {{#if (and model.instance (eq model.instance.status 1))}}
+                        <div class="ui blue icon button" {{action 'stopTale' model}}>
+                            <i class="fas fa-stop"></i> Stop
+                        </div>
+                    {{else if (and model.instance (eq model.instance.status 2))}}
+                        <div class="ui red icon button" {{action 'stopTale' model}}>
+                            <i class="fas fa-times"></i> Stop
+                        </div>
+                    {{else if taleTransitioning}}
+                        <div class="ui blue icon button {{if disableStartStop 'disabled'}}" 
+                                disabled={{if disableStartStop 'true' 'false'}} 
+                                {{action 'stopTale' model}}
+                                title="Tired of waiting? Click here to shutdown and try again.">
+                            <i class="fas fa-spinner fa-pulse" style="padding-right:0;"></i> Please Wait...
+                        </div>
+                    {{else if taleLaunchError}}
+                        <div class="ui blue icon button" {{action 'startTale' model}}>
+                            <i class="fas fa-exclamation-circle"></i> Run
+                        </div>
+                    {{else}}
+                        <div class="ui blue icon button" {{action 'startTale' model}}>
+                            <i class="fas fa-play"></i> Run
+                        </div>
+                    {{/if}}
+                </div>
+                <div class="item">
+                    <div class="ui button" {{action 'transitionToBrowse'}}>
+                        Close
+                    </div>
+                </div>
+                <div class="item">
+                    <a onclick={{action (mut displayTaleInstanceMenu) (not displayTaleInstanceMenu)}}>
+                        <i class="fas fa-ellipsis-v clickable"></i>
+                    </a>
+                </div>
+                {{#if displayTaleInstanceMenu}}
+                    {{#click-outside action=(action (mut displayTaleInstanceMenu) false)}}
+                        <div class="tale-instance-menu">
+                            <div class="ui vertical left menu transition">
+                                <a class="item" href="https://wholetale.readthedocs.io/en/stable/users_guide/run.html" target="_blank">
+                                    Read the docs <div class="ui label transparent"><i class="fas fa-book"></i></div>
+                                </a>
+                                <a class="item"  {{action "exportTale" model.id 'bagit'}}>
+                                  Export as BagIt <div class="ui label transparent"><i class="fas fa-archive"></i></div>
+                                </a>
+                                <a class="item" {{action "exportTale" model.id 'native'}}>
+                                  Export as Zip <div class="ui label transparent" ><i class="far fa-file-archive"></i></div>
+                                </a>
+                                {{!-- Only allow Tale Admins to access publish function --}}
+                                {{#if (gt model._accessLevel 1)}}
+                                    <a class="item" {{action 'openPublishModal'}}>
+                                      Publish Tale... <div class="ui label transparent"><i class="fas fa-newspaper"></i></div>
+                                    </a>
+                                {{/if}}
+                                {{#if readyToReleaseFeature}}
+                                    <a class="item">
+                                        Duplicate Tale <div class="ui label transparent"><i class="fas fa-copy"></i></div>
+                                    </a>
+                                    <a class="item">
+                                        Delete Tale <div class="ui label transparent"><i class="fas fa-trash"></i></div>
+                                    </a>
+                                {{/if}}
+                                <a class="item" onclick={{action 'rebuildTale' model.id}}>
+                                    Rebuild Tale <div class="ui label transparent"><i class="fas fa-redo-alt"></i></div>
+                                </a>
+                                <a class="item" onclick={{action 'restartInstance' model.instance}}>
+                                    Restart Tale <div class="ui label transparent"><i class="fas fa-sync-alt"></i></div>
+                                </a>
+                                <a class="item" onclick={{action 'toggleFullscreen'}}>
+                                    View Fullscreen <div class="ui label transparent"><i class="fas fa-expand"></i></div>
+                                </a>
+                            </div>
+                        </div>
+                    {{/click-outside}}
+                {{/if}}
+            </div>
         </div>
-    {{/unless}}
-    {{#if hasSelectedTaleInstance}}
-        {{ui/tale-tabs-selector model=model workspaceRootId=workspaceRootId session=session }}
-    {{else}}
-        <div class="placeholder message">
-            <p>Choose from
-                <br />Launched Tales panel
-            </p>
-        </div>
-    {{/if}}
+    </div>
+        
+    {{ui/tale-tabs-selector model=model workspaceRootId=workspaceRootId taleLaunchError=taleLaunchError session=session }}
 
     <div id="dataone-auth-modal" class="ui dataone modal">
         <i class="close icon"></i>
@@ -234,7 +247,7 @@
     <div class="ui positive right labeled icon button 
         {{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress') (eq selectedRepositoryName null))) 'disabled'}}" 
         disabled="{{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress') (eq selectedRepositoryName null))) 'true' 'false'}}"
-        {{action 'submitPublish' taleToPublish}}>
+        {{action 'submitPublish'}}>
       {{if (or (eq publishStatus 'initialized') (eq publishStatus 'error')) 'Publish'}}
       {{if (eq publishStatus 'success') 'Published'}}
       {{if (eq publishStatus 'in_progress') 'Publishing...'}}

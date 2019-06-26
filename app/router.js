@@ -87,9 +87,7 @@ Router.map(function () {
 
   this.route('browse');
   this.route('run', function() {
-    this.route('index', { path: '/' });
-    this.route('view', { path: '/:instance_id'});
-    this.route('view', { path: '/:instance_id', queryParams:['auth']});
+    this.route('view', { path: '/:tale_id'});
   });
   this.route('manage', function () {
     this.route('index', { path: '/'});

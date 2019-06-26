@@ -68,6 +68,8 @@ export default Component.extend({
       // should trigger an event later
       // component.get('wtEvents').events.selectEnvironment(this.get('selectedInstance'));
       // this.sendAction('onLeftModelChange', model); // sends evnt to parent component
+      this.internalState.set('currentInstanceId', model._id);
+      this.internalState.set('currentTaleId', model.tale._id);
     },
 
     deselectInstance() {
@@ -76,6 +78,8 @@ export default Component.extend({
       component.set('selectedMenuIndex', -1);
       component.get('internalState').set('currentInstanceId', undefined);
       // component.get('wtEvents').events.selectEnvironment(this.get('selectedInstance'));
+      this.internalState.set('currentInstanceId', undefined);
+      this.internalState.set('currentTaleId', undefined);
     },
 
     openDeleteModal(instance) {
@@ -163,15 +167,14 @@ export default Component.extend({
 
     transitionToRun(instance, index) {
       let router = this.get('router');
-      if(router.currentRouteName !== 'browse' && (!instance || this.internalState.get('currentInstanceId') === instance._id)) {
+      if(router.currentRouteName !== 'browse' && (!instance || !instance.tale || this.internalState.get('currentTaleId') === instance.tale._id)) {
         // toggle selection if we're in '/run' route and there's an already selected instance
-        this.internalState.set('currentInstanceId', undefined);
         this.actions.deselectInstance.call(this);
         // ...and navigate to 'run.index'
         router.transitionTo('run.index');
       } else {
         this.actions.selectInstance.call(this, instance, index);
-        router.transitionTo('run.view', instance._id);
+        router.transitionTo('run.view', instance.tale._id);
       }
     }
   }

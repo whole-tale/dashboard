@@ -1,11 +1,16 @@
 import config from '../config/environment';
+import { later, cancel } from '@ember/runloop';
+import EmberObject from '@ember/object';
 import Service from '@ember/service';
 import $ from 'jquery';
 import {
     inject as service
 } from '@ember/service';
 
+const O = EmberObject.create.bind(EmberObject);
+
 export default Service.extend({
+    store: service(),
     tokenHandler: service('token-handler'),
     notificationHandler: service('notification-handler'),
     isAuthenticated: true,
@@ -199,15 +204,14 @@ export default Service.extend({
         client.send();
     },
 
-    postInstance(taleId, imageId, name, success, fail) {
-        const self = this;
-        return new Promise(function(resolve, reject) {
+    postInstance(taleId, imageId, name) {
+        return new Promise((resolve, reject) => {
             // Creates an instance
-            const token = self.get('tokenHandler').getWholeTaleAuthToken();
+            const token = this.get('tokenHandler').getWholeTaleAuthToken();
             let url = config.apiUrl + '/instance/';
             let queryPars = "";
             if ((taleId == null) && (imageId == null)) {
-                fail("You must provide a tale or an image ID");
+                reject("You must provide a tale or an image ID");
                 return;
             }
     
@@ -231,18 +235,15 @@ export default Service.extend({
             client.setRequestHeader("Girder-Token", token);
             client.addEventListener("load", function () {
                 if (client.status === 200) {
-                    success(client.responseText);
-                    resolve(client.responseText);
+                    let response = JSON.parse(client.responseText);
+                    resolve(EmberObject.create(response));
                 } else {
-                    fail(client.responseText);
-                    reject(client.responseText);
+                    let err = JSON.parse(client.responseText);
+                    reject(err);
                 }
             });
-    
-            client.addEventListener("error", function(err) {
-                fail(err);
-                reject(err);
-            });
+
+            client.addEventListener("error", reject);
     
             client.send();
         });
@@ -463,7 +464,7 @@ export default Service.extend({
       });
     },
 
-      /**
+    /**
      * Returns the workspace folder ID for a Tale
      * @method getWorkspaceId
      * @param taleId The ID of the Tale
@@ -487,8 +488,175 @@ export default Service.extend({
       });
       client.addEventListener("error", fail);
       client.send();
-  },
-      /**
+    },
+    
+    /** 
+     * Wait for a model to meet a particular condition.
+     * 
+     * NOTE: You must provide a condition that, upon evaluating to "true", 
+     * will stop the watch loop
+     */
+    waitFor(model, condition = (response) => true) {
+        const self = this;
+        let currentLoop = null;
+        
+        // Test for our condition - if true, stop looping and call the callback
+        const stopLooping = (test, callback) => {
+            if (condition(test)) {
+              cancel(currentLoop);
+              callback(test);
+            }
+        };
+        
+        return new Promise((resolve, reject) => {
+            // Poll the status of the instance every second using recursive iteration
+            const startLooping = (func) => {
+              return later(() => {
+                currentLoop = startLooping(func);
+                self.get('store').findRecord(model._modelType, model._id, {
+                    reload: true
+                })
+                .then(response => stopLooping(response, resolve))
+                .catch(err => stopLooping(err, reject));
+              }, 1000);
+            };
+    
+            // Start polling
+            currentLoop = startLooping();
+        });
+    },
+    
+    /** 
+     * Wait for an image to reach a certain status. 
+     * By default, we wait for the image status to be "Available".
+     * 
+     * For reference, see https://github.com/whole-tale/girder_wholetale/blob/master/server/constants.py
+     * 
+     * class ImageStatus(object):
+     *     INVALID = 0
+     *     UNAVAILABLE = 1
+     *     BUILDING = 2
+     *     AVAILABLE = 3
+     */
+    waitForImage(image, targetStatus = 3) {
+        return this.waitFor(image, (image) => image.status === targetStatus)
+    },
+    
+    /** 
+     * Wait for an instance to reach a certain status. 
+     * By default, we wait for the instance status to be "Running".
+     * 
+     * For reference, see https://github.com/whole-tale/girder_wholetale/blob/master/server/constants.py
+     * 
+     * class InstanceStatus(object):
+     *     LAUNCHING = 0
+     *     RUNNING = 1
+     *     ERROR = 2
+     */
+    waitForInstance(instance, targetStatus = 1) {
+        return this.waitFor(instance, (instance) => instance.status === targetStatus)
+    },
+    
+    /** 
+     * Wait for a job to reach a certain status. 
+     * By default, we wait for the job status to be "Success".
+     * 
+     * For reference, see https://github.com/girder/girder/blob/master/plugins/jobs/girder_jobs/constants.py
+     * 
+     * class JobStatus(object):
+     *     INACTIVE = 0
+     *     QUEUED = 1
+     *     RUNNING = 2
+     *     SUCCESS = 3
+     *     ERROR = 4
+     *     CANCELED = 5
+     */
+    waitForJob(job, targetStatus = 3) {
+        return this.waitFor(job, (job) => job.status === targetStatus)
+    },
+  
+    /**
+     * Creates and returns an instance of the given Tale.
+     * Best used with the "waitForInstance" helper method below.
+     */
+    startTale(tale) {
+      const self = this;
+      if (tale.instance && (tale.instance.status === 1 || tale.instance.status === 0)) {
+          // Instance already exists, noop and return instance to watch status
+          return new Promise(resolve => resolve(tale.instance));
+      } else if (tale.instance && tale.instance.status === 2) {
+          // TODO: Job finished, previous instance creation failed
+          return this.stopTale(tale).then(instance => {
+            // TODO: Wait a few seconds for Girder to finish deleting the instance
+          }).then(() => {
+            // Create a new instance
+            return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
+          });
+      }
+        
+      // Create Job to launch new instance
+      return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
+    },
+  
+    /**
+     * Shuts down and deletes an instance of the given Tale.
+     * Best used with the "waitForInstance" helper method below.
+     */
+    stopTale(tale) {
+      const self = this;
+      return new Promise((resolve, reject) => {
+          if (tale.instance) {
+            if (tale.instance.status === 2) {
+              // TODO: Previous instance creation failed, proceed with caution
+            } else if (tale.instance.status === 0) {
+              // TODO: Instance is still launching... wait and then shut down
+            }
+              
+            // TODO: Create Job to destroy/cleanup instance
+            self.set('deletingInstance', true);
+            const model = tale.instance;
+            model.destroyRecord({
+                reload: true,
+                backgroundReload: false
+            }).then((response) => {
+                // TODO replace this workaround for deletion with something more robust
+                self.get('store').unloadRecord(model);
+                tale.set('instance', null);
+                resolve(response);
+            });
+    
+          } 
+      });
+    },
+  
+    fetchTaleData(taleId) {
+      const self = this;
+      const store = self.get('store');
+      return store.findRecord('tale', taleId).then(tale => {
+          store.query('instance', { 'taleId': tale.get('id') }).then(instances => {
+            tale.set('instance', instances.firstObject);
+            store.findRecord('image', tale.get('imageId')).then(image => {
+              tale.set('image', image);
+              store.findRecord('user', tale.get('creatorId')).then(creator => {
+                tale.set('creator', O({
+                  firstName: creator.firstName,
+                  lastName: creator.lastName,
+                  orcid: ''
+                }));
+                let folderId = tale.get('folderId');
+                if (folderId) {
+                    store.findRecord('folder', folderId).then(folder => {
+                      tale.set('folder', folder);
+                    }).catch((error) => console.log(`Failed to fetch folder for tale (${tale._id}):`, error));
+                }
+              }).catch((error) => console.log(`Failed to fetch creator for tale (${tale._id}):`, error));
+            }).catch((error) => console.log(`Failed to fetch image for tale (${tale._id}):`, error));
+          }).catch((error) => console.log(`Failed to fetch instance(s) for tale (${tale._id}):`, error));
+          return tale;
+      });
+    },
+  
+    /**
      * Returns the ID of the home folder
      * @method getHomeId
      * @param success Function to be called on success

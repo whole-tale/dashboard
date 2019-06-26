@@ -211,7 +211,7 @@ export default Component.extend({
   launchTale(tale) {
     let component = this;
     let onSuccess = function (item) {
-      const instance = Object.create(JSON.parse(item));
+      const instance = Object.create(item);
       const instanceId = instance._id;
       let instanceQueryLoop = null;
       // Poll the status of the instance every second using recursive iteration
@@ -238,20 +238,16 @@ export default Component.extend({
       instanceQueryLoop = startLooping();
     };
 
-    let onFail = function (item) {
+    let onFail = function(error) {
       // deal with the failure here
-      item = JSON.parse(item);
-      component.set('errorMessage', item.message);
+      component.set('errorMessage', error.message);
       component.send('openErrorModal');
     };
 
     // Attempt to create the instance
-    component.get("apiCall").postInstance(
-      tale.get("_id"),
-      tale.get("imageId"),
-      null,
-      onSuccess,
-      onFail);
+    component.get("apiCall").postInstance(tale._id, tale.imageId, null)
+      .then(onSuccess)
+      .catch(onFail);
   },
 
   trackTaleImport(job) {

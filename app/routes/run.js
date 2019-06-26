@@ -5,7 +5,7 @@ export default AuthenticateRoute.extend({
   model (params) {
     this._super();
 
-    return this.get('store').findAll('instance', {
+    return this.get('store').findAll('tale', {
       reload: true,
       adapterOptions: {
         queryParams: {

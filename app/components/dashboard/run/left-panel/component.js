@@ -28,6 +28,9 @@ export default Component.extend(FullScreenMixin, {
     tokenHandler: service('token-handler'),
     loadError: false,
     model: null,
+    disableStartStop: false,
+    taleTransitioning: false,
+    contingencyTimeoutMs: 30000,
     wholeTaleHost: config.wholeTaleHost,
     hasSelectedTaleInstance: false,
     displayTaleInstanceMenu: false,
@@ -64,16 +67,14 @@ export default Component.extend(FullScreenMixin, {
         } else {
             this.set('hasSelectedTaleInstance', false);
         }
-        if(!state.workspaceRootId) {
-            let controller = this;
-            let apiCallService = this.get('apiCall');
-            let success = (folderId) => {
-                state.set('workspaceRootId', folderId);
-                controller.set('workspaceRootId', folderId);
-            };
-            let failure = () => controller.set('workspaceRootId', undefined);
-            apiCallService.getWorkspaceRootId(success, failure);
-        }
+        let controller = this;
+        let apiCallService = this.get('apiCall');
+        let success = (folderId) => {
+            state.set('workspaceRootId', folderId);
+            controller.set('workspaceRootId', folderId);
+        };
+        let failure = () => controller.set('workspaceRootId', undefined);
+        apiCallService.getWorkspaceRootId(success, failure);
         this.result = {
             CouldNotLoadUrl: 1,
             UrlLoadedButContentCannotBeAccessed: 2,
@@ -106,7 +107,6 @@ export default Component.extend(FullScreenMixin, {
             };
         }
         
-        this.createTooltips();
     },
 
   
@@ -126,37 +126,22 @@ export default Component.extend(FullScreenMixin, {
                 reload: true
               })
               .then(resp => {
-              this.send('openPublishModal', resp)
-            })
+                this.send('openPublishModal', resp)
+              });
+            }
           }
-          }
-        })   
-
-        $('.ui.accordion').accordion({});
+        }); 
+       $('.ui.accordion').accordion({});
     },
-
-    shouldShowButtons: computed('internalState', 'internalState.currentInstanceId', function () {
-        let shouldButtonsAppear = this.get('internalState').currentInstanceId;
-        if (shouldButtonsAppear) {
-            this.set('hasSelectedTaleInstance', true);
-        } else {
-            this.set('hasSelectedTaleInstance', false);
-        }
-        return this.get('hasSelectedTaleInstance');
-    }),
-
-    noInstanceSelected: not('hasSelectedTaleInstance'),
-
 
     showModal(modalDialogName, modalContext) {
         // Open Publish Modal
         this.sendAction('publishTale', modalDialogName, modalContext);
     },
 
-    publishModalContext: computed('model.taleId', function () {
-        return { taleId: this.get('model.taleId'), hasD1JWT: this.dataoneAuth.hasD1JWT };
+    publishModalContext: computed('model._id', function () {
+        return { taleId: this.get('model._id'), hasD1JWT: this.dataoneAuth.hasD1JWT };
     }),
-
 
     /**
      * Creates the tooltips that appear in the dialog
@@ -370,6 +355,71 @@ export default Component.extend(FullScreenMixin, {
         rebuildTale(taleId) {
             this.get('apiCall').rebuildTale(taleId);
         },
+        
+        startTale(tale) {
+            const self = this;
+            if (!tale) {
+                console.log('Invalid tale', tale);
+            }
+            
+            // Disable "Start" button - re-enable after a delay?
+            // FIXME: API should handle this case by transitioning Instance state
+            self.set('taleTransitioning', true);
+            self.set('disableStartStop', true);
+            let contingency = later(() => self.set('disableStartStop', false), self.contingencyTimeoutMs);
+            
+            console.log('Starting Tale:', tale);
+            return this.get('apiCall').startTale(tale)
+                .then((instance) => {
+                    tale.set("instance", instance);
+                    this.get('apiCall').waitForInstance(instance)
+                        .then((instance) => {
+                            tale.set("instance", instance);
+                            self.get('taleLaunched')();
+                            console.log('Tale instance started!');
+                            cancel(contingency);
+                        }).catch((error) => {
+                            self.set("taleLaunchError", error.message);
+                            console.log('Error waiting for Tale to start:', error);
+                        }).finally(() => {
+                            self.set('disableStartStop', false);
+                            self.set('taleTransitioning', false);
+                        });
+                }).catch((error) => {
+                    self.set("taleLaunchError", error.message);
+                    console.log('Error starting tale:', error);
+                });
+        },
+        
+        stopTale(tale) {
+            const self = this;
+            
+            // Disable "Stop" button - re-enable after a delay
+            // FIXME: API should handle this case by transitioning Instance state
+            self.set('taleTransitioning', true);
+            self.set('disableStartStop', true);
+            
+            console.log('Stopping Tale:', tale);
+            return this.get('apiCall').stopTale(tale)
+                .then(response => {
+                    console.log('Tale instance stopped!');
+                    tale.set('instance', null);
+                    later(() => {
+                      self.set('disableStartStop', false);
+                      self.set('taleTransitioning', false);
+                    }, 6000);
+                }).catch((error) => {
+                    // deal with the failure here
+                    self.set("error_msg", error.message);
+                    console.log('Error starting tale:', error);
+                    self.set('disableStartStop', false);
+                    self.set('taleTransitioning', false);
+                });
+        },
+        
+        transitionToBrowse() {
+            this.router.transitionTo('browse');
+        },
 
         publishTale(modalDialogName, modalContext) {
             // Open Modal
@@ -393,7 +443,7 @@ export default Component.extend(FullScreenMixin, {
           let url = `${config.apiUrl}/tale/${id}/export`;
           window.location.assign(url + '?token=' + token + '&taleFormat=' + format);
         },
-
+        
         /**
          * Redirect to the selected repository's authentication portal.
          *
@@ -411,16 +461,17 @@ export default Component.extend(FullScreenMixin, {
          * Opens the publishing modal and sets initial state.
          *
          * @method openPublishModal
-         * @param tale The Tale that is going to be published
         */
-        openPublishModal(tale) {          
+        openPublishModal() {          
             this.resetPublishState();
-            this.set('taleToPublish', tale);
             const self = this;
             $('#publish-modal').modal({ 
                 onApprove: () => false,
                 onDeny: () => false,
-                onVisible: () => false,
+                onVisible: () => { 
+                    self.set('selectedRepository', self.get('repositories')[0].name);
+                    this.createTooltips();
+                }
             }).modal('show');
         },
         
@@ -429,9 +480,8 @@ export default Component.extend(FullScreenMixin, {
          * sends relevant information to the backend to start publishing,
          *
          * @method submitPublish
-         * @param tale The Tale that is going to be published
         */
-        submitPublish(tale) {
+        submitPublish() {
             const self = this;
 
             let repository = this.selectedRepository;
@@ -443,7 +493,8 @@ export default Component.extend(FullScreenMixin, {
           }
 
             self.set('publishStatus', 'in_progress');
-            self.set('progress', 0);            
+            self.set('progress', 0);   
+            const tale = self.get('model');
 
             // Call the publish endpoint
             self.get("apiCall").publishTale(tale._id, repository.memberNode, repository.coordinatingNode, dataOneJWT)
