@@ -23,7 +23,7 @@
         {{#ui-dropdown class="fluid selection compute-environment" onChange=(action (mut imageId))}}
         <div class="default text">Compute Environment</div>
         <i class="dropdown icon"></i>
-        <div class="menu" tabindex="-1">
+        <div class="menu" tabindex="-1" style="position:inherit;">
           <div class="header">Official environments</div>
           {{#each computeEnvironments.official as | env |}}
           <div class="item" data-value="{{env.id}}">{{env.name}}</div>
