@@ -122,7 +122,7 @@ export default Component.extend({
         newInstance.save({adapterOptions:{queryParams:{imageId, taleId}}});
       }
        
-      later(this.router.transitionTo.bind(this.router, 'tale.view', taleId), 100);
+      // later(this.router.transitionTo.bind(this.router, 'tale.view', taleId), 100);
     } catch(e) {
       this.handleError(e);
     }
