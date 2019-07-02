@@ -1,7 +1,8 @@
-import Ember from 'ember';
 import Component from '@ember/component';
+import { computed } from '@ember/object';
 import {inject as service} from '@ember/service';
 import {later} from '@ember/runloop';
+import $ from 'jquery';
 
 export default Component.extend({
   store: service(),
@@ -9,15 +10,15 @@ export default Component.extend({
   
   title: "",
   imageId: "",
-  dataSet: [],
-  config: {},
+  dataSet: null,
+  config: null,
 
   createAndLaunch: true,
-  createButtonText: Ember.computed('createAndLaunch', function() {
+  createButtonText: computed('createAndLaunch', function() {
     return this.get('createAndLaunch') ? 'Create New Tale and Launch' : 'Create New Tale';
   }),
 
-  disabled: Ember.computed('title', 'imageId', function() {
+  disabled: computed('title', 'imageId', function() {
     return (this.get('title') && this.get('imageId')) ? '' : 'disabled';
   }),
   
@@ -40,9 +41,9 @@ export default Component.extend({
       title = title.trim();
 
       if (this.importing) {
-        this.importTaleFromDataset(title, imageId, dataSet, datasetAPI)
+        this.importTaleFromDataset(title, imageId, dataSet||[], datasetAPI)
       } else {
-        this.createNewTale(title, imageId, dataSet, config);
+        this.createNewTale(title, imageId, dataSet||[], config||{});
       }
     },
 
@@ -53,7 +54,7 @@ export default Component.extend({
       this.set('importing', false);
       this.set('datasetAPI', null);
       this.set('imageId', null);
-      this.set('dataSet', []);
+      this.set('dataSet', null);
       this.set('title', null);
       $('.ui.dropdown.compute-environment').dropdown('clear');
     },
@@ -111,6 +112,8 @@ export default Component.extend({
   // ---------------------------------------------------------------------------------
   async createNewTale(title, imageId, dataSet, config) {
     const store = this.get('store');
+    dataSet = dataSet || [];
+    config = config || {};
     let newTale = store.createRecord('tale', {title, imageId, dataSet, config});
 
     try {
@@ -148,6 +151,7 @@ export default Component.extend({
 
     try {
       let job = await newTaleImport.save({adapterOptions});
+      job;
       // TODO(Adam): Per discussion with Kacper https://github.com/whole-tale/dashboard/issues/452#issuecomment-485838913
       //             I will not implement a tale import tracker on the browse page. I will await decisions from the UI/UX team.
     } catch(e) {
