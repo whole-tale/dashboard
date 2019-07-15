@@ -1,10 +1,15 @@
-{{#ui-modal class="create-tale" name="createtalemodal" onHide=(action 'clearModal') onShow=(action 'setModalFromQueryParams')}}
+{{#ui-modal class="create-tale" closable=false onApprove=(action 'createNewTaleButton') name="createtalemodal" onHide=(action 'clearModal') onShow=(action 'setModalFromQueryParams')}}
 <i class="close icon"></i>
 <div class="header">
   Create New Tale
 </div>
 <div class="content">
-  <div class="ui sixteen column grid form">
+  {{#if errorMessage}}
+  <div class="subheader ui attached error message">
+    <p>{{errorMessage}}</p>
+  </div>  
+  {{/if}}
+  <div class="ui sixteen column grid attached form">
     <div class="row panel container">
       <div class="four wide column">
         <p>Tale name:</p>
@@ -51,7 +56,7 @@
 </div>
 <div class="actions">
   <div class="ui black deny button">Cancel</div>
-  <div class="ui positive icon button {{disabled}}" onclick={{action "createNewTaleButton" preventDefault=false bubble=false}}>
+  <div class="ui positive icon button {{disabled}}">
     {{createButtonText}}
   </div>
   {{#ui-dropdown class="as-a-button-label"}}

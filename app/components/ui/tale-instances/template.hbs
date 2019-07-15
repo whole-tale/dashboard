@@ -28,6 +28,7 @@
             </div>
         {{else}}
             {{#each models as |instance index|}}
+                {{#if instance.name}}
                 <div class="ui vertical menu fluid tales">
                     <a class="item tale-instances-item {{if (and internalState.currentInstanceId (eq internalState.currentInstanceId instance._id)) 'active'}}" {{action 'transitionToRun' instance index preventDefault=true}}>
                         <div class="ui grid">
@@ -50,6 +51,7 @@
                         </div>
                     </a>
                 </div>
+                {{/if}}
             {{else}}
                 <div class="ui vertical menu fluid tales">
                     <div class="ui grid">
@@ -58,7 +60,7 @@
                         </div>
                     </div>
                 </div>
-            {{/each}}
+          {{/each}}
         {{/if}}
     </div>
 </div>
