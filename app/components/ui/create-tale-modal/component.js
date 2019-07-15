@@ -45,6 +45,7 @@ export default Component.extend({
       } else {
         this.createNewTale(title, imageId, dataSet||[], config||{});
       }
+      return false;
     },
 
     // ---------------------------------------------------------------------------------
@@ -56,6 +57,7 @@ export default Component.extend({
       this.set('imageId', null);
       this.set('dataSet', null);
       this.set('title', null);
+      this.set('errorMessage', "");
       $('.ui.dropdown.compute-environment').dropdown('clear');
     },
 
@@ -82,7 +84,6 @@ export default Component.extend({
           this.set('datasetAPI', api);
         }
       } catch(e) {
-        later(()=>$('.ui.modal.create-tale').modal('hide'), 50);
         this.handleError({responseJSON:{message:e+""}});
       }
     },
@@ -97,12 +98,18 @@ export default Component.extend({
   },
 
   // ---------------------------------------------------------------------------------
+  // 
+  // ---------------------------------------------------------------------------------
+  closeModal() {
+    $('.ui.modal.create-tale').hide();
+  },
+
+  // ---------------------------------------------------------------------------------
   // Display error message
   // ---------------------------------------------------------------------------------
   handleError(e) {
     let errorMessage = (e.responseJSON ? e.responseJSON.message : this.get('defaultErrorMessage'));
     this.set('errorMessage', errorMessage);
-    later(()=>$('.ui.compose-error.modal').modal('show'), 100);
   },
 
   // ---------------------------------------------------------------------------------
@@ -124,8 +131,11 @@ export default Component.extend({
 
       if (self.createAndLaunch) {
         let newInstance = store.createRecord('instance');
-        newInstance.save({adapterOptions:{queryParams:{imageId, taleId}}});
+        return newInstance.save({adapterOptions:{queryParams:{imageId, taleId}}});
       }
+    })
+    .then(() => {
+      self.closeModal();
     })
     .catch(e => {
       self.handleError(e);
@@ -149,14 +159,14 @@ export default Component.extend({
 
     let queryParams = {taleKwargs:JSON.stringify(taleKwargs), lookupKwargs:JSON.stringify(lookupKwargs), imageId, url, spawn:true};
     let adapterOptions = {appendPath, queryParams};
-
+    
     const self = this;
     newTaleImport.save({adapterOptions}).then(() => {
-
+      self.closeModal();
     }).catch(e => {
       self.handleError({responseJSON:{message:e+""}});
     });
-
+    
     this.router.transitionTo({queryParams: {environment: null, name: null, uri: null, api: null}});
   }
 });
