@@ -35,7 +35,7 @@ export default Component.extend({
     // ---------------------------------------------------------------------------------
     // Either imports tale from a dataset or creates a new tale
     // ---------------------------------------------------------------------------------
-    async createNewTaleButton() {
+    createNewTaleButton() {
       let {dataSet, config, title, imageId, datasetAPI} = this;
 
       title = title.trim();
@@ -110,32 +110,33 @@ export default Component.extend({
   // if launch is false: transitions to the "tale view" pane on success
   // if launch is true:  launches the tale and transitions to the "run" pane on success
   // ---------------------------------------------------------------------------------
-  async createNewTale(title, imageId, dataSet, config) {
+  createNewTale(title, imageId, dataSet, config) {
     const store = this.get('store');
     dataSet = dataSet || [];
     config = config || {};
     let newTale = store.createRecord('tale', {title, imageId, dataSet, config});
 
-    try {
-      let item = await newTale.save();
+    const self = this;
+    newTale.save().then(item => {
+      self.sendAction('_refresh', item);
+
       let taleId = item.id;
-      
-      if (this.createAndLaunch) {
-        let newInstance = this.get('store').createRecord('instance');
+
+      if (self.createAndLaunch) {
+        let newInstance = store.createRecord('instance');
         newInstance.save({adapterOptions:{queryParams:{imageId, taleId}}});
       }
-       
-      // later(this.router.transitionTo.bind(this.router, 'tale.view', taleId), 100);
-    } catch(e) {
-      this.handleError(e);
-    }
+    })
+    .catch(e => {
+      self.handleError(e);
+    });
   }, 
 
   // ---------------------------------------------------------------------------------
   // Calls POST /tale/import
   // Does nothing with the job that is returned (see comment below)
   // ---------------------------------------------------------------------------------
-  async importTaleFromDataset(title, imageId, url, datasetAPI) {
+  importTaleFromDataset(title, imageId, url, datasetAPI) {
     let taleKwargs = {title};
 
     let lookupKwargs = {};
@@ -149,14 +150,13 @@ export default Component.extend({
     let queryParams = {taleKwargs:JSON.stringify(taleKwargs), lookupKwargs:JSON.stringify(lookupKwargs), imageId, url, spawn:true};
     let adapterOptions = {appendPath, queryParams};
 
-    try {
-      let job = await newTaleImport.save({adapterOptions});
-      job;
-      // TODO(Adam): Per discussion with Kacper https://github.com/whole-tale/dashboard/issues/452#issuecomment-485838913
-      //             I will not implement a tale import tracker on the browse page. I will await decisions from the UI/UX team.
-    } catch(e) {
-      this.handleError({responseJSON:{message:e+""}});
-    }
+    const self = this;
+    newTaleImport.save({adapterOptions}).then(() => {
+
+    }).catch(e => {
+      self.handleError({responseJSON:{message:e+""}});
+    });
+
     this.router.transitionTo({queryParams: {environment: null, name: null, uri: null, api: null}});
   }
 });
