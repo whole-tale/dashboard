@@ -381,6 +381,8 @@ export default Component.extend(FullScreenMixin, {
                             cancel(contingency);
                         }).catch((error) => {
                             self.set("taleLaunchError", error.message);
+                            self.set('disableStartStop', false);
+                            self.set('taleTransitioning', false);
                             console.log('Error waiting for Tale to start:', error);
                         }).finally(() => {
                             self.set('disableStartStop', false);
@@ -388,6 +390,8 @@ export default Component.extend(FullScreenMixin, {
                         });
                 }).catch((error) => {
                     self.set("taleLaunchError", error.message);
+                    self.set('disableStartStop', false);
+                    self.set('taleTransitioning', false);
                     console.log('Error starting tale:', error);
                 });
         },
@@ -412,7 +416,7 @@ export default Component.extend(FullScreenMixin, {
                 }).catch((error) => {
                     // deal with the failure here
                     self.set("error_msg", error.message);
-                    console.log('Error starting tale:', error);
+                    console.log('Error stopping tale:', error);
                     self.set('disableStartStop', false);
                     self.set('taleTransitioning', false);
                 });
