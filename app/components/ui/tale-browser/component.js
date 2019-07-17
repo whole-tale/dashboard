@@ -93,6 +93,17 @@ export default Component.extend({
 
     component.set('addButtonLogo', '/icons/plus-sign.png');
     component.setFilter();
+    
+    // Check if any instance is LAUNCHING
+    component.get('store').findAll('instance').then(instances => {
+        instances.forEach(instance => {
+            // If any instance is LAUNCHING, poll until it finishes
+            if (!instance.status) {
+                console.log('Instance is LAUNCHING. Starting poller...');
+                component.get('apiCall').waitForInstance(instance);
+            }
+        });
+    }).catch(err => console.error(err));
   },
   didRender() {
     $('.selectable.cards .image').dimmer({
@@ -355,6 +366,27 @@ export default Component.extend({
           }
         }, delay);
         tale.set('launchResetRequest', resetRequest);
+
+        let currentLoop = null;
+        // Poll the status of the instance every second using recursive iteration
+        let startLooping = function(func){
+          return later(function(){
+            currentLoop = startLooping(func);
+            component.get('store').findRecord('instance', instance.get('_id'), { reload:true })
+              .then(model => {
+                if(model.get('status') === 1) {
+                  component.get('taleLaunched')();
+                  cancel(currentLoop);
+                }
+              }).catch(err => {
+                console.error(err);
+                cancel(currentLoop);
+              });
+          }, 1000);
+        };
+
+        //Start polling
+        currentLoop = startLooping();
       };
     
       let handleLaunchError = (tale, err) => {

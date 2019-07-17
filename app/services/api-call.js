@@ -13,6 +13,7 @@ export default Service.extend({
     store: service(),
     tokenHandler: service('token-handler'),
     notificationHandler: service('notification-handler'),
+    store: service(),
     isAuthenticated: true,
 
     getFileContents(itemID, callback) {
@@ -500,14 +501,6 @@ export default Service.extend({
         const self = this;
         let currentLoop = null;
         
-        // Test for our condition - if true, stop looping and call the callback
-        const stopLooping = (test, callback) => {
-            if (condition(test)) {
-              cancel(currentLoop);
-              callback(test);
-            }
-        };
-        
         return new Promise((resolve, reject) => {
             // Poll the status of the instance every second using recursive iteration
             const startLooping = (func) => {
@@ -515,9 +508,15 @@ export default Service.extend({
                 currentLoop = startLooping(func);
                 self.get('store').findRecord(model._modelType, model._id, {
                     reload: true
-                })
-                .then(response => stopLooping(response, resolve))
-                .catch(err => stopLooping(err, reject));
+                }).then(response => {
+                    if (condition(response)) {
+                        cancel(currentLoop);
+                        resolve(response);
+                    }
+                }).catch(err => {
+                    cancel(currentLoop);
+                    reject(err);
+                });
               }, 1000);
             };
     
