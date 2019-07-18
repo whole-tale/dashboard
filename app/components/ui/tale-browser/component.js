@@ -86,7 +86,7 @@ export default Component.extend({
 
     let models = this.get("models");
     let queryParams = this.get('queryParams');
-    if (queryParams.uri) {
+    if (queryParams && queryParams.uri) {
       later(this.actions.openCreateNewTaleModal.bind(this), 100);
     }
     let component = this;
