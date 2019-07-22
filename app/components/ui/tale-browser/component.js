@@ -286,7 +286,7 @@ export default Component.extend({
       const component = this;
       if (tale._accessLevel < 1) {
         // Prompt for confirmation before copying and launching
-        component.actions.openCopyOnLaunchModal.call(self, tale);
+        component.actions.openCopyOnLaunchModal.call(component, tale);
         return;
       }
 
