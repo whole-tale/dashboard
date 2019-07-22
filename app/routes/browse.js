@@ -1,7 +1,6 @@
 import AuthenticateRoute from 'wholetale/routes/authenticate';
 import { inject as service } from '@ember/service';
 import RSVP from 'rsvp';
-import {inject as service} from '@ember/service';
 import {A} from '@ember/array';
 import object from '@ember/object';
 
