@@ -7,6 +7,7 @@ export default DS.Model.extend({
   "authors":  DS.attr(),
   "category":  DS.attr('string'),
   "config": DS.attr(),
+  "copyOfTale": DS.attr('string'),
   "created": DS.attr('date'),
   "creatorId": DS.attr('string'),
   "description": DS.attr('string'),

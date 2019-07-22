@@ -1,10 +1,16 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import EmberObject, { computed } from '@ember/object';
 
-export default Ember.Component.extend({
-  model: Ember.Object.create({}),
+export default Component.extend({
+  model: EmberObject.create({}),
   classNameBindings: ['injectedClassName'],
+  
+  // Instance uses "name" everything else uses "title"
+  name: computed('model.name', 'model.title', function() {
+    return this.model.name || this.model.title;
+  }),
 
-  injectedClassName: Ember.computed('modelType', 'model._modelType', 'model._id', function () {
+  injectedClassName: computed('modelType', 'model._modelType', 'model._id', function () {
     if(this.get('modelType')) {
         let newClass = `delete-modal-${this.get('modelType')}`;
         return newClass;
