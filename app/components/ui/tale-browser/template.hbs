@@ -128,11 +128,10 @@
     <div class="ui grid">
         <div class="twelve wide column" id="tale-filters">
             <div id="tale-filter-items" class="ui compact menu">
-                <a class="item clickable tale-filter-item {{if (eq currentTab 'all') 'active'}}" {{action 'selectFilter' 'all'}}>
+                <a class="item clickable tale-filter-item {{if (eq filter 'All') 'active'}}" {{action 'selectFilter' 'All'}}>
                     All Tales
                 </a>
-                {{!-- To enable tab:  {{action 'selectFilter' 'mine'}} --}}
-                <a class="item not clickable tale-filter-item {{if (eq currentTab 'mine') 'active'}}">
+                <a class="item clickable tale-filter-item {{if (eq filter 'Mine') 'active'}}" {{action 'selectFilter' 'Mine'}}>
                     My Tales
                 </a>
             </div>

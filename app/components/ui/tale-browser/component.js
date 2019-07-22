@@ -124,10 +124,12 @@ export default Component.extend({
       this.set('filteredSet', models);
     } else if (filter === 'Mine') {
       const userId = this.get('userAuth').getCurrentUserID();
-      this.set('filteredSet', models.filter(m => m.get('creatorId') === userId));
+      let m = models.filter(m => m.creatorId === userId);
+      console.log("Models: ", m);
+      this.set('filteredSet', m);
     } else if (filter === 'Published') {
       this.set('filteredSet', models.filter(m => {
-        return m.get('publishInfo').length;
+        return m.publishInfo.length;
       }));
     } else if (filter === 'Recent') {
       const recentTales = this.get('internalState').getRecentTales();
@@ -138,7 +140,7 @@ export default Component.extend({
       this.set('filteredSet', A());
     }
 
-    this.actions.searchFilter.call(this);
+    this.actions.searchFilter.call(this, filter);
     this.actions.toggleFiltersVisibility.call(this);
   },
 
@@ -193,13 +195,18 @@ export default Component.extend({
       this.set('filter', 'All');
       this.setFilter();
     },
-    searchFilter() {
+    selectFilter(filter) {
+      const component = this;
+      component.set('filter', filter);
+      this.setFilter();
+    },
+    searchFilter(filter) {
       let searchStr = this.get('searchStr');
-
+      
       const filteredSet = this.get("filteredSet");
       const component = this;
-
-      let promise = new Promise((resolve, reject) => {
+      
+      return new Promise((resolve, reject) => {
         let searchView = [];
         filteredSet.forEach(model => {
           if (model && model.id) {
@@ -211,9 +218,7 @@ export default Component.extend({
         });
         component.set('loadingTales', false);
         resolve(searchView);
-      });
-
-      promise.then((searchView) => {
+      }).then((searchView) => {
         component.set('searchView', searchView);
         component.set('modelsInView', searchView);
       });
