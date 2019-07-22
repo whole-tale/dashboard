@@ -84,16 +84,10 @@ export default Component.extend({
     console.log("Attributes updated");
 
     let models = this.get("models");
-    let queryParams = this.get('queryParams');
-    if (queryParams && queryParams.uri) {
-      later(this.actions.openCreateNewTaleModal.bind(this), 100);
-    }
     let component = this;
     component.set('loadingTales', false);
     component.set('searchView', models.tales);
-
     component.updateModels(component, models.tales);
-
     component.set('addButtonLogo', '/icons/plus-sign.png');
     component.setFilter();
     

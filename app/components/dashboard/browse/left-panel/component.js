@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
+import { later } from '@ember/runloop';
 import FullScreenMixin from 'ember-cli-full-screen/mixins/full-screen';
 import $ from 'jquery';
 
@@ -8,6 +9,15 @@ export default Component.extend(FullScreenMixin, {
   router: service(),
   currentTab: 'tales',
   
+  init() {
+    this._super(...arguments);
+
+    let queryParams = this.get('queryParams');
+    if (queryParams && queryParams.uri) {
+      later(this.actions.openCreateNewTaleModal.bind(this), 100);
+    }
+  },
+
   didInsertElement() {
     $('#show-introduction-link').transition('glow');
     $('.ui.dropdown').dropdown({
