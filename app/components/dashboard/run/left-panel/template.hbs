@@ -8,7 +8,13 @@
                 <img class="illustration" src="{{model.illustration}}" />
                 <img class="env" src="{{model.icon}}" />
                 <div class="header name">
-                    <h3>{{truncate-name model.title}}</h3>
+                    <h3>
+                        {{#if model.copyOfTale}}
+                            <a class="ui tiny blue horizontal label">COPY</a>
+                        {{/if}}
+                        {{truncate-name model.title}}
+                    </h3>
+                    
                     <span>{{tale-authors-to-str model.authors model.creator}}</span>
                 </div>
             </div>
@@ -255,3 +261,6 @@
     </div>
   </div>
 </div>
+
+
+{{ui/copy-on-launch-modal taleToCopy=taleToCopy}}
