@@ -50,13 +50,13 @@
        <img src="images/wholetale_logo_sm.png" /> Tales
   </div>
    {{!-- To enable tab: onclick={{action 'selectTab' 'data'}} --}}
-  <div class="not clickable item {{if (eq currentTab 'data') 'active'}}">
+  {{!-- <div class="not clickable item {{if (eq currentTab 'data') 'active'}}">
        <i class="fa fa-server"></i> Data Catalog
-  </div>
+  </div> --}}
   {{!-- To enable tab:  onclick={{action 'selectTab' 'environments'}} --}}
-  <div class="not clickable item {{if (eq currentTab 'environments') 'active'}}">
+  {{!--  <div class="not clickable item {{if (eq currentTab 'environments') 'active'}}">
        <i class="fa fa-desktop"></i> Compute Environments
-  </div>
+  </div> --}}
 </div>
 
 {{#if (eq currentTab 'tales')}}
