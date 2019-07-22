@@ -413,9 +413,5 @@ export default Component.extend({
         }).catch((err) => handleStopError(tale, err));
       }, 1500);
     },
-
-    openCreateNewTaleModal() {
-      $('.ui.modal.create-tale').modal('show');
-    }
   }
 });

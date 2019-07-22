@@ -40,6 +40,10 @@ export default Component.extend(FullScreenMixin, {
       scroll(0,0);
       this.sendAction("gotoPublish", name);
     },
+
+    openCreateNewTaleModal() {
+      $('.ui.modal.create-tale').modal('show');
+    }
   }
 
 });
