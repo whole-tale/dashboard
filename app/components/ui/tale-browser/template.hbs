@@ -128,11 +128,10 @@
     <div class="ui grid">
         <div class="twelve wide column" id="tale-filters">
             <div id="tale-filter-items" class="ui compact menu">
-                <a class="item clickable tale-filter-item {{if (eq currentTab 'all') 'active'}}" {{action 'selectFilter' 'all'}}>
+                <a class="item clickable tale-filter-item {{if (eq filter 'All') 'active'}}" {{action 'selectFilter' 'All'}}>
                     All Tales
                 </a>
-                {{!-- To enable tab:  {{action 'selectFilter' 'mine'}} --}}
-                <a class="item not clickable tale-filter-item {{if (eq currentTab 'mine') 'active'}}">
+                <a class="item clickable tale-filter-item {{if (eq filter 'Mine') 'active'}}" {{action 'selectFilter' 'Mine'}}>
                     My Tales
                 </a>
             </div>
@@ -424,25 +423,4 @@
     </div>
 </div>
 
-<div id="copy-on-launch-modal" class="ui small modal">
-  <i class="close icon"></i>
-  <div class="header">
-    <i class="fas fa-exclamation-triangle icon"></i>
-    Insufficient Access
-  </div>
-  <div class="content">
-    <p>You do not have sufficient access to run this Tale, but you can create your own copy!</p>
-    <p></p>
-    <p>Create a copy of this Tale and run the copy now?</p>
-  </div>
-  <div class="actions">
-    <div class="ui black deny button" {{action 'closeCopyOnLaunchModal'}}>
-      <i class="remove icon"></i>
-      Cancel
-    </div>
-    <div class="ui positive right labeled icon button" {{action 'submitCopyAndLaunch' taleToCopy}}>
-      Copy and Run
-      <i class="checkmark icon"></i>
-    </div>
-  </div>
-</div>
+{{ui/copy-on-launch-modal taleToCopy=taleToCopy modelsInView=modelsInView}}
