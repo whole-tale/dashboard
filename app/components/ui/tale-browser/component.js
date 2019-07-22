@@ -90,9 +90,9 @@ export default Component.extend({
     }
     let component = this;
     component.set('loadingTales', false);
-    component.set('searchView', models);
+    component.set('searchView', models.tales);
 
-    component.updateModels(component, models);
+    component.updateModels(component, models.tales);
 
     component.set('addButtonLogo', '/icons/plus-sign.png');
     component.setFilter();
@@ -124,19 +124,19 @@ export default Component.extend({
     this.set('loadingTales', true);
 
     if (filter === 'All') {
-      this.set('filteredSet', models);
+      this.set('filteredSet', models.tales);
     } else if (filter === 'Mine') {
       const userId = this.get('userAuth').getCurrentUserID();
-      let m = models.filter(m => m.creatorId === userId);
+      let m = models.tales.filter(m => m.creatorId === userId);
       console.log("Models: ", m);
       this.set('filteredSet', m);
     } else if (filter === 'Published') {
-      this.set('filteredSet', models.filter(m => {
+      this.set('filteredSet', models.tales.filter(m => {
         return m.publishInfo.length;
       }));
     } else if (filter === 'Recent') {
       const recentTales = this.get('internalState').getRecentTales();
-      this.set('filteredSet', models.filter(m => {
+      this.set('filteredSet', models.tales.filter(m => {
         return (recentTales.indexOf(m.get('id')) > -1);
       }));
     } else {
@@ -267,7 +267,7 @@ export default Component.extend({
         reload: true
       }).then(() => {
         // refresh
-        component.updateModels(component, component.get('models'));
+        component.updateModels(component, component.get('models').tales);
         component.set('selectedTale', undefined);
         component.setFilter();
       });
