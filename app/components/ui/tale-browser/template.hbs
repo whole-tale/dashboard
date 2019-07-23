@@ -149,7 +149,7 @@
     
     {{#unless modelsInView.length}}
         <div class="ui center aligned segment" style="color: black;">
-            There are no tales to display for applied filter: {{currentTab}}
+            There are no tales to display for applied filter: {{filter}}
         </div>
     {{/unless}}
     {{#if loadingTales}}
@@ -186,7 +186,7 @@
                                                     <div class="content">
                                                         <div class="center">
                                                             {{#if showLink}}
-                                                                {{#link-to 'run.view' model._id class="ui inverted button"}}View{{/link-to}}
+                                                                {{#link-to 'run.view' model._id (query-params tab="metadata") class="ui inverted button"}}View{{/link-to}}
                                                             {{/if}}
                                                             {{#if showSelect}}
                                                                 <div class="ui inverted button" {{action 'select' model}}>Select</div>
@@ -279,7 +279,7 @@
                                 <div class="content">
                                     <div class="center">
                                         {{#if showLink}}
-                                            {{#link-to 'run.view' model._id class="ui inverted button"}}View{{/link-to}}
+                                            {{#link-to 'run.view' model._id (query-params tab="metadata") class="ui inverted button"}}View{{/link-to}}
                                         {{/if}}
                                         {{#if showSelect}}
                                             <div class="ui inverted button" {{action 'select' model}}>Select</div>
@@ -423,25 +423,4 @@
     </div>
 </div>
 
-<div id="copy-on-launch-modal" class="ui small modal">
-  <i class="close icon"></i>
-  <div class="header">
-    <i class="fas fa-exclamation-triangle icon"></i>
-    Insufficient Access
-  </div>
-  <div class="content">
-    <p>You do not have sufficient access to run this Tale, but you can create your own copy!</p>
-    <p></p>
-    <p>Create a copy of this Tale and run the copy now?</p>
-  </div>
-  <div class="actions">
-    <div class="ui black deny button" {{action 'closeCopyOnLaunchModal'}}>
-      <i class="remove icon"></i>
-      Cancel
-    </div>
-    <div class="ui positive right labeled icon button" {{action 'submitCopyAndLaunch' taleToCopy}}>
-      Copy and Run
-      <i class="checkmark icon"></i>
-    </div>
-  </div>
-</div>
+{{ui/copy-on-launch-modal taleToCopy=taleToCopy modelsInView=modelsInView}}
