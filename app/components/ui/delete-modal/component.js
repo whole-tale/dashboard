@@ -2,13 +2,8 @@ import Component from '@ember/component';
 import EmberObject, { computed } from '@ember/object';
 
 export default Component.extend({
-  model: EmberObject.create({}),
+  modelName: "",
   classNameBindings: ['injectedClassName'],
-  
-  // Instance uses "name" everything else uses "title"
-  name: computed('model.name', 'model.title', function() {
-    return this.model.name || this.model.title;
-  }),
 
   injectedClassName: computed('modelType', 'model._modelType', 'model._id', function () {
     if(this.get('modelType')) {

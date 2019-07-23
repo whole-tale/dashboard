@@ -64,7 +64,7 @@
 </div>
 
 {{ui/delete-modal 
-    model=selectedInstance 
+    modelName=selectedInstance.name
     modelType="instance" 
     approveDelete=(action "approveDelete" selectedInstance) 
     denyDelete=(action "denyDelete")}}
