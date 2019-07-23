@@ -17,6 +17,12 @@ export default Component.extend({
     activeTabFiles: false,
     activeTabMetadata: false,
     
+    instanceObserver: observer('model.instance', function() {
+        if (this.model.instance && this.model.instance.status === 0) {
+            this.actions.activateInteract.call(this);
+        }
+    }),
+    
     init() {
         this._super(...arguments);
         
@@ -33,6 +39,8 @@ export default Component.extend({
             
             // Clear the querystring parameter after it is consumed
             this.router.transitionTo({ queryParams: { tab: null }});
+        } else if (!this.model.instance) {
+            this.actions.activateMetadata.call(this);
         }
     },
     
@@ -43,6 +51,9 @@ export default Component.extend({
 
     actions: {
         activateInteract() {
+            // Disable this tab when no instance exists
+            if (!this.model.instance) { return; }
+            
             this.set("activeTabInteract", true);
             this.set("activeTabFiles", false);
             this.set("activeTabMetadata", false);
