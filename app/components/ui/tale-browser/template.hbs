@@ -149,7 +149,7 @@
     
     {{#unless modelsInView.length}}
         <div class="ui center aligned segment" style="color: black;">
-            There are no tales to display for applied filter: {{currentTab}}
+            There are no tales to display for applied filter: {{filter}}
         </div>
     {{/unless}}
     {{#if loadingTales}}
@@ -186,7 +186,7 @@
                                                     <div class="content">
                                                         <div class="center">
                                                             {{#if showLink}}
-                                                                {{#link-to 'run.view' model._id class="ui inverted button"}}View{{/link-to}}
+                                                                {{#link-to 'run.view' model._id (query-params tab="metadata") class="ui inverted button"}}View{{/link-to}}
                                                             {{/if}}
                                                             {{#if showSelect}}
                                                                 <div class="ui inverted button" {{action 'select' model}}>Select</div>
@@ -279,7 +279,7 @@
                                 <div class="content">
                                     <div class="center">
                                         {{#if showLink}}
-                                            {{#link-to 'run.view' model._id class="ui inverted button"}}View{{/link-to}}
+                                            {{#link-to 'run.view' model._id (query-params tab="metadata") class="ui inverted button"}}View{{/link-to}}
                                         {{/if}}
                                         {{#if showSelect}}
                                             <div class="ui inverted button" {{action 'select' model}}>Select</div>
@@ -402,7 +402,7 @@
 </div>
 
 {{ui/delete-modal
-    model=selectedTale
+    modelName=selectedTale.title
     modelType="tale"
     approveDelete=(action "approveDelete" selectedTale)
     denyDelete=(action "denyDelete" selectedTale)}}
