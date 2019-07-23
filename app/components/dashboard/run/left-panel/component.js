@@ -356,11 +356,21 @@ export default Component.extend(FullScreenMixin, {
         rebuildTale(taleId) {
             this.get('apiCall').rebuildTale(taleId);
         },
+    
+        openCopyOnLaunchModal(taleToCopy) {
+          const component = this;
+          $('#copy-on-launch-modal').modal('show');
+          component.set('taleToCopy', taleToCopy);
+        },
         
         startTale(tale) {
             const self = this;
             if (!tale) {
                 console.log('Invalid tale', tale);
+            } else if (tale._accessLevel < 1) {
+              // Prompt for confirmation before copying and launching
+              self.actions.openCopyOnLaunchModal.call(self, tale);
+              return;
             }
             
             // Disable "Start" button - re-enable after a delay?
@@ -498,7 +508,7 @@ export default Component.extend(FullScreenMixin, {
           }
 
             self.set('publishStatus', 'in_progress');
-            self.set('progress', 0);   
+            self.set('progress', 0);
             const tale = self.get('model');
 
             // Call the publish endpoint
