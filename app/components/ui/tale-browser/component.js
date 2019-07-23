@@ -276,88 +276,17 @@ export default Component.extend({
       this.sendAction("onAddNew");
     },
     
-    closeCopyOnLaunchModal() {
-      const component = this;
-      $('#copy-on-launch-modal').modal('hide');
-      component.set('taleToCopy', null);
-    },
-    
     openCopyOnLaunchModal(taleToCopy) {
       const component = this;
       $('#copy-on-launch-modal').modal('show');
       component.set('taleToCopy', taleToCopy);
     },
-    
-    submitCopyAndLaunch(taleToCopy) {
-      const self = this;
-      self.set('copyingTale', true);
-      const originalTale = self.get('taleToCopy');
-      if (originalTale) {
-        self.get('apiCall').copyTale(originalTale).then(taleCopy => {
-          self.set('copyingTale', false);
-          self.actions.closeCopyOnLaunchModal.call(self);
-          
-          // Convert JSON response to an EmberObject
-          let eTaleCopy = EmberObject.create(taleCopy);
-          
-          // Push to models in view
-          // TODO: Detect filtered view?
-          const tales = self.get('modelsInView');
-          tales.pushObject(eTaleCopy);
-          self.set('modelsInView', A(tales));
-          
-          // Reset state manually when re-launching
-          eTaleCopy.set('launchError', null);
-          eTaleCopy.set('launchStatus', 'starting');
-          eTaleCopy.set('launchResetRequest', null);
-      
-            
-          // TODO: Abstract this to reusable helper?
-          let resetStatusAfterMs = (tale, delay) => {
-            let resetRequest = later(() => {
-              if (!self.isDestroyed) {
-                console.log('Resetting tale status:', tale);
-                tale.set('launchError', null);
-                tale.set('launchStatus', null);
-                tale.set('launchResetRequest', null);
-              }
-            }, delay);
-            tale.set('launchResetRequest', resetRequest);
-          };
-        
-          // TODO: Abstract this to reusable helper?
-          let handleLaunchError = (tale, err) => {
-            // deal with the failure here
-            tale.set('launchStatus', 'error');
-            tale.set('launchError', err.message || err);
-            
-            resetStatusAfterMs(tale, 10000);
-            console.error('Failed to launch Tale', err);
-          };
-          
-          // Launch the newly-copied tale
-          return this.apiCall.startTale(eTaleCopy).then((instance) => {
-            eTaleCopy.set('instance', instance);
-            this.apiCall.waitForInstance(instance).then((instance) => {
-                eTaleCopy.set('instance', instance);
-                self.get('taleLaunched')();
-                eTaleCopy.set('launchError', null);
-                eTaleCopy.set('launchStatus', 'started');
-                console.log('Tale is now started:', eTaleCopy);
-                resetStatusAfterMs(eTaleCopy, 10000);
-              }).catch((err) => handleLaunchError(eTaleCopy, err));
-          }).catch((err) => handleLaunchError(eTaleCopy, err));
-        });
-      } else {
-        console.log('No tale to copy... something went wrong!');
-      }
-    },
 
     startTale(tale) {
-      const self = this;
+      const component = this;
       if (tale._accessLevel < 1) {
         // Prompt for confirmation before copying and launching
-        self.actions.openCopyOnLaunchModal.call(self, tale);
+        component.actions.openCopyOnLaunchModal.call(component, tale);
         return;
       }
 
@@ -375,7 +304,7 @@ export default Component.extend({
       // TODO: Abstract this to reusable helper?
       let resetStatusAfterMs = (tale, delay) => {
         let resetRequest = later(() => {
-          if (!self.isDestroyed) {
+          if (!component.isDestroyed) {
             console.log('Resetting tale status:', tale);
             tale.set('launchError', null);
             tale.set('launchStatus', null);
@@ -389,7 +318,7 @@ export default Component.extend({
         let startLooping = function(func){
           return later(function(){
             currentLoop = startLooping(func);
-            component.get('store').findRecord('instance', instance.get('_id'), { reload:true })
+            component.get('store').findRecord('instance', tale.instance.get('_id'), { reload:true })
               .then(model => {
                 if(model.get('status') === 1) {
                   component.get('taleLaunched')();
