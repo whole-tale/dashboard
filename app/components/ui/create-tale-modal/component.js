@@ -44,6 +44,7 @@ export default Component.extend({
       } else {
         this.createNewTale(title, imageId, dataSet||[], config||{});
       }
+      
       return false;
     },
 
@@ -128,16 +129,18 @@ export default Component.extend({
       self.sendAction('_refresh', item);
 
       let taleId = item.id;
+      self.closeModal();
+      
+      setTimeout(() => { self.router.transitionTo('run.view', taleId); }, 500);
 
       if (self.createAndLaunch) {
         let newInstance = store.createRecord('instance');
-        return newInstance.save({adapterOptions:{queryParams:{imageId, taleId}}});
+        return newInstance.save({adapterOptions:{queryParams:{imageId, taleId}}})
+          .catch(e => {
+            self.handleError(e);
+          });
       }
-    })
-    .then(() => {
-      self.closeModal();
-    })
-    .catch(e => {
+    }).catch(e => {
       self.handleError(e);
     });
   }, 
@@ -161,8 +164,9 @@ export default Component.extend({
     let adapterOptions = {appendPath, queryParams};
     
     const self = this;
-    newTaleImport.save({adapterOptions}).then(() => {
+    newTaleImport.save({adapterOptions}).then((tale) => {
       self.closeModal();
+      setTimeout(() => { self.router.transitionTo('run.view', tale._id) }, 500);
     }).catch(e => {
       self.handleError({responseJSON:{message:e+""}});
     });
