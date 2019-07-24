@@ -49,7 +49,11 @@
         <p>Input data:</p>
       </div>
       <div class="twelve wide column">
+      {{#if importing}}
+        <p style="font-style:italic;margin-top:5px;font-weight:200">Data Source: {{dataSet}}</p>
+      {{else}}
         <p style="font-style:italic;margin-top:5px;color:#999">Add data after Tale creation using your chosen compute environment, or the Files tab of your running Tale.</p>
+      {{/if}}
       </div>
     </div>
   </div>
