@@ -21,7 +21,8 @@ export default Component.extend(FullScreenMixin, {
   didInsertElement() {
     $('#show-introduction-link').transition('glow');
     $('.ui.dropdown').dropdown({
-      action: 'hide',
+      action: 'select',
+      showOnFocus:false
     });
     this.router.transitionTo({ queryParams: { environment: null, name: null, uri: null }});
   },
