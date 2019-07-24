@@ -156,7 +156,7 @@ export default Component.extend({
     let appendPath = 'import';
     let newTaleImport = this.get('store').createRecord('tale');
 
-    let queryParams = {taleKwargs:JSON.stringify(taleKwargs), lookupKwargs:JSON.stringify(lookupKwargs), imageId, url, spawn:true};
+    let queryParams = {taleKwargs:JSON.stringify(taleKwargs), lookupKwargs:JSON.stringify(lookupKwargs), imageId, url, spawn:this.createAndLaunch};
     let adapterOptions = {appendPath, queryParams};
     
     const self = this;
