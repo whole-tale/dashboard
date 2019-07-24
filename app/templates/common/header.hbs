@@ -31,9 +31,9 @@
                 Manage
             {{/link-to}}
 
-            {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
+            {{!-- {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
                 Compose
-            {{/link-to}}
+            {{/link-to}} --}}
         {{/if}}
     {{/if}}
     {{#if loggedIn}}
@@ -97,11 +97,11 @@
                                 <i class="cog black icon"></i> Manage
                             {{/link-to}}
                         </li>
-                        <li class="bm-menu-item">
+                        {{!-- <li class="bm-menu-item">
                             {{#link-to 'compose' invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
                                 <i class="edit black icon"></i> Compose
                             {{/link-to}}
-                        </li>
+                        </li> --}}
                         <li class="bm-menu-item">
                             <a href="https://wholetale.readthedocs.io/en/stable/users_guide/index.html" target="_blank">
                                 <i class="info circle black icon"></i> User Guide

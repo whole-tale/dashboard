@@ -5,7 +5,7 @@
       <i class="plus icon"></i>
       <span class="text">Create New...</span>
       <div class="menu">
-        <div class="item" {{action 'transitionToCompose'}}>
+        <div class="item" {{action 'openCreateNewTaleModal'}}>
           <img class="ui avatar image" src="images/wholetale_logo_sm.png" style="height: 14px;width: 14px;vertical-align: middle;">
           Create New Tale
         </div>
@@ -62,6 +62,7 @@
 {{#if (eq currentTab 'tales')}}
     <div id="tale-tab-contents" class="ui bottom attached active tab segment">
       {{ui/tale-browser models=model
+                        queryParams=model.queryParams
                         paginateOn=6
                         cardsPerRow="three"
                         modelView="run.view"

@@ -1,7 +1,7 @@
 <div class="ui stretched stackable grid">
   <div class="row panel container">
     <div class="{{if rightView 'eleven' 'sixteen'}} wide column">
-      {{component leftView model=leftModel taleLaunched=(action "taleLaunched") openModal=(route-action 'showModal')}}
+      {{component leftView model=leftModel taleLaunched=(action "taleLaunched") openModal=(route-action 'showModal') queryParams=queryParams}}
     </div>
     {{#if rightView}}
       <div class="five wide column">
