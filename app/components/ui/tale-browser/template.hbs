@@ -278,7 +278,9 @@
                             <div class="ui dimmer">
                                 <div class="content">
                                     <div class="center">
-                                        {{#if showLink}}
+                                        {{#if (and showLink model.instance)}}
+                                            {{#link-to 'run.view' model._id class="ui inverted button"}}View{{/link-to}}
+                                        {{else if showLink}}
                                             {{#link-to 'run.view' model._id (query-params tab="metadata") class="ui inverted button"}}View{{/link-to}}
                                         {{/if}}
                                         {{#if showSelect}}
