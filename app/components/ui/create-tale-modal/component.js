@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import {inject as service} from '@ember/service';
+import { inject as service } from '@ember/service';
+import { later } from '@ember/runloop';
 import $ from 'jquery';
 
 export default Component.extend({
@@ -131,7 +132,7 @@ export default Component.extend({
       let taleId = item.id;
       self.closeModal();
       
-      setTimeout(() => { self.router.transitionTo('run.view', taleId); }, 500);
+      later(() => { self.router.transitionTo('run.view', taleId); }, 500);
 
       if (self.createAndLaunch) {
         let newInstance = store.createRecord('instance');
@@ -166,7 +167,7 @@ export default Component.extend({
     const self = this;
     newTaleImport.save({adapterOptions}).then((tale) => {
       self.closeModal();
-      setTimeout(() => { self.router.transitionTo('run.view', tale._id) }, 500);
+      later(() => { self.router.transitionTo('run.view', tale._id) }, 500);
     }).catch(e => {
       self.handleError({responseJSON:{message:e+""}});
     });

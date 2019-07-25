@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { observer } from '@ember/object';
 import { alias } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
+import { later } from '@ember/runloop';
 import layout from './template';
 // import hasEmberVersion from 'ember-test-helpers/has-ember-version';
 
@@ -38,7 +39,7 @@ export default Component.extend({
             }
             
             // Clear the querystring parameter after it is consumed
-            this.router.transitionTo({ queryParams: { tab: null }});
+            later(() => { this.router.transitionTo({ queryParams: { tab: null }}); }, 500);
         } else if (!this.model.instance) {
             this.actions.activateMetadata.call(this);
         }
