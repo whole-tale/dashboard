@@ -304,7 +304,7 @@ export default Component.extend({
           }
           
           // Launch the newly-copied tale
-          return this.apiCall.startTale(eTaleCopy).then((instance) => {
+          return self.apiCall.startTale(eTaleCopy).then((instance) => {
             eTaleCopy.set('instance', instance);
             self.router.transitionTo('run.view', eTaleCopy._id);
           }).catch(err => console.error('Failed to launch Tale', err));
