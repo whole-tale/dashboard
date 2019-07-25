@@ -304,7 +304,7 @@ export default Component.extend({
           }
           
           // Launch the newly-copied tale
-          return self.apiCall.startTale(eTaleCopy).then((instance) => {
+          return self.get('apiCall').startTale(eTaleCopy).then((instance) => {
             eTaleCopy.set('instance', instance);
             self.router.transitionTo('run.view', eTaleCopy._id);
           }).catch(err => console.error('Failed to launch Tale', err));
@@ -315,7 +315,7 @@ export default Component.extend({
     },
 
     startTale(tale) {
-      const component = this;
+      const self = this;
       if (tale._accessLevel < 1) {
         // Prompt for confirmation before copying and launching
         return self.actions.openCopyOnLaunchModal.call(self, tale);
