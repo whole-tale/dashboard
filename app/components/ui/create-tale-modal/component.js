@@ -96,7 +96,13 @@ export default Component.extend({
     // ---------------------------------------------------------------------------------
     setDefaultAction(createAndLaunch) {
       this.set('createAndLaunch', createAndLaunch);
-    }
+    },
+    
+    // ---------------------------------------------------------------------------------
+    // Dismiss the separate modal showing the launch error
+    // ---------------------------------------------------------------------------------
+    dismissLaunchErrorModal() {
+    },
   },
 
   // ---------------------------------------------------------------------------------
@@ -104,6 +110,22 @@ export default Component.extend({
   // ---------------------------------------------------------------------------------
   closeModal() {
     $('.ui.modal.create-tale').modal('hide');
+  },
+  
+  // ---------------------------------------------------------------------------------
+  // Display error message in a separate modal
+  // ---------------------------------------------------------------------------------
+  handleLaunchError(e) {
+    const self = this;
+    self.handleError(e);
+    $('.ui.modal.compose-error').modal('show');
+    $('.ui.modal.compose-error').modal({
+      onHide: function(element) {
+        //$('.ui.modal.compose-error').modal('hide');
+        later(() => { self.router.transitionTo('run.view', self.newTale._id); }, 500);
+        return true;
+      },
+    });
   },
 
   // ---------------------------------------------------------------------------------
@@ -127,19 +149,23 @@ export default Component.extend({
 
     const self = this;
     newTale.save().then(item => {
+      this.newTale = item;
       self.sendAction('_refresh', item);
 
       let taleId = item.id;
       self.closeModal();
-      
-      later(() => { self.router.transitionTo('run.view', taleId); }, 500);
 
       if (self.createAndLaunch) {
         let newInstance = store.createRecord('instance');
-        return newInstance.save({adapterOptions:{queryParams:{imageId, taleId}}})
-          .catch(e => {
-            self.handleError(e);
-          });
+        return newInstance.save({adapterOptions:{queryParams:{imageId, taleId}}}).then(instance => {
+          this.newInstance = instance;
+          later(() => { self.router.transitionTo('run.view', taleId); }, 500);
+        })
+        .catch(e => {
+          self.handleLaunchError(e);
+        });
+      } else {
+        later(() => { self.router.transitionTo('run.view', taleId); }, 500);
       }
     }).catch(e => {
       self.handleError(e);

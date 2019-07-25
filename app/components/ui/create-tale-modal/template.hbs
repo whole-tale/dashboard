@@ -73,23 +73,25 @@
 </div>
 {{/ui-modal}}
 
-<div class="ui compose-error modal" style="display: none">
+
+<div class="ui compose-error modal">
   <div class="header">
-    Error Creating Tale
+    Error Launching Tale
   </div>
   <div class="content">
     <div class="ui grid form">
       <div class="row panel container">
         <div class="column">
-          <div class="description">
-              <p style="font-family:'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;font-size:1.1em;">{{errorMessage}}</p>
+          <div class="description" style="font-family:'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;font-size:1.1em;">
+              <p>Your Tale was created, but it could not be run.</p>
+              <p>{{errorMessage}}</p>
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="actions">
-    <div class="ui black deny button">
+    <div class="ui black deny button" {{action 'dismissLaunchErrorModal'}}>
       Close
     </div>
   </div>
