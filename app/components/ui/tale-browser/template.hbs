@@ -334,9 +334,6 @@
                                     <i class="exclamation circle icon"></i>
                                     Error
                                 </button>
-                                {{!-- {{#if model.launchError}}
-                                    <small class="ui red label">{{model.launchError}} <button class="ui mini basic compact button borderless" {{action 'dismissLaunchError' model}}><i class="fas fa-times"></i></button></small>
-                                {{/if}} --}}
                             {{else if (or (not model.launchStatus) (not model.instance))}}
                                 <button class="ui basic primary compact button borderless" {{action 'startTale' model}}>
                                     <i class="play icon"></i>
@@ -353,20 +350,6 @@
                                 <i class="close icon" {{action 'dismissLaunchError' model}}></i>
                                 <p>{{model.launchError}}</p>
                             </div>
-                            {{!-- <div class="ui grid red label">
-                                <div class="row">
-                                    <div class="eleven wide column">
-                                        {{model.launchError}}
-                                    </div>
-                                    
-                                    <div class="one wide column">
-                                        <button class="ui mini basic compact button borderless" {{action 'dismissLaunchError' model}}>
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                    
-                                </div>
-                            </div> --}}
                         </div>
                         {{/if}}
                     </div>
