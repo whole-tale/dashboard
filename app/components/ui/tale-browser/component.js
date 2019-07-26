@@ -283,6 +283,12 @@ export default Component.extend({
       component.set('taleToCopy', taleToCopy);
     },
     
+    dismissLaunchError(tale) {
+      tale.set('launchStatus', 'stopped');
+      tale.set('launchError', null);
+      tale.set('launchResetRequest', null);
+    },
+    
     submitCopyAndLaunch(taleToCopy) {
       const self = this;
       self.set('copyingTale', true);
@@ -304,10 +310,15 @@ export default Component.extend({
           }
           
           // Launch the newly-copied tale
+          eTaleCopy.set('launchStatus', 'starting');
           return self.get('apiCall').startTale(eTaleCopy).then((instance) => {
             eTaleCopy.set('instance', instance);
             self.router.transitionTo('run.view', eTaleCopy._id);
-          }).catch(err => console.error('Failed to launch Tale', err));
+          }).catch(err => {
+            console.error('Failed to launch Tale', err);
+            eTaleCopy.set('launchError');
+            eTaleCopy.set('launchStatus', 'error');
+          });
         });
       } else {
         console.log('No tale to copy... something went wrong!');
@@ -320,11 +331,17 @@ export default Component.extend({
         // Prompt for confirmation before copying and launching
         return self.actions.openCopyOnLaunchModal.call(self, tale);
       }
-
+      
+      tale.set('launchError', null);
+      tale.set('launchStatus', 'starting');
       return self.apiCall.startTale(tale).then((instance) => {
         tale.set('instance', instance);
         self.router.transitionTo('run.view', tale._id);
-      }).catch(err => console.error('Failed to launch Tale', err));
+      }).catch(err => {
+        console.error('Failed to launch Tale', err);
+        tale.set('launchError', err.message || err);
+        tale.set('launchStatus', 'error');
+      });
     },
     
     stopTale(tale) {

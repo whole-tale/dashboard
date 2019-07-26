@@ -592,6 +592,8 @@ export default Service.extend({
           }).then(() => {
             // Create a new instance
             return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
+          }).catch(err => {
+              tale.set('launchError', err.message || err);
           });
       }
         

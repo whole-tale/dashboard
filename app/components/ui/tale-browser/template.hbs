@@ -334,9 +334,9 @@
                                     <i class="exclamation circle icon"></i>
                                     Error
                                 </button>
-                                {{#if model.launchError}}
-                                    <small class="ui red label">{{model.launchError}}</small>
-                                {{/if}}
+                                {{!-- {{#if model.launchError}}
+                                    <small class="ui red label">{{model.launchError}} <button class="ui mini basic compact button borderless" {{action 'dismissLaunchError' model}}><i class="fas fa-times"></i></button></small>
+                                {{/if}} --}}
                             {{else if (or (not model.launchStatus) (not model.instance))}}
                                 <button class="ui basic primary compact button borderless" {{action 'startTale' model}}>
                                     <i class="play icon"></i>
@@ -344,58 +344,31 @@
                                 </button>
                             {{/if}}
                         </div>
-                            
-                            {{!-- 
-                            
-                            <div style="padding: 8px"></div>
-                            <div class="ui right aligned grid" style="padding: 0; float: right;">
-                                <div class="right aligned row" style="padding: 0">
-                                    <div class="ui right aligned mini green labeled icon button" {{action 'launchTale' model}}>
-                                        <i class="play icon"></i>
-                                        Run
-                                    </div>
-                                </div>
+                        
+                    
+                        {{!-- Display launch error, if necessary --}}
+                        {{#if model.launchError}}
+                        <div class="extra content" style="height:0;margin:0;padding:0;">
+                            <div class="ui red message" style="max-height:200px;margin-top:5px;margin-bottom:20px;">
+                                <i class="close icon" {{action 'dismissLaunchError' model}}></i>
+                                <p>{{model.launchError}}</p>
                             </div>
-                            {{#if (eq model.launchStatus 'starting')}}
-                                <div class="ui segment" style="height:100px">
-                                    <div class="ui active inverted dimmer">
-                                        <div class="ui text loader">Running Tale {{truncate-name model.title}}</div>
+                            {{!-- <div class="ui grid red label">
+                                <div class="row">
+                                    <div class="eleven wide column">
+                                        {{model.launchError}}
                                     </div>
-                                </div>
-                            {{/if}}
-                            {{#if (eq model.launchStatus 'started')}}
-                                <div class="ui green icon message">
-                                    <i class="checkmark icon"></i>
-                                    <div class="content">
-                                        <div class="header">
-                                            <p>The Tale '{{truncate-name model.title}}' is now running !</p>
-
-                                            <div class="ui buttons">
-                                                {{#link-to 'run.view' model._id}}
-                                                  <div class="ui mini green icon button" style="margin-right: 10px">
-                                                    <i class="play icon"></i>
-                                                    Go to Tale
-                                                  </div>
-                                                {{/link-to}}
-                                            </div>
-
-                                        </div>
+                                    
+                                    <div class="one wide column">
+                                        <button class="ui mini basic compact button borderless" {{action 'dismissLaunchError' model}}>
+                                            <i class="fas fa-times"></i>
+                                        </button>
                                     </div>
+                                    
                                 </div>
-                            {{/if}}
-                            {{#if (eq model.launchStatus 'error')}}
-                                <div class="ui red icon message">
-                                    <i class="remove circle icon"></i>
-                                    <div class="content">
-                                        <div class="header">
-                                            The Tale '{{truncate-name model.title}}' could not be run !
-                                            <br> {{model.launchError}}
-                                        </div>
-                                    </div>
-                                </div>
-                            {{/if}}
-                            
-                            --}}
+                            </div> --}}
+                        </div>
+                        {{/if}}
                     </div>
                 {{/each}}
             </div>
