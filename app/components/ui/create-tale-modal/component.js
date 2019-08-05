@@ -6,7 +6,7 @@ import $ from 'jquery';
 export default Component.extend({
   store: service(),
   router: service(),
-  
+  apiCall: service('api-call'),
   title: "",
   imageId: "",
   dataSet: null,
@@ -126,7 +126,6 @@ export default Component.extend({
     const self = this;
     newTale.save().then(item => {
       self.sendAction('_refresh', item);
-
       let taleId = item.id;
 
       if (self.createAndLaunch) {
@@ -147,25 +146,25 @@ export default Component.extend({
   // Does nothing with the job that is returned (see comment below)
   // ---------------------------------------------------------------------------------
   importTaleFromDataset(title, imageId, url, datasetAPI) {
-    let taleKwargs = {title};
+    let self = this; 
+    let taleKwargs = { title };
 
     let lookupKwargs = {};
     if (datasetAPI) {
       lookupKwargs.base_url = datasetAPI;
     }
+  let onSuccess = () => { self.closeModal(); };
+  let onFail = (e) => { self.handleError({responseJSON:{message:e+""}}); };
 
-    let appendPath = 'import';
-    let newTaleImport = this.get('store').createRecord('tale');
-
-    let queryParams = {taleKwargs:JSON.stringify(taleKwargs), lookupKwargs:JSON.stringify(lookupKwargs), imageId, url, spawn:this.createAndLaunch};
-    let adapterOptions = {appendPath, queryParams};
-    
-    const self = this;
-    newTaleImport.save({adapterOptions}).then(() => {
-      self.closeModal();
-    }).catch(e => {
-      self.handleError({responseJSON:{message:e+""}});
-    });
+  this.get('apiCall').taleFromDataset(
+    imageId,
+    url,
+    this.createAndLaunch,
+    JSON.stringify(lookupKwargs),
+    JSON.stringify(taleKwargs),
+    onSuccess,
+    onFail
+  );
     
     this.router.transitionTo({queryParams: {environment: null, name: null, uri: null, api: null}});
   }
