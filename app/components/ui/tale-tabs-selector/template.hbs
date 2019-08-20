@@ -1,9 +1,13 @@
 <div class="ui">
     <div class="ui secondary pointing menu">
-        <a class="item {{if activeTabInteract "active"}} auto-width" data-tab="tab-interact" onclick={{action "activateInteract"}}>Interact</a>
-        <a class="item {{if activeTabFiles "active"}} auto-width" data-tab="tab-files" onclick={{action "activateFiles"}}>Files</a>
-        <a class="item {{if activeTabMetadata "active"}} auto-width" data-tab="tab-metadata" onclick={{action "activateMetadata"}}>Metadata</a>
-        {{#if (and activeTabInteract (and (not-eq model.status 0) (and model.iframe (eq internalState.currentInstanceId model.id))))}}
+        {{#if (and model model.instance)}}
+            <a class="item {{if activeTabInteract "active"}} auto-width" data-tab="tab-interact" {{action "activateInteract"}}>Interact</a>
+        {{else}}
+            <a class="item auto-width disabled not clickable" disabled="true">Interact</a>
+        {{/if}}
+        <a class="item {{if activeTabFiles "active"}} auto-width" data-tab="tab-files" {{action "activateFiles"}}>Files</a>
+        <a class="item {{if activeTabMetadata "active"}} auto-width" data-tab="tab-metadata" {{action "activateMetadata"}}>Metadata</a>
+        {{#if (and activeTabInteract (and model.instance (and (not-eq model.instance.status 0) (and model.instance.iframe (eq internalState.currentInstanceId model.id)))))}}
             <a href="{{model.url}}" target="_blank" class="external-icon-container">
                 <i class="external alternate right icon floated"></i>
             </a>

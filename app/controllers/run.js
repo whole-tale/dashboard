@@ -5,6 +5,8 @@ import $ from 'jquery';
 const O = EmberObject.create.bind(EmberObject);
 
 export default Controller.extend({
+  queryParams: ['tab'],
+  
   grabData(model) {
     // convert config json to a string for editing
     let controller = this;

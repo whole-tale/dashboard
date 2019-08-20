@@ -37,11 +37,11 @@
                             <i class="fas fa-spinner fa-pulse" style="padding-right:0;"></i> Please Wait...
                         </div>
                     {{else if taleLaunchError}}
-                        <div class="ui blue icon button" {{action 'startTale' model}}>
+                        <div class="ui blue icon button" {{action 'startTale' model}} data-inverted="" data-tooltip="{{taleLaunchError}}" data-position="bottom right">
                             <i class="fas fa-exclamation-circle"></i> Run
                         </div>
                     {{else}}
-                        <div class="ui blue icon button" {{action 'startTale' model}}>
+                        <div class="ui blue icon button" {{action 'startTale' model}} >
                             <i class="fas fa-play"></i> Run
                         </div>
                     {{/if}}

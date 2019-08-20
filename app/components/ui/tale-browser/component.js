@@ -12,6 +12,7 @@ export default Component.extend({
   userAuth: service('user-auth'),
   apiCall: service('api-call'),
   internalState: service('internal-state'),
+  router: service(),
 
   taleInstanceName: "",
   filteredSet: A(),
@@ -121,9 +122,7 @@ export default Component.extend({
       this.set('filteredSet', models.tales);
     } else if (filter === 'Mine') {
       const userId = this.get('userAuth').getCurrentUserID();
-      let m = models.tales.filter(m => m.creatorId === userId);
-      console.log("Models: ", m);
-      this.set('filteredSet', m);
+      this.set('filteredSet', models.tales.filter(m => m.creatorId === userId));
     } else if (filter === 'Published') {
       this.set('filteredSet', models.tales.filter(m => {
         return m.publishInfo.length;
@@ -283,82 +282,66 @@ export default Component.extend({
       $('#copy-on-launch-modal').modal('show');
       component.set('taleToCopy', taleToCopy);
     },
+    
+    dismissLaunchError(tale) {
+      tale.set('launchStatus', 'stopped');
+      tale.set('launchError', null);
+      tale.set('launchResetRequest', null);
+    },
+    
+    submitCopyAndLaunch(taleToCopy) {
+      const self = this;
+      self.set('copyingTale', true);
+      const originalTale = self.get('taleToCopy');
+      if (originalTale) {
+        self.get('apiCall').copyTale(originalTale).then(taleCopy => {
+          self.set('copyingTale', false);
+          self.actions.closeCopyOnLaunchModal.call(self);
+          
+          // Convert JSON response to an EmberObject
+          let eTaleCopy = EmberObject.create(taleCopy);
+          
+          
+          // Push to models in view, if it should be shown
+          if (self.get('filter') === 'Mine') {
+            const tales = self.get('modelsInView');
+            tales.pushObject(eTaleCopy);
+            self.set('modelsInView', A(tales));
+          }
+          
+          // Launch the newly-copied tale
+          eTaleCopy.set('launchStatus', 'starting');
+          return self.get('apiCall').startTale(eTaleCopy).then((instance) => {
+            eTaleCopy.set('instance', instance);
+            self.router.transitionTo('run.view', eTaleCopy._id);
+          }).catch(err => {
+            console.error('Failed to launch Tale', err);
+            eTaleCopy.set('launchError');
+            eTaleCopy.set('launchStatus', 'error');
+          });
+        });
+      } else {
+        console.log('No tale to copy... something went wrong!');
+      }
+    },
 
     startTale(tale) {
-      const component = this;
+      const self = this;
       if (tale._accessLevel < 1) {
         // Prompt for confirmation before copying and launching
-        component.actions.openCopyOnLaunchModal.call(component, tale);
-        return;
-      }
-
-      // Cancel existing state reset, if one exists
-      let resetRequest = tale.get('launchResetRequest');
-      if (resetRequest) {
-        cancel(resetRequest);
+        return self.actions.openCopyOnLaunchModal.call(self, tale);
       }
       
-      // Reset state manually when re-launching
       tale.set('launchError', null);
       tale.set('launchStatus', 'starting');
-      tale.set('launchResetRequest', null);
-      
-      // TODO: Abstract this to reusable helper?
-      let resetStatusAfterMs = (tale, delay) => {
-        let resetRequest = later(() => {
-          if (!component.isDestroyed) {
-            console.log('Resetting tale status:', tale);
-            tale.set('launchError', null);
-            tale.set('launchStatus', null);
-            tale.set('launchResetRequest', null);
-          }
-        }, delay);
-        tale.set('launchResetRequest', resetRequest);
-
-        let currentLoop = null;
-        // Poll the status of the instance every second using recursive iteration
-        let startLooping = function(func){
-          return later(function(){
-            currentLoop = startLooping(func);
-            component.get('store').findRecord('instance', tale.instance.get('_id'), { reload:true })
-              .then(model => {
-                if(model.get('status') === 1) {
-                  component.get('taleLaunched')();
-                  cancel(currentLoop);
-                }
-              }).catch(err => {
-                console.error(err);
-                cancel(currentLoop);
-              });
-          }, 1000);
-        };
-
-        //Start polling
-        currentLoop = startLooping();
-      };
-    
-      // TODO: Abstract this to reusable helper?
-      let handleLaunchError = (tale, err) => {
-        // deal with the failure here
-        tale.set('launchStatus', 'error');
-        tale.set('launchError', err.message || err);
-        
-        resetStatusAfterMs(tale, 10000);
+      return self.apiCall.startTale(tale).then((instance) => {
+        tale.set('instance', instance);
+        self.router.transitionTo('run.view', tale._id);
+      }).catch(err => {
         console.error('Failed to launch Tale', err);
-      };
-
-      return this.apiCall.startTale(tale).then((instance) => {
-        tale.set('instance', instance)
-        this.apiCall.waitForInstance(instance)
-          .then((instance) => {
-            tale.set('instance', instance);
-            self.get('taleLaunched')();
-            tale.set('launchError', null);
-            tale.set('launchStatus', 'started');
-            console.log('Tale is now started:', tale);
-            resetStatusAfterMs(tale, 10000);
-          }).catch((err) => handleLaunchError(tale, err));
-      }).catch((err) => handleLaunchError(tale, err));
+        tale.set('launchError', err.message || err);
+        tale.set('launchStatus', 'error');
+      });
     },
     
     stopTale(tale) {

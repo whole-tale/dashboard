@@ -100,10 +100,10 @@ export default Component.extend({
    * that the handlebars template uses to create rows (this.taleAuthors)
    * @method addTaleAuthors
   */
- addTaleAuthors() {
-  let authors = this.get('model').get("authors");
-  this.taleAuthors.pushObjects(authors);
- },
+  addTaleAuthors() {
+    const model = this.model || { authors: [] }
+    this.taleAuthors.pushObjects(model.authors);
+  },
 
   /**
    * Iterates over the array of saved&unsaved authors and makes sure that

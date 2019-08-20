@@ -501,8 +501,10 @@ export default Service.extend({
         const self = this;
         let currentLoop = null;
         
+        if (!model || !model.modelType) { return; }
+        
         return new Promise((resolve, reject) => {
-            // Poll the status of the instance every second using recursive iteration
+            // Poll the status of the model every second using recursive iteration
             const startLooping = (func) => {
               return later(() => {
                 currentLoop = startLooping(func);
@@ -590,6 +592,8 @@ export default Service.extend({
           }).then(() => {
             // Create a new instance
             return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
+          }).catch(err => {
+              tale.set('launchError', err.message || err);
           });
       }
         
