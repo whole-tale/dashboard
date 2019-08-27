@@ -316,12 +316,15 @@ export default Component.extend(FullScreenMixin, {
           coordinatingNode: 'https://cn.dataone.org/cn/v2',
           isProduction: true
         },
+        /*
+        DEVNOTE: The ADC is currently disabled until a curation workflow is implemented
         {
           name: 'DataONE-Arctic Data Center',
           memberNode: 'https://arcticdata.io/metacat/d1/mn',
           coordinatingNode: 'https://cn.dataone.org/cn/v2',
           isProduction: true
         }
+        */
       ];
 
       // An array of the repositories that we show
