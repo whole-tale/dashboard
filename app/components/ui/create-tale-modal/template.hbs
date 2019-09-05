@@ -1,0 +1,98 @@
+{{#ui-modal class="create-tale" closable=false onApprove=(action 'createNewTaleButton') name="createtalemodal" onHide=(action 'clearModal') onShow=(action 'setModalFromQueryParams')}}
+<i class="close icon"></i>
+<div class="header">
+  Create New Tale
+</div>
+<div class="content">
+  {{#if errorMessage}}
+  <div class="subheader ui attached error message">
+    <p>{{errorMessage}}</p>
+  </div>  
+  {{/if}}
+  <div class="ui sixteen column grid attached form">
+    <div class="row panel container">
+      <div class="four wide column">
+        <p>Tale name:</p>
+      </div>
+      <div class="twelve wide column">
+        <div class="ui fluid input">
+          {{input type="text" placeholder="Tale name" value=title}}
+        </div>
+      </div>
+    </div>
+    <div class="row panel container">
+      <div class="four wide column">
+        <p>Compute environment:</p>
+      </div>
+      <div class="twelve wide column">
+        {{#ui-dropdown class="fluid selection compute-environment" onChange=(action (mut imageId))}}
+        <div class="default text">Compute Environment</div>
+        <i class="dropdown icon"></i>
+        <div class="menu" tabindex="-1" style="position:inherit;">
+          <div class="header">Official environments</div>
+          {{#each computeEnvironments.official as | env |}}
+          <div class="item" data-value="{{env.id}}">{{env.name}}</div>
+          {{/each}}
+          {{#if computeEnvironments.nonOfficial}} 
+          <div class="divider"></div>
+          <div class="header">Other environments</div>
+            {{#each computeEnvironments.nonOfficial as | env |}}
+            <div class="item" data-value="{{env.id}}">{{env.name}}</div>
+            {{/each}}
+          {{/if}}
+        </div>
+        {{/ui-dropdown}}
+      </div>
+    </div>
+    <div class="row panel container">
+      <div class="four wide column">
+        <p>Input data:</p>
+      </div>
+      <div class="twelve wide column">
+      {{#if importing}}
+        <p style="font-style:italic;margin-top:5px;font-weight:200">Data Source: {{dataSet}}</p>
+      {{else}}
+        <p style="font-style:italic;margin-top:5px;color:#999">Add data after Tale creation using your chosen compute environment, or the Files tab of your running Tale.</p>
+      {{/if}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="actions">
+  <div class="ui black deny button">Cancel</div>
+  <div class="ui positive icon button {{disabled}}">
+    {{createButtonText}}
+  </div>
+  {{#ui-dropdown class="as-a-button-label"}}
+  <i class="dropdown icon"></i>
+  <div class="menu">
+    <a class="item" {{action "setDefaultAction" 1}}> Create Tale And Launch</a>
+    <a class="item" {{action "setDefaultAction" 0}}> Create Tale </a>
+  </div>
+  {{/ui-dropdown}}
+</div>
+{{/ui-modal}}
+
+
+<div class="ui compose-error modal">
+  <div class="header">
+    Error Launching Tale
+  </div>
+  <div class="content">
+    <div class="ui grid form">
+      <div class="row panel container">
+        <div class="column">
+          <div class="description" style="font-family:'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;font-size:1.1em;">
+              <p>Your Tale was created, but it could not be run.</p>
+              <p>{{errorMessage}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui black deny button" {{action 'dismissLaunchErrorModal'}}>
+      Close
+    </div>
+  </div>
+</div>

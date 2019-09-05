@@ -1,10 +1,11 @@
 
 {{dashboard/unified-view
-
   leftView="dashboard/browse/left-panel"
-  rightView="dashboard/browse/right-panel"
-
-  leftModel=model.tales
+  rightView=null
+  queryParams=model.queryParams
+  leftModel=model
   rightModelTop=model.instances
   rightModelBottom=null
 }}
+
+{{ui/create-tale-modal computeEnvironments=model.computeEnvironments queryParams=model.queryParams}}

@@ -1,7 +1,7 @@
 import Component from '@ember/component';
-import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
-import EmberObject, { observer } from '@ember/object';
+import EmberObject, { computed, observer} from '@ember/object';
+import { A } from '@ember/array';
 import { later, cancel } from '@ember/runloop';
 import $ from 'jquery';
 
@@ -9,9 +9,11 @@ const O = EmberObject.create.bind(EmberObject);
 
 export default Component.extend({
   store: service(),
-  userAuth: service(),
+  userAuth: service('user-auth'),
   apiCall: service('api-call'),
-  internalState: service(),
+  internalState: service('internal-state'),
+  router: service(),
+
   taleInstanceName: "",
   filteredSet: A(),
   filters: ['All', 'Mine', 'Published', 'Recent'],
@@ -32,25 +34,26 @@ export default Component.extend({
   loadingTales: true,
   selectedTale: O({}),
   message: 'Tales loading. Please, wait.',
-
+  
   filterObserver: observer('filter', function () {
     this.setFilter.call(this);
   }),
   
   creatorObserver: observer('modelsInView', function() {
     this.modelsInView.forEach(tale => {
-      const creatorId = tale.get("creatorId");
-      this.store.findRecord('user', creatorId).then(creator => {
-        tale.set('creator', O({
-          firstName: creator.firstName,
-          lastName: creator.lastName,
-          orcid: ''
-        }));
-      }).catch(err => {
-        let message = `Failed to fetch creator=${tale.creatorId} for tale=${tale._id}:`;
-        console && (console.error && console.error(message, err)) || console.log(message, err);
-        tale.set('creator', O({}));
-      });
+      if (tale && tale.id) {
+        this.apiCall.fetchTaleData(tale.id, false);
+      }
+    });
+  }),
+  
+  instancePoller: observer('modelsInView', 'instances', function() {
+    // When instance models change, check if we need to poll
+    this.modelsInView.forEach(model => {
+      // If we see an instance that is "Launching", poll until it completes
+      if (model.instance && model.instance.status === 0) {
+        this.apiCall.waitForInstance(model.instance);
+      }
     });
   }),
 
@@ -84,12 +87,21 @@ export default Component.extend({
     let models = this.get("models");
     let component = this;
     component.set('loadingTales', false);
-    component.set('searchView', models);
-
-    component.updateModels(component, models);
-
+    component.set('searchView', models.tales);
+    component.updateModels(component, models.tales);
     component.set('addButtonLogo', '/icons/plus-sign.png');
     component.setFilter();
+    
+    // Check if any instance is LAUNCHING
+    component.get('store').findAll('instance').then(instances => {
+        instances.forEach(instance => {
+            // If any instance is LAUNCHING, poll until it finishes
+            if (!instance.status) {
+                console.log('Instance is LAUNCHING. Starting poller...');
+                component.get('apiCall').waitForInstance(instance);
+            }
+        });
+    }).catch(err => console.error(err));
   },
   didRender() {
     $('.selectable.cards .image').dimmer({
@@ -107,57 +119,57 @@ export default Component.extend({
     this.set('loadingTales', true);
 
     if (filter === 'All') {
-      this.set('filteredSet', models);
+      this.set('filteredSet', models.tales);
     } else if (filter === 'Mine') {
       const userId = this.get('userAuth').getCurrentUserID();
-      this.set('filteredSet', models.filter(m => m.get('creatorId') === userId));
+      this.set('filteredSet', models.tales.filter(m => m.creatorId === userId));
     } else if (filter === 'Published') {
-      this.set('filteredSet', models.filter(m => {
-        return m.get('publishInfo').length;
+      this.set('filteredSet', models.tales.filter(m => {
+        return m.publishInfo.length;
       }));
     } else if (filter === 'Recent') {
       const recentTales = this.get('internalState').getRecentTales();
-      this.set('filteredSet', models.filter(m => {
+      this.set('filteredSet', models.tales.filter(m => {
         return (recentTales.indexOf(m.get('id')) > -1);
       }));
     } else {
       this.set('filteredSet', A());
     }
 
-    this.actions.searchFilter.call(this);
+    this.actions.searchFilter.call(this, filter);
     this.actions.toggleFiltersVisibility.call(this);
   },
 
   updateModels(component, models) {
-    if (!models.get('length')) {
-      component.set('modelsInView', A([]));
-    }
     let modelsInView = A([]);
-    component.get('models').forEach(tale => {
-      if (!tale.get("icon")) {
-        if (tale.get("meta")) {
-          let meta = tale.get("meta");
-          if (meta.get('provider') !== "DataONE")
-            tale.set('icon', "/icons/globus-logo-large.png");
-          else
-            tale.set('icon', "/icons/d1-logo-large.png");
-        } else {
-          tale.set('icon', "/images/whole_tale_logo.png");
+    models.forEach(tale => {
+      if (tale && tale._id) {
+        
+        if (!tale.get("icon")) {
+          if (tale.get("meta")) {
+            let meta = tale.get("meta");
+            if (meta.get('provider') !== "DataONE")
+              tale.set('icon', "/icons/globus-logo-large.png");
+            else
+              tale.set('icon', "/icons/d1-logo-large.png");
+          } else {
+            tale.set('icon', "/images/whole_tale_logo.png");
+          }
         }
+  
+        let description = tale.get('description');
+  
+        if (!description) {
+          tale.set('tagName', "No Description ...");
+        } else {
+          if (description.length > 200)
+            tale.set('tagName', description.substring(0, 200) + "..");
+          else
+            tale.set('tagName', description);
+        }
+  
+        modelsInView.pushObject(O(tale));
       }
-
-      let description = tale.get('description');
-
-      if (!description) {
-        tale.set('tagName', "No Description ...");
-      } else {
-        if (description.length > 200)
-          tale.set('tagName', description.substring(0, 200) + "..");
-        else
-          tale.set('tagName', description);
-      }
-
-      modelsInView.pushObject(O(tale));
     });
 
     component.set("modelsInView", modelsInView);
@@ -179,25 +191,30 @@ export default Component.extend({
       this.set('filter', 'All');
       this.setFilter();
     },
-    searchFilter() {
+    selectFilter(filter) {
+      const component = this;
+      component.set('filter', filter);
+      this.setFilter();
+    },
+    searchFilter(filter) {
       let searchStr = this.get('searchStr');
-
+      
       const filteredSet = this.get("filteredSet");
       const component = this;
-
-      let promise = new Promise((resolve) => {
+      
+      return new Promise((resolve, reject) => {
         let searchView = [];
         filteredSet.forEach(model => {
-          let title = model.get('title');
-          if (new RegExp(searchStr, "i").test(title)) {
-            searchView.push(model);
+          if (model && model.id) {
+            let title = model.get('title');
+            if (new RegExp(searchStr, "i").test(title)) {
+              searchView.push(model);
+            }
           }
         });
         component.set('loadingTales', false);
         resolve(searchView);
-      });
-
-      promise.then((searchView) => {
+      }).then((searchView) => {
         component.set('searchView', searchView);
         component.set('modelsInView', searchView);
       });
@@ -208,28 +225,17 @@ export default Component.extend({
       this.sendAction('action', model); // sends to compose.js controller, action itemSelected, based on template spec.
     },
 
-    attemptDeletion(model) {
+    attemptDeletion(tale) {
       let component = this;
-      if (model) {
-        model.set('name', model.get('title'));
-        let taleId = model.get('_id');
-        let instances = component.get('store').query('instance', {
-          taleId: taleId,
-          reload: true,
-          adapterOptions: {
-            queryParams: {
-              limit: "0"
-            }
-          }
-        }).then((instances) => {
-          if (instances && instances.length) {
-            let message = `There ${instances.length === 1 ? "is" : "are"} ${instances.length} running instance${instances.length === 1 ? "" : "s"} associated to this tale.`;
+      if (tale) {
+        let instance = tale.get('instance');
+        if (instance) {
+            let message = `There is at least one running instance associated to this Tale. You must shut it down before deleting the Tale.`;
             component.set('cannotDeleteMessage', message);
             component.actions.openWarningModal.call(this);
-          } else {
-            component.actions.openDeleteModal.call(this, model);
-          }
-        });
+        } else {
+            component.actions.openDeleteModal.call(this, tale);
+        }
       }
     },
 
@@ -238,12 +244,9 @@ export default Component.extend({
       $(selector).modal('show');
     },
 
-    openDeleteModal(model) {
+    openDeleteModal(tale) {
       let component = this;
-      if (model) {
-        model.set('name', model.get('title'));
-      }
-      component.set('selectedTale', model);
+      component.set('selectedTale', tale);
       let selector = `.delete-modal-tale>.ui.delete-modal.modal`;
       later(() => {
         $(selector).modal('show');
@@ -257,7 +260,7 @@ export default Component.extend({
         reload: true
       }).then(() => {
         // refresh
-        component.updateModels(component, component.get('models'));
+        component.updateModels(component, component.get('models').tales);
         component.set('selectedTale', undefined);
         component.setFilter();
       });
@@ -273,77 +276,119 @@ export default Component.extend({
     addNew() {
       this.sendAction("onAddNew");
     },
-
-    launchTale(tale) {
-      let component = this;
-
-      component.set("tale_instantiating_id", tale.id);
-      component.set("tale_instantiating", true);
-
-      let onSuccess = function (item) {
-        component.set("tale_instantiating", false);
-        component.set("tale_instantiated", true);
-
-        let instance = O(JSON.parse(item));
-
-        component.set("instance", instance);
-
-        //Add the new instance to the list of instances in the right panel
-        component.get('taleLaunched')();
-
-        later(function () {
-          // Ensure this component is not destroyed by way of a route transition
-          if(!component.isDestroyed){
-            component.set("tale_instantiated", false);
-            component.set("tale_instantiating_id", 0);
+    
+    openCopyOnLaunchModal(taleToCopy) {
+      const component = this;
+      $('#copy-on-launch-modal').modal('show');
+      component.set('taleToCopy', taleToCopy);
+    },
+    
+    dismissLaunchError(tale) {
+      tale.set('launchStatus', 'stopped');
+      tale.set('launchError', null);
+      tale.set('launchResetRequest', null);
+    },
+    
+    submitCopyAndLaunch(taleToCopy) {
+      const self = this;
+      self.set('copyingTale', true);
+      const originalTale = self.get('taleToCopy');
+      if (originalTale) {
+        self.get('apiCall').copyTale(originalTale).then(taleCopy => {
+          self.set('copyingTale', false);
+          self.actions.closeCopyOnLaunchModal.call(self);
+          
+          // Convert JSON response to an EmberObject
+          let eTaleCopy = EmberObject.create(taleCopy);
+          
+          
+          // Push to models in view, if it should be shown
+          if (self.get('filter') === 'Mine') {
+            const tales = self.get('modelsInView');
+            tales.pushObject(eTaleCopy);
+            self.set('modelsInView', A(tales));
           }
-        }, 30000);
+          
+          // Launch the newly-copied tale
+          eTaleCopy.set('launchStatus', 'starting');
+          return self.get('apiCall').startTale(eTaleCopy).then((instance) => {
+            eTaleCopy.set('instance', instance);
+            self.router.transitionTo('run.view', eTaleCopy._id);
+          }).catch(err => {
+            console.error('Failed to launch Tale', err);
+            eTaleCopy.set('launchError');
+            eTaleCopy.set('launchStatus', 'error');
+          });
+        });
+      } else {
+        console.log('No tale to copy... something went wrong!');
+      }
+    },
 
-        let currentLoop = null;
-        // Poll the status of the instance every second using recursive iteration
-        let startLooping = function(func){
-          return later(function(){
-            currentLoop = startLooping(func);
-            component.get('store').findRecord('instance', instance.get('_id'), { reload:true })
-              .then(model => {
-                if(model.get('status') === 1) {
-                  component.get('taleLaunched')();
-                  cancel(currentLoop);
-                }
-              });
-          }, 1000);
-        };
-
-        //Start polling
-        currentLoop = startLooping();
+    startTale(tale) {
+      const self = this;
+      if (tale._accessLevel < 1) {
+        // Prompt for confirmation before copying and launching
+        return self.actions.openCopyOnLaunchModal.call(self, tale);
+      }
+      
+      tale.set('launchError', null);
+      tale.set('launchStatus', 'starting');
+      return self.apiCall.startTale(tale).then((instance) => {
+        tale.set('instance', instance);
+        self.router.transitionTo('run.view', tale._id);
+      }).catch(err => {
+        console.error('Failed to launch Tale', err);
+        tale.set('launchError', err.message || err);
+        tale.set('launchStatus', 'error');
+      });
+    },
+    
+    stopTale(tale) {
+      const self = this;
+      
+      // Reset state manually when re-launching
+      tale.set('launchError', null);
+      tale.set('launchStatus', 'stopping');
+      tale.set('launchResetRequest', null);
+      
+      // TODO: Abstract this to reusable helper?
+      let resetStatusAfterMs = (tale, delay) => {
+        let resetRequest = later(() => {
+          if (!self.isDestroyed) {
+            console.log('Resetting tale status:', tale);
+            tale.set('launchError', null);
+            tale.set('launchStatus', null);
+            tale.set('launchResetRequest', null);
+          }
+        }, delay);
+        tale.set('launchResetRequest', resetRequest);
       };
-
-      let onFail = function (item) {
+    
+      // TODO: Abstract this to reusable helper?
+      let handleStopError = (tale, err) => {
         // deal with the failure here
-        component.set("tale_instantiating", false);
-        component.set("tale_not_instantiated", true);
-        item = JSON.parse(item);
-
-        component.set("error_msg", item.message);
-
-        later(function () {
-          if(!component.isDestroyed){
-            component.set("tale_not_instantiated", false);
-            component.set("tale_instantiating_id", 0);
-          }
-        }, 10000);
-
+        tale.set('launchStatus', 'error');
+        tale.set('launchError', err.message || err);
+        if (console && console.error) {
+          console.error('Failed to stop Tale', err);
+        } else {
+          console.log('Failed to stop Tale', err);
+        }
+        
+        resetStatusAfterMs(tale, 10000);
       };
-
-      // submit: API
-      // httpCommand, taleid, imageId, folderId, instanceId, name, description, isPublic, config
-
-      this.get("apiCall").postInstance(
-        tale.get("_id"),
-        tale.get("imageId"),
-        null,
-        onSuccess,
-        onFail);
-    }
+      
+      // Add an artificial delay to make the user feel good
+      tale.instance.set('status', 0);
+      later(() => {
+        this.apiCall.stopTale(tale).then((instance) => {
+          tale.set('launchError', null);
+          tale.set('launchStatus', null);
+          console.log('Tale is now stopped:', tale);
+          resetStatusAfterMs(tale, 10000);
+        }).catch((err) => handleStopError(tale, err));
+      }, 1500);
+    },
   }
 });

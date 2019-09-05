@@ -1,6 +1,7 @@
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
- export default Service.extend({
+
+export default Service.extend({
   tokenHandler: service('token-handler'),
   store: service(),
   authRequest: service(),
@@ -24,9 +25,9 @@ import { inject as service } from '@ember/service';
     // Let XMLHttpRequest know to use cookies
     xmlHttp.withCredentials = true;
     xmlHttp.send(null);
-    return xmlHttp.responseText;
+    this.set('dataoneJWT', xmlHttp.responseText);
+    return this.dataoneJWT
   },
-
 
    hasD1JWT()  {
     let jwt = this.getDataONEJWT();
@@ -42,4 +43,4 @@ import { inject as service } from '@ember/service';
   getPortalEndpoint(coordinatingNode) {
     return coordinatingNode.replace('cn/v2', 'portal')
   }
- });
+});

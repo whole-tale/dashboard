@@ -17,7 +17,7 @@
                 Browse
             {{/link-to}}
 
-            {{#if internalState.currentInstanceId }}
+            {{!--{{#if internalState.currentInstanceId }}
                 {{#link-to 'run.view' internalState.currentInstanceId class="item" invokeAction=(action 'closeMenu' 'Run' 'play')}}
                     Run
                 {{/link-to}}
@@ -25,15 +25,15 @@
                 {{#link-to 'run' class="item" invokeAction=(action 'closeMenu' 'Run' 'play')}}
                     Run
                 {{/link-to}}
-            {{/if}}
+            {{/if}}--}}
 
             {{#link-to 'manage' class="item" invokeAction=(action 'closeMenu' 'Manage' 'upload')}}
                 Manage
             {{/link-to}}
 
-            {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
+            {{!-- {{#link-to 'compose' class="item" invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
                 Compose
-            {{/link-to}}
+            {{/link-to}} --}}
         {{/if}}
     {{/if}}
     {{#if loggedIn}}
@@ -81,7 +81,7 @@
                                 <i class="globe black icon"></i> Browse
                             {{/link-to}}
                         </li>
-                        <li class="bm-menu-item">
+                        {{!--<li class="bm-menu-item">
                             {{#if internalState.currentInstanceId }}
                                 {{#link-to 'run.view' internalState.currentInstanceId invokeAction=(action 'closeMenu' 'Run' 'play')}}
                                     <i class="play black icon"></i> Run
@@ -91,17 +91,17 @@
                                     <i class="play black icon"></i> Run
                                 {{/link-to}}
                             {{/if}}
-                        </li>
+                        </li>--}}
                         <li class="bm-menu-item">
                             {{#link-to 'manage' invokeAction=(action 'closeMenu' 'Manage' 'upload')}}
                                 <i class="cog black icon"></i> Manage
                             {{/link-to}}
                         </li>
-                        <li class="bm-menu-item">
+                        {{!-- <li class="bm-menu-item">
                             {{#link-to 'compose' invokeAction=(action 'closeMenu' 'Compose' 'plus')}}
                                 <i class="edit black icon"></i> Compose
                             {{/link-to}}
-                        </li>
+                        </li> --}}
                         <li class="bm-menu-item">
                             <a href="https://wholetale.readthedocs.io/en/stable/users_guide/index.html" target="_blank">
                                 <i class="info circle black icon"></i> User Guide

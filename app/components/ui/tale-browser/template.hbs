@@ -4,7 +4,7 @@
         padding: 5px !important;
     }
 
-    .item {
+    .search {
         padding: 0 1em;
     }
     .secondary > .header.item {
@@ -52,16 +52,6 @@
     .filter-pill .icon.close:hover {
         opacity: 1.0;
         color: #fff;
-    }
-    .tales-table-wrapper {
-        height: calc(100vh - (2.5rem + 48px + 64px + 94px + 50px + 30px + 86px + 2em));
-        overflow-y: auto;
-    }
-    .tales-table-wrapper>.table-condensed>tbody>tr>td:first-of-type {
-        padding: 8px 4px;
-    }
-    .tales-table-wrapper>.table-condensed>tbody>tr>td:nth-of-type(4) {
-        max-width: 30vw;
     }
     .ui.button.tertiary {
         padding: 0;
@@ -133,43 +123,30 @@
     }
 </style>
 
+
 <div class="ui inverted grey">
-    {{#if showSearch}}
-        <div class="item">
-            <div class="ui mini rounded icon search input">
-                {{input class="prompt" placeholder="Search tales..." value=searchStr key-up="searchFilter"}}
-                <i class="search icon"></i>
-            </div>
-            <div class="results"></div>
-        </div>
-        <div class="ui secondary stackable menu" style="margin: 0 10px;">
-            <div class="header item">
-                <i class="filter inverted large icon" {{action "toggleFiltersVisibility"}}></i>
-                {{#if showFilter}}
-                    {{#ui-dropdown class="selection" selected=filter onChange=(action (mut filter))}}
-                        <div class="default text">Apply Filter</div>
-                        <i class="dropdown icon"></i>
-                        <div class="menu">
-                            {{#each filters as |_filter|}}
-                                <div class="item" data-value="{{_filter}}">
-                                    {{_filter}}
-                                </div>
-                            {{/each}}
-                        </div>
-                    {{/ui-dropdown}}
-                {{else}}
-                    <div class="filter-option">
-                        <button class="btn btn-info filter-pill" type="button" data-dismiss="alert">
-                            <span class="filter-text">{{filter}}</span> <i class="icon close" aria-hidden="true" {{action "removeCurrentFilter"}}></i>
-                        </button>
-                    </div>
-                {{/if}}
-                <span class="item aligned right">
-                    <button class="ui button tertiary" {{action "toggleListView"}}>Switch to {{#if (eq listView true)}}cards{{else}}list{{/if}} view</button>
-                </span>
+    <div class="ui grid">
+        <div class="twelve wide column" id="tale-filters">
+            <div id="tale-filter-items" class="ui compact menu">
+                <a class="item clickable tale-filter-item {{if (eq filter 'All') 'active'}}" {{action 'selectFilter' 'All'}}>
+                    All Tales
+                </a>
+                <a class="item clickable tale-filter-item {{if (eq filter 'Mine') 'active'}}" {{action 'selectFilter' 'Mine'}}>
+                    My Tales
+                </a>
             </div>
         </div>
-    {{/if}}
+        <div class="four wide column">
+            <div id="tale-search" class="search">
+                <div class="ui icon search input">
+                    {{input class="prompt" placeholder="Search tales..." value=searchStr key-up="searchFilter"}}
+                    <i class="search icon"></i>
+                </div>
+                <div class="results"></div>
+            </div>
+        </div>
+    </div>
+    
     {{#unless modelsInView.length}}
         <div class="ui center aligned segment" style="color: black;">
             There are no tales to display for applied filter: {{filter}}
@@ -184,7 +161,7 @@
         </div>
     {{else}}
         {{#if (and modelsInView.length (eq listView true))}}
-            <div class="ui selectable {{guid}} doubling selectable cards tales-table-wrapper">
+            <div id="tales-table" class="ui selectable {{guid}} doubling selectable cards tales-table-short-intro">
                 <table class="table table-striped table-bordered table-condensed">
                     <thead>
                         <tr>
@@ -193,7 +170,7 @@
                             <th style="color: #515151">Title</th>
                             <th style="color: #515151">Description</th>
                             <th style="color: #515151">Author</th>
-                            <th style="color: #515151; text-align: center;">Launch</th>
+                            <th style="color: #515151; text-align: center;">Run</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -202,20 +179,17 @@
                                 <td>
                                     <div class="card">
                                         <div class="content" style="color: #515151">
+                                            <div class="left floated meta">{{if model.copyOfTale 'Copied Tale' 'Original Tale'}}</div>
+                                            <div class="left floated meta">{{if model.public 'PUBLIC' 'PRIVATE'}}</div>
                                             <div class="blurring dimmable fluid image" style="min-height: 48px;">
                                                 <div class="ui dimmer">
                                                     <div class="content">
                                                         <div class="center">
                                                             {{#if showLink}}
-                                                                {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
+                                                                {{#link-to 'run.view' model._id (query-params tab="metadata") class="ui inverted button"}}View{{/link-to}}
                                                             {{/if}}
                                                             {{#if showSelect}}
                                                                 <div class="ui inverted button" {{action 'select' model}}>Select</div>
-                                                            {{/if}}
-                                                            {{#if (and showDelete (gt model._accessLevel 0))}}
-                                                                <a class="ui tiny bottom right attached label" {{action 'attemptDeletion' model}}>
-                                                                    <i class="red remove icon"></i>
-                                                                </a>
                                                             {{/if}}
                                                         </div>
                                                     </div>
@@ -246,44 +220,42 @@
                                     <div style="color: #67c096; font-size: 75%">{{tale-authors-to-str model.authors model.creator}}</div>
                                 </td>
                                 <td style="text-align: center;">
-                                    {{#if (eq tale_instantiating_id model.id)}}
-                                        {{#if tale_instantiating}}
+                                    {{#if (or (eq model.launchStatus 'starting') (and model.instance (eq model.instance.status 0)))}}
+                                        <div class="ui message">
                                             <div class="ui segment" style="height:75%;">
                                                 <div class="ui active inverted dimmer">
-                                                    <div class="ui text loader" style="font-size:1rem;">Launching Tale {{truncate-name model.title}}</div>
+                                                    <div class="ui text loader" style="font-size:1rem;">Running Tale {{truncate-name model.title}}</div>
                                                 </div>
                                             </div>
-                                        {{/if}}
-                                        {{#if tale_instantiated}}
-                                            <div class="ui green icon message">
-                                                <div class="content">
-                                                    <div class="header">
-                                                        <i class="checkmark icon"></i>
-                                                        <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
+                                        </div>
+                                    {{else if (or (eq model.launchStatus 'started') (and model.instance (eq model.instance.status 1)))}}
+                                        <div class="ui green icon message">
+                                            <div class="content">
+                                                <div class="header">
+                                                    <i class="checkmark icon"></i>
+                                                    <p>The Tale '{{truncate-name model.title}}' is now running !</p>
+                                                </div>
+                                                <div class="ui buttons">
+                                                  {{#link-to 'run.view' model._id}}
+                                                    <div class="ui mini green icon button" style="margin-right: 10px">
+                                                      <i class="play icon"></i>
+                                                      Go to Tale
                                                     </div>
-                                                    <div class="ui buttons">
-                                                      {{#link-to 'run.view' instance._id}}
-                                                        <div class="ui mini green icon button" style="margin-right: 10px">
-                                                          <i class="play icon"></i>
-                                                          Go to Tale
-                                                        </div>
-                                                      {{/link-to}}
-                                                    </div>
+                                                  {{/link-to}}
                                                 </div>
                                             </div>
-                                        {{/if}}
-                                        {{#if tale_not_instantiated}}
-                                            <div class="ui red icon message">
-                                                <i class="remove circle icon"></i>
-                                                <div class="content">
-                                                    <div class="header">
-                                                        The Tale '{{truncate-name model.name}}' could not be launched !
-                                                        <br> {{error_msg}}
-                                                    </div>
+                                        </div>
+                                    {{else if (or (eq model.launchStatus 'error') (and model.instance (eq model.instance.status 2)))}}
+                                        <div class="ui red icon message">
+                                            <i class="remove circle icon"></i>
+                                            <div class="content">
+                                                <div class="header">
+                                                    <p>The Tale '{{truncate-name model.title}}' could not be run !</p>
+                                                    <p>{{model.launchError}}</p>
                                                 </div>
                                             </div>
-                                        {{/if}}
-                                    {{else}}
+                                        </div>
+                                    {{else if (or (not model.launchStatus) (not model.instance))}}
                                         <div class="ui mini green icon button" {{action 'launchTale' model}}>
                                             <i class="play round icon"></i>
                                         </div>
@@ -295,15 +267,21 @@
                 </table>
             </div>
         {{else}}
-            <div class="ui {{cardsPerRow}} doubling selectable cards {{guid}}" style="padding: 5px 20px 5px 20px; margin-bottom: 1em;">
+            <div id="tales-table" class="ui {{cardsPerRow}} doubling selectable cards {{guid}} tales-table-short-intro" style="padding: 5px 20px 5px 20px; margin-bottom: 1em; margin-top: 1em;">
                 {{#each modelsInView as |model|}}
-                    <div class="card">
-                        <div class="blurring dimmable fluid image" style="min-height: 250px;">
+                    <div class="tale card">
+                        <div class="extra content">
+                            <div class="right floated meta">{{if model.public 'PUBLIC' 'PRIVATE'}}</div>
+                            <div class="left floated meta">{{if model.copyOfTale 'Copied Tale' 'Original Tale'}}</div>
+                        </div>
+                        <div class="blurring dimmable fluid tale image">
                             <div class="ui dimmer">
                                 <div class="content">
                                     <div class="center">
-                                        {{#if showLink}}
-                                            {{#link-to modelView model class="ui inverted button"}}View{{/link-to}}
+                                        {{#if (and showLink model.instance)}}
+                                            {{#link-to 'run.view' model._id class="ui inverted button"}}View{{/link-to}}
+                                        {{else if showLink}}
+                                            {{#link-to 'run.view' model._id (query-params tab="metadata") class="ui inverted button"}}View{{/link-to}}
                                         {{/if}}
                                         {{#if showSelect}}
                                             <div class="ui inverted button" {{action 'select' model}}>Select</div>
@@ -317,74 +295,63 @@
                                 </div>
                             </div>
 
-                            <img src="{{model.illustration}}" height="400" style="height: 400px;" alt="Research Image" class="pic" />
+                            <img src="{{model.illustration}}" height="160" style="height: 160px;" alt="Research Image" class="pic" />
                             <span class="zoom-icon">
                                 <img src="{{model.icon}}" width="80" style="width: 80px;" alt="Compute Icon">
                             </span>
 
                         </div>
 
-                        <div class="content" style="color: #515151">
+                        <div class="content" style="color: #515151;height:155px;">
                             <div style="text-transform: uppercase; color: #ba975e;font-weight: 700;">{{model.category}}</div>
-                            <div style="font-weight: 700; font-size: 120%; padding: 0 0 5px 0"> {{truncate-name model.title}} </div>
-
-                            <div style="height:120px; overflow: scroll;">
-                                {{convert-markdown model.description}}
-                            </div>
+                            <div style="font-weight: 700; font-size: 120%; padding: 0 0 5px 0;height:77px;"> {{truncate-name model.title}} </div>
                             <div style="padding: 4px"></div>
-                            <div style="color: #67c096">
-                                {{tale-authors-to-str model.authors model.creator}}
+                            <div>
+                                by <span style="color: #67c096">{{tale-authors-to-str model.authors model.creator}}</span>
                             </div>
-                            <div style="padding: 8px"></div>
-                            <div class="ui right aligned grid" style="padding: 0; float: right;">
-                                <div class="right aligned row" style="padding: 0">
-                                    <div class="ui right aligned mini green labeled icon button" {{action 'launchTale' model}}>
-                                        <i class="play icon"></i>
-                                        Launch
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="extra content">
+                            <div class="ui right floated compact basic icon buttons borderless {{if (or model.instance (lt model._accessLevel 1)) 'disabled'}}">
+                                <button class="ui secondary button borderless {{if (or model.instance (lt model._accessLevel 1)) 'disabled'}}" {{action 'attemptDeletion' model}}
+                                        style="cursor:{{if model.instance 'not-allowed' 'pointer'}}!important;"
+                                        data-tooltip="{{if model.instance 'You must shut down your running instances to delete this Tale' 'Delete this Tale'}}{{if (lt model._accessLevel 1) 'You do not own this Tale'}}"
+                                        data-position="top right">
+                                    <i class="icon trash"></i>
+                                </button>
                             </div>
-                            {{#if (eq tale_instantiating_id model.id)}}
-                                {{#if tale_instantiating}}
-                                    <div class="ui segment" style="height:100px">
-                                        <div class="ui active inverted dimmer">
-                                            <div class="ui text loader">Launching Tale {{truncate-name model.title}}</div>
-                                        </div>
-                                    </div>
-                                {{/if}}
-                                {{#if tale_instantiated}}
-                                    <div class="ui green icon message">
-                                        <i class="checkmark icon"></i>
-                                        <div class="content">
-                                            <div class="header">
-                                                <p>The Tale '{{truncate-name model.title}}' has been launched !</p>
-
-                                                <div class="ui buttons">
-                                                    {{#link-to 'run.view' instance._id}}
-                                                      <div class="ui mini green icon button" style="margin-right: 10px">
-                                                        <i class="play icon"></i>
-                                                        Go to Tale
-                                                      </div>
-                                                    {{/link-to}}
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                {{/if}}
-                                {{#if tale_not_instantiated}}
-                                    <div class="ui red icon message">
-                                        <i class="remove circle icon"></i>
-                                        <div class="content">
-                                            <div class="header">
-                                                The Tale '{{truncate-name model.name}}' could not be launched !
-                                                <br> {{error_msg}}
-                                            </div>
-                                        </div>
-                                    </div>
-                                {{/if}}
+                            {{#if (or (or (eq model.launchStatus 'starting') (eq model.launchStatus 'stopping')) (and model.instance (eq model.instance.status 0)))}}
+                                <button class="ui basic primary loading compact button" disabled="true">
+                                    <i class="fas fa-pulse fa-spinner icon"></i>
+                                    Please Wait
+                                </button>
+                            {{else if (or (eq model.launchStatus 'started') (and model.instance (eq model.instance.status 1)))}}
+                                <button class="ui basic primary compact button borderless" {{action 'stopTale' model}}>
+                                    <i class="stop icon"></i>
+                                    Stop Tale
+                                </button>
+                            {{else if (or (eq model.launchStatus 'error') (and model.instance (eq model.instance.status 2)))}}
+                                <button class="ui basic negative compact button borderless" {{action 'startTale' model}}>
+                                    <i class="exclamation circle icon"></i>
+                                    Error
+                                </button>
+                            {{else if (or (not model.launchStatus) (not model.instance))}}
+                                <button class="ui basic primary compact button borderless" {{action 'startTale' model}}>
+                                    <i class="play icon"></i>
+                                    Run Tale
+                                </button>
                             {{/if}}
                         </div>
+                        
+                    
+                        {{!-- Display launch error, if necessary --}}
+                        {{#if model.launchError}}
+                        <div class="extra content" style="height:0;margin:0;padding:0;">
+                            <div class="ui tiny red message" style="max-height:200px;margin-top:5px;margin-bottom:20px;">
+                                <i class="close icon" {{action 'dismissLaunchError' model}}></i>
+                                <p>{{model.launchError}}</p>
+                            </div>
+                        </div>
+                        {{/if}}
                     </div>
                 {{/each}}
             </div>
@@ -393,7 +360,7 @@
 </div>
 
 {{ui/delete-modal
-    model=selectedTale
+    modelName=selectedTale.title
     modelType="tale"
     approveDelete=(action "approveDelete" selectedTale)
     denyDelete=(action "denyDelete" selectedTale)}}
@@ -413,3 +380,5 @@
         </div>
     </div>
 </div>
+
+{{ui/copy-on-launch-modal taleToCopy=taleToCopy modelsInView=modelsInView}}

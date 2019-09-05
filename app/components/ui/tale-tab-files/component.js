@@ -48,8 +48,8 @@ export default Component.extend({
     parentId: null,
     file: '',
     
-    allSelectedItems: computed('model.tale', function(dataSet) {
-      return A(this.get('model.tale').get('dataSet').map(item => {
+    allSelectedItems: computed('model', function(dataSet) {
+      return A(this.get('model').get('dataSet').map(item => {
         let {itemId, mountPath, _modelType} = item;
         return O({id: itemId, name: mountPath.replace(/\//g, ''), _modelType});
       }));
@@ -126,6 +126,11 @@ export default Component.extend({
             let state = this.get('internalState');
             let myController = this;
             let itemID = state.getCurrentFolderID();
+            if (!itemID) {
+                console.log('Invalid folderId:', itemID);
+                myController.set('fileData', { folderContents: [], itemContents: [] });
+                return;
+            }
       
             // Short-circuit: Datasets are no longer read from these endpoints
             let nav = this.get('currentNav');
@@ -181,7 +186,7 @@ export default Component.extend({
                 let workspaceRootId = state.workspaceRootId;
                 // the model is the instance, which has a reference
                 // to the taleId from which it was spun
-                let taleId = this.get('model.taleId');
+                let taleId = this.get('model.id');
                 folderContents = controller.get('store').query('folder', {
                     parentId: workspaceRootId,
                     parentType: 'folder',
@@ -279,7 +284,7 @@ export default Component.extend({
                 });
             } else if (nav.command === "user_data") {
 
-              let taleId = this.get('model.taleId'); // state.currentInstanceId;
+              let taleId = this.get('model.id'); // state.currentInstanceId;
                 let taleDatasetContents = controller.get('store').findRecord('tale', taleId)
                     .then(tale => {
                         return tale.get('dataSet').map(dataset => {
@@ -481,7 +486,7 @@ export default Component.extend({
             this.session.set('dataSet', dataSet);
           
             // Look up the current Tale by id
-            let taleId = this.get('model.taleId');
+            let taleId = this.get('model.id');
             this.get('store').findRecord('tale', taleId)
                 .then(tale => {
                     // Overwrite Tale dataSet with selected datasets

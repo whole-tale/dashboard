@@ -1,13 +1,19 @@
 import config from '../config/environment';
+import { later, cancel } from '@ember/runloop';
+import EmberObject from '@ember/object';
 import Service from '@ember/service';
 import $ from 'jquery';
 import {
     inject as service
 } from '@ember/service';
 
+const O = EmberObject.create.bind(EmberObject);
+
 export default Service.extend({
+    store: service(),
     tokenHandler: service('token-handler'),
     notificationHandler: service('notification-handler'),
+    store: service(),
     isAuthenticated: true,
 
     getFileContents(itemID, callback) {
@@ -199,45 +205,49 @@ export default Service.extend({
         client.send();
     },
 
-    postInstance(taleId, imageId, name, success, fail) {
-        // Creates an instance
-        let token = this.get('tokenHandler').getWholeTaleAuthToken();
-        let url = config.apiUrl + '/instance/';
-        let queryPars = "";
-        if ((taleId == null) && (imageId == null)) {
-            fail("You must provide a tale or an image ID");
-            return;
-        }
-
-        if (taleId == null) {
-            queryPars += "imageId=" + encodeURIComponent(imageId);
-        } else {
-            queryPars += "imageId=" + encodeURIComponent(imageId);
-            queryPars += "&";
-            queryPars += "taleId=" + encodeURIComponent(taleId);
-        }
-        if (name != null) {
-            queryPars += "&";
-            queryPars += "name=" + encodeURIComponent(name);
-        }
-
-        if (queryPars !== "") {
-            url += "?" + queryPars;
-        }
-        let client = new XMLHttpRequest();
-        client.open("post", url);
-        client.setRequestHeader("Girder-Token", token);
-        client.addEventListener("load", function () {
-            if (client.status === 200) {
-                success(client.responseText);
-            } else {
-                fail(client.responseText);
+    postInstance(taleId, imageId, name) {
+        return new Promise((resolve, reject) => {
+            // Creates an instance
+            const token = this.get('tokenHandler').getWholeTaleAuthToken();
+            let url = config.apiUrl + '/instance/';
+            let queryPars = "";
+            if ((taleId == null) && (imageId == null)) {
+                reject("You must provide a tale or an image ID");
+                return;
             }
+    
+            if (taleId == null) {
+                queryPars += "imageId=" + encodeURIComponent(imageId);
+            } else {
+                queryPars += "imageId=" + encodeURIComponent(imageId);
+                queryPars += "&";
+                queryPars += "taleId=" + encodeURIComponent(taleId);
+            }
+            if (name != null) {
+                queryPars += "&";
+                queryPars += "name=" + encodeURIComponent(name);
+            }
+    
+            if (queryPars !== "") {
+                url += "?" + queryPars;
+            }
+            let client = new XMLHttpRequest();
+            client.open("post", url);
+            client.setRequestHeader("Girder-Token", token);
+            client.addEventListener("load", function () {
+                if (client.status === 200) {
+                    let response = JSON.parse(client.responseText);
+                    resolve(EmberObject.create(response));
+                } else {
+                    let err = JSON.parse(client.responseText);
+                    reject(err);
+                }
+            });
+
+            client.addEventListener("error", reject);
+    
+            client.send();
         });
-
-        client.addEventListener("error", fail);
-
-        client.send();
     },
 
     exportTale(taleId, success, fail) {
@@ -354,6 +364,34 @@ export default Service.extend({
         client.send();
     },
     
+    // Calls POST /tale/:id/copy and returns the copied tale
+    copyTale(tale) {
+        return new Promise((resolve, reject) => {
+            if (tale._accessLevel > 0) {
+              // No need to copy, short-circuit
+              resolve(tale);
+            }
+    
+            const token = this.get('tokenHandler').getWholeTaleAuthToken();
+            let url = `${config.apiUrl}/tale/${tale._id}/copy`;
+    
+            let client = new XMLHttpRequest();
+            client.open('POST', url);
+            client.setRequestHeader("Girder-Token", token);
+            client.addEventListener("load", () => {
+                if (client.status === 200) {
+                    const taleCopy = JSON.parse(client.responseText);
+                    resolve(taleCopy);
+                } else {
+                    reject(client.responseText);
+                }
+            });
+            client.addEventListener("error", reject);
+            client.send();
+        });
+    },
+    
+    
     // Calls GET /instance/:id with the given id then immediately
     // calls PUT as a noop to restart the instance
     restartInstance(instance) {
@@ -427,7 +465,7 @@ export default Service.extend({
       });
     },
 
-      /**
+    /**
      * Returns the workspace folder ID for a Tale
      * @method getWorkspaceId
      * @param taleId The ID of the Tale
@@ -451,8 +489,186 @@ export default Service.extend({
       });
       client.addEventListener("error", fail);
       client.send();
-  },
-      /**
+    },
+    
+    /** 
+     * Wait for a model to meet a particular condition.
+     * 
+     * NOTE: You must provide a condition that, upon evaluating to "true", 
+     * will stop the watch loop
+     */
+    waitFor(model, condition = (response) => true) {
+        const self = this;
+        let currentLoop = null;
+        
+        if (!model || !model.modelType) { return; }
+        
+        return new Promise((resolve, reject) => {
+            // Poll the status of the model every second using recursive iteration
+            const startLooping = (func) => {
+              return later(() => {
+                currentLoop = startLooping(func);
+                self.get('store').findRecord(model._modelType, model._id, {
+                    reload: true
+                }).then(response => {
+                    if (condition(response)) {
+                        cancel(currentLoop);
+                        resolve(response);
+                    }
+                }).catch(err => {
+                    cancel(currentLoop);
+                    reject(err);
+                });
+              }, 1000);
+            };
+    
+            // Start polling
+            currentLoop = startLooping();
+        });
+    },
+    
+    /** 
+     * Wait for an image to reach a certain status. 
+     * By default, we wait for the image status to be "Available".
+     * 
+     * For reference, see https://github.com/whole-tale/girder_wholetale/blob/master/server/constants.py
+     * 
+     * class ImageStatus(object):
+     *     INVALID = 0
+     *     UNAVAILABLE = 1
+     *     BUILDING = 2
+     *     AVAILABLE = 3
+     */
+    waitForImage(image, targetStatus = 3) {
+        return this.waitFor(image, (image) => image.status === targetStatus)
+    },
+    
+    /** 
+     * Wait for an instance to reach a certain status. 
+     * By default, we wait for the instance status to be "Running".
+     * 
+     * For reference, see https://github.com/whole-tale/girder_wholetale/blob/master/server/constants.py
+     * 
+     * class InstanceStatus(object):
+     *     LAUNCHING = 0
+     *     RUNNING = 1
+     *     ERROR = 2
+     */
+    waitForInstance(instance, targetStatus = 1) {
+        return this.waitFor(instance, (instance) => instance.status === targetStatus)
+    },
+    
+    /** 
+     * Wait for a job to reach a certain status. 
+     * By default, we wait for the job status to be "Success".
+     * 
+     * For reference, see https://github.com/girder/girder/blob/master/plugins/jobs/girder_jobs/constants.py
+     * 
+     * class JobStatus(object):
+     *     INACTIVE = 0
+     *     QUEUED = 1
+     *     RUNNING = 2
+     *     SUCCESS = 3
+     *     ERROR = 4
+     *     CANCELED = 5
+     */
+    waitForJob(job, targetStatus = 3) {
+        return this.waitFor(job, (job) => job.status === targetStatus)
+    },
+  
+    /**
+     * Creates and returns an instance of the given Tale.
+     * Best used with the "waitForInstance" helper method below.
+     */
+    startTale(tale) {
+      const self = this;
+      if (tale.instance && (tale.instance.status === 1 || tale.instance.status === 0)) {
+          // Instance already exists, noop and return instance to watch status
+          return new Promise(resolve => resolve(tale.instance));
+      } else if (tale.instance && tale.instance.status === 2) {
+          // TODO: Job finished, previous instance creation failed
+          return this.stopTale(tale).then(instance => {
+            // TODO: Wait a few seconds for Girder to finish deleting the instance
+          }).then(() => {
+            // Create a new instance
+            return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
+          }).catch(err => {
+              tale.set('launchError', err.message || err);
+          });
+      }
+        
+      // Create Job to launch new instance
+      return this.postInstance(tale.get("_id"), tale.get("imageId"), null);
+    },
+  
+    /**
+     * Shuts down and deletes an instance of the given Tale.
+     * Best used with the "waitForInstance" helper method below.
+     */
+    stopTale(tale) {
+      const self = this;
+      return new Promise((resolve, reject) => {
+          if (tale.instance) {
+            if (tale.instance.status === 2) {
+              // TODO: Previous instance creation failed, proceed with caution
+            } else if (tale.instance.status === 0) {
+              // TODO: Instance is still launching... wait and then shut down
+            }
+              
+            // TODO: Create Job to destroy/cleanup instance
+            self.set('deletingInstance', true);
+            const model = tale.instance;
+            model.destroyRecord({
+                reload: true,
+                backgroundReload: false
+            }).then((response) => {
+                // TODO replace this workaround for deletion with something more robust
+                self.get('store').unloadRecord(model);
+                tale.set('instance', null);
+                resolve(response);
+            });
+    
+          } 
+      });
+    },
+  
+    fetchTaleData(taleId, fetchAll = true) {
+      const self = this;
+      const store = self.get('store');
+      return store.findRecord('tale', taleId).then(tale => {
+        // Fetch Tale instance, if one exists
+        store.query('instance', { 'taleId': tale.get('id') }).then(instances => {
+          tale.set('instance', instances.firstObject);
+        }).catch((error) => console.log(`Failed to fetch instance(s) for tale (${tale._id}):`, error));
+        
+        // Fetch Tale creator
+        store.findRecord('user', tale.get('creatorId')).then(creator => {
+          tale.set('creator', O({
+            firstName: creator.firstName,
+            lastName: creator.lastName,
+            orcid: ''
+          }));
+        }).catch((error) => console.log(`Failed to fetch creator for tale (${tale._id}):`, error));
+          
+        if (fetchAll) {
+          // Fetch Tale image
+          store.findRecord('image', tale.get('imageId')).then(image => {
+            tale.set('image', image);
+          }).catch((error) => console.log(`Failed to fetch image for tale (${tale._id}):`, error));
+          
+          // Fetch Tale Workspace folder
+          let folderId = tale.get('folderId');
+          if (folderId) {
+            store.findRecord('folder', folderId).then(folder => {
+              tale.set('folder', folder);
+            }).catch((error) => console.log(`Failed to fetch folder for tale (${tale._id}):`, error));
+          }
+        }
+        return tale;
+      });
+    },
+  
+    /**
      * Returns the ID of the home folder
      * @method getHomeId
      * @param success Function to be called on success

@@ -6,7 +6,7 @@
 
 /* Variables */
 $inverted-menu-bg: rgb(30, 46, 68);
-$inverted-menu-height: 48px;
+$inverted-menu-height: 58px;
 $main-menu-bg: rgb(206, 220, 226);
 $main-menu-height: 0px;//64px;
 $nav-vertical-menu-bg: rgb(243, 243, 243);
@@ -16,6 +16,16 @@ $bottom-separation: 2.5rem;
 $footer-height: 94px;
 $left-panel-padding: 38px;
 $wt-paddleboard-panel-tall-height: 63px;
+$wt-dashboard-header: 38px;
+$wt-dashboard-intro: 197px;
+$wt-dashboard-tabs: 54px;
+$wt-dashboard-search-filters: 40px;
+
+$wt-viewport: calc(100vh - (#{$inverted-menu-height} + #{$footer-height}));
+
+$wt-tale-card-image-height: 160px;
+$wt-tale-card-extra-content-height: 41px;
+$wt-tale-card-title-height: 177px;
 
 $mobile-screen: 690px;
 $tablet-screen: 995px;
@@ -655,7 +665,7 @@ ui.inverted.menu.wt.top {
       right: 0.5em;
     }
     
-    .mini.search {
+    .maxi.search {
       width: 100%;
     }
   }
@@ -1308,6 +1318,187 @@ wt.panel .wt.paddleboard.header i {
   height: stretch;
   height: -webkit-fill-available;
   height: -o-fill-available;
+}
+
+
+/** General / reusable helpers */
+.text-center {
+  text-align: center;
+}
+
+.scrollable {
+  overflow: auto;
+}
+
+.scrollable.y {
+  overflow-y: auto;
+}
+
+.scrollable.x {
+  overflow-x: auto;
+}
+
+.not.scrollable {
+  overflow: none;
+}
+
+.not.clickable {
+  cursor: not-allowed !important;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+
+/** Browse view styles */
+
+.wt-dash {
+  margin-bottom: 10px !important;
+}
+
+.wt-brand {
+  text-transform: none;
+  font-size: 1.5rem !important;
+  font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.1rem;
+  vertical-align: text-bottom;
+  color: rgba(0,0,0,0.95);
+  display: inline-block; 
+}
+
+.wt-brand-smaller {
+  text-transform: none;
+  vertical-align: text-bottom;
+  color: rgba(0,0,0,0.95);
+  display: inline-block; 
+  font-size: .9rem;
+  font-weight: 300;
+  letter-spacing: 0.2rem;
+  margin-right: 0.5em;
+}
+
+.dash-intro p.first-para {
+  margin-top: 10px;
+}
+
+#introduction-short {
+  font-size: 14px;
+}
+
+#introduction-long {
+  font-size: 15.4px;
+}
+
+#hide-introduction-link {
+  font-size: 16.8px;
+}
+
+#tale-browser-tabs > .item > .fa {
+  margin-right: 8px !important;
+} 
+
+#tale-browser-tabs > .item > img {
+  width: 20px;
+  margin-right: 8px !important;
+}
+
+#tale-browser-tabs > .item {
+  width: 33.333333%;
+  padding: 0 24px;
+  text-align: center;
+  font-size: 16.8px;
+  font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+#tale-tab-contents {
+  border: none;
+  background: #f5f5f5;
+}
+
+#tale-browser-tabs >  .item.active {
+  background: #f5f5f5;
+}
+
+.environments-table-wrapper {
+    height: calc(100vh - (#{$bottom-separation} + #{$inverted-menu-height} + 64px + 94px + 50px + 30px + 86px + 2em));
+    overflow-y: auto;
+}
+
+.tale-card-header { 
+  max-height: 40px;
+}
+
+#tale-search { 
+  float: right;
+}
+
+#tale-filters {
+  padding-left: 16px;
+}
+
+#tale-filter-items {
+  margin: 0em 0.35714286em;
+  border: none;
+  background: #f5f5f5;
+}
+
+.tale-filter-item {
+  align-self: center;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border: none;
+  padding: 0.78571429em 0.92857143em;
+  background: none;
+  -webkit-transition: color 0.1s ease;
+  transition: color 0.1s ease;
+  border-radius: 0.28571429rem;
+}
+
+.ui.basic.button.borderless {
+	-webkit-box-shadow: none !important;
+	-moz-box-shadow: none !important;
+	box-shadow: none !important;
+}
+
+.ui.basic.buttons.borderless {
+	border: none !important;
+}
+
+.tale.card {
+  height: calc(#{$wt-tale-card-image-height} + (2 * #{$wt-tale-card-extra-content-height}) + #{$wt-tale-card-title-height});
+}
+
+.tale.image {
+  height: #{$wt-tale-card-image-height};
+}
+
+.tale.title {
+  height: #{$wt-tale-card-title-height};
+}
+
+.tale.extra.content {
+  height: #{$wt-tale-card-extra-content-height};
+}
+
+.tales-table-long-intro {
+    height: calc(#{$wt-viewport} - (#{$wt-dashboard-intro} + #{$wt-dashboard-tabs} + #{$wt-dashboard-search-filters} + 80px));
+    overflow-y: auto;
+}
+
+.tales-table-short-intro {
+    height: calc(#{$wt-viewport} - (#{$wt-dashboard-header} + #{$wt-dashboard-tabs} + #{$wt-dashboard-search-filters} + 40px));
+    overflow-y: auto;
+}
+
+#tales-table {
+  cursor: inherit;
+}
+
+.disabled {
+  cursor: not-allowed !important;
+  opacity: .45 !important;
 }
 
 .tale-instances-item {

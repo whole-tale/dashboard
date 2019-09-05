@@ -112,7 +112,7 @@ export default Service.extend({
             if (existing && event.updated > existing.updated) {
                 // Overwrite existing event with new one
                 const index = events.indexOf(existing);
-                events.replace(index, 1, event);
+                events.replace(index, 1, [event]);
                 console.log(`Notification (${event.json._id}): updated event`, events);
             } else if (!existing) {
                 // Add a new event

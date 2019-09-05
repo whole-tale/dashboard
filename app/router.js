@@ -87,18 +87,17 @@ Router.map(function () {
 
   this.route('browse');
   this.route('run', function() {
-    this.route('index', { path: '/' });
-    this.route('view', { path: '/:instance_id'});
-    this.route('view', { path: '/:instance_id', queryParams:['auth']});
+    this.route('view', { path: '/:tale_id'});
   });
   this.route('manage', function () {
     this.route('index', { path: '/'});
     this.route('view', { path: '/:image_id'});
   });
-  this.route('compose', function() {
-    this.route('index', { path: '/' });
-    this.route('new', { path: '/new'});
-  });
+  
+  // this.route('compose', function() {
+  //   this.route('index', { path: '/' });
+  //   this.route('new', { path: '/new'});
+  // });
 
   // found this typical error:
   // this.route("search", { path: "/search" });
