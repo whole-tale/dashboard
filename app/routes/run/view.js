@@ -3,14 +3,15 @@ import { inject as service } from '@ember/service';
 import RSVP from 'rsvp';
 
 export default AuthenticateRoute.extend({
-  queryParams: {auth: false},
   internalState: service(),
-  apiCall: service('api-call'),
+  queryParams: {auth: false},
+  store: service(),
+  
   model(params) {
     this._super(...arguments);
-    this.get('internalState').set('currentInstanceId', params.tale_id);
-    //this.set('queryParams', params);
-    return this.apiCall.fetchTaleData(params.tale_id);
+    return this.store.findRecord('tale', params.tale_id, {
+      return: true
+    });
   },
   actions: {
     error(error, transition) {
