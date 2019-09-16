@@ -62,12 +62,6 @@ export default Component.extend(FullScreenMixin, {
         this._super(...arguments);
         let state = this.get('internalState');
         state.set('currentInstanceId', this.get('model').get('instance')._id);
-        let shouldButtonsAppear = state.currentInstanceId;
-        if (shouldButtonsAppear) {
-            this.set('hasSelectedTaleInstance', true);
-        } else {
-            this.set('hasSelectedTaleInstance', false);
-        }
         let controller = this;
         let apiCallService = this.get('apiCall');
         let success = (folderId) => {
