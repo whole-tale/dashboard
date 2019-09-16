@@ -5,14 +5,13 @@ import { later } from '@ember/runloop';
 import $ from 'jquery';
 
 export default Component.extend({
+  apiCall: service('api-call'),
   store: service(),
   router: service(),
-  
   title: "",
   imageId: "",
   dataSet: null,
   config: null,
-
   createAndLaunch: true,
   createButtonText: computed('createAndLaunch', function() {
     return this.get('createAndLaunch') ? 'Create New Tale and Launch' : 'Create New Tale';
@@ -156,9 +155,8 @@ export default Component.extend({
       self.closeModal();
 
       if (self.createAndLaunch) {
-        let newInstance = store.createRecord('instance');
-        return newInstance.save({adapterOptions:{queryParams:{imageId, taleId}}}).then(instance => {
-          this.newInstance = instance;
+        this.get('apiCall').startTale(this.newTale).then((instance) => {
+          newTale.set('instance', instance)
           later(() => { self.router.transitionTo('run.view', taleId); }, 500);
         })
         .catch(e => {
