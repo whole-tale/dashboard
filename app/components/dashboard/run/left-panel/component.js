@@ -61,6 +61,7 @@ export default Component.extend(FullScreenMixin, {
     init() {
         this._super(...arguments);
         let state = this.get('internalState');
+        state.set('currentInstanceId', this.get('model').get('instance')._id);
         let shouldButtonsAppear = state.currentInstanceId;
         if (shouldButtonsAppear) {
             this.set('hasSelectedTaleInstance', true);
@@ -106,10 +107,8 @@ export default Component.extend(FullScreenMixin, {
                 iframeWindow.parent.postMessage('message sent', window.location.origin);
             };
         }
-        
     },
 
-  
     /**
      * Used to check for the ?auth=true query parameter and potentially
      * open the publish modal
