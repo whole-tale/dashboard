@@ -21,7 +21,8 @@
             <div class="right borderless menu">
 
                 <div class="item">
-                    {{#if (and model.instance (eq model.instance.status 1))}}
+                  {{!-- Check if the instance is starting or has started --}}
+                    {{#if (and model.instance (or (eq model.instance.status 1) (eq model.instance.status 0)))}}
                         <div class="ui blue icon button" {{action 'stopTale' model}}>
                             <i class="fas fa-stop"></i> Stop
                         </div>
