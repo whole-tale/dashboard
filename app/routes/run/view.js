@@ -10,7 +10,7 @@ export default AuthenticateRoute.extend({
   model(params) {
     this._super(...arguments);
     return this.store.findRecord('tale', params.tale_id, {
-      return: true
+      refresh: true
     });
   },
   actions: {
