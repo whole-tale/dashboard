@@ -7,6 +7,7 @@ import $ from 'jquery';
 export default Component.extend({
   store: service(),
   router: service(),
+  apiCall: service(),
   
   title: "",
   imageId: "",
@@ -154,12 +155,12 @@ export default Component.extend({
 
       let taleId = item.id;
       self.closeModal();
+      
 
       if (self.createAndLaunch) {
-        let newInstance = store.createRecord('instance');
-        return newInstance.save({adapterOptions:{queryParams:{imageId, taleId}}}).then(instance => {
-          this.newInstance = instance;
+        self.get('apiCall').startTale(item).then(instance => {
           later(() => { self.router.transitionTo('run.view', taleId); }, 500);
+          self.get('apiCall').waitForInstance(instance);
         })
         .catch(e => {
           self.handleLaunchError(e);

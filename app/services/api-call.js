@@ -501,9 +501,10 @@ export default Service.extend({
         const self = this;
         let currentLoop = null;
         
-        if (!model || !model.modelType) { return; }
-        
         return new Promise((resolve, reject) => {
+            if (!model) { return reject("No model provided"); }
+            if (!model._modelType) { return reject("No modelType provided"); }
+        
             // Poll the status of the model every second using recursive iteration
             const startLooping = (func) => {
               return later(() => {
