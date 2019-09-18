@@ -3,7 +3,7 @@ import { inject as service } from '@ember/service';
 import FullScreenMixin from 'ember-cli-full-screen/mixins/full-screen';
 import config from '../../../../config/environment';
 import { scheduleOnce, later, cancel } from '@ember/runloop';
-import EmberObject, { computed } from '@ember/object';
+import EmberObject, { computed, observer } from '@ember/object';
 import { A } from '@ember/array';
 import { not, alias } from '@ember/object/computed';
 import $ from 'jquery';
@@ -50,6 +50,17 @@ export default Component.extend(FullScreenMixin, {
       'README.md',
       'metadata.xml'
     ],
+  
+    instancePoller: observer('model', 'model.instance', function() {
+      // If we see an instance that is "Launching", poll until it completes
+      const model = this.get('model')
+      if (model) {
+        const instance = model.get('instance');
+        if (instance && instance.get('status') === 0) {
+          this.apiCall.waitForInstance(model.instance);
+        }
+      }
+    }),
     
     repoDropdownClass: computed('publishStatus', function() {
         let status = this.publishStatus;
