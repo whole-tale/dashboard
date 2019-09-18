@@ -29,9 +29,9 @@
                         <div class="ui red icon button" {{action 'stopTale' model}}>
                             <i class="fas fa-times"></i> Stop
                         </div>
-                    {{else if taleTransitioning}}
-                        <div class="ui blue icon button {{if disableStartStop 'disabled'}}" 
-                                disabled={{if disableStartStop 'true' 'false'}} 
+                    {{else if (or taleTransitioning (and model.instance (eq model.instance.status 0)))}}
+                        <div class="ui blue icon button {{if (or disableStartStop (and model.instance (eq model.instance.status 0))) 'disabled'}}" 
+                                disabled={{if (or disableStartStop (and model.instance (eq model.instance.status 0))) 'true' 'false'}} 
                                 {{action 'stopTale' model}}
                                 title="Tired of waiting? Click here to shutdown and try again.">
                             <i class="fas fa-spinner fa-pulse" style="padding-right:0;"></i> Please Wait...
