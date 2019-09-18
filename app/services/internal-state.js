@@ -10,15 +10,6 @@ export default Service.extend({
     isAuthenticated: true,
     store: service(),
     folderNavs: service(),
-    currentInstanceId: computed({
-        get() {
-            return (localStorage.currentInstanceId && localStorage.currentInstanceId !== 'undefined') ? JSON.parse(localStorage.currentInstanceId) : undefined;
-        },
-        set(key, value) {
-            localStorage.currentInstanceId = JSON.stringify(value);
-            return value;
-        }
-    }),
 
     setCurrentNavCommand(val) {
         localStorage.currentNavCommand = val;

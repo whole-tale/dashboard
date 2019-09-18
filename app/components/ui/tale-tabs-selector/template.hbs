@@ -7,7 +7,7 @@
         {{/if}}
         <a class="item {{if activeTabFiles "active"}} auto-width" data-tab="tab-files" {{action "activateFiles"}}>Files</a>
         <a class="item {{if activeTabMetadata "active"}} auto-width" data-tab="tab-metadata" {{action "activateMetadata"}}>Metadata</a>
-        {{#if (and activeTabInteract (and model.instance (and (not-eq model.instance.status 0) (and model.instance.iframe (eq internalState.currentInstanceId model.id)))))}}
+        {{#if (and activeTabInteract (and model.instance (and (not-eq model.instance.status 0) model.instance.iframe)))}}
             <a href="{{model.url}}" target="_blank" class="external-icon-container">
                 <i class="external alternate right icon floated"></i>
             </a>

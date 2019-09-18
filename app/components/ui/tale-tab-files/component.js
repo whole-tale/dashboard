@@ -284,7 +284,7 @@ export default Component.extend({
                 });
             } else if (nav.command === "user_data") {
 
-              let taleId = this.get('model.id'); // state.currentInstanceId;
+              let taleId = this.get('model.id'); // The instance ID;
                 let taleDatasetContents = controller.get('store').findRecord('tale', taleId)
                     .then(tale => {
                         return tale.get('dataSet').map(dataset => {

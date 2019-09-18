@@ -61,7 +61,6 @@ export default Component.extend(FullScreenMixin, {
     init() {
         this._super(...arguments);
         let state = this.get('internalState');
-        state.set('currentInstanceId', this.get('model').get('instance')._id);
         let controller = this;
         let apiCallService = this.get('apiCall');
         let success = (folderId) => {
