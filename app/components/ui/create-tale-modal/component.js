@@ -7,6 +7,7 @@ import $ from 'jquery';
 export default Component.extend({
   store: service(),
   router: service(),
+  apiCall: service(),
   
   title: "",
   imageId: "",
@@ -109,6 +110,10 @@ export default Component.extend({
   // 
   // ---------------------------------------------------------------------------------
   closeModal() {
+    // Clear query string parameters (to prevent it opening after next refresh)
+    this.router.transitionTo({queryParams: {environment: null, name: null, uri: null, api: null}});
+    
+    // Close the modal
     $('.ui.modal.create-tale').modal('hide');
   },
   
@@ -148,25 +153,9 @@ export default Component.extend({
     let newTale = store.createRecord('tale', {title, imageId, dataSet, config});
 
     const self = this;
-    newTale.save().then(item => {
-      this.newTale = item;
-      self.sendAction('_refresh', item);
-
-      let taleId = item.id;
-      self.closeModal();
-
-      if (self.createAndLaunch) {
-        let newInstance = store.createRecord('instance');
-        return newInstance.save({adapterOptions:{queryParams:{imageId, taleId}}}).then(instance => {
-          this.newInstance = instance;
-          later(() => { self.router.transitionTo('run.view', taleId); }, 500);
-        })
-        .catch(e => {
-          self.handleLaunchError(e);
-        });
-      } else {
-        later(() => { self.router.transitionTo('run.view', taleId); }, 500);
-      }
+    newTale.save().then(tale => {
+      this.newTale = tale;
+      self.onTaleCreateSuccess(tale);
     }).catch(e => {
       self.handleError(e);
     });
@@ -187,17 +176,37 @@ export default Component.extend({
     let appendPath = 'import';
     let newTaleImport = this.get('store').createRecord('tale');
 
-    let queryParams = {taleKwargs:JSON.stringify(taleKwargs), lookupKwargs:JSON.stringify(lookupKwargs), imageId, url, spawn:this.createAndLaunch};
+    let queryParams = {taleKwargs:JSON.stringify(taleKwargs), lookupKwargs:JSON.stringify(lookupKwargs), imageId, url, spawn:false};
     let adapterOptions = {appendPath, queryParams};
     
     const self = this;
     newTaleImport.save({adapterOptions}).then((tale) => {
-      self.closeModal();
-      later(() => { self.router.transitionTo('run.view', tale._id) }, 500);
+      self.onTaleCreateSuccess(tale);
     }).catch(e => {
       self.handleError({responseJSON:{message:e+""}});
     });
-    
-    this.router.transitionTo({queryParams: {environment: null, name: null, uri: null, api: null}});
+  },
+  
+  onTaleCreateSuccess(tale) {
+    const self = this;
+    self.sendAction('_refresh', tale);
+    if (self.createAndLaunch) {
+      self.get('apiCall').startTale(tale).then(instance => {
+        self.get('apiCall').waitForInstance(instance);
+        self.gotoRun(tale);
+      })
+      .catch(e => {
+        self.handleLaunchError(e);
+      });
+    } else {
+      self.gotoRun(tale);
+    }
+    self.closeModal();
+  },
+  
+  gotoRun(tale) {
+    const self = this;
+    later(() => { self.router.transitionTo('run.view', tale._id); }, 500);
   }
+  
 });

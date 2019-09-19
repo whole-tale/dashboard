@@ -43,10 +43,10 @@ export default Component.extend({
               let eTaleCopy = EmberObject.create(taleCopy);
               self.apiCall.startTale(eTaleCopy).then((instance) => {
                 console.log(`Transitioning to /run/${eTaleCopy._id}`);
-                self.router.transitionTo('run.view', eTaleCopy._id);
                 self.apiCall.waitForInstance(instance).then((instance) => {
                     console.log('Tale is now started:', eTaleCopy);
-                  }).catch((err) => handleLaunchError(eTaleCopy, err));
+                }).catch((err) => handleLaunchError(eTaleCopy, err));
+                self.router.transitionTo('run.view', eTaleCopy._id);
               }).catch((err) => handleLaunchError(eTaleCopy, err));
             });
           }
