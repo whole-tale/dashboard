@@ -216,7 +216,7 @@ export default Component.extend({
       })
         .then(sils => {
           sils.forEach(result => {
-            let tale = this.get('model').get('tale');
+            let tale = this.get('model');
             tale.set('illustration', result.get('icon'));
           })
         });
