@@ -499,8 +499,11 @@ export default Component.extend({
                     context.actions.closeSelectDataModal();
                 });
         },
-
         openSelectDataModal() {
+            this.set('allSelectedItems', A(this.get('model').get('dataSet').map(item => {
+                let {itemId, mountPath, _modelType} = item;
+                return O({id: itemId, name: mountPath.replace(/\//g, ''), _modelType});
+            })));
             $('.ui.modal.selectdata').modal('show');
         },
         closeSelectDataModal() {
