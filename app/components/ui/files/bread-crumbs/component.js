@@ -48,7 +48,7 @@ export default Component.extend({
     },
 
     triggerBreadcrumbAction(currentNavName) {
-        if(this.get('cannotEditTale')) { return; }
+        if(this.get('cannotEditTale') && this.get('currentNav').command !== 'home') { return; }
         if(currentNavName === 'Data') {
             this.get('openSelectDataModal')();
         } else {
