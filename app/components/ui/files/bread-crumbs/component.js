@@ -1,12 +1,27 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
 import layout from './template';
+
+const taleStatus = Object.create({
+  NONE: -1,
+  READ: 0,
+  WRITE: 1,
+  ADMIN: 2,
+  SITE_ADMIN: 100
+});
 
 export default Component.extend({
   layout,
   classNames: ['breadcrumbs-container'],
   internalState: service(),
   displayFoldersMenu: false,
+  
+  // Flag that can be used to tell if the current user has permission to edit the Tale
+  canEditTale: computed('model._accessLevel', function () {
+        return this.get('model') && this.get('model') && this.get('model').get('_accessLevel') >= taleStatus.WRITE;
+  }).readOnly(),
+  cannotEditTale: computed.not('canEditTale').readOnly(),
 
   actions: {
     breadcrumbClicked(item) {
@@ -33,6 +48,7 @@ export default Component.extend({
     },
 
     triggerBreadcrumbAction(currentNavName) {
+        if(this.get('cannotEditTale')) { return; }
         if(currentNavName === 'Data') {
             this.get('openSelectDataModal')();
         } else {
