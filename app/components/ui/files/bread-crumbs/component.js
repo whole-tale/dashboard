@@ -3,7 +3,7 @@ import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
 import layout from './template';
 
-const taleStatus = Object.create({
+const TaleAccessLevel = Object.create({
   NONE: -1,
   READ: 0,
   WRITE: 1,
@@ -19,7 +19,7 @@ export default Component.extend({
   
   // Flag that can be used to tell if the current user has permission to edit the Tale
   canEditTale: computed('model._accessLevel', function () {
-        return this.get('model') && this.get('model') && this.get('model').get('_accessLevel') >= taleStatus.WRITE;
+        return this.get('model') && this.get('model') && this.get('model').get('_accessLevel') >= TaleAccessLevel.WRITE;
   }).readOnly(),
   cannotEditTale: computed.not('canEditTale').readOnly(),
 
