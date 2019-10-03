@@ -24,7 +24,7 @@ export default Component.extend(FullScreenMixin, {
       action: 'select',
       showOnFocus:false
     });
-    this.router.transitionTo({ queryParams: { environment: null, name: null, uri: null }});
+    this.router.transitionTo({ queryParams: { environment: null, name: null, uri: null, api: null, asTale: null }});
   },
   
   actions: {
