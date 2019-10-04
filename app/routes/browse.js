@@ -17,7 +17,9 @@ export default AuthenticateRoute.extend({
     // An optional API URL that can be used to access information about the dataset
     api: {refreshModel:true},
     // An optional environment name
-    environment: {refreshModel:true}
+    environment: {refreshModel:true},
+    // Whether to import data as Dataset or as a Workspace
+    asTale: {refreshModel:true}
   },
 
   async model(queryParams) {

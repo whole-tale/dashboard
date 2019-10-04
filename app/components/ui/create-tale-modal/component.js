@@ -13,6 +13,7 @@ export default Component.extend({
   imageId: "",
   dataSet: null,
   config: null,
+  asTale: false,
 
   createAndLaunch: true,
   createButtonText: computed('createAndLaunch', function() {
@@ -37,12 +38,12 @@ export default Component.extend({
     // Either imports tale from a dataset or creates a new tale
     // ---------------------------------------------------------------------------------
     createNewTaleButton() {
-      let {dataSet, config, title, imageId, datasetAPI} = this;
+      let {dataSet, config, title, imageId, datasetAPI, asTale} = this;
 
       title = title.trim();
 
       if (this.importing) {
-        this.importTaleFromDataset(title, imageId, dataSet||[], datasetAPI)
+        this.importTaleFromDataset(title, imageId, dataSet||[], datasetAPI, asTale);
       } else {
         this.createNewTale(title, imageId, dataSet||[], config||{});
       }
@@ -58,6 +59,7 @@ export default Component.extend({
       this.set('datasetAPI', null);
       this.set('imageId', null);
       this.set('dataSet', null);
+      this.set('asTale', null);
       this.set('title', null);
       this.set('errorMessage', "");
       $('.ui.dropdown.compute-environment').dropdown('clear');
@@ -70,10 +72,16 @@ export default Component.extend({
       try {
         if (this.queryParams.uri) {
           this.set('importing', true);
-          let {api, name, uri, environment} = this.queryParams;
+          let {api, name, uri, environment, asTale} = this.queryParams;
 
           this.set('dataSet', uri);
           this.set('title', name || uri);
+          
+          // asTale defaults to false; it will only be set to true if query param 
+          // is present and some form of the string "True" (case insensistive)
+          if (asTale && asTale.toLowerCase() === "true") {
+            this.set('asTale', true);
+          }
 
           let {official, nonOfficial} = this.computeEnvironments;
           let image = official.findBy('name', environment) || nonOfficial.findBy('name', environment);
@@ -111,7 +119,7 @@ export default Component.extend({
   // ---------------------------------------------------------------------------------
   closeModal() {
     // Clear query string parameters (to prevent it opening after next refresh)
-    this.router.transitionTo({queryParams: {environment: null, name: null, uri: null, api: null}});
+    this.router.transitionTo({queryParams: {environment: null, name: null, uri: null, api: null, asTale: null}});
     
     // Close the modal
     $('.ui.modal.create-tale').modal('hide');
@@ -165,7 +173,7 @@ export default Component.extend({
   // Calls POST /tale/import
   // Does nothing with the job that is returned (see comment below)
   // ---------------------------------------------------------------------------------
-  importTaleFromDataset(title, imageId, url, datasetAPI) {
+  importTaleFromDataset(title, imageId, url, datasetAPI, asTale) {
     let taleKwargs = {title};
 
     let lookupKwargs = {};
@@ -176,7 +184,16 @@ export default Component.extend({
     let appendPath = 'import';
     let newTaleImport = this.get('store').createRecord('tale');
 
-    let queryParams = {taleKwargs:JSON.stringify(taleKwargs), lookupKwargs:JSON.stringify(lookupKwargs), imageId, url, spawn:false};
+    // Pass-thru modal query parameters to import request
+    let queryParams = {
+      taleKwargs: JSON.stringify(taleKwargs),
+      lookupKwargs: JSON.stringify(lookupKwargs),
+      spawn:false,
+      imageId,
+      url,
+      asTale
+    };
+    
     let adapterOptions = {appendPath, queryParams};
     
     const self = this;
