@@ -19,7 +19,7 @@
                 {{#if (and (lt model.tale._accessLevel 1) (or (eq currentNav.command 'workspace') (eq currentNav.command 'user_data')))}}
                     <i id="add-item-button" class="fas fa-plus-circle icon blue large disabled" disabled style="cursor:not-allowed !important;"></i>
                 {{else}}
-                    <i id="add-item-button" class="fas fa-plus-circle icon blue large" {{action 'triggerBreadcrumbAction' currentNav.name}}></i>
+                    <i id="add-item-button" class="fas fa-plus-circle icon blue large {{if (and cannotEditTale (not (eq currentNav.command 'home'))) "disabled"}}" disabled={{if (and cannotEditTale (not (eq currentNav.command 'home'))) "true" "false"}} {{action 'triggerBreadcrumbAction' currentNav.name}}></i>
                 {{/if}}
                 {{#if displayFoldersMenu}}
                     {{#click-outside action=(action (mut displayFoldersMenu) false)}}

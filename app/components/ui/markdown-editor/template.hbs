@@ -9,7 +9,7 @@
     </a>
 </div>
 <div class="ui bottom attached tab segment active" data-tab="edit">
-    {{textarea value=markdownValue}}
+    {{textarea value=markdownValue readonly=readonly}}
 </div>
 <div class="ui bottom attached tab segment" data-tab="preview">
     {{convert-markdown markdownValue}}

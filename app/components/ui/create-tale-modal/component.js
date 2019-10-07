@@ -7,11 +7,13 @@ import $ from 'jquery';
 export default Component.extend({
   store: service(),
   router: service(),
+  apiCall: service(),
   
   title: "",
   imageId: "",
   dataSet: null,
   config: null,
+  asTale: false,
 
   createAndLaunch: true,
   createButtonText: computed('createAndLaunch', function() {
@@ -36,12 +38,12 @@ export default Component.extend({
     // Either imports tale from a dataset or creates a new tale
     // ---------------------------------------------------------------------------------
     createNewTaleButton() {
-      let {dataSet, config, title, imageId, datasetAPI} = this;
+      let {dataSet, config, title, imageId, datasetAPI, asTale} = this;
 
       title = title.trim();
 
       if (this.importing) {
-        this.importTaleFromDataset(title, imageId, dataSet||[], datasetAPI)
+        this.importTaleFromDataset(title, imageId, dataSet||[], datasetAPI, asTale);
       } else {
         this.createNewTale(title, imageId, dataSet||[], config||{});
       }
@@ -57,6 +59,7 @@ export default Component.extend({
       this.set('datasetAPI', null);
       this.set('imageId', null);
       this.set('dataSet', null);
+      this.set('asTale', null);
       this.set('title', null);
       this.set('errorMessage', "");
       $('.ui.dropdown.compute-environment').dropdown('clear');
@@ -69,10 +72,16 @@ export default Component.extend({
       try {
         if (this.queryParams.uri) {
           this.set('importing', true);
-          let {api, name, uri, environment} = this.queryParams;
+          let {api, name, uri, environment, asTale} = this.queryParams;
 
           this.set('dataSet', uri);
           this.set('title', name || uri);
+          
+          // asTale defaults to false; it will only be set to true if query param 
+          // is present and some form of the string "True" (case insensistive)
+          if (asTale && asTale.toLowerCase() === "true") {
+            this.set('asTale', true);
+          }
 
           let {official, nonOfficial} = this.computeEnvironments;
           let image = official.findBy('name', environment) || nonOfficial.findBy('name', environment);
@@ -109,6 +118,10 @@ export default Component.extend({
   // 
   // ---------------------------------------------------------------------------------
   closeModal() {
+    // Clear query string parameters (to prevent it opening after next refresh)
+    this.router.transitionTo({queryParams: {environment: null, name: null, uri: null, api: null, asTale: null}});
+    
+    // Close the modal
     $('.ui.modal.create-tale').modal('hide');
   },
   
@@ -148,25 +161,9 @@ export default Component.extend({
     let newTale = store.createRecord('tale', {title, imageId, dataSet, config});
 
     const self = this;
-    newTale.save().then(item => {
-      this.newTale = item;
-      self.sendAction('_refresh', item);
-
-      let taleId = item.id;
-      self.closeModal();
-
-      if (self.createAndLaunch) {
-        let newInstance = store.createRecord('instance');
-        return newInstance.save({adapterOptions:{queryParams:{imageId, taleId}}}).then(instance => {
-          this.newInstance = instance;
-          later(() => { self.router.transitionTo('run.view', taleId); }, 500);
-        })
-        .catch(e => {
-          self.handleLaunchError(e);
-        });
-      } else {
-        later(() => { self.router.transitionTo('run.view', taleId); }, 500);
-      }
+    newTale.save().then(tale => {
+      this.newTale = tale;
+      self.onTaleCreateSuccess(tale);
     }).catch(e => {
       self.handleError(e);
     });
@@ -176,7 +173,7 @@ export default Component.extend({
   // Calls POST /tale/import
   // Does nothing with the job that is returned (see comment below)
   // ---------------------------------------------------------------------------------
-  importTaleFromDataset(title, imageId, url, datasetAPI) {
+  importTaleFromDataset(title, imageId, url, datasetAPI, asTale) {
     let taleKwargs = {title};
 
     let lookupKwargs = {};
@@ -187,17 +184,46 @@ export default Component.extend({
     let appendPath = 'import';
     let newTaleImport = this.get('store').createRecord('tale');
 
-    let queryParams = {taleKwargs:JSON.stringify(taleKwargs), lookupKwargs:JSON.stringify(lookupKwargs), imageId, url, spawn:this.createAndLaunch};
+    // Pass-thru modal query parameters to import request
+    let queryParams = {
+      taleKwargs: JSON.stringify(taleKwargs),
+      lookupKwargs: JSON.stringify(lookupKwargs),
+      spawn:false,
+      imageId,
+      url,
+      asTale
+    };
+    
     let adapterOptions = {appendPath, queryParams};
     
     const self = this;
     newTaleImport.save({adapterOptions}).then((tale) => {
-      self.closeModal();
-      later(() => { self.router.transitionTo('run.view', tale._id) }, 500);
+      self.onTaleCreateSuccess(tale);
     }).catch(e => {
       self.handleError({responseJSON:{message:e+""}});
     });
-    
-    this.router.transitionTo({queryParams: {environment: null, name: null, uri: null, api: null}});
+  },
+  
+  onTaleCreateSuccess(tale) {
+    const self = this;
+    self.sendAction('_refresh', tale);
+    if (self.createAndLaunch) {
+      self.get('apiCall').startTale(tale).then(instance => {
+        self.get('apiCall').waitForInstance(instance);
+        self.gotoRun(tale);
+      })
+      .catch(e => {
+        self.handleLaunchError(e);
+      });
+    } else {
+      self.gotoRun(tale);
+    }
+    self.closeModal();
+  },
+  
+  gotoRun(tale) {
+    const self = this;
+    later(() => { self.router.transitionTo('run.view', tale._id); }, 500);
   }
+  
 });
