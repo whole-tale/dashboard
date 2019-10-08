@@ -185,7 +185,7 @@ export default Component.extend({
       const running = A([]);
       
       component.searchView.forEach(tale => {
-        const instance = instances.find(i => i.taleId === tale.id);
+        const instance = instances.filter(i => i.status !== 3).find(i => i.taleId === tale.id);
         if (instance) {
           running.pushObject(tale);
         }
