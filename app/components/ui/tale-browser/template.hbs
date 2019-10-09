@@ -267,93 +267,189 @@
                 </table>
             </div>
         {{else}}
-            <div id="tales-table" class="ui {{cardsPerRow}} doubling selectable cards {{guid}} tales-table-short-intro" style="padding: 5px 20px 5px 20px; margin-bottom: 1em; margin-top: 1em;">
-                {{#each modelsInView as |model|}}
-                    <div class="tale card">
-                        <div class="extra content">
-                            <div class="right floated meta">{{if model.public 'PUBLIC' 'PRIVATE'}}</div>
-                            <div class="left floated meta">{{if model.copyOfTale 'Copied Tale' 'Original Tale'}}</div>
-                        </div>
-                        <div class="blurring dimmable fluid tale image">
-                            <div class="ui dimmer">
-                                <div class="content">
-                                    <div class="center">
-                                        {{#if (and showLink model.instance)}}
-                                            {{#link-to 'run.view' model._id class="ui inverted button"}}View{{/link-to}}
-                                        {{else if showLink}}
-                                            {{#link-to 'run.view' model._id (query-params tab="metadata") class="ui inverted button"}}View{{/link-to}}
-                                        {{/if}}
-                                        {{#if showSelect}}
-                                            <div class="ui inverted button" {{action 'select' model}}>Select</div>
-                                        {{/if}}
-                                        {{#if (and showDelete (gt model._accessLevel 0))}}
-                                            <a class="ui tiny bottom right attached label" {{action 'attemptDeletion' model}}>
-                                                <i class="red remove icon"></i>
-                                            </a>
-                                        {{/if}}
+            <div id="tales-table" class="tales-table-short-intro" style="padding: 5px 20px 5px 20px; margin-bottom: 1em; margin-top: 1em;">
+                {{#if (gt runningTales.length 0)}}
+                    <div class="ui {{cardsPerRow}}  doubling selectable cards {{guid}}">
+                        {{#each runningTales as |model|}}
+                            <div class="tale card">
+                                <div class="extra content">
+                                    <div class="right floated meta">{{if model.public 'PUBLIC' 'PRIVATE'}}</div>
+                                    <div class="left floated meta">{{if model.copyOfTale 'Copied Tale' 'Original Tale'}}</div>
+                                </div>
+                                <div class="blurring dimmable fluid tale image">
+                                    <div class="ui dimmer">
+                                        <div class="content">
+                                            <div class="center">
+                                                {{#if (and showLink model.instance)}}
+                                                    {{#link-to 'run.view' model._id class="ui inverted button"}}View{{/link-to}}
+                                                {{else if showLink}}
+                                                    {{#link-to 'run.view' model._id (query-params tab="metadata") class="ui inverted button"}}View{{/link-to}}
+                                                {{/if}}
+                                                {{#if showSelect}}
+                                                    <div class="ui inverted button" {{action 'select' model}}>Select</div>
+                                                {{/if}}
+                                                {{#if (and showDelete (gt model._accessLevel 0))}}
+                                                    <a class="ui tiny bottom right attached label" {{action 'attemptDeletion' model}}>
+                                                        <i class="red remove icon"></i>
+                                                    </a>
+                                                {{/if}}
+                                            </div>
+                                        </div>
+                                    </div>
+        
+                                    <img src="{{model.illustration}}" height="160" style="height: 160px;" alt="Research Image" class="pic" />
+                                    <span class="zoom-icon">
+                                        <img src="{{model.icon}}" width="80" style="width: 80px;" alt="Compute Icon">
+                                    </span>
+        
+                                </div>
+        
+                                <div class="content" style="color: #515151;height:155px;">
+                                    <div style="text-transform: uppercase; color: #ba975e;font-weight: 700;">{{model.category}}</div>
+                                    <div style="font-weight: 700; font-size: 120%; padding: 0 0 5px 0;height:77px;"> {{truncate-name model.title}} </div>
+                                    <div style="padding: 4px"></div>
+                                    <div>
+                                        by <span style="color: #67c096">{{tale-authors-to-str model.authors model.creator}}</span>
                                     </div>
                                 </div>
+                                <div class="extra content">
+                                    <div class="ui right floated compact basic icon buttons borderless {{if (or model.instance (lt model._accessLevel 1)) 'disabled'}}">
+                                        <button class="ui secondary button borderless {{if (or model.instance (lt model._accessLevel 1)) 'disabled'}}" {{action 'attemptDeletion' model}}
+                                                style="cursor:{{if model.instance 'not-allowed' 'pointer'}}!important;"
+                                                data-tooltip="{{if model.instance 'You must shut down your running instances to delete this Tale' 'Delete this Tale'}}{{if (lt model._accessLevel 1) 'You do not own this Tale'}}"
+                                                data-position="top right">
+                                            <i class="icon trash"></i>
+                                        </button>
+                                    </div>
+                                    {{#if (or (or (eq model.launchStatus 'starting') (eq model.launchStatus 'stopping')) (and model.instance (eq model.instance.status 0)))}}
+                                        <button class="ui basic primary loading compact button" disabled="true">
+                                            <i class="fas fa-pulse fa-spinner icon"></i>
+                                            Please Wait
+                                        </button>
+                                    {{else if (or (eq model.launchStatus 'started') (and model.instance (eq model.instance.status 1)))}}
+                                        <button class="ui basic primary compact button borderless" {{action 'stopTale' model}}>
+                                            <i class="stop icon"></i>
+                                            Stop Tale
+                                        </button>
+                                    {{else if (or (eq model.launchStatus 'error') (and model.instance (eq model.instance.status 2)))}}
+                                        <button class="ui basic negative compact button borderless" {{action 'startTale' model}}>
+                                            <i class="exclamation circle icon"></i>
+                                            Error
+                                        </button>
+                                    {{else if (or (not model.launchStatus) (not model.instance))}}
+                                        <button class="ui basic primary compact button borderless" {{action 'startTale' model}}>
+                                            <i class="play icon"></i>
+                                            Run Tale
+                                        </button>
+                                    {{/if}}
+                                </div>
+                                
+                            
+                                {{!-- Display launch error, if necessary --}}
+                                {{#if model.launchError}}
+                                <div class="extra content" style="height:0;margin:0;padding:0;">
+                                    <div class="ui tiny red message" style="max-height:200px;margin-top:5px;margin-bottom:20px;">
+                                        <i class="close icon" {{action 'dismissLaunchError' model}}></i>
+                                        <p>{{model.launchError}}</p>
+                                    </div>
+                                </div>
+                                {{/if}}
                             </div>
-
-                            <img src="{{model.illustration}}" height="160" style="height: 160px;" alt="Research Image" class="pic" />
-                            <span class="zoom-icon">
-                                <img src="{{model.icon}}" width="80" style="width: 80px;" alt="Compute Icon">
-                            </span>
-
-                        </div>
-
-                        <div class="content" style="color: #515151;height:155px;">
-                            <div style="text-transform: uppercase; color: #ba975e;font-weight: 700;">{{model.category}}</div>
-                            <div style="font-weight: 700; font-size: 120%; padding: 0 0 5px 0;height:77px;"> {{truncate-name model.title}} </div>
-                            <div style="padding: 4px"></div>
-                            <div>
-                                by <span style="color: #67c096">{{tale-authors-to-str model.authors model.creator}}</span>
+                        {{/each}}
+                    </div>
+                    <p style="font-size: 1.1rem; margin-top:20px; color: rgba(0,0,0,0.87);">Currently running: <i>{{runningTales.length}} Tales (out of 2 maximum)</i></p>
+                        
+                    <hr />
+                {{/if}}
+                        
+                <div class="ui {{cardsPerRow}} doubling selectable cards {{guid}}">
+                   {{#each modelsInView as |model|}}
+                        <div class="tale card">
+                            <div class="extra content">
+                                <div class="right floated meta">{{if model.public 'PUBLIC' 'PRIVATE'}}</div>
+                                <div class="left floated meta">{{if model.copyOfTale 'Copied Tale' 'Original Tale'}}</div>
                             </div>
-                        </div>
-                        <div class="extra content">
-                            <div class="ui right floated compact basic icon buttons borderless {{if (or model.instance (lt model._accessLevel 1)) 'disabled'}}">
-                                <button class="ui secondary button borderless {{if (or model.instance (lt model._accessLevel 1)) 'disabled'}}" {{action 'attemptDeletion' model}}
-                                        style="cursor:{{if model.instance 'not-allowed' 'pointer'}}!important;"
-                                        data-tooltip="{{if model.instance 'You must shut down your running instances to delete this Tale' 'Delete this Tale'}}{{if (lt model._accessLevel 1) 'You do not own this Tale'}}"
-                                        data-position="top right">
-                                    <i class="icon trash"></i>
-                                </button>
+                            <div class="blurring dimmable fluid tale image">
+                                <div class="ui dimmer">
+                                    <div class="content">
+                                        <div class="center">
+                                            {{#if (and showLink model.instance)}}
+                                                {{#link-to 'run.view' model._id class="ui inverted button"}}View{{/link-to}}
+                                            {{else if showLink}}
+                                                {{#link-to 'run.view' model._id (query-params tab="metadata") class="ui inverted button"}}View{{/link-to}}
+                                            {{/if}}
+                                            {{#if showSelect}}
+                                                <div class="ui inverted button" {{action 'select' model}}>Select</div>
+                                            {{/if}}
+                                            {{#if (and showDelete (gt model._accessLevel 0))}}
+                                                <a class="ui tiny bottom right attached label" {{action 'attemptDeletion' model}}>
+                                                    <i class="red remove icon"></i>
+                                                </a>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <img src="{{model.illustration}}" height="160" style="height: 160px;" alt="Research Image" class="pic" />
+                                <span class="zoom-icon">
+                                    <img src="{{model.icon}}" width="80" style="width: 80px;" alt="Compute Icon">
+                                </span>
+    
                             </div>
-                            {{#if (or (or (eq model.launchStatus 'starting') (eq model.launchStatus 'stopping')) (and model.instance (eq model.instance.status 0)))}}
-                                <button class="ui basic primary loading compact button" disabled="true">
-                                    <i class="fas fa-pulse fa-spinner icon"></i>
-                                    Please Wait
-                                </button>
-                            {{else if (or (eq model.launchStatus 'started') (and model.instance (eq model.instance.status 1)))}}
-                                <button class="ui basic primary compact button borderless" {{action 'stopTale' model}}>
-                                    <i class="stop icon"></i>
-                                    Stop Tale
-                                </button>
-                            {{else if (or (eq model.launchStatus 'error') (and model.instance (eq model.instance.status 2)))}}
-                                <button class="ui basic negative compact button borderless" {{action 'startTale' model}}>
-                                    <i class="exclamation circle icon"></i>
-                                    Error
-                                </button>
-                            {{else if (or (not model.launchStatus) (not model.instance))}}
-                                <button class="ui basic primary compact button borderless" {{action 'startTale' model}}>
-                                    <i class="play icon"></i>
-                                    Run Tale
-                                </button>
+    
+                            <div class="content" style="color: #515151;height:155px;">
+                                <div style="text-transform: uppercase; color: #ba975e;font-weight: 700;">{{model.category}}</div>
+                                <div style="font-weight: 700; font-size: 120%; padding: 0 0 5px 0;height:77px;"> {{truncate-name model.title}} </div>
+                                <div style="padding: 4px"></div>
+                                <div>
+                                    by <span style="color: #67c096">{{tale-authors-to-str model.authors model.creator}}</span>
+                                </div>
+                            </div>
+                            <div class="extra content">
+                                <div class="ui right floated compact basic icon buttons borderless {{if (or model.instance (lt model._accessLevel 1)) 'disabled'}}">
+                                    <button class="ui secondary button borderless {{if (or model.instance (lt model._accessLevel 1)) 'disabled'}}" {{action 'attemptDeletion' model}}
+                                            style="cursor:{{if model.instance 'not-allowed' 'pointer'}}!important;"
+                                            data-tooltip="{{if model.instance 'You must shut down your running instances to delete this Tale' 'Delete this Tale'}}{{if (lt model._accessLevel 1) 'You do not own this Tale'}}"
+                                            data-position="top right">
+                                        <i class="icon trash"></i>
+                                    </button>
+                                </div>
+                                {{#if (or (or (eq model.launchStatus 'starting') (eq model.launchStatus 'stopping')) (and model.instance (eq model.instance.status 0)))}}
+                                    <button class="ui basic primary loading compact button" disabled="true">
+                                        <i class="fas fa-pulse fa-spinner icon"></i>
+                                        Please Wait
+                                    </button>
+                                {{else if (or (eq model.launchStatus 'started') (and model.instance (eq model.instance.status 1)))}}
+                                    <button class="ui basic primary compact button borderless" {{action 'stopTale' model}}>
+                                        <i class="stop icon"></i>
+                                        Stop Tale
+                                    </button>
+                                {{else if (or (eq model.launchStatus 'error') (and model.instance (eq model.instance.status 2)))}}
+                                    <button class="ui basic negative compact button borderless" {{action 'startTale' model}}>
+                                        <i class="exclamation circle icon"></i>
+                                        Error
+                                    </button>
+                                {{else if (or (not model.launchStatus) (not model.instance))}}
+                                    <button class="ui basic primary compact button borderless" {{action 'startTale' model}}>
+                                        <i class="play icon"></i>
+                                        Run Tale
+                                    </button>
+                                {{/if}}
+                            </div>
+                            
+                        
+                            {{!-- Display launch error, if necessary --}}
+                            {{#if model.launchError}}
+                            <div class="extra content" style="height:0;margin:0;padding:0;">
+                                <div class="ui tiny red message" style="max-height:200px;margin-top:5px;margin-bottom:20px;">
+                                    <i class="close icon" {{action 'dismissLaunchError' model}}></i>
+                                    <p>{{model.launchError}}</p>
+                                </div>
+                            </div>
                             {{/if}}
                         </div>
-                        
-                    
-                        {{!-- Display launch error, if necessary --}}
-                        {{#if model.launchError}}
-                        <div class="extra content" style="height:0;margin:0;padding:0;">
-                            <div class="ui tiny red message" style="max-height:200px;margin-top:5px;margin-bottom:20px;">
-                                <i class="close icon" {{action 'dismissLaunchError' model}}></i>
-                                <p>{{model.launchError}}</p>
-                            </div>
-                        </div>
-                        {{/if}}
-                    </div>
-                {{/each}}
+                    {{/each}}
+                </div>
             </div>
         {{/if}}
     {{/if}}
