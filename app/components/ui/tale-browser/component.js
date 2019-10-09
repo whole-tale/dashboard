@@ -313,7 +313,10 @@ export default Component.extend({
           eTaleCopy.set('launchStatus', 'starting');
           return self.get('apiCall').startTale(eTaleCopy).then((instance) => {
             eTaleCopy.set('instance', instance);
-            self.get('apiCall').waitForInstance(instance);
+            self.get('apiCall').waitForInstance(instance).then(() => {
+              eTaleCopy.set('launchError', null);
+              eTaleCopy.set('launchStatus', 'started');
+            });
             later(() => self.router.transitionTo('run.view', eTaleCopy._id), 500);
           }).catch(err => {
             console.error('Failed to launch Tale', err);
@@ -337,7 +340,10 @@ export default Component.extend({
       tale.set('launchStatus', 'starting');
       return self.apiCall.startTale(tale).then((instance) => {
         tale.set('instance', instance);
-        self.get('apiCall').waitForInstance(instance);
+        self.get('apiCall').waitForInstance(instance).then(() => {
+          tale.set('launchError', null);
+          tale.set('launchStatus', 'started');
+        });
         self.router.transitionTo('run.view', tale._id);
       }).catch(err => {
         console.error('Failed to launch Tale', err);
