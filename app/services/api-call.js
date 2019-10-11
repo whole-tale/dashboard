@@ -554,9 +554,10 @@ export default Service.extend({
      *     LAUNCHING = 0
      *     RUNNING = 1
      *     ERROR = 2
+     *     DELETING = 3
      */
     waitForInstance(instance, targetStatus = 1) {
-        return this.waitFor(instance, (instance) => instance.status === targetStatus)
+        return this.waitFor(instance, (instance) => instance.status === targetStatus || instance.status === 2);
     },
     
     /** 

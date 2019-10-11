@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import EmberObject, { computed, observer} from '@ember/object';
+import EmberObject, { computed, observer } from '@ember/object';
 import { A } from '@ember/array';
 import { later, cancel } from '@ember/runloop';
 import $ from 'jquery';
@@ -48,11 +48,13 @@ export default Component.extend({
   }),
   
   instancePoller: observer('modelsInView', 'instances', function() {
+    const component = this;
+    
     // When instance models change, check if we need to poll
-    this.modelsInView.forEach(model => {
+    component.modelsInView.forEach(model => {
       // If we see an instance that is "Launching", poll until it completes
       if (model.instance && model.instance.status === 0) {
-        this.apiCall.waitForInstance(model.instance);
+        component.apiCall.waitForInstance(model.instance);
       }
     });
   }),
@@ -174,6 +176,24 @@ export default Component.extend({
 
     component.set("modelsInView", modelsInView);
   },
+  
+  filterRunningTales() {
+    const component = this;
+        
+    // Check instances to gather running tales
+    component.get('store').findAll('instance').then(instances => {
+      const running = A([]);
+      
+      component.searchView.forEach(tale => {
+        const instance = instances.filter(i => i.status !== 3).find(i => i.taleId === tale.id);
+        if (instance) {
+          running.pushObject(tale);
+        }
+      });
+      
+      component.set('runningTales', running);
+    }).catch(err => console.error(err));
+  },
 
   actions: {
     toggleListView() {
@@ -217,6 +237,8 @@ export default Component.extend({
       }).then((searchView) => {
         component.set('searchView', searchView);
         component.set('modelsInView', searchView);
+        
+        this.filterRunningTales();
       });
     },
 
@@ -313,7 +335,10 @@ export default Component.extend({
           eTaleCopy.set('launchStatus', 'starting');
           return self.get('apiCall').startTale(eTaleCopy).then((instance) => {
             eTaleCopy.set('instance', instance);
-            self.get('apiCall').waitForInstance(instance);
+            self.get('apiCall').waitForInstance(instance).then(() => {
+              eTaleCopy.set('launchError', null);
+              eTaleCopy.set('launchStatus', 'started');
+            });
             later(() => self.router.transitionTo('run.view', eTaleCopy._id), 500);
           }).catch(err => {
             console.error('Failed to launch Tale', err);
@@ -337,7 +362,10 @@ export default Component.extend({
       tale.set('launchStatus', 'starting');
       return self.apiCall.startTale(tale).then((instance) => {
         tale.set('instance', instance);
-        self.get('apiCall').waitForInstance(instance);
+        self.get('apiCall').waitForInstance(instance).then(() => {
+          tale.set('launchError', null);
+          tale.set('launchStatus', 'started');
+        });
         self.router.transitionTo('run.view', tale._id);
       }).catch(err => {
         console.error('Failed to launch Tale', err);
@@ -384,11 +412,14 @@ export default Component.extend({
       // Add an artificial delay to make the user feel good
       tale.instance.set('status', 0);
       later(() => {
-        this.apiCall.stopTale(tale).then((instance) => {
+        self.apiCall.stopTale(tale).then((instance) => {
           tale.set('launchError', null);
           tale.set('launchStatus', null);
+          
           console.log('Tale is now stopped:', tale);
           resetStatusAfterMs(tale, 10000);
+        
+          self.filterRunningTales();
         }).catch((err) => handleStopError(tale, err));
       }, 1500);
     },
