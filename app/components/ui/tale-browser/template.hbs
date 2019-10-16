@@ -348,7 +348,7 @@
                                 {{!-- Display launch error, if necessary --}}
                                 {{#if model.launchError}}
                                 <div class="extra content" style="height:0;margin:0;padding:0;">
-                                    <div class="ui tiny red message" style="max-height:200px;margin-top:5px;margin-bottom:20px;">
+                                    <div class="ui tiny red message" style="max-height:200px;margin-top:5px;margin-bottom:20px;z-index:999;">
                                         <i class="close icon" {{action 'dismissLaunchError' model}}></i>
                                         <p>{{model.launchError}}</p>
                                     </div>
