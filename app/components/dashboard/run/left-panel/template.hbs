@@ -61,13 +61,10 @@
                         <div class="tale-instance-menu">
                             <div class="ui vertical left menu transition">
                                 <a class="item" href="https://wholetale.readthedocs.io/en/stable/users_guide/run.html" target="_blank">
-                                    Read the docs <div class="ui label transparent"><i class="fas fa-book"></i></div>
+                                    Learn more <div class="ui label transparent"><i class="fas fa-book"></i></div>
                                 </a>
                                 <a class="item"  {{action "exportTale" model.id 'bagit'}}>
                                   Export as BagIt <div class="ui label transparent"><i class="fas fa-archive"></i></div>
-                                </a>
-                                <a class="item" {{action "exportTale" model.id 'native'}}>
-                                  Export as Zip <div class="ui label transparent" ><i class="far fa-file-archive"></i></div>
                                 </a>
                                 {{!-- Only allow Tale Admins to access publish function --}}
                                 {{#if (gt model._accessLevel 1)}}
