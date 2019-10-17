@@ -28,7 +28,9 @@
               <div class="field">
                 {{input type="url" name='orcid-id' placeholder="https://orcid.org/0000-0002-1825-0097"  value=author.orcid readonly=cannotEditTale }}
               </div>
-              <i class="fa fa-window-close" aria-hidden="true" {{action 'removeAuthor' index}}></i>
+              {{#if (not cannotEditTale)}}
+                <i class="fa fa-window-close" aria-hidden="true" {{action 'removeAuthor' index}}></i>
+              {{/if}}
             </div>
           </div>
         </div>
@@ -40,6 +42,7 @@
       </div>
     {{/if}}
       
+    {{#if (not cannotEditTale)}}
     <div class="inline fields ui grid">
         <label class="two wide column right aligned"></label>
         <div class="field thirteen wide column add-author">
@@ -47,6 +50,7 @@
             <span {{action 'addNewAuthor'}}>&nbsp;Add an{{if taleAuthors 'other'}} author</span>
         </div>
     </div>
+    {{/if}}
 
     <div class="inline fields ui grid">
         <label class="two wide column right aligned">Category</label>
