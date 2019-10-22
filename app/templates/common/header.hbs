@@ -38,10 +38,10 @@
     {{/if}}
     {{#if loggedIn}}
         <div class="right menu">
-            <div class="item wt gravatar-container not-nav">
+            {{!--<div class="item wt gravatar-container not-nav">
                 <img src="{{gravatarUrl}}" class="gravatar" />
             </div>
-            <label class="item small font not-nav">{{user.firstName}} {{user.lastName}}</label>
+            <label class="item small font not-nav">{{user.firstName}} {{user.lastName}}</label>--}}
             {{!-- DEVNOTE: This should be enabled when Job Watcher is working properly
             <a class="item wt thin not-nav" data-tooltip="View running tasks."
                 data-position="bottom right" {{action 'openJobWatcher'}}>
@@ -62,10 +62,27 @@
                     </div>
                 {{/if}}
             </a>
-            <a class="item wt thin not-nav" {{action 'closeMenu' 'logout'}} 
+            {{!--<a class="item wt thin not-nav" {{action 'closeMenu' 'logout'}} 
               data-tooltip="Log out from the Whole Tale." data-position="bottom right">
                 <i class="sign out white large icon"></i>
-            </a>
+            </a>--}}
+            
+            <div id="user-dropdown-menu" class="ui dropdown item wt thin not-nav" style="max-width:unset;">
+                <i class="user white large icon"></i>
+                <div class="menu">
+                  <a class="header item" style="text-align:left;vertical-align:middle;">
+                    <img src="{{gravatarUrl}}" class="ui middle aligned avatar image" />
+                    <span>{{user.firstName}} {{user.lastName}}</span>
+                  </a>
+                  <div class="divider"></div>
+                  {{#link-to 'settings' class="item" activeClass="never-active"}}
+                    <span>Settings</span>
+                  {{/link-to}}
+                  <a class="item" {{action 'logout'}}>
+                    <span>Log Out</span>
+                  </a>
+                </div>
+            </div>
         </div>
         <div class="ember-burger-menu bm-item--push bm--slide right translucent-overlay {{if mobileMenuDisplay 'is-open'}}">
             <div class="bm-menu-container">
@@ -112,18 +129,35 @@
                                 <i class="tasks black icon"></i> {{if showNotificationStream 'Hide' 'Show'}} Notifications
                             </a>
                         </li>
-                        <li class="bm-menu-item">
+                        {{!--<li class="bm-menu-item">
                             <a {{action 'closeMenu' 'logout'}}>
                                 <i class="sign out black icon"></i> Log Out
                             </a>
+                        </li>--}}
+                        <li class="bm-menu-item">
+                            <div class="ui dropdown item">
+                            <i class="user icon"></i>
+                            <i class="dropdown icon"></i>
+                            <div class="menu">
+                              <a class="header item" {{action 'closeMenu'}}>
+                                <div class="wt gravatar-container not-nav">
+                                    <img src="{{gravatarUrl}}" class="gravatar"  style="border-radius: 50%;"/>
+                                </div>
+                                <label>{{user.firstName}} {{user.lastName}}</label>
+                              </a>
+                              <a class="item" {{action 'closeMenu' 'logout'}}>
+                                <i class="sign out black icon"></i> Log Out
+                              </a>
+                            </div>
+                          </div>
                         </li>
                     </ul>
-                    <div style="position: absolute; bottom: 1rem; width: 100%; text-align: center;">
+                    {{!--<div style="position: absolute; bottom: 1rem; width: 100%; text-align: center;">
                         <div class="wt gravatar-container not-nav">
                             <img src="{{gravatarUrl}}" class="gravatar"  style="border-radius: 50%;"/>
                         </div>
                         <label>{{user.firstName}} {{user.lastName}}</label>
-                    </div>
+                    </div>--}}
                 </div>
             </div>
             <div class="bm-outlet">
