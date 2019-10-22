@@ -1,0 +1,55 @@
+<div class="ui stackable grid container">
+    <div class="row" style="margin-top:2rem">
+
+      <div class="four wide column">
+        <div class="ui secondary vertical pointing menu fluid" id="settings-menu">
+          <a class="active item">
+            <i class="user plus icon"></i> Additional accounts
+          </a>
+        </div>
+      </div>
+      <div class="eleven wide right floated column" id="add-acct">
+        <h2>Connect Additional Accounts</h2>
+        
+        <p class="explanation">Authorize WholeTale to access and/or publish data on your behalf</p>
+        
+        <div class="ui segments">
+          {{!-- ORCID --}}
+          <div class="ui segment">
+            <button class="ui disabled basic right floated button">Connect Account</button>
+            <p><img class="ui avatar image" src="/images/orcid.png"> ORCID <i class="database icon"></i><i class="share icon"></i></p>
+            <div class="connected">
+              <div class="ui basic segment">
+                <a class="ui right floated disconnect button">Disconnect</a>
+                <p>Authorized by <i>k-davis</i></p>
+              </div>
+            </div>
+          </div>
+          
+          {{!-- Zenodo --}}
+          <div class="ui segment">
+            <button class="ui primary basic right floated button" id="test">Connect Account</button>
+            <p><img class="ui avatar image" src="/images/zenodo.png"> Zenodo <i class="share icon"></i></p>
+            <div class="connected">
+              <div class="ui basic segment">
+                <a class="ui right floated disconnect button">Disconnect</a>
+                <p>Authorized on <a>zenodo.org</a> by <i>k-davis</i></p>
+              </div>
+              <div class="ui basic segment">
+                <a class="ui right floated disconnect button">Disconnect</a>
+                <p>Authorized on <a>sandbox.zenodo.org</a> by <i>k-davis</i></p>
+              </div>
+            </div>
+          </div>
+          
+          {{!-- DesignSafe --}}
+          <div class="ui segment">
+            <button class="ui primary basic right floated button">Connect Account</button>
+            <p><img class="ui avatar image" src="/images/designsafe.png"> DesignSafe <i class="database icon"></i></p>
+          </div>
+        </div>
+        
+        <p class="footnote"><i class="database icon"></i> Access data <span>|</span> <i class="share icon"></i> Publish</p>
+      </div>
+    </div>
+  </div>
