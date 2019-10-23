@@ -48,14 +48,14 @@
                     <i class="tasks icon white"></i>
             </a>    
             --}}
-            <a class="item wt thin not-nav" target="_blank"
+            <a class="item wt not-nav" target="_blank"
               href="https://wholetale.readthedocs.io/en/stable/users_guide/index.html"
               data-tooltip="Read the Whole Tale User Guide." data-position="bottom right">
-                <i class="info circle white large icon"></i>
+                <i class="info circle white icon"></i>
             </a>
-            <a class="item wt thin not-nav" target="_blank" {{action 'toggleShowNotifications'}}
+            <a class="item wt not-nav" target="_blank" {{action 'toggleShowNotifications'}}
               href="#" data-tooltip="Show or hide server notifications." data-position="bottom right">
-                <i class="tasks white large icon"></i>
+                <i class="tasks white icon"></i>
                 {{#if (gt notificationStream.events.length 0)}}
                     <div id="event-notification-counter" class="floating ui red label">
                         {{ notificationStream.events.length }}
@@ -67,19 +67,19 @@
                 <i class="sign out white large icon"></i>
             </a>--}}
             
-            <div id="user-dropdown-menu" class="ui dropdown item wt thin not-nav" style="max-width:unset;">
-                <i class="user white large icon"></i>
+            <div id="user-dropdown-menu" class="ui dropdown item wt not-nav">
+                <i class="user circle white icon"></i>
                 <div class="menu">
-                  <a class="header item" style="text-align:left;vertical-align:middle;">
-                    <img src="{{gravatarUrl}}" class="ui middle aligned avatar image" />
+                  <a class="header item nomargin">
+                    <img src="{{gravatarUrl}}" class="gravatar" />
                     <span>{{user.firstName}} {{user.lastName}}</span>
                   </a>
                   <div class="divider"></div>
-                  {{#link-to 'settings' class="item" activeClass="never-active"}}
+                  {{#link-to 'settings' class="item nomargin" activeClass="never-active"}}
                     <span>Settings</span>
                   {{/link-to}}
-                  <a class="item" {{action 'logout'}}>
-                    <span>Log Out</span>
+                  <a class="item nomargin" {{action 'logout'}}>
+                    <span>Log out</span>
                   </a>
                 </div>
             </div>
