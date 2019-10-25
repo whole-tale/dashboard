@@ -1,6 +1,6 @@
 <div class="ui stackable grid container">
     <div class="row" style="margin-top:2rem">
-
+        
       <div class="four wide column">
         <div class="ui secondary vertical pointing menu fluid" id="settings-menu">
           <a class="active item">
@@ -8,48 +8,131 @@
           </a>
         </div>
       </div>
+      
       <div class="eleven wide right floated column" id="add-acct">
         <h2>Connect Additional Accounts</h2>
         
         <p class="explanation">Authorize WholeTale to access and/or publish data on your behalf</p>
         
         <div class="ui segments">
-          {{!-- ORCID --}}
-          <div class="ui segment">
-            <button class="ui disabled basic right floated button">Connect Account</button>
-            <p><img class="ui avatar image" src="/images/orcid.png"> ORCID <i class="database icon"></i><i class="share icon"></i></p>
-            <div class="connected">
-              <div class="ui basic segment">
-                <a class="ui right floated disconnect button">Disconnect</a>
-                <p>Authorized by <i>k-davis</i></p>
+          {{#each sortedProviders as |provider|}}
+            <div class="ui segment">
+              {{!-- TODO: Disable when? --}}
+              <button class="ui basic right floated blue button" {{action 'showConnectExtAcctModal' provider}}>Connect Account</button>
+              
+              <p>
+                {{#if provider.logo}}
+                  <img class="ui avatar image" src="data:image/png;base64,{{provider.logo}}" alt="{{provider.fullName}}"> 
+                {{/if}}
+                {{provider.fullName}}
+              
+                {{#each provider.tags as |tag|}}
+                  {{#if (eq tag 'data')}}
+                    <i class="database icon"></i>
+                  {{/if}}
+                
+                  {{#if (eq tag 'publish')}}
+                    <i class="share icon"></i>
+                  {{/if}}
+                {{/each}}
+              </p>
+              
+              <div class="connected">
+                {{#each user.otherTokens as |token|}}
+                  {{#if (and token.provider (eq provider.name token.provider))}}
+                    <div class="ui basic segment">
+                      {{!-- TODO: Disable when? --}}
+                      <a class="ui right floated disconnect button" {{action 'showConfirmDeleteModal' provider token}}>Disconnect</a>
+                      
+                      {{!-- TODO: Where do we information on who authorized the connection? --}}
+                      {{#if token.resource_server}}
+                        <p>Authorized on <a href="{{token.resource_server}}" target="_blank">{{token.resource_server}}</a></p>
+                      {{else}}
+                        <p>Authorized</p>
+                      {{/if}}
+                    </div>
+                  {{/if}}
+                {{/each}}
               </div>
             </div>
-          </div>
-          
-          {{!-- Zenodo --}}
-          <div class="ui segment">
-            <button class="ui primary basic right floated button" id="test">Connect Account</button>
-            <p><img class="ui avatar image" src="/images/zenodo.png"> Zenodo <i class="share icon"></i></p>
-            <div class="connected">
-              <div class="ui basic segment">
-                <a class="ui right floated disconnect button">Disconnect</a>
-                <p>Authorized on <a>zenodo.org</a> by <i>k-davis</i></p>
-              </div>
-              <div class="ui basic segment">
-                <a class="ui right floated disconnect button">Disconnect</a>
-                <p>Authorized on <a>sandbox.zenodo.org</a> by <i>k-davis</i></p>
-              </div>
-            </div>
-          </div>
-          
-          {{!-- DesignSafe --}}
-          <div class="ui segment">
-            <button class="ui primary basic right floated button">Connect Account</button>
-            <p><img class="ui avatar image" src="/images/designsafe.png"> DesignSafe <i class="database icon"></i></p>
-          </div>
+          {{/each}}
         </div>
         
+        {{!-- Icon legend --}}
         <p class="footnote"><i class="database icon"></i> Access data <span>|</span> <i class="share icon"></i> Publish</p>
       </div>
     </div>
+</div>
+      
+      
+<div class="ui dimmer modals page">
+  <div class="ui modal apikey">
+    <i class="close icon"></i>
+    <div class="header">
+      {{!-- TODO: How to handle article appropriately? (e.g. "a/an ORCID Account") --}}
+      <img class="ui avatar image" src="data:image/png;base64,{{selectedProvider.logo}}"> Connect {{selectedProvider.fullName}} Account
+    </div>
+    <div class="content">
+  
+      <form class="ui form">
+        <div class="two fields">
+          <div class="field">
+            <label>{{selectedProvider.fullName}} Repository</label>
+            {{!-- <select name="newResourceServer" class="ui fluid search dropdown selection">
+              <option value="">Choose a repository...</option>
+              {{#each selectedProvider.targets as |target|}}
+                <option value={{target}}>{{target}}</option>
+              {{/each}}
+            </select> --}}
+            <div id="newResourceServerDropdown" class="ui fluid selection dropdown">
+              {{input type="hidden" name="newResourceServer" value=newResourceServer}}
+              <i class="dropdown icon"></i>
+              <div class="default text">Choose a repository...</div>
+              <div class="menu">
+                {{#each selectedProvider.targets as |target|}}
+                  <div class="item" data-value={{target}}>{{target}}</div>
+                {{/each}}
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>API Token 
+              {{#if selectedProvider.docs_href}}
+                <a href="{{selectedProvider.docs_href}}" style="float:right; font-weight:normal">Get from {{selectedProvider.fullName}} <i class="external square alternate icon"></i></a>
+              {{/if}}
+            </label>
+            {{input type="text" name="API Token" placeholder="Enter an API key" value=newApiKey}}
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <div class="actions">
+      <a class="ui deny button" {{action 'clearConnectExtAcctModal'}}>
+        Cancel
+      </a>
+      <a class="ui positive primary right button" {{action 'connectProvider' selectedProvider newResourceServer newApiKey}}>
+        Connect
+      </a>
+    </div>
   </div>
+  
+    <div class="ui modal revoke-apikey">
+    <i class="close icon"></i>
+    <div class="header">
+      <img class="ui avatar image" src="data:image/png;base64,{{selectedProvider.logo}}"> Revoke {{selectedProvider.fullName}} Account
+    </div>
+    <div class="content">
+      Are you sure you want to revoke this API key?
+  
+    </div>
+    <div class="actions">
+      <a class="ui deny button">
+        Cancel
+      </a>
+      <a class="ui positive primary right button" {{action 'confirmRevokeToken' selectedToken}}>
+        Confirm
+      </a>
+    </div>
+  </div>
+</div>

@@ -1573,6 +1573,7 @@ p.explanation {
 #add-acct .footnote {
   font-size: 0.9rem;
   padding-left: 1rem;
+  margin-bottom: 50px;
   color: #555;
 }
 
@@ -1583,4 +1584,14 @@ p.explanation {
 #add-acct .disconnect.button {
   color: #e5501c;
   background: unset;
+}
+
+.ui.modal.apikey .content {
+  padding: 21px;
+  overflow: unset;
+}
+
+.ui.modal.revoke-apikey .content {
+  padding: 21px;
+  overflow: unset;
 }

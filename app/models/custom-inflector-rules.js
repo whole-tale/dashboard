@@ -18,6 +18,7 @@ inflector.uncountable('group');
 inflector.uncountable('job');
 inflector.uncountable('dm');
 inflector.uncountable('workspace');
+inflector.uncountable('account');
 
 // Meet Ember Inspector's expectation of an export
 export default {};
