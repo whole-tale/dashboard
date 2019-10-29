@@ -98,7 +98,7 @@
           <div class="field">
             <label>API Token 
               {{#if selectedProvider.docs_href}}
-                <a href="{{selectedProvider.docs_href}}" style="float:right; font-weight:normal">Get from {{selectedProvider.fullName}} <i class="external square alternate icon"></i></a>
+                <a href="{{selectedProvider.docs_href}}" style="float:right; font-weight:normal" target="_blank">Get from {{selectedProvider.fullName}} <i class="external square alternate icon"></i></a>
               {{/if}}
             </label>
             {{input type="text" name="API Token" placeholder="Enter an API key" value=newApiKey}}
