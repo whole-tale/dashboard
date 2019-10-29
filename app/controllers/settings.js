@@ -78,9 +78,9 @@ export default Controller.extend({
         const component = this;
         
         // Reset modal state
-        component.set('newResourceServer', '');
         $('#newResourceServerDropdown').dropdown('clear');
         component.set('newApiKey', '');
+        component.set('newResourceServer', '');
       },
       
       connectProvider(provider, newResourceServer, newApiKey) {
@@ -93,7 +93,7 @@ export default Controller.extend({
           component.refreshUserTokens();
           
           // Reset modal state
-          component.actions.clearConnectExtAcctModal();
+          component.actions.clearConnectExtAcctModal.call(component);
         }, err => console.error("Failed to authorize external token:", err));
       },
       
