@@ -17,6 +17,7 @@ const taleStatus = Object.create({
 
 
 export default Component.extend({
+  notificationHandler: service(),
   store: service(),
   apiHost: config.apiHost,
   environments: [],
@@ -148,11 +149,18 @@ export default Component.extend({
         this.send('openErrorModal');
       };
 
+      let notification, notifier = this.get('notificationHandler');
+
       // Only update the Tale if the authors are valid
       if (this.validateAuthors()) {
         this.model.set('authors', this.taleAuthors);
         // Request that the Tale model be updated
-        tale.save().catch(onFail);
+        tale.save()
+          .then(_ => notification={message: "Tale updated", header: "Success"})
+          .catch(onFail)
+          .finally(_ => {
+              if (notification !== null) notifier.pushNotification(notification)
+          });
       }
       else {
         this.send('openErrorModal');
