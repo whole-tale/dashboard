@@ -622,7 +622,7 @@ ui.inverted.menu.wt.top {
     left: calc(50% - 78px);
   }
   &.centered.footer {
-    position: absolute;
+    position: fixed;
     width: 100vw;
     bottom: 0;
 
