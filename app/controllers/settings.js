@@ -26,6 +26,9 @@ export default Controller.extend({
     user: O({}),
     tokens: O({}),
     
+    showConnectExtAccountModal: false,
+    showRevokeExtAccountModal: false,
+    
     providerTokens: computed('providers', 'tokens', function () {
       const component = this;
       const tokens = component.get('tokens');
@@ -61,6 +64,10 @@ export default Controller.extend({
         this.set('newResourceServer', selected);
       },
       
+      connectOAuthProvider(provider) {
+        window.location.href = provider.url;
+      },
+      
       showConnectExtAcctModal(provider) {
         const component = this;
         component.set('selectedProvider', provider);
@@ -69,7 +76,7 @@ export default Controller.extend({
           // TODO: Switch on provider.type to provide a different modal
           
           // TODO: pop up a modal for choosing resource_server and entering a new API key
-          $('.ui.modal.apikey').modal('show');
+          $('#connect-apikey-modal').modal('show');
           $('#newResourceServerDropdown').dropdown();
         }, err => console.error("Failed to fetch provider targets:", err));
       },
@@ -92,7 +99,7 @@ export default Controller.extend({
           // Refresh view
           component.refreshUserTokens();
           
-          // Reset modal state
+          // Close modal and reset state
           component.actions.clearConnectExtAcctModal.call(component);
         }, err => console.error("Failed to authorize external token:", err));
       },
@@ -103,7 +110,7 @@ export default Controller.extend({
         component.set('selectedToken', token);
         
         // TODO: pop up a modal for confirming deletion
-        $('.ui.modal.revoke-apikey').modal('show');
+        $('#revoke-apikey-modal').modal('show');
       },
       
       confirmRevokeToken(token) {
