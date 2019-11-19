@@ -1,0 +1,135 @@
+<div class="ui stackable grid container">
+    <div class="row" style="margin-top:2rem">
+        
+      <div class="four wide column">
+        <div class="ui secondary vertical pointing menu fluid" id="settings-menu">
+          <a class="active item">
+            <i class="user plus icon"></i> Additional accounts
+          </a>
+        </div>
+      </div>
+      
+      <div class="eleven wide right floated column" id="add-acct">
+        <h2>Connect Additional Accounts</h2>
+        
+        <p class="explanation">Authorize WholeTale to access and/or publish data on your behalf</p>
+        
+        <div class="ui segments">
+          {{#each sortedProviders as |provider|}}
+            <div class="ui segment">
+              {{!-- TODO: Disable when? --}}
+              {{#if (or (eq provider.state 'authorized') (eq provider.state 'preauthorized'))}}
+                <button class="ui basic right floated blue button disabled" disabled="true">Connect Account</button>
+              {{else if (or (eq provider.type 'bearer') (eq provider.type 'dataone'))}}
+                <button class="ui basic right floated blue button" {{action 'connectOAuthProvider' provider}}>Connect Account</button>
+              {{else if (eq provider.type 'apikey')}}
+                <button class="ui basic right floated blue button" {{action 'showConnectExtAcctModal' provider}}>Connect Account</button>
+              {{/if}}
+              
+              <p>
+                {{#if provider.logo}}
+                  <img class="ui avatar image" src="data:image/png;base64,{{provider.logo}}" alt="{{provider.fullName}}"> 
+                {{/if}}
+                {{provider.fullName}}
+              
+                {{#each provider.tags as |tag|}}
+                  {{#if (eq tag 'data')}}
+                    <i class="database icon"></i>
+                  {{/if}}
+                
+                  {{#if (eq tag 'publish')}}
+                    <i class="share icon"></i>
+                  {{/if}}
+                {{/each}}
+              </p>
+              
+              <div class="connected">
+                {{#each user.otherTokens as |token|}}
+                  {{#if (and token.provider (eq provider.name token.provider))}}
+                    <div class="ui basic segment">
+                      {{!-- TODO: Disable when? --}}
+                      <a class="ui right floated disconnect button" {{action 'showConfirmDeleteModal' provider token}}>Disconnect</a>
+                      
+                      {{!-- TODO: Where do we information on who authorized the connection? --}}
+                      {{#if (and (eq provider.type 'apikey') token.resource_server)}}
+                        <p>Authorized on <a href="{{token.resource_server}}" target="_blank">{{token.resource_server}}</a></p>
+                      {{else}}
+                        <p>Authorized</p>
+                      {{/if}}
+                    </div>
+                  {{/if}}
+                {{/each}}
+              </div>
+            </div>
+          {{/each}}
+        </div>
+        
+        {{!-- Icon legend --}}
+        <p class="footnote"><i class="database icon"></i> Access data <span>|</span> <i class="share icon"></i> Publish</p>
+      </div>
+    </div>
+</div>
+       
+<div id="connect-apikey-modal" class="ui modal apikey">
+  <i class="close icon"></i>
+  <div class="header">
+    {{!-- TODO: How to handle article appropriately? (e.g. "a/an ORCID Account") --}}
+    <img class="ui avatar image" src="data:image/png;base64,{{selectedProvider.logo}}"> Connect {{selectedProvider.fullName}} Account
+  </div>
+  <div class="content">
+
+    <form class="ui form">
+      <div class="two fields">
+        <div class="field">
+          <label>{{selectedProvider.fullName}} Repository</label>
+          <div id="newResourceServerDropdown" class="ui fluid selection dropdown">
+            {{input type="hidden" name="newResourceServer" value=newResourceServer}}
+            <i class="dropdown icon"></i>
+            <div class="default text">Choose a repository...</div>
+            <div class="menu">
+              {{#each selectedProvider.targets as |target|}}
+                <div class="item" data-value={{target}}>{{target}}</div>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>API Token 
+            {{#if selectedProvider.docs_href}}
+              <a href="{{selectedProvider.docs_href}}" style="float:right; font-weight:normal" target="_blank">Get from {{selectedProvider.fullName}} <i class="external square alternate icon"></i></a>
+            {{/if}}
+          </label>
+          {{input type="text" name="API Token" placeholder="Enter an API key" value=newApiKey}}
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  <div class="actions">
+    <a class="ui deny button" {{action 'clearConnectExtAcctModal'}}>
+      Cancel
+    </a>
+    <a class="ui positive primary right button" {{action 'connectProvider' selectedProvider newResourceServer newApiKey}}>
+      Connect
+    </a>
+  </div>
+</div>
+
+<div id="revoke-apikey-modal" class="ui modal revoke-apikey">
+  <i class="close icon"></i>
+  <div class="header">
+    <img class="ui avatar image" src="data:image/png;base64,{{selectedProvider.logo}}"> Revoke {{selectedProvider.fullName}} Account
+  </div>
+  <div class="content">
+    Are you sure you want to revoke this API key?
+
+  </div>
+  <div class="actions">
+    <a class="ui deny button">
+      Cancel
+    </a>
+    <a class="ui positive primary right button" {{action 'confirmRevokeToken' selectedToken}}>
+      Confirm
+    </a>
+  </div>
+</div>
