@@ -409,7 +409,6 @@
     }
     &.ui.modal > .content {
         height: calc(100% - 64px - 60px);
-        padding: 0;
         overflow-y: auto;
 
         .ui.grid {
@@ -455,14 +454,12 @@
     }
     .ui.modal:not(.destinate-folder) > .content {
         height: calc(100% - 64px - 60px);
-        padding: 0;
         overflow-y: auto;
     }
 }
 @media only screen and (max-width: 767px) {
     .ui.modal > .content {
         height: calc(90vh - 64px - 60px);
-        padding: 0 !important;
         overflow-y: auto;
 
         .ui.grid {
@@ -516,7 +513,6 @@
     }
     .ui.modal > .content {
         height: calc(90vh - 64px - 60px);
-        padding: 0;
         overflow-y: auto;
     }
 }
