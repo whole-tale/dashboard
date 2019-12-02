@@ -669,6 +669,93 @@ export default Service.extend({
         return tale;
       });
     },
+    
+
+    /**
+     * Fetch the target resource_servers associated with the given provider.
+     * @method getExtAccountTargets
+     * @param providerName The name of the provider
+     */
+    getExtAccountTargets(providerName) {
+        return new Promise((resolve, reject) => {
+          const token = this.get('tokenHandler').getWholeTaleAuthToken();
+          let url = `${config.apiUrl}/account/${providerName}/targets`;
+    
+          let client = new XMLHttpRequest();
+          client.open('GET', url);
+          client.setRequestHeader("Girder-Token", token);
+          client.addEventListener("load", () => {
+              if (client.status === 200) {
+                  const resp = JSON.parse(client.responseText);
+                  resolve(resp);
+              } else {
+                  reject(client.responseText);
+              }
+          });
+          client.addEventListener("error", reject);
+          client.send();
+        });
+    },
+    
+
+    /**
+     * Authorize an external token.
+     * @method authExtToken
+     * @param providerName The provider for which to create a token
+     * @param resourceServer The resource_server associated with this API key
+     * @param keyValue The value of the API key to add
+     */
+    authExtToken(providerName, resourceServer, keyValue) {
+        return new Promise((resolve, reject) => {
+          const token = this.get('tokenHandler').getWholeTaleAuthToken();
+          let url = `${config.apiUrl}/account/${providerName}/key?key=${keyValue}&resource_server=${resourceServer}`;
+    
+          let client = new XMLHttpRequest();
+          client.open('POST', url);
+          client.setRequestHeader("Girder-Token", token);
+          client.addEventListener("load", () => {
+              if (client.status === 200) {
+                  const resp = JSON.parse(client.responseText);
+                  resolve(resp);
+              } else {
+                  reject(client.responseText);
+              }
+          });
+          client.addEventListener("error", reject);
+          client.send();
+        });
+    },
+    
+
+    /**
+     * Revoke an external token.
+     * @method revokeExtToken
+     * @param token The token to revoke
+     */
+    revokeExtToken(extToken, redirect, resourceServer) {
+        return new Promise((resolve, reject) => {
+          const token = this.get('tokenHandler').getWholeTaleAuthToken();
+          let url = `${config.apiUrl}/account/${extToken.provider}/revoke?redirect=${redirect}`;
+          
+          if (resourceServer) {
+              url += `&resource_server=${resourceServer}`;
+          }
+    
+          let client = new XMLHttpRequest();
+          client.open('GET', url);
+          client.setRequestHeader("Girder-Token", token);
+          client.addEventListener("load", () => {
+              if (client.status === 200) {
+                  const resp = JSON.parse(client.responseText);
+                  resolve(resp);
+              } else {
+                  reject(client.responseText);
+              }
+          });
+          client.addEventListener("error", reject);
+          client.send();
+        });
+    },
   
     /**
      * Returns the ID of the home folder

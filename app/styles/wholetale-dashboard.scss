@@ -622,7 +622,7 @@ ui.inverted.menu.wt.top {
     left: calc(50% - 78px);
   }
   &.centered.footer {
-    position: absolute;
+    position: fixed;
     width: 100vw;
     bottom: 0;
 
@@ -1507,4 +1507,91 @@ wt.panel .wt.paddleboard.header i {
 
 .environment-label {
   margin-left: 75px !important;
+}
+
+#user-dropdown-menu {
+  border-bottom: none;
+}
+
+/* Settings */
+
+#settings-menu {
+  font-size: 1.2rem;
+  margin-top: .75rem;
+}
+
+#add-acct {
+  margin-left: auto;
+}
+
+#add-acct .segments {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+#add-acct h2 {
+  margin-bottom: 0;
+}
+
+p.explanation {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+#add-acct .segment p {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+#add-acct .segment button {
+  float:right;
+}
+
+#add-acct .connected{
+  padding: 0 2rem 1.5rem;
+}
+
+#add-acct .basic {
+  margin: 0;
+}
+
+#add-acct .segments .basic p {
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+#add-acct .segments .basic a {
+  padding: 0;
+}
+
+#add-acct .segment p i.icon {
+  font-size: 0.8rem;
+  padding-left: .5rem;
+  color: #bbb;
+}
+
+#add-acct .footnote {
+  font-size: 0.9rem;
+  padding-left: 1rem;
+  margin-bottom: 50px;
+  color: #555;
+}
+
+#add-acct .footnote span {
+  margin: 0 1rem;
+}
+
+#add-acct .disconnect.button {
+  color: #e5501c;
+  background: unset;
+}
+
+.ui.modal.apikey .content {
+  padding: 21px;
+  overflow: unset;
+}
+
+.ui.modal.revoke-apikey .content {
+  padding: 21px;
+  overflow: unset;
 }

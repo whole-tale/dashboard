@@ -78,6 +78,8 @@ Router.map(function () {
       path: '/view/:tale_id'
     });
   });
+  
+  this.route('settings');
 
   this.route('browse');
   // old compose UI route.
