@@ -251,6 +251,7 @@ export default Component.extend(FullScreenMixin, {
         
         gotoSettings() {
             const self = this;
+            self.actions.closeNeedAuthModal.call(self);
             self.actions.closePublishModal.call(self);
             self.router.transitionTo('settings');
         },
@@ -432,6 +433,15 @@ export default Component.extend(FullScreenMixin, {
         closePublishModal() {
             $('#publish-modal').modal('hide');
             this.resetPublishState();
+        },
+        
+        /**
+         * Closes the "Users needs to auth" modal
+         *
+         * @method closeNeedAuthModal
+        */
+        closeNeedAuthModal() {
+            $('#dataone-auth-modal').modal('hide');
         },
 
         /**
