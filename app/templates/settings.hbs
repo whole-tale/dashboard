@@ -17,7 +17,6 @@
         <div class="ui segments">
           {{#each sortedProviders as |provider|}}
             <div class="ui segment">
-              {{!-- TODO: Disable when? --}}
               {{#if (or (eq provider.state 'authorized') (eq provider.state 'preauthorized'))}}
                 <button class="ui basic right floated blue button disabled" disabled="true">Connect Account</button>
               {{else if (or (eq provider.type 'bearer') (eq provider.type 'dataone'))}}
@@ -75,7 +74,7 @@
 <div id="connect-apikey-modal" class="ui modal apikey">
   <i class="close icon"></i>
   <div class="header">
-    {{!-- TODO: How to handle article appropriately? (e.g. "a/an ORCID Account") --}}
+    {{!-- TODO: Helper to handle article appropriately? (e.g. "a/an ORCID Account") --}}
     <img class="ui avatar image" src="data:image/png;base64,{{selectedProvider.logo}}"> Connect {{selectedProvider.fullName}} Account
   </div>
   <div class="content">
