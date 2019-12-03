@@ -44,6 +44,24 @@ export default Controller.extend({
       }, err => console.error("Failed to fetch external account providers:", err));
     },
     
+    fetchDataOneJwt(user, provider) {
+      const component = this;
+      let xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", provider.url, false);
+        
+      // Let XMLHttpRequest know to use cookies
+      xmlHttp.withCredentials = true;
+      xmlHttp.setRequestHeader("Content-Type", "text/xml");
+      xmlHttp.send(null);
+      
+      // If we get a response, POST it back to Girder as an API key
+      const jwt = xmlHttp.responseText;
+      if (jwt) {
+        const token = user.otherTokens.find(t => t.provider === provider.name);
+        component.actions.connectProvider.call(component, provider, token.resource_server, jwt, 'dataone');
+      }
+    },
+    
     refreshUserTokens() {
       const component = this;
       
@@ -52,24 +70,9 @@ export default Controller.extend({
         component.set('user', user);
         
         component.get('providers').forEach(provider => {
+          // If any DataONE providers are in a preauthorized state
           if (provider.type === 'dataone' && provider.state === 'preauthorized') {
-            let xmlHttp = new XMLHttpRequest();
-        
-            xmlHttp.open("GET", provider.url, false);
-            // Set the response content type
-            xmlHttp.setRequestHeader("Content-Type", "text/xml");
-            // Let XMLHttpRequest know to use cookies
-            xmlHttp.withCredentials = true;
-            xmlHttp.send(null);
-            
-            const data =  xmlHttp.responseText;
-            if (data) {
-              const token = user.otherTokens.find(t => t.provider === provider.name);
-              component.apiCall.authExtToken(provider.name, token.resource_server, data, 'dataone').then(resp => {
-                // Hard reload the page
-                window.location.reload(true);
-              }, err => console.error("Failed to add DataONE API token:", err));
-            }
+            component.fetchDataOneJwt(user, provider);
           }
         });
       });
@@ -104,14 +107,14 @@ export default Controller.extend({
         component.set('newResourceServer', '');
       },
       
-      connectProvider(provider, newResourceServer, newApiKey) {
+      connectProvider(provider, newResourceServer, newApiKey, keyType = 'apikey') {
         const component = this;
         console.log("Connect confirmed:", provider);
         
         // POST back to /account/:provider/key
-        component.apiCall.authExtToken(provider.name, newResourceServer, newApiKey).then(resp => {
+        component.apiCall.authExtToken(provider.name, newResourceServer, newApiKey, keyType).then(resp => {
           // Refresh view
-          component.refreshUserTokens();
+          component.refreshProviders();
           
           // Close modal and reset state
           component.actions.clearConnectExtAcctModal.call(component);
@@ -134,12 +137,12 @@ export default Controller.extend({
         // GET from /account/:provider/revoke
         const fakeRedirect = encodeURIComponent('https://dashboard.local.wholetale.org/settings');
         component.apiCall.revokeExtToken(token, fakeRedirect, token.resource_server).then(resp => {
-          component.refreshUserTokens();
+          component.refreshProviders();
         }, err => {
           console.error("Failed to revoke external token:", err);
           
           // FIXME: Server returns an error when attempting to redirect... silly.
-          component.refreshUserTokens();
+          component.refreshProviders();
         });
         
       },

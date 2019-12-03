@@ -51,7 +51,7 @@
                       <a class="ui right floated disconnect button" {{action 'showConfirmDeleteModal' provider token}}>Disconnect</a>
                       
                       {{!-- TODO: Where do we information on who authorized the connection? --}}
-                      {{#if (and (and (eq provider.type 'apikey') token.resource_server) (eq provider.state 'authorized'))}}
+                      {{#if (and (eq provider.type 'apikey') token.resource_server)}}
                         <p>Authorized on <a href="{{token.resource_server}}" target="_blank">{{token.resource_server}}</a></p>
                       {{else if (eq provider.state 'authorized')}}
                         <p>Authorized</p>
