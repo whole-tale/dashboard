@@ -250,7 +250,9 @@ export default Component.extend(FullScreenMixin, {
         },
         
         gotoSettings() {
-            this.router.transitionTo('settings');
+            const self = this;
+            self.actions.closePublishModal.call(self);
+            self.router.transitionTo('settings');
         },
         
         // Calls PUT /instance/:id as a noop to restart the instance

@@ -108,9 +108,9 @@
             <div class="description">
                 <p>
                     You have not yet authorized WholeTale to publish on your behalf to any repositories. 
-                    Add repositories by connecting additional accounts on the {{#link-to 'settings'}}Settings{{/link-to}} page.
+                    Add repositories by connecting additional accounts on the <a href="/settings" {{action 'gotoSettings'}}>Settings</a> page.
                 </p>
-                <p>For more information on how to publish and cite your Tale, please consult the <a href="https://wholetale.readthedocs.io/en/stable/users_guide/publishing.html">Publishing Guide</a>.</p>
+                <p>For more information on how to publish and cite your Tale, please consult the <a href="https://wholetale.readthedocs.io/en/stable/users_guide/publishing.html" target="_blank">Publishing Guide</a>.</p>
             </div>
         </div>
         <div class="actions">
@@ -133,8 +133,8 @@
     <div class="description">
         
       <p>
-          Publishing will create an immutable copy of your Tale with a DOI. 
-          For more information on publishing and citing your Tale, please consult the <a href="https://wholetale.readthedocs.io/en/stable/users_guide/publishing.html">Publishing Guide</a>.
+          Publishing creates an immutable copy of your Tale with a DOI. 
+          For more information on publishing and citing your Tale, please consult the <a href="https://wholetale.readthedocs.io/en/stable/users_guide/publishing.html" target="_blank">Publishing Guide</a>.
       </p>
       
       <div class="ui form" style="margin-bottom:15px;">
@@ -155,7 +155,7 @@
           </div>
       </div>
       
-      <i>Don't see what you're looking for? Add repositories by connecting additional accounts on the {{#link-to 'settings'}}Settings{{/link-to}} page.</i>
+      <i>Don't see what you're looking for? Add repositories by connecting additional accounts on the <a href="/settings" {{action 'gotoSettings'}}>Settings</a> page.</i>
     </div>
       
     <div id="publish-results-panel" class="ui form">
@@ -191,14 +191,7 @@
       {{/if}}
     </div>
   </div>
-  <div class="actions">             
-    <small>
-      For more information about publishing, please consult the 
-      <a href='https://wholetale.readthedocs.io/en/stable/users_guide/publishing.html' target='_blank'>
-          Publishing Guide.
-      </a>
-    </small>
-      
+  <div class="actions">
     <div class="ui black deny button" {{action 'closePublishModal'}}>
       {{if (eq publishStatus 'success') 'Close' 'Cancel'}}
     </div>
