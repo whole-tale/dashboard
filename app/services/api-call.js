@@ -704,11 +704,18 @@ export default Service.extend({
      * @param providerName The provider for which to create a token
      * @param resourceServer The resource_server associated with this API key
      * @param keyValue The value of the API key to add
+     * @param keyType (optional) either 'dataone' or 'apikey' (apikey is default) 
      */
-    authExtToken(providerName, resourceServer, keyValue) {
+    authExtToken(providerName, resourceServer, keyValue, keyType) {
         return new Promise((resolve, reject) => {
           const token = this.get('tokenHandler').getWholeTaleAuthToken();
           let url = `${config.apiUrl}/account/${providerName}/key?key=${keyValue}&resource_server=${resourceServer}`;
+          
+          if (keyType) {
+              url += `&key_type=${keyType}`;
+          } else {
+              url += `&key_type=apikey`;
+          }
     
           let client = new XMLHttpRequest();
           client.open('POST', url);

@@ -17,7 +17,6 @@
         <div class="ui segments">
           {{#each sortedProviders as |provider|}}
             <div class="ui segment">
-              {{!-- TODO: Disable when? --}}
               {{#if (or (eq provider.state 'authorized') (eq provider.state 'preauthorized'))}}
                 <button class="ui basic right floated blue button disabled" disabled="true">Connect Account</button>
               {{else if (or (eq provider.type 'bearer') (eq provider.type 'dataone'))}}
@@ -47,14 +46,16 @@
                 {{#each user.otherTokens as |token|}}
                   {{#if (and token.provider (eq provider.name token.provider))}}
                     <div class="ui basic segment">
-                      {{!-- TODO: Disable when? --}}
                       <a class="ui right floated disconnect button" {{action 'showConfirmDeleteModal' provider token}}>Disconnect</a>
                       
-                      {{!-- TODO: Where do we information on who authorized the connection? --}}
                       {{#if (and (eq provider.type 'apikey') token.resource_server)}}
                         <p>Authorized on <a href="{{token.resource_server}}" target="_blank">{{token.resource_server}}</a></p>
-                      {{else}}
+                      {{else if (eq provider.state 'authorized')}}
                         <p>Authorized</p>
+                      {{else if (eq provider.state 'preauthorized')}}
+                        <p>Preauthorized</p>
+                      {{else}}
+                        <p>Unknown</p>
                       {{/if}}
                     </div>
                   {{/if}}
@@ -73,7 +74,7 @@
 <div id="connect-apikey-modal" class="ui modal apikey">
   <i class="close icon"></i>
   <div class="header">
-    {{!-- TODO: How to handle article appropriately? (e.g. "a/an ORCID Account") --}}
+    {{!-- TODO: Helper to handle article appropriately? (e.g. "a/an ORCID Account") --}}
     <img class="ui avatar image" src="data:image/png;base64,{{selectedProvider.logo}}"> Connect {{selectedProvider.fullName}} Account
   </div>
   <div class="content">
