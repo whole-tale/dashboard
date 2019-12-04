@@ -42,14 +42,6 @@ export default Component.extend(FullScreenMixin, {
     repositories: [],
     // The repository that is currently selected in the dropdown
     selectedRepository: '',
-    // Holds an array of objects that the user cannot be exclude from their package
-    nonOptionalFile: [
-      'manifest.json',
-      'environment.json',
-      'LICENSE',
-      'README.md',
-      'metadata.xml'
-    ],
   
     instancePoller: observer('model', 'model.instance', function() {
       // If we see an instance that is "Launching", poll until it completes
@@ -146,74 +138,6 @@ export default Component.extend(FullScreenMixin, {
        $('.ui.accordion').accordion({});
     },
 
-    showModal(modalDialogName, modalContext) {
-        // Open Publish Modal
-        this.sendAction('publishTale', modalDialogName, modalContext);
-    },
-
-    publishModalContext: computed('model._id', function () {
-        return { taleId: this.get('model._id'), hasD1JWT: this.dataoneAuth.hasD1JWT };
-    }),
-
-    /**
-     * Creates the tooltips that appear in the dialog
-     * 
-     * @method createTooltips
-    */
-    createTooltips() {
-        // Create the popup in the main title
-        $('.info.circle.blue.icon.main').popup({
-          position: 'right center',
-          target: '.info.circle.blue.icon.main',
-          hoverable: true,
-          html: "Get a citeable DOI by publishing your Tale on <a href='https://www.dataone.org/' target='_blank'>DataONE.</a> " +
-                "For more information on how to publish and cite your tale, visit the " +
-                "<a href='https://wholetale.readthedocs.io/en/stable/users_guide/publishing.html' target='_blank'>publishing guide</a>."
-        });
-    
-        // Create the popups for the environment files. Files with an extension
-        // need to have the period escaped with a double backslash when referencing.
-        // Create the manifest.json popup
-        $('.info.circle.blue.icon.manifest\\.json').popup({
-          position: 'right center',
-          target: '.info.circle.blue.icon.manifest\\.json',
-          hoverable: true,
-          html: "This file holds metadata about the tale, such as script execution order and file structure."
-        });
-        // Create the environment.json popup
-        $('.info.circle.blue.icon.environment\\.json').popup({
-          position: 'right center',
-          target: '.info.circle.blue.icon.environment\\.json',
-          hoverable: true,
-          html: "This environment file holds the information needed to re-create the tale's base virtual machine."
-        });
-        // Create the LICENSE popup
-        $('.info.circle.blue.icon.LICENSE').popup({
-          position: 'right center',
-          target: '.info.circle.blue.icon.LICENSE',
-          hoverable: true,
-          html: "The Tale's license is included in the package. This can be selected from the Tale's metadata view."
-        });
-        // Create the README.md popup
-        $('.info.circle.blue.icon.README\\.md').popup({
-          position: 'right center',
-          target: '.info.circle.blue.icon.README\\.md',
-          hoverable: true,
-          html: "The Tale's README is included in the package. The README includes instructions for how to use and run the published analysis encapsulated by your Tale."
-        });
-        // Create the metadata.xml popup
-        $('.info.circle.blue.icon.metadata\\.xml').popup({
-          position: 'right center',
-          target: '.info.circle.blue.icon.metadata\\.xml',
-          hoverable: true,
-          html: "The contents of each package are described using the Ecological Metadata Language (EML). " +
-                 "To learn more about EML, visit the " +
-                 "<a href='https://esajournals.onlinelibrary.wiley.com/doi/abs/10.1890/0012-9623%282005%2986%5B158%3AMTVOED%5D2.0.CO%3B2'" +
-                 "target='_blank'>EML primer</a>."
-        });
-    },
-    
-
     /**
      * Handles querying the backend for the publishing job status and updating
      * the progress bar.
@@ -238,6 +162,7 @@ export default Component.extend(FullScreenMixin, {
                 if (job.get('status') === 3) {
                   if (job.progress) {
                     self.set('progress', job.progress.current);
+                    self.set('progressTotal', job.progress.total);
                     self.set('statusMessage', job.progress.message);
                   }
                   self.set('publishStatus', 'success');
@@ -255,7 +180,13 @@ export default Component.extend(FullScreenMixin, {
                 } else if (job.get('status') === 4) {
                   // Then the job failed with an error
                   self.setErrorStatus(job._id)
-                  self.set('progress', 100)
+                  if (job.progress) {
+                    self.set('progress', job.progress.current);
+                    self.set('progressTotal', job.progress.total);
+                  } else {
+                    self.set('progress', 100);
+                    self.set('progressTotal', 100);
+                  }
                   self.set('barColor', "#F83005");
                   cancel(currentLoop);
                 } else {
@@ -263,6 +194,7 @@ export default Component.extend(FullScreenMixin, {
                   // Update the progressbar
                   if (job.progress) {
                     self.set('progress', job.progress.current);
+                    self.set('progressTotal', job.progress.total);
                     self.set('statusMessage', job.progress.message);
                   }
                 }
@@ -301,65 +233,27 @@ export default Component.extend(FullScreenMixin, {
         this.set('taleToPublish', null);
         this.set('publishStatus', 'initialized');
         this.set('progress', 0);
-        this.setShownRepositories();
-        this.set('selectedRepository', this.get('repositories')[0]);
-    },
-
-    /**
-     * Filters the possible repositories to the ones that should
-     * be shown to the user.
-     * 
-     * @method setShownRepositories
-     */
-    setShownRepositories() {
-
-      // An array of possible repositories to publish to
-      let repositories = [
-        {
-          name: 'DataONE Development',
-          memberNode: 'https://dev.nceas.ucsb.edu/knb/d1/mn',
-          coordinatingNode: 'https://cn-stage-2.test.dataone.org/cn/v2',
-          isProduction: false
-        },
-        {
-          name: 'DataONE-The Knowledge Network for Biocomplexity',
-          memberNode: 'https://knb.ecoinformatics.org/knb/d1/mn',
-          coordinatingNode: 'https://cn.dataone.org/cn/v2',
-          isProduction: true
-        },
-        /*
-        DEVNOTE: The ADC is currently disabled until a curation workflow is implemented
-        {
-          name: 'DataONE-Arctic Data Center',
-          memberNode: 'https://arcticdata.io/metacat/d1/mn',
-          coordinatingNode: 'https://cn.dataone.org/cn/v2',
-          isProduction: true
-        }
-        */
-      ];
-
-      // An array of the repositories that we show
-      let displayedRepositories = [];
-
-      // When we're on a development deployment, only show development nodes
-      if(config.dev) {
-        repositories.forEach(repository => {
-          if(!repository.isProduction) {
-            displayedRepositories.push(repository);
+        
+        return this.apiCall.getRepositories().then(repos => {
+          this.set('repositories', A(repos));
+          if (repos.length > 0) {
+            this.set('selectedRepository', this.get('repositories')[0]);
+          } else {
+            this.set('selectedRepository', null);
           }
-        })
-      }
-      else {
-        // Otherwise show all repositories
-        displayedRepositories = repositories;
-      }
-      this.set('repositories', displayedRepositories);
-
+        });
     },
 
     actions: {
         stop() {
             this.set('model', null);
+        },
+        
+        gotoSettings() {
+            const self = this;
+            self.actions.closeNeedAuthModal.call(self);
+            self.actions.closePublishModal.call(self);
+            self.router.transitionTo('settings');
         },
         
         // Calls PUT /instance/:id as a noop to restart the instance
@@ -450,11 +344,6 @@ export default Component.extend(FullScreenMixin, {
             this.router.transitionTo('browse');
         },
 
-        publishTale(modalDialogName, modalContext) {
-            // Open Modal
-            this.get('showModal')(modalDialogName, modalContext);
-        },
-
         openDeleteModal(id) {
             let selector = '.ui.' + id + '.modal';
             $(selector).modal('show');
@@ -472,36 +361,31 @@ export default Component.extend(FullScreenMixin, {
           let url = `${config.apiUrl}/tale/${id}/export`;
           window.location.assign(url + '?token=' + token + '&taleFormat=' + format);
         },
-        
-        /**
-         * Redirect to the selected repository's authentication portal.
-         *
-         * @method authenticateD1
-         * @param instanceId The ID of the running instance
-        */
-        authenticateD1(instanceId) {
-          let callback = `${this.get('wholeTaleHost')}/run/${instanceId}?auth=true`;
-          let endpoint = this.dataoneAuth.getPortalEndpoint(this.selectedRepository.coordinatingNode)
-          endpoint += '/oauth?action=start&target=';
-          window.location.replace(endpoint + callback);
-      },
 
         /**
          * Opens the publishing modal and sets initial state.
          *
          * @method openPublishModal
         */
-        openPublishModal() {          
-            this.resetPublishState();
-            const self = this;
-            $('#publish-modal').modal({ 
-                onApprove: () => false,
-                onDeny: () => false,
-                onVisible: () => { 
-                    self.set('selectedRepository', self.get('repositories')[0].name);
-                    this.createTooltips();
-                }
-            }).modal('show');
+        openPublishModal() {
+          this.resetPublishState().then(resp => {
+            // Check for repositories
+            const repos = this.get('repositories');
+            if (repos.length > 0) {
+              // Open Publish modal
+              const self = this;
+              $('#publish-modal').modal({ 
+                  onApprove: () => false,
+                  onDeny: () => false,
+                  onVisible: () => { 
+                      self.set('selectedRepository', self.get('repositories')[0]);
+                  }
+              }).modal('show');
+            } else {
+              // Open "Connect account" modal, prompting user to go to Settings
+              $('#dataone-auth-modal').modal('show');
+            }
+          });
         },
         
         /**
@@ -514,19 +398,13 @@ export default Component.extend(FullScreenMixin, {
             const self = this;
 
             let repository = this.selectedRepository;
-            let dataOneJWT = this.dataoneAuth.getDataONEJWT(repository.coordinatingNode);
-            if (!dataOneJWT) {
-              // reroute to auth
-              $('#dataone-auth-modal').modal('show');
-              return;
-          }
 
             self.set('publishStatus', 'in_progress');
             self.set('progress', 0);
             const tale = self.get('model');
 
             // Call the publish endpoint
-            self.get("apiCall").publishTale(tale._id, repository.memberNode, repository.coordinatingNode, dataOneJWT)
+            self.get("apiCall").publishTale(tale._id, repository)
                 .then((publishJob) => {
                     console.log('Submitted for publish:', publishJob);
                     self.set('publishStatus', 'in_progress');
@@ -556,6 +434,15 @@ export default Component.extend(FullScreenMixin, {
             $('#publish-modal').modal('hide');
             this.resetPublishState();
         },
+        
+        /**
+         * Closes the "Users needs to auth" modal
+         *
+         * @method closeNeedAuthModal
+        */
+        closeNeedAuthModal() {
+            $('#dataone-auth-modal').modal('hide');
+        },
 
         /**
          * Called when the user selects a repository in the dropdown menu.
@@ -565,7 +452,7 @@ export default Component.extend(FullScreenMixin, {
         onRepositoryChange: function () {
           let repositoryName = $('.repository.selection.dropdown.ui.dropdown').dropdown('get text');
           console.log('Selected '+ repositoryName + ' for publishing');
-          let repository = this.get('repositories').find((repo) => repo.name === repositoryName);
+          let repository = this.get('repositories').find((repo) => repo === repositoryName);
           this.set('selectedRepository', repository);
         },
     }
