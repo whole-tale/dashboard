@@ -147,7 +147,7 @@
                 <div class="menu">
                     {{#each repositories as |repo|}}
                     <div class="item">
-                        {{repo}}
+                        {{repo.name}}
                     </div>
                     {{/each}}
                 </div>
@@ -163,7 +163,7 @@
           <div class="ui blue message progress-area" id="publishing-progress-message">
             <p class="header publishing-now">
                 <a id="publishing-success-label" class="ui blue label">IN PROGRESS</a>
-                Your Tale is being published to {{selectedRepository}}
+                Your Tale is being published to {{selectedRepository.name}}
             </p>
             <div class="publish-progressbar">
                 {{#ui-progress progress=progress value=progress total=progressTotal class="teal indicating"}}
