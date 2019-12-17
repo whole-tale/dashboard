@@ -436,7 +436,7 @@ export default Service.extend({
      * Publishes a Tale to DataONE
      * @method publishTale
      * @param taleId The ID of the Tale this is being published
-     * @param repository the repo to which we should publish 
+     * @param repoUrl the url of the publish destination repository
      */
   publishTale(taleId, repoUrl) {
       const token = this.get('tokenHandler').getWholeTaleAuthToken();
