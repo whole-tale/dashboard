@@ -234,7 +234,8 @@ export default Component.extend(FullScreenMixin, {
         this.set('publishStatus', 'initialized');
         this.set('progress', 0);
         
-        return this.apiCall.getRepositories().then(repos => {
+        let adapterOptions = {};
+        return this.store.query('repository', adapterOptions).then(repos => {
           this.set('repositories', A(repos));
           if (repos.length > 0) {
             this.set('selectedRepository', this.get('repositories')[0]);
@@ -397,14 +398,14 @@ export default Component.extend(FullScreenMixin, {
         submitPublish() {
             const self = this;
 
-            let repository = this.selectedRepository;
+            let selection = this.selectedRepository;
 
             self.set('publishStatus', 'in_progress');
             self.set('progress', 0);
             const tale = self.get('model');
 
             // Call the publish endpoint
-            self.get("apiCall").publishTale(tale._id, repository)
+            self.get("apiCall").publishTale(tale._id, selection.repository)
                 .then((publishJob) => {
                     console.log('Submitted for publish:', publishJob);
                     self.set('publishStatus', 'in_progress');
@@ -451,9 +452,12 @@ export default Component.extend(FullScreenMixin, {
         */
         onRepositoryChange: function () {
           let repositoryName = $('.repository.selection.dropdown.ui.dropdown').dropdown('get text');
-          console.log('Selected '+ repositoryName + ' for publishing');
-          let repository = this.get('repositories').find((repo) => repo === repositoryName);
-          this.set('selectedRepository', repository);
+          let selection = this.get('repositories').find((repo) => repo.name === repositoryName);
+          if (selection) {
+            this.set('selectedRepository', selection);
+          } else {
+            console.error('Failed to select '+ repositoryName + ' for publishing');
+          }
         },
     }
 });

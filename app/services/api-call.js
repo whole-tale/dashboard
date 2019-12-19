@@ -436,15 +436,13 @@ export default Service.extend({
      * Publishes a Tale to DataONE
      * @method publishTale
      * @param taleId The ID of the Tale this is being published
-     * @param repository the repo to which we should publish 
+     * @param repoUrl the url of the publish destination repository
      */
-  publishTale(taleId, repository) {
+  publishTale(taleId, repoUrl) {
       const token = this.get('tokenHandler').getWholeTaleAuthToken();
       return new Promise ((resolve, reject) => {
-          let url = `${config.apiUrl}/tale/${taleId}/publish?repository=${repository}`;
-    
           let client = new XMLHttpRequest();
-          client.open('PUT', url);
+          client.open('PUT', `${config.apiUrl}/tale/${taleId}/publish?repository=${encodeURIComponent(repoUrl)}`);
           client.setRequestHeader("Girder-Token", token);
     
           client.addEventListener("load", function() {
@@ -756,25 +754,6 @@ export default Service.extend({
           });
           client.addEventListener("error", reject);
           client.send();
-        });
-    },
-    
-
-    /**
-     * Fetch a list of all currently configured external repositories.
-     * @method getRepositories
-     */
-    getRepositories() {
-        // XXX: Ember-Data cannot handle models that are simply strings.
-        return $.ajax({
-            url: `${config.apiUrl}/repository`,
-            method: 'GET',
-            headers: {
-                'Girder-Token': this.get('tokenHandler').getWholeTaleAuthToken()
-            },
-            dataType: 'json',
-            contentType: 'application/json',
-            timeout: 3000, // ms
         });
     },
   
