@@ -14,7 +14,8 @@ export default Component.extend({
   dataSet: null,
   config: null,
   asTale: false,
-
+  asTaleEnabled: true,
+  
   createAndLaunch: true,
   createButtonText: computed('createAndLaunch', function() {
     return this.get('createAndLaunch') ? 'Create New Tale and Launch' : 'Create New Tale';
@@ -25,9 +26,26 @@ export default Component.extend({
   }),
   
   defaultErrorMessage: "There was an error while creating your Tale.",
+  
+  didRender() {
+    const component = this;
+    $('#as-tale-false-chkbox').checkbox({
+      onChecked: function() {
+        console.log('Toggling asTale to false');
+        component.set('asTale', false);
+      }
+    });
+    $('#as-tale-true-chkbox').checkbox({
+      onChecked: function() {
+        console.log('Toggling asTale to true');
+        component.set('asTale', true);
+      }
+    });
+  },
 
   // ---------------------------------------------------------------------------------
   // ACTIONS TOC:
+  //   toggleAsTale(newValue) = Event: onChange when clicking radio buttons during import
   //   createNewTaleButton() = Event: onClick "Create New Tale" button
   //   clearModal()          = Event: onHide modal 
   //   setModalFromQueryParams() = Event: onShow modal

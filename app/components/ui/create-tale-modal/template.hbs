@@ -51,6 +51,30 @@
       <div class="twelve wide column">
       {{#if importing}}
         <p style="font-style:italic;margin-top:5px;font-weight:200">Data Source: {{dataSet}}</p>
+        
+        <div class="grouped fields">
+          <div class="field">
+            <div id="as-tale-false-chkbox" class="ui radio checkbox">
+              <input type="radio" name="asTale" id="as-tale-false" value="false" checked="checked" />
+              <label for="as-tale-false">
+                <b>READ ONLY</b> <i>recommended</i> — Treat as source dataset for analysis
+                <a href="http://docs.wholetale.org/en/stable/users_guide/compose.html"
+                    style="margin-left:.75rem;font-style:italic" target="_blank">
+                  Why would I do this?
+                </a>
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <div id="as-tale-true-chkbox" class="ui radio checkbox">
+              <input type="radio" name="asTale" id="as-tale-true" value="true" />
+              <label for="as-tale-true">
+                <b>READ/WRITE</b> — Enable data editing
+              </label>
+            </div>
+          </div>
+        </div>
       {{else}}
         <p style="font-style:italic;margin-top:5px;color:#999">Add data after Tale creation using your chosen compute environment, or the Files tab of your running Tale.</p>
       {{/if}}
