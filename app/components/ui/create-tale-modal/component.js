@@ -98,8 +98,7 @@ export default Component.extend({
           // asTale defaults to false; it will only be set to true if query param 
           // is present and some form of the string "True" (case insensistive)
           if (asTale && asTale.toLowerCase() === "true") {
-            this.set('asTale', true);
-            $('#as-tale-true-chkbox').checkbox('check');
+            later(() => $('#as-tale-true-chkbox').checkbox('check'), 500);
           }
 
           let {official, nonOfficial} = this.computeEnvironments;
