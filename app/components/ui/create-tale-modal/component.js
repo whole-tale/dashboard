@@ -31,13 +31,11 @@ export default Component.extend({
     const component = this;
     $('#as-tale-false-chkbox').checkbox({
       onChecked: function() {
-        console.log('Toggling asTale to false');
         component.set('asTale', false);
       }
     });
     $('#as-tale-true-chkbox').checkbox({
       onChecked: function() {
-        console.log('Toggling asTale to true');
         component.set('asTale', true);
       }
     });
