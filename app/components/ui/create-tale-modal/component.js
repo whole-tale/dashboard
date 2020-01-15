@@ -14,7 +14,8 @@ export default Component.extend({
   dataSet: null,
   config: null,
   asTale: false,
-
+  asTaleEnabled: true,
+  
   createAndLaunch: true,
   createButtonText: computed('createAndLaunch', function() {
     return this.get('createAndLaunch') ? 'Create New Tale and Launch' : 'Create New Tale';
@@ -25,9 +26,24 @@ export default Component.extend({
   }),
   
   defaultErrorMessage: "There was an error while creating your Tale.",
+  
+  didRender() {
+    const component = this;
+    $('#as-tale-false-chkbox').checkbox({
+      onChecked: function() {
+        component.set('asTale', false);
+      }
+    });
+    $('#as-tale-true-chkbox').checkbox({
+      onChecked: function() {
+        component.set('asTale', true);
+      }
+    });
+  },
 
   // ---------------------------------------------------------------------------------
   // ACTIONS TOC:
+  //   toggleAsTale(newValue) = Event: onChange when clicking radio buttons during import
   //   createNewTaleButton() = Event: onClick "Create New Tale" button
   //   clearModal()          = Event: onHide modal 
   //   setModalFromQueryParams() = Event: onShow modal
@@ -80,7 +96,7 @@ export default Component.extend({
           // asTale defaults to false; it will only be set to true if query param 
           // is present and some form of the string "True" (case insensistive)
           if (asTale && asTale.toLowerCase() === "true") {
-            this.set('asTale', true);
+            later(() => $('#as-tale-true-chkbox').checkbox('check'), 500);
           }
 
           let {official, nonOfficial} = this.computeEnvironments;
@@ -95,7 +111,7 @@ export default Component.extend({
           this.set('datasetAPI', api);
         }
       } catch(e) {
-        this.handleError({responseJSON:{message:e+""}});
+        this.handleError(e);
       }
     },
 
@@ -200,7 +216,7 @@ export default Component.extend({
     newTaleImport.save({adapterOptions}).then((tale) => {
       self.onTaleCreateSuccess(tale);
     }).catch(e => {
-      self.handleError({responseJSON:{message:e+""}});
+      self.handleError(e);
     });
   },
   
