@@ -98,17 +98,17 @@ export default Component.extend({
           if (asTale && asTale.toLowerCase() === "true") {
             later(() => $('#as-tale-true-chkbox').checkbox('check'), 500);
           }
-
+          this.set('datasetAPI', api);
+          
           let {official, nonOfficial} = this.computeEnvironments;
           let image = official.findBy('name', environment) || nonOfficial.findBy('name', environment);
-          if (!image && environment) throw new Error('Could not find specified environment: '+environment);
-
+          if (!image && environment) {
+            throw new Error('Could not find specified environment: '+environment);
+          }
           if (image) {
             this.set('imageId', image.id);
             $('.ui.dropdown.compute-environment').dropdown('set selected', image.id);
           }
-
-          this.set('datasetAPI', api);
         }
       } catch(e) {
         this.handleError(e);
@@ -161,8 +161,12 @@ export default Component.extend({
   // Display error message
   // ---------------------------------------------------------------------------------
   handleError(e) {
+    if (e.message) {
+      this.set('errorMessage', e.message);
+    } else{
     let errorMessage = (e.responseJSON ? e.responseJSON.message : this.get('defaultErrorMessage'));
     this.set('errorMessage', errorMessage);
+    }
   },
 
   // ---------------------------------------------------------------------------------
