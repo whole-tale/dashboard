@@ -4,6 +4,7 @@ import EventStream from 'npm:sse.js';
 import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
 import $ from 'jquery';
+import { later } from '@ember/runloop';
 import { getOwner } from '@ember/application';
 
 export default Controller.extend({
@@ -42,6 +43,10 @@ export default Controller.extend({
       }
     );
 
+    // FIXME: Gross hack - guys, this is real bad...
+    later(() => {
+      $('#user-dropdown-menu').dropdown({ action: 'nothing' });
+    }, 1500);
     // this.set('eventStream', this.getEventStream.call(this));
   },
 

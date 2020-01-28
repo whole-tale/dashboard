@@ -436,20 +436,13 @@ export default Service.extend({
      * Publishes a Tale to DataONE
      * @method publishTale
      * @param taleId The ID of the Tale this is being published
-     * @param memberNode 
-     * @param jwt The user's DataONE JWT token
-     * @param coordinatingNode The Coordinating node that overlooks the member node
+     * @param repoUrl the url of the publish destination repository
      */
-  publishTale(taleId, memberNode, coordinatingNode, jwt) {
+  publishTale(taleId, repoUrl) {
       const token = this.get('tokenHandler').getWholeTaleAuthToken();
       return new Promise ((resolve, reject) => {
-          let url = `${config.apiUrl}/publish/dataone` + 
-            `?taleId=${taleId}&remoteMemberNode=${memberNode}` + 
-            `&authToken=${jwt}` +
-            `&coordinatingNode=${coordinatingNode}`;
-    
           let client = new XMLHttpRequest();
-          client.open('GET', url);
+          client.open('PUT', `${config.apiUrl}/tale/${taleId}/publish?repository=${encodeURIComponent(repoUrl)}`);
           client.setRequestHeader("Girder-Token", token);
     
           client.addEventListener("load", function() {
@@ -668,6 +661,100 @@ export default Service.extend({
         }
         return tale;
       });
+    },
+    
+
+    /**
+     * Fetch the target resource_servers associated with the given provider.
+     * @method getExtAccountTargets
+     * @param providerName The name of the provider
+     */
+    getExtAccountTargets(providerName) {
+        return new Promise((resolve, reject) => {
+          const token = this.get('tokenHandler').getWholeTaleAuthToken();
+          let url = `${config.apiUrl}/account/${providerName}/targets`;
+    
+          let client = new XMLHttpRequest();
+          client.open('GET', url);
+          client.setRequestHeader("Girder-Token", token);
+          client.addEventListener("load", () => {
+              if (client.status === 200) {
+                  const resp = JSON.parse(client.responseText);
+                  resolve(resp);
+              } else {
+                  reject(client.responseText);
+              }
+          });
+          client.addEventListener("error", reject);
+          client.send();
+        });
+    },
+    
+
+    /**
+     * Authorize an external token.
+     * @method authExtToken
+     * @param providerName The provider for which to create a token
+     * @param resourceServer The resource_server associated with this API key
+     * @param keyValue The value of the API key to add
+     * @param keyType (optional) either 'dataone' or 'apikey' (apikey is default) 
+     */
+    authExtToken(providerName, resourceServer, keyValue, keyType) {
+        return new Promise((resolve, reject) => {
+          const token = this.get('tokenHandler').getWholeTaleAuthToken();
+          let url = `${config.apiUrl}/account/${providerName}/key?key=${keyValue}&resource_server=${resourceServer}`;
+          
+          if (keyType) {
+              url += `&key_type=${keyType}`;
+          } else {
+              url += `&key_type=apikey`;
+          }
+    
+          let client = new XMLHttpRequest();
+          client.open('POST', url);
+          client.setRequestHeader("Girder-Token", token);
+          client.addEventListener("load", () => {
+              if (client.status === 200) {
+                  const resp = JSON.parse(client.responseText);
+                  resolve(resp);
+              } else {
+                  reject(client.responseText);
+              }
+          });
+          client.addEventListener("error", reject);
+          client.send();
+        });
+    },
+    
+
+    /**
+     * Revoke an external token.
+     * @method revokeExtToken
+     * @param token The token to revoke
+     */
+    revokeExtToken(extToken, redirect, resourceServer) {
+        return new Promise((resolve, reject) => {
+          const token = this.get('tokenHandler').getWholeTaleAuthToken();
+          let url = `${config.apiUrl}/account/${extToken.provider}/revoke?redirect=${redirect}`;
+          
+          if (resourceServer) {
+              url += `&resource_server=${resourceServer}`;
+          }
+    
+          let client = new XMLHttpRequest();
+          client.open('GET', url);
+          client.setRequestHeader("Girder-Token", token);
+          client.addEventListener("load", () => {
+              if (client.status === 200) {
+                  const resp = JSON.parse(client.responseText);
+                  resolve(resp);
+              } else {
+                  reject(client.responseText);
+              }
+          });
+          client.addEventListener("error", reject);
+          client.send();
+        });
     },
   
     /**
