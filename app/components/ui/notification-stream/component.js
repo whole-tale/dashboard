@@ -42,7 +42,12 @@ export default Component.extend({
         const self = this;
 
         const event = self.get('selectedEvent');
-        self.get('store').findRecord('job', event.json.data.resource.jobs[0]).then(job => {
+        if (event.json.data.resource.jobs != null) {
+            var jobId = event.json.data.resource.jobs[0];
+        } else {
+            var jobId = event.json.data.resource._id;
+        }
+        self.get('store').findRecord('job', jobId).then(job => {
             if (job && job.log) {
                 self.set('selectedEventLogs', job.log.join(''));
             }

@@ -44,6 +44,7 @@ export default Service.extend({
             (console && console.error && console.error("EventSource failed:", err))
                 || console.log("EventSource failed:", err);
             self.close();
+            self.connect();
         };  
         
         self.set('source', newSource);
@@ -89,7 +90,9 @@ export default Service.extend({
         
         // Push new event data
         const events = self.get('events');
-        if (event.json.type == 'wt_progress' && event.json.data.resource.type.startsWith('wt_')) {
+        const wtProgressJob = event.json.type == 'wt_progress' && event.json.data.resource.type.startsWith('wt_');
+        const importJob = event.json.type == 'progress' && event.json.data.resource !== null && event.json.data.resource.type.startsWith('wholetale.import_');
+        if (wtProgressJob) {
             console.log(`Notification (${event.json._id}): progress update: ${event.json.data.message} - ${event.json.data.current}/${event.json.data.total}`, event);
         
             // Attempt to use instanceId/taleId to attach the tale to its related event
@@ -105,10 +108,30 @@ export default Service.extend({
                         event.json.data.resource.tale = tale;
                     });
                 });
-            } 
+            }
             
             // Determine if we already have a notification regarding this Tale
             let existing = events.find(evt => event.json._id === evt.json._id);
+            if (existing && event.updated > existing.updated) {
+                // Overwrite existing event with new one
+                const index = events.indexOf(existing);
+                events.replace(index, 1, [event]);
+                console.log(`Notification (${event.json._id}): updated event`, events);
+            } else if (!existing) {
+                // Add a new event
+                events.unshiftObject(event);
+                console.log(`Notification (${event.json._id}): new event`, events);
+            }
+            self.set('events', events);
+            self.set('showNotificationStream', true);
+        } else if (importJob) {
+            const taleId = event.json.data.resource.kwargs.taleId;
+            this.store.findRecord('tale', taleId).then((tale) => {
+                event.json.data.resource.tale = tale;
+            });
+            const jobId = event.json.data.resource._id;
+            // Determine if we already have a notification regarding this Tale
+            let existing = events.find(evt => event.json.data.resource._id === jobId);
             if (existing && event.updated > existing.updated) {
                 // Overwrite existing event with new one
                 const index = events.indexOf(existing);
