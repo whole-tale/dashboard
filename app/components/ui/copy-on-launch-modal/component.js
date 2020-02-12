@@ -11,9 +11,8 @@ export default Component.extend({
     store: service(),
     apiCall: service('api-call'),
     router: service(),
-    
+    errorMessage: "",
     taleToCopy: null,
-
 
     actions: {
         closeCopyOnLaunchModal() {
@@ -32,11 +31,9 @@ export default Component.extend({
           if (originalTale) {
               
               let handleLaunchError = (tale, err) => {
-                // deal with the failure here
-                //tale.set('launchStatus', 'error');
-                //tale.set('launchError', err.message || err);
-                
                 console.error('Failed to launch Tale', err);
+                self.set("errorMessage", err.message);
+                $('.ui.modal.compose-error').modal('show');
               };
               
             self.get('apiCall').copyTale(originalTale).then(taleCopy => {
