@@ -36,7 +36,7 @@ export default Controller.extend({
       const component = this;
       
       // Fetch external account providers
-      const adapterOptions = { queryParams: { redirect: 'https://dashboard.local.wholetale.org/settings' } };
+      const adapterOptions = { queryParams: { redirect: config.wholeTaleHost + '/settings' } };
       component.store.query('account', { adapterOptions }).then(providers => {
         // Of course Ember has their own array implementation... -_-*
         component.set('providers', A(providers));
