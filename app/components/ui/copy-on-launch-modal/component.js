@@ -1,7 +1,5 @@
 import Component from '@ember/component';
 import EmberObject from '@ember/object';
-import { A } from '@ember/array';
-import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import layout from './template';
@@ -48,51 +46,5 @@ export default Component.extend({
             });
           }
         },
-                
-                
-                
-                // Dead code: 
-                
-                
-                
-                
-                /*
-              self.set('copyingTale', false);
-              self.actions.closeCopyOnLaunchModal.call(self);
-              
-              // Convert JSON response to an EmberObject
-              let eTaleCopy = EmberObject.create(taleCopy);
-              
-              // Push to models in view
-              // TODO: Detect filtered view?
-              const tales = self.get('modelsInView');
-              if (tales) {
-                  tales.pushObject(eTaleCopy);
-                  self.set('modelsInView', A(tales));
-              }
-              
-              // Reset state manually when re-launching
-              eTaleCopy.set('launchError', null);
-              eTaleCopy.set('launchStatus', 'starting');
-              eTaleCopy.set('launchResetRequest', null);
-          
-                
-              
-              // Launch the newly-copied tale
-              return self.apiCall.startTale(eTaleCopy).then((instance) => {
-                eTaleCopy.set('instance', instance);
-                self.apiCall.waitForInstance(instance).then((instance) => {
-                    eTaleCopy.set('instance', instance);
-                    self.get('taleLaunched')();
-                    eTaleCopy.set('launchError', null);
-                    eTaleCopy.set('launchStatus', 'started');
-                    console.log('Tale is now started:', eTaleCopy);
-                    resetStatusAfterMs(eTaleCopy, 10000);
-                  }).catch((err) => handleLaunchError(eTaleCopy, err));
-              }).catch((err) => handleLaunchError(eTaleCopy, err));
-            });
-          } else {
-            console.log('No tale to copy... something went wrong!');
-          }*/
     }
 });
