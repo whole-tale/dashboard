@@ -42,6 +42,35 @@ export default Component.extend({
     return null;
   }),
 
+  relatedIdentifiers: computed('model', 'model.relatedIdentifiers', function() {
+    const tale = this.get('model');
+    console.log(tale.relatedIdentifiers);
+    if (tale.relatedIdentifiers && tale.relatedIdentifiers.length) {
+       return tale.relatedIdentifiers.map((id) => {
+          // Convert camelCase to sentence starting with upper case
+          var relation = id.relation.split(/(?=[A-Z])/).join(" ").toLowerCase();
+          relation = relation.charAt(0).toUpperCase() + relation.slice(1);
+
+          // Derive a href from type of id
+          if (id.identifier.startsWith("doi")) {
+              var link = "https://dx.doi.org/" + id.identifier;
+          } else if (id.identifier.startsWith("urn")) {
+              var link = null;
+          } else {
+              var link = id.identifier;
+          }
+
+          // Return all data require to create a nice list in the template
+          return {
+              relation: relation,
+              identifier: id.identifier,
+              link: link
+          }
+       });
+    }
+    return null;
+  }),
+
   init() {
     this._super(...arguments);
     
