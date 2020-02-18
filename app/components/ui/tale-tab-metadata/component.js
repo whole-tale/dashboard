@@ -48,7 +48,7 @@ export default Component.extend({
     if (tale.relatedIdentifiers && tale.relatedIdentifiers.length) {
        return tale.relatedIdentifiers.map((id) => {
           // Convert camelCase to sentence starting with upper case
-          var relation = id.relation.split(/(?=[A-Z])/).join(" ").toLowerCase();
+          let relation = id.relation.split(/(?=[A-Z])/).join(" ").toLowerCase();
           relation = relation.charAt(0).toUpperCase() + relation.slice(1);
 
           // Derive a href from type of id

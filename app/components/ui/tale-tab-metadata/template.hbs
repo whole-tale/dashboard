@@ -160,7 +160,7 @@
                 <div class="ui list">
                 {{#each relatedIdentifiers as |id|}}
                     {{#if id.link}}
-                        <div class="item">{{id.relation}} <a href={{id.link}}>{{id.identifier}}</a></div>
+                        <div class="item">{{id.relation}} <a target="_blank" href={{id.link}}>{{id.identifier}}</a></div>
                     {{else}}
                         <div class="item">{{id.relation}} {{id.identifier}}</div>
                     {{/if}}
@@ -197,4 +197,3 @@
         </div>
     </div>
 </div>
-
