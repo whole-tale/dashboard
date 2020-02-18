@@ -52,12 +52,11 @@ export default Component.extend({
           relation = relation.charAt(0).toUpperCase() + relation.slice(1);
 
           // Derive a href from type of id
+          let link = id.identifier;
           if (id.identifier.startsWith("doi")) {
-              var link = "https://dx.doi.org/" + id.identifier;
+              link = "https://dx.doi.org/" + id.identifier;
           } else if (id.identifier.startsWith("urn")) {
-              var link = null;
-          } else {
-              var link = id.identifier;
+              link = null;
           }
 
           // Return all data require to create a nice list in the template
