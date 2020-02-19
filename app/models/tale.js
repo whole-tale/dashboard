@@ -20,6 +20,7 @@ export default DS.Model.extend({
   "updated": DS.attr('date'),
   "dataSet": DS.attr(),
   "dataSetCitation": DS.attr(),
+  "relatedIdentifiers": DS.attr(),
   "folderId": DS.attr('string'),
   "licenseSPDX": DS.attr('string')
 });

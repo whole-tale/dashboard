@@ -153,7 +153,24 @@
             {{/if}}
         </div>
     </div>
-
+    <div class="inline fields ui grid">
+        <label class="two wide column right aligned">Related Identifiers</label>
+        <div class="ui action field thirteen wide column">
+            {{#if relatedIdentifiers}}
+                <div class="ui list">
+                {{#each relatedIdentifiers as |id|}}
+                    {{#if id.link}}
+                        <div class="item">{{id.relation}} <a target="_blank" href={{id.link}}>{{id.identifier}}</a></div>
+                    {{else}}
+                        <div class="item">{{id.relation}} {{id.identifier}}</div>
+                    {{/if}}
+                {{/each}}
+                </div>
+            {{else}}
+                <span>This Tale has no related identifiers</span>
+            {{/if}}
+        </div>
+    </div>
     <div class="inline fields ui grid">
         <label class="two wide column right aligned"></label>
         <div class="field two wide right aligned column">
@@ -180,4 +197,3 @@
         </div>
     </div>
 </div>
-
