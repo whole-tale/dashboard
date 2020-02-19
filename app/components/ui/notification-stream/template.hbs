@@ -12,7 +12,7 @@
       <table class="ui small striped compact single line table nomargin">
         {{#each notificationStream.events as |event index|}}
           {{#unless event.hidden}}
-            {{#if (eq event.json.type 'wt_progress')}}
+            {{#if (or (eq event.json.type 'wt_progress') (eq event.json.type 'progress'))}}
               <tr class="{{if (eq event.json.data.state 'active') 'active'}}" title="Last update: {{event.updated}}">
                 <td width="20%"><label class="ui label">{{event.json.data.title}}</label></td>
                 <td width="30%">{{truncate-name event.json.data.resource.tale.title}}</td>
