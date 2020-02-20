@@ -182,7 +182,7 @@ export default Ember.Component.extend({
   },
 
   error(file, errorMessage) {
-    file.error = errorMessage;
+    file.error = errorMessage.message;
     this.uploadProgress(file);
   },
 
