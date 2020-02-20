@@ -5,7 +5,7 @@
         <button class="ui mini right floated button" {{action 'cancelUploads'}}>Cancel</button>
     {{/unless}}
     <div class="ui header" style="color:whitesmoke; margin-bottom: 10px">File Uploads</div>
-    <ul style="list-style-type:square">
+    <ul style="list-style-type:square;overflow-y:scroll;max-height:650px;">
     {{#each files as |file|}}
         {{#if (eq file.status "error")}}
             <li style="margin-bottom: 5px;"><i class="red warning icon"></i>
