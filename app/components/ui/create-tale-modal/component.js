@@ -15,14 +15,15 @@ export default Component.extend({
   config: null,
   asTale: false,
   asTaleEnabled: true,
-  
+  creatingTale: false,
   createAndLaunch: true,
   createButtonText: computed('createAndLaunch', function() {
     return this.get('createAndLaunch') ? 'Create New Tale and Launch' : 'Create New Tale';
   }),
 
-  disabled: computed('title', 'imageId', function() {
-    return (this.get('title') && this.get('imageId')) ? '' : 'disabled';
+  disabled: computed('title', 'imageId', 'creatingTale', function() {
+    let validTextFields = (this.get('title') && this.get('imageId')) ? true : false;
+    return (validTextFields && !this.get('creatingTale')) ? '': 'disabled';
   }),
   
   defaultErrorMessage: "There was an error while creating your Tale.",
@@ -58,6 +59,7 @@ export default Component.extend({
 
       title = title.trim();
 
+      this.set("creatingTale", true);
       if (this.importing) {
         this.importTaleFromDataset(title, imageId, dataSet||[], datasetAPI, asTale);
       } else {
@@ -146,6 +148,7 @@ export default Component.extend({
   // ---------------------------------------------------------------------------------
   handleLaunchError(e) {
     const self = this;
+    self.set("creatingTale", false);
     self.handleError(e);
     $('.ui.modal.compose-error').modal('show');
     $('.ui.modal.compose-error').modal({
