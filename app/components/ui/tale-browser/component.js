@@ -17,7 +17,7 @@ export default Component.extend({
   taleInstanceName: "",
   filteredSet: A(),
   filters: ['All', 'Mine', 'Published', 'Recent'],
-  filter: 'All',
+  filter: window.localStorage.getItem('browse::filter') || 'All',
   numberOfModels: 0,
   pageNumber: 1,
   totalPages: 1,
@@ -121,15 +121,19 @@ export default Component.extend({
     this.set('loadingTales', true);
 
     if (filter === 'All') {
+      window.localStorage.setItem('browse::filter', 'All');
       this.set('filteredSet', models.tales);
     } else if (filter === 'Mine') {
+      window.localStorage.setItem('browse::filter', 'Mine');
       const userId = this.get('userAuth').getCurrentUserID();
       this.set('filteredSet', models.tales.filter(m => m.creatorId === userId));
     } else if (filter === 'Published') {
+      window.localStorage.setItem('browse::filter', 'Published');
       this.set('filteredSet', models.tales.filter(m => {
         return m.publishInfo.length;
       }));
     } else if (filter === 'Recent') {
+      window.localStorage.setItem('browse::filter', 'Recent');
       const recentTales = this.get('internalState').getRecentTales();
       this.set('filteredSet', models.tales.filter(m => {
         return (recentTales.indexOf(m.get('id')) > -1);
