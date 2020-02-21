@@ -17,7 +17,7 @@ export default Component.extend({
   taleInstanceName: "",
   filteredSet: A(),
   filters: ['All', 'Mine', 'Published', 'Recent'],
-  filter: window.localStorage.getItem('browse::filter') || 'All',
+  filter: 'All',
   numberOfModels: 0,
   pageNumber: 1,
   totalPages: 1,
@@ -92,7 +92,11 @@ export default Component.extend({
     component.set('searchView', models.tales);
     component.updateModels(component, models.tales);
     component.set('addButtonLogo', '/icons/plus-sign.png');
-    component.setFilter();
+    
+    const filter = window.localStorage.getItem('browse::filter');
+    if (filter) {
+      this.actions.selectFilter.call(component, filter);
+    }
     
     // Check if any instance is LAUNCHING
     component.get('store').findAll('instance').then(instances => {
