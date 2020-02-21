@@ -12,7 +12,9 @@
                         {{#if model.copyOfTale}}
                             <a class="ui tiny blue horizontal label">COPY</a>
                         {{/if}}
-                        {{truncate-name model.title 100}}
+                        <p class="ui computer only grid" title="{{model.title}}">{{truncate-name model.title 100}}</p>
+                        <p class="ui tablet only grid" title="{{model.title}}">{{truncate-name model.title 50}}</p>
+                        <p class="ui mobile only grid" title="{{model.title}}">{{truncate-name model.title 20}}</p>
                     </h3>
                     
                     <span>{{tale-authors-to-str model.authors model.creator}}</span>
