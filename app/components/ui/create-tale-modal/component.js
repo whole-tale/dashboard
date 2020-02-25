@@ -15,14 +15,15 @@ export default Component.extend({
   config: null,
   asTale: false,
   asTaleEnabled: true,
-  
+  creatingTale: false,
   createAndLaunch: true,
   createButtonText: computed('createAndLaunch', function() {
     return this.get('createAndLaunch') ? 'Create New Tale and Launch' : 'Create New Tale';
   }),
 
-  disabled: computed('title', 'imageId', function() {
-    return (this.get('title') && this.get('imageId')) ? '' : 'disabled';
+  disabled: computed('title', 'imageId', 'creatingTale', function() {
+    let validTextFields = (this.get('title') && this.get('imageId')) ? true : false;
+    return (validTextFields && !this.get('creatingTale')) ? '': 'disabled';
   }),
   
   defaultErrorMessage: "There was an error while creating your Tale.",
@@ -58,6 +59,7 @@ export default Component.extend({
 
       title = title.trim();
 
+      this.set("creatingTale", true);
       if (this.importing) {
         this.importTaleFromDataset(title, imageId, dataSet||[], datasetAPI, asTale);
       } else {
@@ -98,17 +100,17 @@ export default Component.extend({
           if (asTale && asTale.toLowerCase() === "true") {
             later(() => $('#as-tale-true-chkbox').checkbox('check'), 500);
           }
-
+          this.set('datasetAPI', api);
+          
           let {official, nonOfficial} = this.computeEnvironments;
           let image = official.findBy('name', environment) || nonOfficial.findBy('name', environment);
-          if (!image && environment) throw new Error('Could not find specified environment: '+environment);
-
+          if (!image && environment) {
+            throw new Error('Could not find specified environment: '+environment);
+          }
           if (image) {
             this.set('imageId', image.id);
             $('.ui.dropdown.compute-environment').dropdown('set selected', image.id);
           }
-
-          this.set('datasetAPI', api);
         }
       } catch(e) {
         this.handleError(e);
@@ -146,6 +148,7 @@ export default Component.extend({
   // ---------------------------------------------------------------------------------
   handleLaunchError(e) {
     const self = this;
+    self.set("creatingTale", false);
     self.handleError(e);
     $('.ui.modal.compose-error').modal('show');
     $('.ui.modal.compose-error').modal({
@@ -161,8 +164,12 @@ export default Component.extend({
   // Display error message
   // ---------------------------------------------------------------------------------
   handleError(e) {
+    if (e.message) {
+      this.set('errorMessage', e.message);
+    } else{
     let errorMessage = (e.responseJSON ? e.responseJSON.message : this.get('defaultErrorMessage'));
     this.set('errorMessage', errorMessage);
+    }
   },
 
   // ---------------------------------------------------------------------------------
