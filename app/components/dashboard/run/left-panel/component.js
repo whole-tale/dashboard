@@ -42,6 +42,7 @@ export default Component.extend(FullScreenMixin, {
     repositories: [],
     // The repository that is currently selected in the dropdown
     selectedRepository: '',
+    disablePublish: true,
   
     instancePoller: observer('model', 'model.instance', function() {
       // If we see an instance that is "Launching", poll until it completes
@@ -455,6 +456,7 @@ export default Component.extend(FullScreenMixin, {
           let selection = this.get('repositories').find((repo) => repo.name === repositoryName);
           if (selection) {
             this.set('selectedRepository', selection);
+            this.set('disablePublish', false);
           } else {
             console.error('Failed to select '+ repositoryName + ' for publishing');
           }
