@@ -717,6 +717,8 @@ export default Service.extend({
               if (client.status === 200) {
                   const resp = JSON.parse(client.responseText);
                   resolve(resp);
+              } else if (client.status >= 400 && client.status < 500) {
+                  reject(JSON.parse(client.responseText));
               } else {
                   reject(client.responseText);
               }

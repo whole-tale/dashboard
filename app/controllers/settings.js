@@ -14,6 +14,7 @@ export default Controller.extend({
     store: service(),
     apiCall: service(),
     
+    defaultErrorMessage: "There was an error while storing your API key.",
     model: null,
     newApiKey: '',
     newResourceServer: '',
@@ -84,6 +85,23 @@ export default Controller.extend({
         });
       });
     },
+
+    handleError(e) {
+      const self = this;
+      if (e.message) {
+        self.set('errorMessage', e.message);
+      } else {
+        let msg = (e.responseJSON ? e.responseJSON.message : self.get('defaultErrorMesage'));
+        self.set('errorMessage', msg);
+      }
+      $('.ui.modal.apikey-error').modal('show');
+      $('.ui.modal.apikey-error').modal({
+        onHide: function(element) {
+          self.set('errorMessage', '');
+          return true;
+        },
+      });
+    },
     
     actions: {
       setResourceServer(selected) {
@@ -119,13 +137,15 @@ export default Controller.extend({
         console.log("Connect confirmed:", provider);
         
         // POST back to /account/:provider/key
-        component.apiCall.authExtToken(provider.name, newResourceServer, newApiKey, keyType).then(resp => {
-          // Refresh view
-          component.refreshProviders();
+        component.apiCall.authExtToken(provider.name, newResourceServer, newApiKey, keyType)
+          .catch(err => component.handleError(err))
+          .finally(() => {
+            // Refresh view
+            component.refreshProviders();
           
-          // Close modal and reset state
-          component.actions.clearConnectExtAcctModal.call(component);
-        }, err => console.error("Failed to authorize external token:", err));
+            // Close modal and reset state
+            component.actions.clearConnectExtAcctModal.call(component);
+          });
       },
       
       showConfirmDeleteModal(provider, token) {
