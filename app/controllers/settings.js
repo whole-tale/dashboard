@@ -137,13 +137,15 @@ export default Controller.extend({
         console.log("Connect confirmed:", provider);
         
         // POST back to /account/:provider/key
-        component.apiCall.authExtToken(provider.name, newResourceServer, newApiKey, keyType).then(resp => {
-          // Refresh view
-          component.refreshProviders();
+        component.apiCall.authExtToken(provider.name, newResourceServer, newApiKey, keyType)
+          .catch(err => component.handleError(err))
+          .finally(() => {
+            // Refresh view
+            component.refreshProviders();
           
-          // Close modal and reset state
-          component.actions.clearConnectExtAcctModal.call(component);
-        }, err => component.handleError(err));
+            // Close modal and reset state
+            component.actions.clearConnectExtAcctModal.call(component);
+          });
       },
       
       showConfirmDeleteModal(provider, token) {
