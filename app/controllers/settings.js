@@ -19,7 +19,7 @@ export default Controller.extend({
     newResourceServer: '',
     
     providers: A([]),
-    providerTargets: A([]),
+    providerTargets: O({}),
     
     sortByName: Object.freeze(['name']),
     sortedProviders: sort('providers', 'sortByName'),
@@ -70,9 +70,16 @@ export default Controller.extend({
         component.set('user', user);
         
         component.get('providers').forEach(provider => {
-          // If any DataONE providers are in a preauthorized state
           if (provider.type === 'dataone' && provider.state === 'preauthorized') {
+            // If any DataONE providers are in a preauthorized state
+            // fetch the DataONE JWT and POST it back to Girder
             component.fetchDataOneJwt(user, provider);
+          } else if (provider.type === 'apikey') {
+            // Pre-fetch all apikey provider targets
+            component.apiCall.getExtAccountTargets(provider.name).then(targets => {
+              component.get('providerTargets').set(provider.name, targets);
+              provider.set('targets', targets);
+            }, err => console.error("Failed to fetch provider targets:", err));
           }
         });
       });
@@ -90,12 +97,12 @@ export default Controller.extend({
       showConnectExtAcctModal(provider) {
         const component = this;
         component.set('selectedProvider', provider);
-        component.apiCall.getExtAccountTargets(provider.name).then(targets => {
-          component.get('selectedProvider').set('targets', targets);
-          // Pop up a modal for choosing resource_server and entering a new API key
-          $('#connect-apikey-modal').modal('show');
-          $('#newResourceServerDropdown').dropdown();
-        }, err => console.error("Failed to fetch provider targets:", err));
+        //const targets = component.get('providerTargets').get(provider.name);
+        //component.get('selectedProvider').set('targets', targets);
+        
+        // Pop up a modal for choosing resource_server and entering a new API key
+        $('#connect-apikey-modal').modal('show');
+        $('#newResourceServerDropdown').dropdown();
       },
       
       clearConnectExtAcctModal() {
