@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import EmberObject from '@ember/object';
+import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import layout from './template';
@@ -31,7 +32,12 @@ export default Component.extend({
               let handleLaunchError = (tale, err) => {
                 console.error('Failed to launch Tale', err);
                 self.set("errorMessage", err.message);
-                $('.ui.modal.compose-error').modal('show');
+                $('.ui.modal.compose-error').modal({
+                  onHide: function(element) {
+                    later(() => { self.router.transitionTo('run.view', tale._id); }, 500);
+                    return true;
+                  },
+                }).modal('show');
               };
               
             self.get('apiCall').copyTale(originalTale).then(taleCopy => {
