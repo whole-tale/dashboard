@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import config from '../../../../config/environment';
 import layout from './template';
+import { A } from '@ember/array';
 import {
   inject as service
 } from '@ember/service';
@@ -17,6 +18,7 @@ export default Component.extend({
   folderNavs: service(),
 
   apiUrl: config.apiUrl,
+  refresh: null,
 
   showEditor: false,
 
@@ -44,6 +46,14 @@ export default Component.extend({
       });
     }
 
+  },
+    
+  sortBy(array, field='name') {
+    return array.sort(function(a, b) {
+      const valA = a[field].toUpperCase(); // ignore case
+      const valB = b[field].toUpperCase(); // ignore case
+      return (valA < valB) ? -1 : ((valA > valB) ? 1 : 0);
+    });
   },
 
   actions: {
@@ -144,9 +154,13 @@ export default Component.extend({
         })
         .then(copy => {
           if (fileType === "item") {
-            self.set('fileList', [copy].pushObjects(self.fileList.toArray()).sortBy('name'));
+            const files = self.fileList.toArray();
+            files.push(copy);
+            self.set('fileList', self.sortBy(files));
           } else if (fileType === "folder") {
-            self.set('folderList', [copy].pushObjects(self.folderList.toArray()).sortBy('name'));
+            const folders = self.folderList.toArray();
+            folders.push(copy);
+            self.set('folderList', self.sortBy(folders));
           }
         });
     },
@@ -202,8 +216,22 @@ export default Component.extend({
     },
 
     remove(file) {
-      this.get('internalState').removeFolderFromRecentFolders(file.id);
-      file.destroyRecord();
+      const self = this;
+      self.get('internalState').removeFolderFromRecentFolders(file.id);
+      let fileType = file.get('_modelType');
+      file.destroyRecord().then(() => {
+        if (fileType === 'item') {
+          const files = self.fileList.toArray();
+          const index = files.indexOf(file);
+          files.splice(index, 1);
+          self.set('fileList', files);
+        } else if (fileType === 'folder') {
+          const folders = self.folderList.toArray();
+          const index = folders.indexOf(file);
+          folders.splice(index, 1);
+          self.set('folderList', folders);
+        }
+      });
     },
 
     confirmedRemove() {

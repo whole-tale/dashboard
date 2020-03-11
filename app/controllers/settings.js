@@ -14,12 +14,14 @@ export default Controller.extend({
     store: service(),
     apiCall: service(),
     
+    defaultErrorMessage: "There was an error while storing your API key.",
     model: null,
     newApiKey: '',
     newResourceServer: '',
+    generateKeyUrl: '',
     
     providers: A([]),
-    providerTargets: A([]),
+    providerTargets: O({}),
     
     sortByName: Object.freeze(['name']),
     sortedProviders: sort('providers', 'sortByName'),
@@ -70,17 +72,50 @@ export default Controller.extend({
         component.set('user', user);
         
         component.get('providers').forEach(provider => {
-          // If any DataONE providers are in a preauthorized state
           if (provider.type === 'dataone' && provider.state === 'preauthorized') {
+            // If any DataONE providers are in a preauthorized state
+            // fetch the DataONE JWT and POST it back to Girder
             component.fetchDataOneJwt(user, provider);
+          } else if (provider.type === 'apikey') {
+            // Pre-fetch all apikey provider targets
+            component.apiCall.getExtAccountTargets(provider.name).then(targets => {
+              component.get('providerTargets').set(provider.name, targets);
+              provider.set('targets', targets);
+            }, err => console.error("Failed to fetch provider targets:", err));
           }
         });
       });
     },
+
+    handleError(e) {
+      const self = this;
+      if (e.message) {
+        self.set('errorMessage', e.message);
+      } else {
+        let msg = (e.responseJSON ? e.responseJSON.message : self.get('defaultErrorMesage'));
+        self.set('errorMessage', msg);
+      }
+      $('.ui.modal.apikey-error').modal('show');
+      $('.ui.modal.apikey-error').modal({
+        onHide: function(element) {
+          self.set('errorMessage', '');
+          return true;
+        },
+      });
+    },
     
     actions: {
-      setResourceServer(selected) {
-        this.set('newResourceServer', selected);
+      setGenerateKeyUrl(selected) {
+        const self = this;
+        const resourceServer = selected.target.value;
+        if (resourceServer) {
+          let provider = self.get('selectedProvider');
+          let url = new URL(provider.docs_href)
+          url.hostname = resourceServer;
+          self.set('generateKeyUrl', url.toString());
+        } else {
+          self.set('generateKeyUrl', '');
+        }
       },
       
       connectOAuthProvider(provider) {
@@ -90,12 +125,12 @@ export default Controller.extend({
       showConnectExtAcctModal(provider) {
         const component = this;
         component.set('selectedProvider', provider);
-        component.apiCall.getExtAccountTargets(provider.name).then(targets => {
-          component.get('selectedProvider').set('targets', targets);
-          // Pop up a modal for choosing resource_server and entering a new API key
-          $('#connect-apikey-modal').modal('show');
-          $('#newResourceServerDropdown').dropdown();
-        }, err => console.error("Failed to fetch provider targets:", err));
+        //const targets = component.get('providerTargets').get(provider.name);
+        //component.get('selectedProvider').set('targets', targets);
+        
+        // Pop up a modal for choosing resource_server and entering a new API key
+        $('#connect-apikey-modal').modal('show');
+        $('#newResourceServerDropdown').dropdown();
       },
       
       clearConnectExtAcctModal() {
@@ -105,6 +140,7 @@ export default Controller.extend({
         $('#newResourceServerDropdown').dropdown('clear');
         component.set('newApiKey', '');
         component.set('newResourceServer', '');
+        component.set('generateKeyUrl', '');
       },
       
       connectProvider(provider, newResourceServer, newApiKey, keyType = 'apikey') {
@@ -112,13 +148,15 @@ export default Controller.extend({
         console.log("Connect confirmed:", provider);
         
         // POST back to /account/:provider/key
-        component.apiCall.authExtToken(provider.name, newResourceServer, newApiKey, keyType).then(resp => {
-          // Refresh view
-          component.refreshProviders();
+        component.apiCall.authExtToken(provider.name, newResourceServer, newApiKey, keyType)
+          .catch(err => component.handleError(err))
+          .finally(() => {
+            // Refresh view
+            component.refreshProviders();
           
-          // Close modal and reset state
-          component.actions.clearConnectExtAcctModal.call(component);
-        }, err => console.error("Failed to authorize external token:", err));
+            // Close modal and reset state
+            component.actions.clearConnectExtAcctModal.call(component);
+          });
       },
       
       showConfirmDeleteModal(provider, token) {

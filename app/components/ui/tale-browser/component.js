@@ -96,6 +96,8 @@ export default Component.extend({
     const filter = window.localStorage.getItem('browse::filter');
     if (filter) {
       this.actions.selectFilter.call(component, filter);
+    } else {
+      this.actions.selectFilter.call(component, 'All');
     }
     
     // Check if any instance is LAUNCHING

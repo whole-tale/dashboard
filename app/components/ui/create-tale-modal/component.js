@@ -150,14 +150,12 @@ export default Component.extend({
     const self = this;
     self.set("creatingTale", false);
     self.handleError(e);
-    $('.ui.modal.compose-error').modal('show');
     $('.ui.modal.compose-error').modal({
       onHide: function(element) {
-        //$('.ui.modal.compose-error').modal('hide');
         later(() => { self.router.transitionTo('run.view', self.newTale._id); }, 500);
         return true;
       },
-    });
+    }).modal('show');
   },
 
   // ---------------------------------------------------------------------------------

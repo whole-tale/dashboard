@@ -198,8 +198,8 @@
       {{if (eq publishStatus 'success') 'Close' 'Cancel'}}
     </div>
     <div class="ui positive right labeled icon button 
-        {{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress') (eq selectedRepositoryName null))) 'disabled'}}" 
-        disabled="{{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress') (eq selectedRepositoryName null))) 'true' 'false'}}"
+        {{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress')  disablePublish)) 'disabled'}}" 
+        disabled="{{if (or (eq publishStatus 'success') (or (eq publishStatus 'in_progress') disablePublish)) 'true' 'false'}}"
         {{action 'submitPublish'}}>
       {{if (or (eq publishStatus 'initialized') (eq publishStatus 'error')) 'Publish'}}
       {{if (eq publishStatus 'success') 'Published'}}
