@@ -18,6 +18,7 @@ export default Controller.extend({
     model: null,
     newApiKey: '',
     newResourceServer: '',
+    generateKeyUrl: '',
     
     providers: A([]),
     providerTargets: O({}),
@@ -104,8 +105,17 @@ export default Controller.extend({
     },
     
     actions: {
-      setResourceServer(selected) {
-        this.set('newResourceServer', selected);
+      setGenerateKeyUrl(selected) {
+        const self = this;
+        const resourceServer = selected.target.value;
+        if (resourceServer) {
+          let provider = self.get('selectedProvider');
+          let url = new URL(provider.docs_href)
+          url.hostname = resourceServer;
+          self.set('generateKeyUrl', url.toString());
+        } else {
+          self.set('generateKeyUrl', '');
+        }
       },
       
       connectOAuthProvider(provider) {
@@ -130,6 +140,7 @@ export default Controller.extend({
         $('#newResourceServerDropdown').dropdown('clear');
         component.set('newApiKey', '');
         component.set('newResourceServer', '');
+        component.set('generateKeyUrl', '');
       },
       
       connectProvider(provider, newResourceServer, newApiKey, keyType = 'apikey') {

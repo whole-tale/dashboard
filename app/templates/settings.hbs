@@ -85,7 +85,7 @@
       <div class="two fields">
         <div class="field">
           <label>{{selectedProvider.fullName}} Repository</label>
-          <div id="newResourceServerDropdown" class="ui fluid selection dropdown">
+          <div id="newResourceServerDropdown" class="ui fluid selection dropdown" onChange={{action 'setGenerateKeyUrl'}}>
             {{input type="hidden" name="newResourceServer" value=newResourceServer}}
             <i class="dropdown icon"></i>
             <div class="default text">Choose a repository...</div>
@@ -98,8 +98,8 @@
         </div>
         <div class="field">
           <label>API Token 
-            {{#if selectedProvider.docs_href}}
-              <a href="{{selectedProvider.docs_href}}" style="float:right; font-weight:normal" target="_blank">Get from {{selectedProvider.fullName}} <i class="external square alternate icon"></i></a>
+            {{#if generateKeyUrl}}
+              <a href="{{generateKeyUrl}}" style="float:right; font-weight:normal" target="_blank">Get from {{selectedProvider.fullName}} <i class="external square alternate icon"></i></a>
             {{/if}}
           </label>
           {{input type="text" name="API Token" placeholder="Enter an API key" value=newApiKey}}
