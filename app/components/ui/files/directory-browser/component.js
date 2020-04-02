@@ -218,20 +218,7 @@ export default Component.extend({
     remove(file) {
       const self = this;
       self.get('internalState').removeFolderFromRecentFolders(file.id);
-      let fileType = file.get('_modelType');
-      file.destroyRecord().then(() => {
-        if (fileType === 'item') {
-          const files = self.fileList.toArray();
-          const index = files.indexOf(file);
-          files.splice(index, 1);
-          self.set('fileList', files);
-        } else if (fileType === 'folder') {
-          const folders = self.folderList.toArray();
-          const index = folders.indexOf(file);
-          folders.splice(index, 1);
-          self.set('folderList', folders);
-        }
-      });
+      file.destroyRecord();
     },
 
     confirmedRemove() {
