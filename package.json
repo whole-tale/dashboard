@@ -84,6 +84,6 @@
   "dependencies": {
     "guid": "0.0.12",
     "lodash": "^4.17.10",
-    "marked": "^0.3.19"
+    "marked": "^4.0.10"
   }
 }
