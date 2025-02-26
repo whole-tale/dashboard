@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+> This repository is deprecated and no longer maintained. The new frontend UI is located at
+> [ngx-dashboard](https://github.com/whole-tale/ngx-dashboard).
+
 # Wholetale
 
 This README outlines the details of collaborating on this Ember application.
